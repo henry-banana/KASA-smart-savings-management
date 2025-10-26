@@ -1,12 +1,14 @@
-const express = require('express');
+import express from "express";
+import dotenv from 'dotenv';
+dotenv.config();
+import authRoutes from "./src/routers/auth.router.js";
+
 const app = express();
-const authRoutes = require('./src/routers/auth.router.js');
-require('dotenv').config();
 
-app.use(express.json()); // Đọc body JSON
-app.use('/api', authRoutes);
+app.use(express.json());
+app.use("/", authRoutes);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server đang chạy tại http://localhost:${PORT}`);
 });
