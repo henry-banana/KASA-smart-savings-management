@@ -2,12 +2,11 @@ import { supabase } from "../../config/database.js";
 
 export async function login(req, res) {
   try {
-    const { username, password } = req.body || {};
-
     // 1. Kiểm tra dữ liệu đầu vào
+    const { username, password } = req.body;
     if (!username || !password) {
       return res.status(400).json({
-        message: "Thiếu username hoặc password",
+        message: "Missing username or password",
       });
     }
 
@@ -24,7 +23,7 @@ export async function login(req, res) {
       // PGRST116 = không tìm thấy bản ghi (không phải lỗi nghiêm trọng)
       console.error("Supabase query error:", error);
       return res.status(400).json({
-        message: "Lỗi truy vấn dữ liệu",
+        message: "Database query error",
         detail: error.message,
       });
     }
@@ -32,14 +31,14 @@ export async function login(req, res) {
     // 4. Kiểm tra tài khoản có tồn tại hay không
     if (!data) {
       return res.status(401).json({
-        message: "Sai tên đăng nhập hoặc mật khẩu",
+        message: "Invalid username or password",
         success: false,
       });
     }
 
     // 5. Nếu có dữ liệu -> đăng nhập thành công
     return res.status(200).json({
-      message: "Đăng nhập thành công",
+      message: "Login successful",
       success: true,
       user: data,
     });
@@ -47,7 +46,7 @@ export async function login(req, res) {
   } catch (err) {
     console.error("❌ Exception:", err);
     return res.status(500).json({
-      message: "Lỗi hệ thống (Exception)",
+      message: "System error (Exception)",
       detail: err.message,
     });
   }
