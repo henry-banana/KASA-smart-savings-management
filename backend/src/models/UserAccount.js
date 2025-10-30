@@ -1,20 +1,16 @@
-import { supabase } from '../config/database.js';
+// models/UserAccount.js
 
-/**
- * Model UserAccount
- * Liên kết với bảng 'user_account' trong Supabase
- */
-export const UserAccount = {
-  tableName: 'user_account',
+// 1. Import lớp BaseModel
+import { BaseModel } from "./BaseModel.js";
 
-  // Các trường trong bảng user_account
-  fields: {
-    user_id: 'int',          // định danh người dùng
-    role_id: 'int',          // vai trò (VD: admin, user,...)
-    password: 'string',         // mật khẩu (nên được mã hóa khi lưu)
-    register_status: 'string', // trạng thái đăng ký (true/false)
-  },
+// 2. Tạo lớp UserAccountModel KẾ THỪA từ BaseModel
+class UserAccountModel extends BaseModel {
+  constructor() {
 
-  // Liên kết client Supabase (để service/repo có thể truy cập)
-  client: supabase,
-};
+    super('useraccount', 'userid'); 
+  }
+
+}
+
+// 5. Xuất ra một INSTANCE của lớp để sử dụng
+export const UserAccount = new UserAccountModel();

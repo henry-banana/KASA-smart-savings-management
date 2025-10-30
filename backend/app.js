@@ -2,13 +2,13 @@ import express from "express";
 import dotenv from 'dotenv';
 dotenv.config();
 import authRoutes from "./src/routers/login.router.js";
-import addEmployeeRoutes from "./src/routers/addEmployee.router.js";
+import employeeRoutes from './src/routers/employee.router.js';
 
 const app = express();
 
 app.use(express.json());
 app.use("/api/login", authRoutes);
-app.use("/api/employees", addEmployeeRoutes);
+app.use('/api/employee', employeeRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
