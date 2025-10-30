@@ -12,9 +12,9 @@ export async function login(req, res) {
 
     // 2. Thực hiện truy vấn Supabase để kiểm tra tài khoản
     const { data, error } = await supabase
-      .from("user_account")
+      .from("useraccount")
       .select("*")
-      .eq("user_id", username)
+      .eq("userid", username)
       .eq("password", password)
       .single(); // Lấy 1 dòng duy nhất (nếu có)
 
