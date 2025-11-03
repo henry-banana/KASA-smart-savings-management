@@ -2,7 +2,7 @@ import express from "express";
 import {
   addEmployee,
   updateEmployee,
-} from "../controllers/employee/employee.controller.js";
+} from "../controllers/Employee/employee.controller.js";
 
 const router = express.Router();
 
