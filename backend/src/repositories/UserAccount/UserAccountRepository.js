@@ -10,7 +10,7 @@ export class UserAccountRepository {
   }
 
   async create(userData) {
-    return await UserAccountModel.create(userData); // dùng create thay vì insert
+    return await UserAccountModel.create(userData); 
   }
 
   async update(userid, userData) {
