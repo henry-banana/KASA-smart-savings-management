@@ -19,7 +19,7 @@ pids
 lib-cov
 
 .vscode
-frontend/docs-temp
+docs-temp
 
 # Coverage directory used by tools like istanbul
 coverage
