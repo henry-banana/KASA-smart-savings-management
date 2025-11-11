@@ -4,15 +4,25 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 
+// NEW: Spinner thuần CSS/Tailwind, không cần cài thêm lib
+function Spinner({ size = 16, light = true }) {
+  // light=true: spinner màu trắng (hợp nền nút xanh); false: spinner màu xám (dùng trên nền sáng)
+  const borderColor = light ? 'border-white' : 'border-gray-400';
+  return (
+    <span
+      className={`inline-block animate-spin rounded-full border-2 ${borderColor} border-t-transparent align-middle`}
+      style={{ width: size, height: size }}
+      aria-hidden="true"
+    />
+  );
+}
+
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  
-  // NEW: Thêm state để quản lý trạng thái loading
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // đã có
 
-  // UPDATED: Chuyển hàm handleSubmit thành async
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
@@ -20,52 +30,31 @@ export default function Login({ onLogin }) {
       return;
     }
 
-    // NEW: Bắt đầu quá trình loading và reset lỗi
     setLoading(true);
     setError('');
 
     try {
-      // Gọi API bằng fetch
       const response = await fetch('http://localhost:3000/api/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
       });
 
-      // Lấy dữ liệu JSON từ response
       const data = await response.json();
 
-      // Nếu response không "ok" (ví dụ: lỗi 401, 404, 500)
       if (!response.ok) {
-        // Ném lỗi với message từ server (nếu có), nếu không thì dùng message mặc định
         throw new Error(data.message || 'Login failed. Please check your credentials.');
       }
 
-      // ĐĂNG NHẬP THÀNH CÔNG
-      // Giả sử API trả về { role: 'teller', ... }
-      // Gọi hàm onLogin với vai trò (role) nhận được từ API
-      console.log('Login successful:', data);
-      
-      // Quan trọng: Bạn cần đảm bảo API trả về một object có key là 'role'
-      // Ví dụ: { "role": "teller", "token": "..." }
       if (data.role) {
         onLogin(data.role, username);
       } else {
-        // Nếu API không trả về 'role', ta sẽ báo lỗi
         throw new Error('Login successful, but role was not provided by the API response.');
       }
-
     } catch (err) {
-      // Xử lý bất kỳ lỗi nào (lỗi mạng hoặc lỗi từ server)
       console.error('Login error:', err);
-      setError(err.message); // Hiển thị lỗi cho người dùng
+      setError(err.message);
     } finally {
-      // Luôn luôn dừng loading sau khi hoàn tất (dù thành công hay thất bại)
       setLoading(false);
     }
   };
@@ -88,7 +77,7 @@ export default function Login({ onLogin }) {
 
         <CardContent className="space-y-6">
           {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" aria-busy={loading}>
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -100,7 +89,7 @@ export default function Login({ onLogin }) {
                   setUsername(e.target.value);
                   setError('');
                 }}
-                disabled={loading} // NEW: Vô hiệu hóa khi đang loading
+                disabled={loading}
               />
             </div>
 
@@ -115,29 +104,27 @@ export default function Login({ onLogin }) {
                   setPassword(e.target.value);
                   setError('');
                 }}
-                disabled={loading} // NEW: Vô hiệu hóa khi đang loading
+                disabled={loading}
               />
             </div>
 
-            {/* UPDATED: Hiển thị lỗi từ state (bao gồm cả lỗi API) */}
-            {error && (
-              <p className="text-sm text-red-500">{error}</p>
-            )}
+            {error && <p className="text-sm text-red-500">{error}</p>}
 
             <Button
               type="submit"
-              className="w-full text-white"
+              className="flex items-center justify-center w-full gap-2 text-white"
               style={{ backgroundColor: '#1A4D8F' }}
-              disabled={loading} // NEW: Vô hiệu hóa khi đang loading
+              disabled={loading}
             >
-              {/* NEW: Thay đổi text của nút khi đang loading */}
+              {/* NEW: Hiện spinner khi loading */}
+              {loading && <Spinner size={16} light />}
               {loading ? 'Logging in...' : 'Login'}
             </Button>
 
             <button
               type="button"
               className="w-full text-sm text-center text-gray-500 hover:text-gray-700"
-              disabled={loading} // NEW: Vô hiệu hóa khi đang loading
+              disabled={loading}
             >
               Forgot password?
             </button>
@@ -154,7 +141,6 @@ export default function Login({ onLogin }) {
           </div>
 
           {/* Role Selection Buttons */}
-          {/* NEW: Vô hiệu hóa các nút dev mode khi đang login bằng form */}
           <div className="grid grid-cols-3 gap-3">
             <Button
               onClick={() => handleRoleSelect('teller')}
@@ -182,13 +168,16 @@ export default function Login({ onLogin }) {
             </Button>
           </div>
 
-          {/* Dev Mode Indicator */}
           <div className="text-center">
-            <p className="text-xs text-gray-500">
-              ⚙ Dev Mode Enabled — Role buttons visible for testing
-            </p>
+            <p className="text-xs text-gray-500">⚙ Dev Mode Enabled — Role buttons visible for testing</p>
           </div>
         </CardContent>
+        {/* OPTIONAL Overlay khi loading */}
+        {/* {loading && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white/60 backdrop-blur-sm">
+          <span className="inline-block animate-spin rounded-full border-4 border-[#1A4D8F] border-t-transparent" style={{ width: 40, height: 40 }} />
+          </div>
+          )} */}
       </Card>
     </div>
   );
