@@ -30,6 +30,7 @@ export async function login(req, res) {
     }
 
     //Tìm roleID
+    // admin, teller, accountant 
 
 
     return res.status(200).json({
@@ -41,7 +42,7 @@ export async function login(req, res) {
   } catch (err) {
     console.error("❌ Exception:", err);
     return res.status(500).json({
-      message: "System error (Exception)",
+      message: "Employee not found",
       detail: err.message,
     });
   }
