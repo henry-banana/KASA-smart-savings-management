@@ -8,15 +8,66 @@ export default function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  
+  // NEW: Thêm state để quản lý trạng thái loading
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  // UPDATED: Chuyển hàm handleSubmit thành async
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
       setError('Please enter both username and password');
       return;
     }
-    // Default login
-    onLogin('teller', username);
+
+    // NEW: Bắt đầu quá trình loading và reset lỗi
+    setLoading(true);
+    setError('');
+
+    try {
+      // Gọi API bằng fetch
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+
+      // Lấy dữ liệu JSON từ response
+      const data = await response.json();
+
+      // Nếu response không "ok" (ví dụ: lỗi 401, 404, 500)
+      if (!response.ok) {
+        // Ném lỗi với message từ server (nếu có), nếu không thì dùng message mặc định
+        throw new Error(data.message || 'Login failed. Please check your credentials.');
+      }
+
+      // ĐĂNG NHẬP THÀNH CÔNG
+      // Giả sử API trả về { role: 'teller', ... }
+      // Gọi hàm onLogin với vai trò (role) nhận được từ API
+      console.log('Login successful:', data);
+      
+      // Quan trọng: Bạn cần đảm bảo API trả về một object có key là 'role'
+      // Ví dụ: { "role": "teller", "token": "..." }
+      if (data.role) {
+        onLogin(data.role, username);
+      } else {
+        // Nếu API không trả về 'role', ta sẽ báo lỗi
+        throw new Error('Login successful, but role was not provided by the API response.');
+      }
+
+    } catch (err) {
+      // Xử lý bất kỳ lỗi nào (lỗi mạng hoặc lỗi từ server)
+      console.error('Login error:', err);
+      setError(err.message); // Hiển thị lỗi cho người dùng
+    } finally {
+      // Luôn luôn dừng loading sau khi hoàn tất (dù thành công hay thất bại)
+      setLoading(false);
+    }
   };
 
   const handleRoleSelect = (role) => {
@@ -49,6 +100,7 @@ export default function Login({ onLogin }) {
                   setUsername(e.target.value);
                   setError('');
                 }}
+                disabled={loading} // NEW: Vô hiệu hóa khi đang loading
               />
             </div>
 
@@ -63,24 +115,29 @@ export default function Login({ onLogin }) {
                   setPassword(e.target.value);
                   setError('');
                 }}
+                disabled={loading} // NEW: Vô hiệu hóa khi đang loading
               />
             </div>
 
+            {/* UPDATED: Hiển thị lỗi từ state (bao gồm cả lỗi API) */}
             {error && (
               <p className="text-sm text-red-500">{error}</p>
             )}
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full text-white"
               style={{ backgroundColor: '#1A4D8F' }}
+              disabled={loading} // NEW: Vô hiệu hóa khi đang loading
             >
-              Login
+              {/* NEW: Thay đổi text của nút khi đang loading */}
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
 
             <button
               type="button"
               className="w-full text-sm text-center text-gray-500 hover:text-gray-700"
+              disabled={loading} // NEW: Vô hiệu hóa khi đang loading
             >
               Forgot password?
             </button>
@@ -97,11 +154,13 @@ export default function Login({ onLogin }) {
           </div>
 
           {/* Role Selection Buttons */}
+          {/* NEW: Vô hiệu hóa các nút dev mode khi đang login bằng form */}
           <div className="grid grid-cols-3 gap-3">
             <Button
               onClick={() => handleRoleSelect('teller')}
               className="text-white"
               style={{ backgroundColor: '#1A4D8F' }}
+              disabled={loading}
             >
               Teller
             </Button>
@@ -109,6 +168,7 @@ export default function Login({ onLogin }) {
               onClick={() => handleRoleSelect('accountant')}
               variant="outline"
               style={{ borderColor: '#1A4D8F', color: '#1A4D8F' }}
+              disabled={loading}
             >
               Accountant
             </Button>
@@ -116,6 +176,7 @@ export default function Login({ onLogin }) {
               onClick={() => handleRoleSelect('admin')}
               className="text-[#1A4D8F]"
               style={{ backgroundColor: '#E0F2FE' }}
+              disabled={loading}
             >
               Admin
             </Button>
