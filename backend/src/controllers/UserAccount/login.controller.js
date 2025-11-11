@@ -10,7 +10,7 @@ export async function login(req, res) {
     const { username, password } = req.body;
     if (!username || !password) {
       return res.status(400).json({ message: "Missing username or password" });
-    }
+    } 
 
     // Truy cập qua repository thay vì model trực tiếp
     const user = await userAccountRepository.findById(username);
@@ -29,10 +29,14 @@ export async function login(req, res) {
       });
     }
 
+    //Tìm roleID
+
+
     return res.status(200).json({
       message: "Login successful",
       success: true,
       user,
+      role: "admin" //techical debt mai mốt thêm role
     });
   } catch (err) {
     console.error("❌ Exception:", err);
