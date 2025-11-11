@@ -1,5 +1,5 @@
-import { userAccountRepository } from "../../repositories/UserAccount/UserAccountRepository.js";
 import { comparePassword } from "../../middleware/comparePass.middleware.js";
+import { supabase } from "../../config/database.js";
 
 /**
  * POST /login
@@ -10,37 +10,50 @@ export async function login(req, res) {
     const { username, password } = req.body;
     if (!username || !password) {
       return res.status(400).json({ message: "Missing username or password" });
-    } 
+    }
 
-    // Truy cập qua repository thay vì model trực tiếp
-    const user = await userAccountRepository.findById(username);
-    if (!user) {
+    //JOIN 3 bảng để lấy roleName thông qua Employee
+    const { data: userData, error } = await supabase
+      .from("useraccount")
+      .select(`
+        password,
+        employee:employee (
+          role:role (
+            rolename
+          )
+        )
+      `)
+      .eq("userid", username)
+      .single();
+
+
+    if (error || !userData) {
       return res.status(401).json({
         message: "Invalid username or password",
         success: false,
       });
     }
 
-    const isMatch = await comparePassword(password, user.password);
+    // So sánh mật khẩu
+    const isMatch = await comparePassword(password, userData.password);
     if (!isMatch) {
       return res.status(401).json({
-        message: "Invalid username or password",
+        message: "Incorrect password",
         success: false,
       });
     }
 
-    //Tìm roleID
-    // admin, teller, accountant 
-
+    // Lấy roleName (qua Employee → Role)
+    const roleName = userData.employee?.role?.rolename || "Unknown";
 
     return res.status(200).json({
       message: "Login successful",
       success: true,
-      user,
-      role: "admin" //techical debt mai mốt thêm role
+      roleName,
     });
+
   } catch (err) {
-    console.error("❌ Exception:", err);
+    console.error("Exception:", err);
     return res.status(500).json({
       message: "Employee not found",
       detail: err.message,
