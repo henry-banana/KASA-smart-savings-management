@@ -68,7 +68,7 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive 
                       ? 'text-white' 
-                      : 'text-gray-700 hover:bg-gray-100'
+                      : 'text-gray-700 hover:bg-gray-100 cursor-pointer'
                   }`}
                   style={isActive ? { backgroundColor: '#1A4D8F' } : {}}
                 >
