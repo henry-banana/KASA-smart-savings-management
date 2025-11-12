@@ -4,6 +4,8 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import eyeOpenIcon from '../../assets/eyeopen.png';
+import eyeCloseIcon from '../../assets/eyeclose.png';
 
 // Spinner thuần CSS/Tailwind (giữ size động)
 function Spinner({ size = 16, light = true }) {
@@ -22,7 +24,8 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
@@ -56,6 +59,10 @@ export default function Login({ onLogin }) {
     onLogin(role, `${role}_user`);
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+  
   return (
     <div className="flex items-center justify-center min-h-screen login-bg">
       <Card className="w-full max-w-md shadow-lg login-card">
@@ -85,14 +92,38 @@ export default function Login({ onLogin }) {
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
+              <div className="relative">
+                <Input
                 id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                disabled={loading}
-              />
+                  // type giờ đây là động, dựa trên state
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setError(''); }}
+                  disabled={loading}
+                  // Thêm padding bên phải (pr-10) để icon không đè lên chữ
+                  className="pr-10"
+                />
+                {/* Thêm nút bấm icon vào bên trong input */}
+                <button
+                  type="button"
+                  onClick={toggleShowPassword}
+                  disabled={loading}
+                  // CSS để căn icon vào giữa, bên phải của Input
+                  className="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-full text-gray-500 cursor-pointer rounded-r-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label={showPassword ? "Hiện mật khẩu" : "Ẩn mật khẩu"}
+                >
+                  <img
+                    // Thay đổi icon dựa trên state
+                    // Nếu đang show: hiện icon "open"
+                    // Nếu đang ẩn: hiện icon "close"
+                    src={showPassword ? eyeOpenIcon : eyeCloseIcon}
+                    alt="Toggle password visibility"
+                    // Thêm kích thước cho icon (w-5 h-5 tương đương 1.25rem)
+                    className="w-5 h-5"
+                  />
+                </button>
+              </div>
             </div>
 
             {error && <p className="text-sm text-red-500">{error}</p>}
@@ -109,7 +140,7 @@ export default function Login({ onLogin }) {
 
             <button
               type="button"
-              className="w-full text-sm text-center text-gray-500 hover:text-gray-700"
+              className="w-full text-sm text-center text-gray-500 cursor-pointer hover:text-gray-700 hover:underline disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={loading}
             >
               Forgot password?
