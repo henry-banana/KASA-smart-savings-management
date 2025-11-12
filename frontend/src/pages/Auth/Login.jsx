@@ -38,7 +38,6 @@ export default function Login({ onLogin }) {
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      console.log(data.role);
       if (!response.ok) throw new Error(data.message || 'Login failed. Please check your credentials.');
       if (data.role === "Teller") data.role = "teller";
       else if (data.role === "Auditor") data.role = "accountant";
