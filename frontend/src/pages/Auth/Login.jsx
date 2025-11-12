@@ -39,10 +39,10 @@ export default function Login({ onLogin }) {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Login failed. Please check your credentials.');
-      if (data.role === "Teller") data.role = "teller";
-      else if (data.role === "Auditor") data.role = "accountant";
-      else if (data.role === "Administrator") data.role = "admin";
-      if (data.role) onLogin(data.role, username);
+      if (data.roleName === "Teller") data.roleName = "teller";
+      else if (data.roleName === "Auditor") data.roleName = "accountant";
+      else if (data.roleName === "Administrator") data.roleName = "admin";
+      if (data.roleName) onLogin(data.roleName, username);
       else throw new Error('Login successful, but role was not provided by the API response.');
     } catch (err) {
       console.error('Login error:', err);
