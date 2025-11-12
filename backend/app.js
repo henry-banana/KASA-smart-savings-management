@@ -5,6 +5,7 @@ import authRoutes from "./src/routers/userAccount.rouiter.js";
 import employeeRoutes from './src/routers/employee.router.js';
 import savingBookRoutes from './src/routers/savingBook.router.js';
 import transactionRoutes from './src/routers/transaction.router.js';
+import customerRoutes from './src/routers/customer.router.js';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/api/login", authRoutes);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/savingbook", savingBookRoutes);
 app.use("/api/transaction", transactionRoutes);
+app.use("/api/customer", customerRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
