@@ -1,0 +1,13 @@
+/* ===== 🎨 Màu nền và container cho trang Login ===== */
+.login-bg { background-color: #F5F6FA; }
+.login-card {
+  background-color: #fff;
+}
+.logo-bg  { background-color: #1a4d8f; }
+.text-primary { color: #1a4d8f; }
+
+/* ===== 🔄 Kích thước spinner riêng trang Login ===== */
+.spinner {
+  width: 40px;
+  height: 40px;
+}
