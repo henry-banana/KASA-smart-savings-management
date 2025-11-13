@@ -1,5 +1,6 @@
 import { transactionRepository } from "../../repositories/Transaction/TransactionRepository.js";
 import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js"; 
+import {employeeRepository} from "../../repositories/Employee/EmployeeRepository.js"
 
 class TransactionService {
   // Thêm giao dịch mới
@@ -34,7 +35,16 @@ class TransactionService {
       });
     }
 
-    //Kiểm tra tellerid có tồn tại không
+    // Kiểm tra tellerid có tồn tại không
+    const teller = await employeeRepository.findById(tellerid);
+
+    if (teller){
+      // Nếu tồn tại thì có phải teller không
+    }else{
+      throw new Error("Teller ID is not exists.")
+    }
+
+    
 
 
     // // có thể cập nhật số dư nếu nghiệp vụ yêu cầu
