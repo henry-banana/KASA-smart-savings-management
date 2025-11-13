@@ -3,8 +3,8 @@ import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRe
 
 class TransactionService {
   // Thêm giao dịch mới
-  async addTransaction({ bookID, amount, type, transactionDate="",  note=""}) {
-    if (!bookID || !amount || !type)
+  async addTransaction({ bookID, amount, type, tellerid, transactionDate="",  note=""}) {
+    if (!bookID || !amount || !type || !tellerid)
       throw new Error("Missing required information.");
 
     // kiểm tra tài khoản có tồn tại không (nếu cần)
@@ -19,7 +19,8 @@ class TransactionService {
         bookid: bookID,
         amount,
         transactiontype: type,
-        note
+        note,
+        tellerid
       });
     }else{
       // tạo giao dịch mới
@@ -29,8 +30,11 @@ class TransactionService {
         transactiontype: type,
         note,
         transactiondate: transactionDate,
+        tellerid
       });
     }
+
+    //Kiểm tra tellerid có tồn tại không
 
 
     // // có thể cập nhật số dư nếu nghiệp vụ yêu cầu
