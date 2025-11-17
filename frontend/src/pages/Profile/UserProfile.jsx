@@ -11,7 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import { UserCircle, Mail, Phone, MapPin, Lock, CheckCircle2 } from 'lucide-react';
+import { UserCircle, Mail, Phone, MapPin, Lock, CheckCircle2, Sparkles } from 'lucide-react';
+import { StarDecor } from '../../components/CuteComponents';
 
 export default function UserProfile({ user }) {
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -67,87 +68,95 @@ export default function UserProfile({ user }) {
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'admin':
-        return { backgroundColor: '#1A4D8F', color: 'white' };
+        return 'bg-purple-100 text-purple-700 border-purple-200';
       case 'accountant':
-        return { backgroundColor: '#00AEEF', color: 'white' };
+        return 'bg-cyan-100 text-cyan-700 border-cyan-200';
       case 'teller':
-        return { backgroundColor: '#10B981', color: 'white' };
+        return 'bg-blue-100 text-blue-700 border-blue-200';
       default:
-        return { backgroundColor: '#6B7280', color: 'white' };
+        return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
 
   return (
     <div className="max-w-4xl space-y-6">
       {/* Profile Header */}
-      <Card>
-        <CardContent className="p-8">
-          <div className="flex items-center gap-6">
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        <CardContent className="p-8 bg-gradient-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
+          <StarDecor className="top-4 right-12" />
+          <Sparkles className="absolute top-6 right-32 text-purple-400 opacity-50" size={24} />
+          
+          <div className="flex items-center gap-6 relative z-10">
             <div 
-              className="flex items-center justify-center w-24 h-24 rounded-full"
-              style={{ backgroundColor: '#1A4D8F' }}
+              className="flex items-center justify-center w-24 h-24 rounded-full shadow-xl border-4 border-white"
+              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
               <UserCircle size={64} className="text-white" />
             </div>
             <div className="flex-1">
-              <h2 className="mb-2 text-2xl">{user.fullName}</h2>
+              <h2 className="mb-2 text-3xl font-bold text-gray-900">{user.fullName}</h2>
               <div className="flex items-center gap-3 mb-2">
-                <Badge style={getRoleBadgeColor(user.role)} className="capitalize">
-                  {user.role}
+                <Badge className={`${getRoleBadgeColor(user.role)} border font-medium`}>
+                  {user.role === 'admin' ? '🔑 Quản trị viên' : 
+                   user.role === 'accountant' ? '💼 Kế toán' : 
+                   '💰 Thu ngân'}
                 </Badge>
-                <Badge className="text-green-800 bg-green-100">Active</Badge>
+                <Badge className="text-green-700 bg-green-100 border-green-200 border font-medium">
+                  ✓ Hoạt động
+                </Badge>
               </div>
-              <p className="text-sm text-gray-600">@{user.username}</p>
+              <p className="text-sm text-gray-700">@{user.username}</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Contact Information */}
-      <Card>
-        <CardHeader>
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Contact Information</CardTitle>
-              <CardDescription>Your personal contact details</CardDescription>
+              <CardTitle className="text-xl">Thông Tin Liên Hệ</CardTitle>
+              <CardDescription>Chi tiết liên hệ cá nhân của bạn</CardDescription>
             </div>
             <Button 
               onClick={() => setShowEditContact(true)}
               variant="outline"
+              className="rounded-xl border-gray-200"
             >
-              Edit Contact Info
+              Chỉnh Sửa
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50">
-                <Mail size={20} style={{ color: '#1A4D8F' }} />
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-blue-50 border border-blue-100">
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)' }}>
+                <Mail size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Email Address</p>
-                <p className="text-sm">{contactInfo.email}</p>
+                <p className="text-sm font-medium text-gray-700">Email</p>
+                <p className="text-sm text-gray-900">{contactInfo.email}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50">
-                <Phone size={20} style={{ color: '#1A4D8F' }} />
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-green-50 border border-green-100">
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}>
+                <Phone size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Phone Number</p>
-                <p className="text-sm">{contactInfo.phone}</p>
+                <p className="text-sm font-medium text-gray-700">Số Điện Thoại</p>
+                <p className="text-sm text-gray-900">{contactInfo.phone}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50">
-                <MapPin size={20} style={{ color: '#1A4D8F' }} />
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-purple-50 border border-purple-100">
+              <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}>
+                <MapPin size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Address</p>
-                <p className="text-sm">{contactInfo.address}</p>
+                <p className="text-sm font-medium text-gray-700">Địa Chỉ</p>
+                <p className="text-sm text-gray-900">{contactInfo.address}</p>
               </div>
             </div>
           </div>
@@ -155,28 +164,29 @@ export default function UserProfile({ user }) {
       </Card>
 
       {/* Security Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Security Settings</CardTitle>
-          <CardDescription>Manage your account security</CardDescription>
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+          <CardTitle className="text-xl">Cài Đặt Bảo Mật</CardTitle>
+          <CardDescription>Quản lý bảo mật tài khoản của bạn</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-50">
-                  <Lock size={20} style={{ color: '#1A4D8F' }} />
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}>
+                  <Lock size={20} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-sm">Password</p>
-                  <p className="text-sm text-gray-600">Last changed 30 days ago</p>
+                  <p className="text-sm font-medium text-gray-900">Mật Khẩu</p>
+                  <p className="text-sm text-gray-600">Đã thay đổi 30 ngày trước</p>
                 </div>
               </div>
               <Button 
                 onClick={() => setShowChangePassword(true)}
+                className="rounded-xl bg-white border border-yellow-200 hover:bg-yellow-50"
                 variant="outline"
               >
-                Change Password
+                Đổi Mật Khẩu
               </Button>
             </div>
           </div>
@@ -184,59 +194,63 @@ export default function UserProfile({ user }) {
       </Card>
 
       {/* Account Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Account Details</CardTitle>
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+          <CardTitle className="text-xl">Chi Tiết Tài Khoản</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <p className="mb-1 text-sm text-gray-600">Username</p>
-              <p className="text-sm">{user.username}</p>
+            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">Tên Đăng Nhập</p>
+              <p className="text-sm font-semibold text-gray-900">{user.username}</p>
             </div>
-            <div>
-              <p className="mb-1 text-sm text-gray-600">User ID</p>
-              <p className="text-sm">U{Math.floor(1000 + Math.random() * 9000)}</p>
+            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">ID Người Dùng</p>
+              <p className="text-sm font-semibold text-gray-900">U{Math.floor(1000 + Math.random() * 9000)}</p>
             </div>
-            <div>
-              <p className="mb-1 text-sm text-gray-600">Account Created</p>
-              <p className="text-sm">January 15, 2025</p>
+            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">Tài Khoản Được Tạo</p>
+              <p className="text-sm font-semibold text-gray-900">15 Tháng 1, 2025</p>
             </div>
-            <div>
-              <p className="mb-1 text-sm text-gray-600">Last Login</p>
-              <p className="text-sm">Today at 09:30 AM</p>
+            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">Đăng Nhập Lần Cuối</p>
+              <p className="text-sm font-semibold text-gray-900">Hôm nay lúc 09:30 AM</p>
             </div>
-            <div>
-              <p className="mb-1 text-sm text-gray-600">Department</p>
-              <p className="text-sm capitalize">{user.role} Department</p>
+            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">Phòng Ban</p>
+              <p className="text-sm font-semibold text-gray-900 capitalize">
+                {user.role === 'admin' ? 'Quản trị' : 
+                 user.role === 'accountant' ? 'Kế toán' : 
+                 'Thu ngân'}
+              </p>
             </div>
-            <div>
-              <p className="mb-1 text-sm text-gray-600">Status</p>
-              <Badge className="text-green-800 bg-green-100">Active</Badge>
+            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">Trạng Thái</p>
+              <Badge className="text-green-700 bg-green-100 border-green-200 border">✓ Hoạt động</Badge>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Activity Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Activity Summary</CardTitle>
-          <CardDescription>Your recent activity statistics</CardDescription>
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+          <CardTitle className="text-xl">Tóm Tắt Hoạt Động</CardTitle>
+          <CardDescription>Thống kê hoạt động gần đây của bạn</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="p-4 text-center rounded-lg bg-blue-50">
-              <p className="mb-1 text-2xl text-blue-600">47</p>
-              <p className="text-sm text-gray-600">Transactions Today</p>
+            <div className="p-6 text-center rounded-2xl border-2" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)', borderColor: '#3B82F640' }}>
+              <p className="mb-2 text-3xl font-bold text-blue-600">47</p>
+              <p className="text-sm font-medium text-gray-700">Giao Dịch Hôm Nay</p>
             </div>
-            <div className="p-4 text-center rounded-lg bg-green-50">
-              <p className="mb-1 text-2xl text-green-600">312</p>
-              <p className="text-sm text-gray-600">This Week</p>
+            <div className="p-6 text-center rounded-2xl border-2" style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)', borderColor: '#10B98140' }}>
+              <p className="mb-2 text-3xl font-bold text-green-600">312</p>
+              <p className="text-sm font-medium text-gray-700">Tuần Này</p>
             </div>
-            <div className="p-4 text-center rounded-lg bg-purple-50">
-              <p className="mb-1 text-2xl text-purple-600">1,247</p>
-              <p className="text-sm text-gray-600">This Month</p>
+            <div className="p-6 text-center rounded-2xl border-2" style={{ background: 'linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%)', borderColor: '#8B5CF640' }}>
+              <p className="mb-2 text-3xl font-bold text-purple-600">1,247</p>
+              <p className="text-sm font-medium text-gray-700">Tháng Này</p>
             </div>
           </div>
         </CardContent>
@@ -244,53 +258,66 @@ export default function UserProfile({ user }) {
 
       {/* Change Password Dialog */}
       <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
-        <DialogContent>
+        <DialogContent className="rounded-3xl">
           <DialogHeader>
-            <DialogTitle>Change Password</DialogTitle>
-            <DialogDescription>Update your account password</DialogDescription>
+            <div className="flex items-center gap-3 mb-2">
+              <div 
+                className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              >
+                <Lock size={24} className="text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl">Đổi Mật Khẩu</DialogTitle>
+                <DialogDescription>Cập nhật mật khẩu tài khoản của bạn</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
+              <Label htmlFor="currentPassword" className="text-gray-700">Mật Khẩu Hiện Tại</Label>
               <Input
                 id="currentPassword"
                 type="password"
                 value={passwordData.currentPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                placeholder="Enter current password"
+                placeholder="Nhập mật khẩu hiện tại"
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
+              <Label htmlFor="newPassword" className="text-gray-700">Mật Khẩu Mới</Label>
               <Input
                 id="newPassword"
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                placeholder="Enter new password"
+                placeholder="Nhập mật khẩu mới"
+                className="h-11 rounded-xl border-gray-200"
               />
-              <p className="text-xs text-gray-500">Must be at least 6 characters</p>
+              <p className="text-xs text-gray-500">Phải có ít nhất 6 ký tự</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Label htmlFor="confirmPassword" className="text-gray-700">Xác Nhận Mật Khẩu Mới</Label>
               <Input
                 id="confirmPassword"
                 type="password"
                 value={passwordData.confirmPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                placeholder="Confirm new password"
+                placeholder="Xác nhận mật khẩu mới"
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
           </div>
           <div className="flex gap-4">
             <Button 
               onClick={handleChangePassword}
-              className="flex-1 text-white"
-              style={{ backgroundColor: '#1A4D8F' }}
+              className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
+              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Change Password
+              Đổi Mật Khẩu
             </Button>
             <Button 
               onClick={() => {
@@ -298,9 +325,9 @@ export default function UserProfile({ user }) {
                 setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
               }}
               variant="outline"
-              className="flex-1"
+              className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Cancel
+              Hủy
             </Button>
           </div>
         </DialogContent>
@@ -308,55 +335,68 @@ export default function UserProfile({ user }) {
 
       {/* Edit Contact Dialog */}
       <Dialog open={showEditContact} onOpenChange={setShowEditContact}>
-        <DialogContent>
+        <DialogContent className="rounded-3xl">
           <DialogHeader>
-            <DialogTitle>Edit Contact Information</DialogTitle>
-            <DialogDescription>Update your contact details</DialogDescription>
+            <div className="flex items-center gap-3 mb-2">
+              <div 
+                className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              >
+                <Mail size={24} className="text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl">Chỉnh Sửa Thông Tin Liên Hệ</DialogTitle>
+                <DialogDescription>Cập nhật chi tiết liên hệ của bạn</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email" className="text-gray-700">Địa Chỉ Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={contactInfo.email}
                 onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone" className="text-gray-700">Số Điện Thoại</Label>
               <Input
                 id="phone"
                 type="tel"
                 value={contactInfo.phone}
                 onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address" className="text-gray-700">Địa Chỉ</Label>
               <Input
                 id="address"
                 value={contactInfo.address}
                 onChange={(e) => setContactInfo({ ...contactInfo, address: e.target.value })}
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
           </div>
           <div className="flex gap-4">
             <Button 
               onClick={handleUpdateContact}
-              className="flex-1 text-white"
-              style={{ backgroundColor: '#1A4D8F' }}
+              className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
+              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Update Information
+              Cập Nhật Thông Tin
             </Button>
             <Button 
               onClick={() => setShowEditContact(false)}
               variant="outline"
-              className="flex-1"
+              className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Cancel
+              Hủy
             </Button>
           </div>
         </DialogContent>
@@ -364,22 +404,27 @@ export default function UserProfile({ user }) {
 
       {/* Success Dialog */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent>
+        <DialogContent className="rounded-3xl">
           <DialogHeader>
             <div className="flex justify-center mb-4">
-              <CheckCircle2 size={64} className="text-green-500" />
+              <div 
+                className="w-20 h-20 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
+              >
+                <CheckCircle2 size={48} className="text-white" />
+              </div>
             </div>
-            <DialogTitle className="text-center">Success!</DialogTitle>
-            <DialogDescription className="text-center">
+            <DialogTitle className="text-center text-2xl">Thành Công!</DialogTitle>
+            <DialogDescription className="text-center text-base">
               {successMessage}
             </DialogDescription>
           </DialogHeader>
           <Button 
             onClick={() => setShowSuccess(false)}
-            className="w-full text-white"
-            style={{ backgroundColor: '#1A4D8F' }}
+            className="w-full h-12 text-white rounded-xl shadow-lg font-medium"
+            style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
           >
-            Close
+            Đóng
           </Button>
         </DialogContent>
       </Dialog>

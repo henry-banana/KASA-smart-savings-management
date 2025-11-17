@@ -9,7 +9,9 @@ import {
   Settings, 
   Users, 
   UserCircle,
-  LogOut
+  LogOut,
+  Bell,
+  Sparkles
 } from 'lucide-react';
 import { Button } from './ui/button';
 import {
@@ -23,39 +25,56 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { BackgroundDecor } from './CuteComponents';
 
 export default function Layout({ user, currentScreen, onNavigate, onLogout, children }) {
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['teller', 'accountant'] },
-    { id: 'open-account', label: 'Open Account', icon: UserPlus, roles: ['teller'] },
-    { id: 'deposit', label: 'Deposit', icon: ArrowDownToLine, roles: ['teller'] },
-    { id: 'withdraw', label: 'Withdraw', icon: ArrowUpFromLine, roles: ['teller'] },
-    { id: 'search', label: 'Search', icon: Search, roles: ['teller', 'accountant'] },
-    { id: 'daily-report', label: 'Daily Report', icon: FileText, roles: ['accountant'] },
-    { id: 'monthly-report', label: 'Monthly Report', icon: FileText, roles: ['accountant'] },
-    { id: 'regulations', label: 'Regulations', icon: Settings, roles: ['admin'] },
-    { id: 'users', label: 'Users', icon: Users, roles: ['admin'] },
-    { id: 'profile', label: 'Profile', icon: UserCircle, roles: ['teller', 'accountant', 'admin'] },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['teller', 'accountant', 'admin'] },
+    { id: 'open-account', label: 'Mở Sổ', icon: UserPlus, roles: ['teller', 'admin'] },
+    { id: 'deposit', label: 'Gửi Tiền', icon: ArrowDownToLine, roles: ['teller', 'admin'] },
+    { id: 'withdraw', label: 'Rút Tiền', icon: ArrowUpFromLine, roles: ['teller', 'admin'] },
+    { id: 'search', label: 'Tra Cứu', icon: Search, roles: ['teller', 'accountant', 'admin'] },
+    { id: 'daily-report', label: 'Báo Cáo Ngày', icon: FileText, roles: ['accountant', 'admin'] },
+    { id: 'monthly-report', label: 'Báo Cáo Tháng', icon: FileText, roles: ['accountant', 'admin'] },
+    { id: 'regulations', label: 'Quy Định', icon: Settings, roles: ['admin'] },
+    { id: 'users', label: 'Người Dùng', icon: Users, roles: ['admin'] },
+    { id: 'profile', label: 'Hồ Sơ', icon: UserCircle, roles: ['teller', 'accountant', 'admin'] },
   ];
 
   const visibleMenuItems = menuItems.filter(item => item.roles.includes(user.role));
 
+  const roleColors = {
+    teller: { bg: '#DFF9F4', text: '#059669', border: '#6EE7B7' },
+    accountant: { bg: '#E8F6FF', text: '#0369A1', border: '#7DD3FC' },
+    admin: { bg: '#FFE8F0', text: '#BE185D', border: '#FBCFE8' }
+  };
+
+  const currentRole = roleColors[user.role] || roleColors.teller;
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#F5F6FA' }}>
-      {/* Sidebar */}
-      <aside className="fixed top-0 left-0 flex flex-col w-64 h-screen bg-white border-r border-gray-200">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg" style={{ backgroundColor: '#1A4D8F' }}>
-              <span className="text-white">K</span>
+    <div className="min-h-screen bg-[#F5F6FA] cute-bg-pattern relative">
+      <BackgroundDecor />
+      
+      {/* 🎨 Cute Sidebar - Navy Dark */}
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-[#1A4D8F] to-[#154171] flex flex-col shadow-xl z-20">
+        {/* Logo Section */}
+        <div className="p-6 border-b border-white/10 relative">
+          <div className="flex items-center gap-3">
+            <div 
+              className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/10 backdrop-blur-sm shadow-lg relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+              <span className="text-white text-xl font-bold relative z-10">K</span>
+              <Sparkles className="absolute -top-1 -right-1 text-cyan-300 opacity-50" size={16} />
             </div>
             <div>
-              <h1 className="text-[#1A4D8F]">KASA</h1>
-              <p className="text-xs text-gray-500">Savings Management</p>
+              <h1 className="text-white text-xl font-semibold tracking-tight">KASA</h1>
+              <p className="text-xs text-white/60">Quản Lý Sổ Tiết Kiệm</p>
             </div>
           </div>
         </div>
 
+        {/* Navigation */}
         <nav className="flex-1 p-4 overflow-y-auto">
           <div className="space-y-1">
             {visibleMenuItems.map((item) => {
@@ -65,61 +84,109 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                     isActive 
-                      ? 'text-white' 
-                      : 'text-gray-700 hover:bg-gray-100 cursor-pointer'
+                      ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm' 
+                      : 'text-white/80 hover:bg-white/10 hover:text-white'
                   }`}
-                  style={isActive ? { backgroundColor: '#1A4D8F' } : {}}
                 >
-                  <Icon size={20} />
-                  <span>{item.label}</span>
+                  <Icon 
+                    size={20} 
+                    className={`transition-colors ${isActive ? 'text-cyan-300' : 'group-hover:text-cyan-300'}`}
+                  />
+                  <span className="font-medium">{item.label}</span>
+                  {isActive && (
+                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-300 animate-pulse" />
+                  )}
                 </button>
               );
             })}
           </div>
         </nav>
 
-        <div className="p-4 text-xs text-center text-gray-500 border-t border-gray-200">
-          © KASA 2025
+        {/* Footer */}
+        <div className="p-4 border-t border-white/10">
+          <div className="text-xs text-white/40 text-center font-medium">
+            © KASA 2025 ✨
+          </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className="ml-64">
-        {/* Header */}
-        <header className="sticky top-0 z-10 px-8 py-4 bg-white border-b border-gray-200">
+      <div className="ml-64 relative z-10">
+        {/* 🎨 Cute Header - Cyan Accent */}
+        <header 
+          className="bg-gradient-to-r from-[#00AEEF] to-[#33BFF3] px-8 py-4 sticky top-0 z-10 shadow-md"
+        >
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-[#1E293B] capitalize">
+              <h2 className="text-white text-xl font-semibold">
                 {menuItems.find(item => item.id === currentScreen)?.label || 'Dashboard'}
               </h2>
-              <p className="text-sm text-gray-500">Welcome back, {user.fullName}</p>
+              <p className="text-sm text-white/80 mt-0.5">Xin chào, {user.fullName} 👋</p>
             </div>
+            
             <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-[#1E293B]">{user.fullName}</p>
-                <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+              {/* Notification Bell */}
+              <button className="relative p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm">
+                <Bell size={20} className="text-white" />
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 rounded-full text-white text-xs flex items-center justify-center font-medium shadow-lg">
+                  3
+                </span>
+              </button>
+
+              {/* User Info */}
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-2 border border-white/20">
+                <div 
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold shadow-lg"
+                  style={{ 
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%)'
+                  }}
+                >
+                  {user.fullName.charAt(0).toUpperCase()}
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-white font-medium">{user.fullName}</p>
+                  <span 
+                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-1"
+                    style={{
+                      backgroundColor: currentRole.bg,
+                      color: currentRole.text,
+                      border: `1px solid ${currentRole.border}`
+                    }}
+                  >
+                    {user.role?.toUpperCase()}
+                  </span>
+                </div>
               </div>
+
+              {/* Logout Button */}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white backdrop-blur-sm"
+                  >
                     <LogOut size={16} className="mr-2" />
-                    Logout
+                    Đăng Xuất
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-2xl">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>
-                    Are you sure you want to log out?</AlertDialogTitle>
+                    <AlertDialogTitle>Xác nhận đăng xuất?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      You will be returned to the login screen.
+                      Bạn sẽ quay lại màn hình đăng nhập.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>
-                    Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={onLogout}>Confirm</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Hủy</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={onLogout}
+                      className="rounded-xl bg-[#00AEEF] hover:bg-[#0098D4]"
+                    >
+                      Xác Nhận
+                    </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

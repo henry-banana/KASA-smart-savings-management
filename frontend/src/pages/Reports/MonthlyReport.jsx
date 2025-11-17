@@ -12,7 +12,8 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { FileDown } from 'lucide-react';
+import { FileDown, Calendar, TrendingUp, Users, Award, BarChart3, Sparkles } from 'lucide-react';
+import { StarDecor, SparkleDecor } from '../../components/CuteComponents';
 
 export default function MonthlyReport({ user }) {
   const currentYear = new Date().getFullYear();
@@ -67,36 +68,63 @@ export default function MonthlyReport({ user }) {
   };
 
   const months = [
-    { value: '1', label: 'January' },
-    { value: '2', label: 'February' },
-    { value: '3', label: 'March' },
-    { value: '4', label: 'April' },
-    { value: '5', label: 'May' },
-    { value: '6', label: 'June' },
-    { value: '7', label: 'July' },
-    { value: '8', label: 'August' },
-    { value: '9', label: 'September' },
-    { value: '10', label: 'October' },
-    { value: '11', label: 'November' },
-    { value: '12', label: 'December' }
+    { value: '1', label: 'Tháng 1' },
+    { value: '2', label: 'Tháng 2' },
+    { value: '3', label: 'Tháng 3' },
+    { value: '4', label: 'Tháng 4' },
+    { value: '5', label: 'Tháng 5' },
+    { value: '6', label: 'Tháng 6' },
+    { value: '7', label: 'Tháng 7' },
+    { value: '8', label: 'Tháng 8' },
+    { value: '9', label: 'Tháng 9' },
+    { value: '10', label: 'Tháng 10' },
+    { value: '11', label: 'Tháng 11' },
+    { value: '12', label: 'Tháng 12' }
   ];
 
   const years = Array.from({ length: 5 }, (_, i) => (currentYear - 2 + i).toString());
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Decorative elements */}
+      <SparkleDecor className="top-4 right-12" />
+      <StarDecor className="top-8 left-24" />
+      
       {/* Report Header */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Monthly Report (BM5.2)</CardTitle>
-          <CardDescription>View monthly account activity by savings type</CardDescription>
+      <Card className="relative overflow-hidden border-0 shadow-lg">
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)'
+          }}
+        />
+        <CardHeader className="relative">
+          <div className="flex items-center gap-3 mb-2">
+            <div 
+              className="p-3 rounded-2xl"
+              style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)' }}
+            >
+              <BarChart3 className="text-white" size={24} />
+            </div>
+            <div>
+              <CardTitle className="text-2xl bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                Báo Cáo Tháng (BM5.2)
+              </CardTitle>
+              <CardDescription className="text-base">
+                Xem hoạt động tài khoản theo tháng và loại tiết kiệm
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="relative">
           <div className="flex items-end gap-4">
             <div className="flex-1 space-y-2">
-              <Label htmlFor="month">Month</Label>
+              <Label htmlFor="month" className="text-gray-700 font-medium">
+                <Calendar size={16} className="inline mr-2" />
+                Tháng
+              </Label>
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                <SelectTrigger>
+                <SelectTrigger className="rounded-xl border-2 border-cyan-100 focus:border-cyan-400">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -110,9 +138,9 @@ export default function MonthlyReport({ user }) {
             </div>
 
             <div className="flex-1 space-y-2">
-              <Label htmlFor="year">Year</Label>
+              <Label htmlFor="year" className="text-gray-700 font-medium">Năm</Label>
               <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger>
+                <SelectTrigger className="rounded-xl border-2 border-cyan-100 focus:border-cyan-400">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,11 +155,11 @@ export default function MonthlyReport({ user }) {
 
             <Button 
               onClick={handleExport}
-              style={{ backgroundColor: '#1A4D8F' }}
-              className="text-white"
+              className="rounded-xl text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)' }}
             >
               <FileDown size={16} className="mr-2" />
-              Export Report
+              Xuất Báo Cáo
             </Button>
           </div>
         </CardContent>
@@ -139,77 +167,127 @@ export default function MonthlyReport({ user }) {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <Card>
-          <CardContent className="p-6">
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600">Accounts Opened</p>
-              <h3 className="text-2xl text-green-600">{totals.opened}</h3>
-              <p className="text-xs text-gray-500">New accounts this month</p>
+        <div 
+          className="relative overflow-hidden rounded-2xl p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-300 border-0"
+        >
+          <div 
+            className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10 -mr-16 -mt-16"
+            style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
+          />
+          <StarDecor className="top-3 right-3" />
+          
+          <div className="flex items-start justify-between relative">
+            <div className="flex-1">
+              <p className="text-sm text-gray-600 mb-2">Tài Khoản Mở Mới</p>
+              <h3 className="text-2xl font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
+                {totals.opened}
+              </h3>
+              <p className="text-xs text-gray-500">Tài khoản mới trong tháng</p>
             </div>
-          </CardContent>
-        </Card>
+            <div 
+              className="w-14 h-14 rounded-2xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
+            >
+              <Users className="text-white" size={24} />
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600">Accounts Closed</p>
-              <h3 className="text-2xl text-red-600">{totals.closed}</h3>
-              <p className="text-xs text-gray-500">Closed accounts this month</p>
+        <div 
+          className="relative overflow-hidden rounded-2xl p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-300 border-0"
+        >
+          <div 
+            className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10 -mr-16 -mt-16"
+            style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)' }}
+          />
+          <StarDecor className="top-3 right-3" />
+          
+          <div className="flex items-start justify-between relative">
+            <div className="flex-1">
+              <p className="text-sm text-gray-600 mb-2">Tài Khoản Đóng</p>
+              <h3 className="text-2xl font-semibold bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent mb-2">
+                {totals.closed}
+              </h3>
+              <p className="text-xs text-gray-500">Tài khoản đóng trong tháng</p>
             </div>
-          </CardContent>
-        </Card>
+            <div 
+              className="w-14 h-14 rounded-2xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)' }}
+            >
+              <FileDown className="text-white" size={24} />
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600">Net Growth</p>
-              <h3 className="text-2xl text-blue-600">+{totals.difference}</h3>
-              <p className="text-xs text-gray-500">Account growth this month</p>
+        <div 
+          className="relative overflow-hidden rounded-2xl p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-300 border-0"
+        >
+          <div 
+            className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10 -mr-16 -mt-16"
+            style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)' }}
+          />
+          <StarDecor className="top-3 right-3" />
+          
+          <div className="flex items-start justify-between relative">
+            <div className="flex-1">
+              <p className="text-sm text-gray-600 mb-2">Tăng Trưởng Ròng</p>
+              <h3 className="text-2xl font-semibold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                +{totals.difference}
+              </h3>
+              <p className="text-xs text-gray-500">Tăng trưởng tài khoản</p>
             </div>
-          </CardContent>
-        </Card>
+            <div 
+              className="w-14 h-14 rounded-2xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)' }}
+            >
+              <TrendingUp className="text-white" size={24} />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Data Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Detailed Report for {months[parseInt(selectedMonth) - 1]?.label} {selectedYear}</CardTitle>
+      <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 border-b-2 border-cyan-100">
+          <CardTitle className="text-xl text-gray-800">
+            Báo Cáo Chi Tiết - {months[parseInt(selectedMonth) - 1]?.label} {selectedYear}
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="border rounded-md">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Savings Type</TableHead>
-                  <TableHead className="text-right">Accounts Opened</TableHead>
-                  <TableHead className="text-right">Accounts Closed</TableHead>
-                  <TableHead className="text-right">Net Difference</TableHead>
+                <TableRow className="bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100">
+                  <TableHead className="font-semibold text-gray-700">Loại Tiết Kiệm</TableHead>
+                  <TableHead className="text-right font-semibold text-gray-700">Tài Khoản Mở</TableHead>
+                  <TableHead className="text-right font-semibold text-gray-700">Tài Khoản Đóng</TableHead>
+                  <TableHead className="text-right font-semibold text-gray-700">Chênh Lệch Ròng</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {reportData.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{row.type}</TableCell>
-                    <TableCell className="text-right text-green-600">
+                  <TableRow key={index} className="hover:bg-cyan-50 transition-colors">
+                    <TableCell className="font-medium text-gray-700">{row.type}</TableCell>
+                    <TableCell className="text-right font-semibold text-green-600">
                       {row.opened}
                     </TableCell>
-                    <TableCell className="text-right text-red-600">
+                    <TableCell className="text-right font-semibold text-red-600">
                       {row.closed}
                     </TableCell>
-                    <TableCell className="text-right text-blue-600">
+                    <TableCell className="text-right font-semibold text-blue-600">
                       +{row.difference}
                     </TableCell>
                   </TableRow>
                 ))}
-                <TableRow className="bg-gray-50">
-                  <TableCell className="font-medium">Total</TableCell>
-                  <TableCell className="text-right text-green-600">
+                <TableRow className="bg-gradient-to-r from-cyan-100 to-blue-100 font-bold">
+                  <TableCell className="font-bold text-gray-800">Tổng Cộng</TableCell>
+                  <TableCell className="text-right font-bold text-green-700">
                     {totals.opened}
                   </TableCell>
-                  <TableCell className="text-right text-red-600">
+                  <TableCell className="text-right font-bold text-red-700">
                     {totals.closed}
                   </TableCell>
-                  <TableCell className="text-right text-blue-600">
+                  <TableCell className="text-right font-bold text-blue-700">
                     +{totals.difference}
                   </TableCell>
                 </TableRow>
@@ -222,34 +300,40 @@ export default function MonthlyReport({ user }) {
       {/* Charts Row */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Line Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Weekly Trend</CardTitle>
-            <CardDescription>New accounts opened per week</CardDescription>
+        <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b-2 border-green-100">
+            <CardTitle className="text-xl text-gray-800">Xu Hướng Theo Tuần</CardTitle>
+            <CardDescription className="text-gray-600">
+              Tài khoản mới mở theo tuần
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={lineChartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                <XAxis dataKey="day" stroke="#6B7280" />
+                <YAxis stroke="#6B7280" />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: '2px solid #E5E7EB' }}
+                />
                 <Legend />
-                <Line type="monotone" dataKey="No Term" stroke="#00AEEF" strokeWidth={2} />
-                <Line type="monotone" dataKey="3 Months" stroke="#1A4D8F" strokeWidth={2} />
-                <Line type="monotone" dataKey="6 Months" stroke="#8B5CF6" strokeWidth={2} />
+                <Line type="monotone" dataKey="No Term" stroke="#00AEEF" strokeWidth={3} dot={{ r: 5 }} name="Không Kỳ Hạn" />
+                <Line type="monotone" dataKey="3 Months" stroke="#1A4D8F" strokeWidth={3} dot={{ r: 5 }} name="3 Tháng" />
+                <Line type="monotone" dataKey="6 Months" stroke="#8B5CF6" strokeWidth={3} dot={{ r: 5 }} name="6 Tháng" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Pie Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Account Type Distribution</CardTitle>
-            <CardDescription>Percentage of new accounts by type</CardDescription>
+        <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b-2 border-purple-100">
+            <CardTitle className="text-xl text-gray-800">Phân Bổ Loại Tài Khoản</CardTitle>
+            <CardDescription className="text-gray-600">
+              Phần trăm tài khoản mới theo loại
+            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -266,7 +350,9 @@ export default function MonthlyReport({ user }) {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: '2px solid #E5E7EB' }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
@@ -274,34 +360,37 @@ export default function MonthlyReport({ user }) {
       </div>
 
       {/* Additional Statistics */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Performance Metrics</CardTitle>
+      <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b-2 border-amber-100">
+          <CardTitle className="text-xl text-gray-800 flex items-center gap-2">
+            <Award size={20} className="text-amber-600" />
+            Chỉ Số Hiệu Suất
+          </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600">Growth Rate</p>
-              <p className="text-2xl text-blue-600">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 space-y-2">
+              <p className="text-sm text-gray-600 font-medium">Tỷ Lệ Tăng Trưởng</p>
+              <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                 {((totals.difference / (totals.opened - totals.difference || 1)) * 100).toFixed(1)}%
               </p>
-              <p className="text-xs text-gray-500">Month-over-month growth</p>
+              <p className="text-xs text-gray-500">Tăng trưởng so với tháng trước</p>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600">Retention Rate</p>
-              <p className="text-2xl text-green-600">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 space-y-2">
+              <p className="text-sm text-gray-600 font-medium">Tỷ Lệ Giữ Chân</p>
+              <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 {(((totals.opened - totals.closed) / totals.opened * 100) || 0).toFixed(1)}%
               </p>
-              <p className="text-xs text-gray-500">Accounts retained</p>
+              <p className="text-xs text-gray-500">Tài khoản được giữ lại</p>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600">Average Daily New Accounts</p>
-              <p className="text-2xl text-purple-600">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 space-y-2">
+              <p className="text-sm text-gray-600 font-medium">TB Tài Khoản Mới/Ngày</p>
+              <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 {(totals.opened / 30).toFixed(1)}
               </p>
-              <p className="text-xs text-gray-500">Per day average</p>
+              <p className="text-xs text-gray-500">Trung bình mỗi ngày</p>
             </div>
           </div>
         </CardContent>

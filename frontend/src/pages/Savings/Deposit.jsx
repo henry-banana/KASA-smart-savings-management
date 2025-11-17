@@ -11,7 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Search, Coins, ArrowDownCircle, Sparkles, TrendingUp } from 'lucide-react';
+import { StarDecor, CoinsIllustration } from '../../components/CuteComponents';
 
 // Mock account data
 const mockAccounts = {
@@ -103,99 +104,176 @@ export default function Deposit({ user }) {
   };
 
   return (
-    <div className="max-w-3xl">
-      <Card>
-        <CardHeader>
-          <CardTitle>Make Deposit (BM2)</CardTitle>
-          <CardDescription>Deposit money into a savings account</CardDescription>
+    <div className="max-w-4xl">
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        {/* Cute Header */}
+        <CardHeader className="bg-gradient-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-8">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/50 rounded-full -mr-32 -mt-32" />
+          <StarDecor className="top-4 right-12" />
+          <Sparkles className="absolute top-6 right-32 text-cyan-300 opacity-50" size={24} />
+          
+          <div className="flex items-start gap-4 relative z-10">
+            <div 
+              className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)' }}
+            >
+              <ArrowDownCircle size={32} className="text-white" />
+            </div>
+            <div className="flex-1">
+              <CardTitle className="text-2xl mb-2 flex items-center gap-2">
+                Make Deposit
+                <span className="text-2xl">💰</span>
+              </CardTitle>
+              <CardDescription className="text-base">
+                Deposit money into a savings account (BM2)
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Account Lookup */}
-            <div className="space-y-2">
-              <Label htmlFor="accountId">Savings Account ID</Label>
-              <div className="flex gap-2">
+
+        <CardContent className="p-8 space-y-6">
+          {/* Account Lookup Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Search size={20} className="text-[#1A4D8F]" />
+              <h3 className="font-semibold text-gray-900">Account Lookup</h3>
+            </div>
+
+            <div className="flex gap-3">
+              <div className="flex-1">
                 <Input
-                  id="accountId"
                   value={accountId}
                   onChange={(e) => {
-                    setAccountId(e.target.value);
+                    setAccountId(e.target.value.toUpperCase());
                     setAccountInfo(null);
                     setError('');
                   }}
                   placeholder="Enter account ID (e.g., SA12345)"
+                  className="h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  onKeyPress={(e) => e.key === 'Enter' && handleAccountLookup()}
                 />
-                <Button 
-                  type="button"
-                  onClick={handleAccountLookup}
-                  style={{ backgroundColor: '#00AEEF' }}
-                  className="text-white"
-                >
-                  Lookup
-                </Button>
               </div>
-              {error && (
-                <div className="flex items-center gap-2 text-red-500">
-                  <AlertCircle size={16} />
-                  <span className="text-sm">{error}</span>
-                </div>
-              )}
+              <Button
+                type="button"
+                onClick={handleAccountLookup}
+                className="h-12 px-6 rounded-xl bg-[#1A4D8F] hover:bg-[#154171] text-white"
+              >
+                <Search size={18} className="mr-2" />
+                Lookup
+              </Button>
             </div>
 
-            {/* Account Information */}
-            {accountInfo && (
-              <div className="p-4 space-y-3 rounded-lg bg-gray-50">
-                <h4 className="text-sm text-gray-600">Account Information</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500">Customer Name</p>
-                    <p className="text-sm">{accountInfo.customerName}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Account Type</p>
-                    <Badge variant="outline" style={{ borderColor: '#1A4D8F', color: '#00AEEF' }}>
-                      {accountInfo.type === 'no-term' ? 'No Term' : accountInfo.type}
-                    </Badge>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Current Balance</p>
-                    <p className="text-sm">₫{accountInfo.balance.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Open Date</p>
-                    <p className="text-sm">{accountInfo.openDate}</p>
-                  </div>
+            {error && !accountInfo && (
+              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
+                <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium text-red-700">Error</p>
+                  <p className="text-sm text-red-600">{error}</p>
                 </div>
               </div>
             )}
 
-            {/* Deposit Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="depositAmount">Deposit Amount (VND)</Label>
-                <Input
-                  id="depositAmount"
-                  type="number"
-                  value={depositAmount}
-                  onChange={(e) => setDepositAmount(e.target.value)}
-                  placeholder="Min 100,000"
-                  disabled={!accountInfo}
-                />
-                <p className="text-xs text-gray-500">Minimum deposit 100,000 VND</p>
+            {accountInfo && (
+              <div 
+                className="p-6 rounded-2xl border-2 space-y-3 relative overflow-hidden"
+                style={{ 
+                  background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)',
+                  borderColor: '#00AEEF40'
+                }}
+              >
+                <StarDecor className="top-2 right-2" />
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Account ID:</span>
+                  <span className="font-semibold text-[#1A4D8F]">{accountInfo.id}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Customer Name:</span>
+                  <span className="font-medium">{accountInfo.customerName}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Account Type:</span>
+                  <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+                    No Term
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                  <span className="text-sm text-gray-600">Current Balance:</span>
+                  <span className="text-lg font-bold text-green-600">
+                    ₫{accountInfo.balance.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Deposit Form */}
+          {accountInfo && (
+            <form onSubmit={handleSubmit} className="space-y-6 pt-4 border-t border-gray-100">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-4">
+                  <Coins size={20} className="text-[#00AEEF]" />
+                  <h3 className="font-semibold text-gray-900">Deposit Information</h3>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="depositAmount" className="text-gray-700">Deposit Amount (VND) *</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-lg">₫</span>
+                    <Input
+                      id="depositAmount"
+                      type="number"
+                      value={depositAmount}
+                      onChange={(e) => {
+                        setDepositAmount(e.target.value);
+                        setError('');
+                      }}
+                      placeholder="Enter deposit amount"
+                      className="pl-8 h-14 text-lg rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                    <span>💡</span> Minimum amount: ₫100,000
+                  </p>
+                </div>
+
+                {error && accountInfo && (
+                  <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
+                    <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-600">{error}</p>
+                  </div>
+                )}
+
+                {/* Quick Amount Buttons */}
+                <div className="space-y-2">
+                  <Label className="text-gray-700">Quick Amount:</Label>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[100000, 500000, 1000000, 5000000].map((amount) => (
+                      <button
+                        key={amount}
+                        type="button"
+                        onClick={() => setDepositAmount(amount.toString())}
+                        className="h-12 rounded-xl border-2 border-gray-200 hover:border-[#00AEEF] hover:bg-[#E8F6FF] transition-all font-medium text-sm"
+                      >
+                        ₫{(amount / 1000000).toFixed(amount >= 1000000 ? 0 : 1)}M
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div className="flex gap-4 pt-4">
                 <Button 
                   type="submit" 
-                  disabled={!accountInfo}
-                  className="text-white"
-                  style={{ backgroundColor: '#1A4D8F' }}
+                  className="flex-1 h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                  style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)' }}
                 >
+                  <CheckCircle2 size={18} className="mr-2" />
                   Confirm Deposit
                 </Button>
                 <Button 
                   type="button" 
-                  variant="outline" 
+                  variant="outline"
+                  className="h-12 px-8 rounded-full border-gray-300 hover:bg-gray-50"
                   onClick={() => {
                     setAccountId('');
                     setDepositAmount('');
@@ -207,60 +285,65 @@ export default function Deposit({ user }) {
                 </Button>
               </div>
             </form>
-
-            {/* Helper Text */}
-            <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
-              <h5 className="mb-2 text-sm text-blue-900">Deposit Rules:</h5>
-              <ul className="space-y-1 text-sm text-blue-800 list-disc list-inside">
-                <li>Only available for No-Term savings accounts</li>
-                <li>Minimum deposit amount is 100,000 VND</li>
-                <li>Fixed-term accounts cannot accept deposits after opening</li>
-              </ul>
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Success Modal */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent>
+        <DialogContent className="rounded-3xl max-w-md">
           <DialogHeader>
-            <div className="flex justify-center mb-4">
-              <CheckCircle2 size={64} className="text-green-500" />
+            <div className="flex flex-col items-center mb-4">
+              <div className="relative">
+                <div 
+                  className="w-24 h-24 rounded-full flex items-center justify-center mb-4"
+                  style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
+                >
+                  <TrendingUp size={48} className="text-white" />
+                </div>
+                <Sparkles className="absolute -top-2 -right-2 text-yellow-400" size={24} />
+              </div>
+              <CoinsIllustration size={80} />
             </div>
-            <DialogTitle className="text-center">Deposit Successful!</DialogTitle>
+            <DialogTitle className="text-center text-2xl">
+              Deposit Successful! 🎉
+            </DialogTitle>
             <DialogDescription className="text-center">
-              The deposit has been processed successfully.
+              The deposit has been processed successfully
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4 space-y-4">
-            <div className="p-4 space-y-2 rounded-lg bg-gray-50">
+          
+          <div className="space-y-3 py-4">
+            <div 
+              className="p-6 rounded-2xl space-y-3 border-2"
+              style={{ 
+                background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)',
+                borderColor: '#00AEEF40'
+              }}
+            >
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Account ID:</span>
-                <span className="text-sm">{accountInfo?.id}</span>
+                <span className="font-semibold text-[#1A4D8F]">{accountInfo?.id}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Customer:</span>
-                <span className="text-sm">{accountInfo?.customerName}</span>
+                <span className="font-medium">{accountInfo?.customerName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Deposit Amount:</span>
-                <span className="text-sm text-green-600">+₫{Number(depositAmount).toLocaleString()}</span>
+                <span className="font-semibold text-green-600">+₫{Number(depositAmount).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Previous Balance:</span>
-                <span className="text-sm">₫{accountInfo?.balance.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t">
-                <span className="text-sm">New Balance:</span>
-                <span className="text-sm">₫{newBalance.toLocaleString()}</span>
+              <div className="flex justify-between pt-3 border-t border-gray-200">
+                <span className="text-sm text-gray-600">New Balance:</span>
+                <span className="text-lg font-bold text-green-600">₫{newBalance.toLocaleString()}</span>
               </div>
             </div>
           </div>
+          
           <Button 
             onClick={() => setShowSuccess(false)}
-            className="w-full text-white"
-            style={{ backgroundColor: '#1A4D8F' }}
+            className="w-full h-12 text-white rounded-full font-medium shadow-lg"
+            style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)' }}
           >
             Close
           </Button>

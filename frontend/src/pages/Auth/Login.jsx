@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Lock, User, Sparkles, Star, Heart } from 'lucide-react';
 import eyeOpenIcon from '../../assets/eyeopen.png';
 import eyeCloseIcon from '../../assets/eyeclose.png';
 
@@ -29,7 +30,7 @@ export default function Login({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
-      setError('Please enter both username and password');
+      setError('Vui lòng nhập tên đăng nhập và mật khẩu');
       return;
     }
     setLoading(true);
@@ -41,12 +42,12 @@ export default function Login({ onLogin }) {
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Login failed. Please check your credentials.');
+      if (!response.ok) throw new Error(data.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
       if (data.roleName === "Teller") data.roleName = "teller";
       else if (data.roleName === "Auditor") data.roleName = "accountant";
       else if (data.roleName === "Administrator") data.roleName = "admin";
       if (data.roleName) onLogin(data.roleName, username);
-      else throw new Error('Login successful, but role was not provided by the API response.');
+      else throw new Error('Đăng nhập thành công nhưng không nhận được thông tin vai trò.');
     } catch (err) {
       console.error('Login error:', err);
       setError(err.message);
@@ -64,137 +65,200 @@ export default function Login({ onLogin }) {
   };
   
   return (
-    <div className="flex items-center justify-center min-h-screen login-bg">
-      <Card className="w-full max-w-md shadow-lg login-card">
-        <CardHeader className="space-y-3 text-center">
-          <div className="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl logo-bg">
-            <span className="text-2xl text-white">K</span>
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+      style={{ background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 50%, #FFF7D6 100%)' }}
+    >
+      {/* 🎨 Cute Background Decorations */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <Sparkles className="absolute top-20 left-20 text-yellow-300 opacity-40" size={40} />
+        <Star className="absolute top-40 right-32 text-pink-300 opacity-30" size={32} fill="currentColor" />
+        <Heart className="absolute bottom-32 left-40 text-red-200 opacity-25" size={28} fill="currentColor" />
+        <Sparkles className="absolute bottom-40 right-20 text-cyan-300 opacity-40" size={36} />
+        
+        {/* Floating circles */}
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-200 rounded-full opacity-10 blur-2xl animate-pulse" />
+        <div className="absolute bottom-1/3 right-1/3 w-40 h-40 bg-pink-200 rounded-full opacity-10 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      </div>
+
+      <Card className="w-full max-w-md shadow-2xl border-0 relative z-10 rounded-3xl overflow-hidden">
+        {/* Gradient Top Bar */}
+        <div className="h-2 bg-gradient-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
+        
+        <CardHeader className="space-y-4 text-center pt-8 pb-6 relative">
+          {/* Logo with cute design */}
+          <div className="mx-auto relative">
+            <div 
+              className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg relative overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
+            >
+              <span className="text-white text-3xl font-bold">K</span>
+              <Sparkles className="absolute -top-1 -right-1 text-yellow-300 opacity-80" size={20} />
+              <Star className="absolute -bottom-1 -left-1 text-pink-300 opacity-60" size={16} fill="currentColor" />
+            </div>
+            
+            {/* Decorative elements around logo */}
+            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-pink-200 opacity-60 animate-pulse" />
+            <div className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-cyan-200 opacity-60 animate-pulse" style={{ animationDelay: '0.5s' }} />
           </div>
-          <CardTitle className="text-2xl text-primary">KASA</CardTitle>
-          <CardDescription>Savings Account Management System</CardDescription>
-          <h3 className="text-[#1E293B] pt-2">Sign in to KASA</h3>
+
+          <div>
+            <CardTitle 
+              className="text-3xl mb-2"
+              style={{ 
+                background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}
+            >
+              KASA
+            </CardTitle>
+            <CardDescription className="text-base">
+              Hệ Thống Quản Lý Sổ Tiết Kiệm
+            </CardDescription>
+            <h3 className="text-gray-700 pt-3 font-medium">Đăng nhập vào KASA ✨</h3>
+          </div>
         </CardHeader>
 
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 px-8 pb-8">
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4" aria-busy={loading}>
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => { setUsername(e.target.value); setError(''); }}
-                disabled={loading}
-              />
+              <Label htmlFor="username" className="text-gray-700">Tên đăng nhập</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="Nhập tên đăng nhập"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setError('');
+                  }}
+                  disabled={loading}
+                  className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-gray-700">Mật khẩu</Label>
               <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <Input
-                id="password"
-                  // type giờ đây là động, dựa trên state
+                  id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Enter your password"
+                  placeholder="Nhập mật khẩu"
                   value={password}
-                  onChange={(e) => { setPassword(e.target.value); setError(''); }}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setError('');
+                  }}
                   disabled={loading}
-                  // Thêm padding bên phải (pr-10) để icon không đè lên chữ
-                  className="pr-10"
+                  className="pl-10 pr-10 h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                 />
-                {/* Thêm nút bấm icon vào bên trong input */}
                 <button
                   type="button"
                   onClick={toggleShowPassword}
                   disabled={loading}
-                  // CSS để căn icon vào giữa, bên phải của Input
                   className="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-full text-gray-500 cursor-pointer rounded-r-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label={showPassword ? "Hiện mật khẩu" : "Ẩn mật khẩu"}
                 >
                   <img
-                    // Thay đổi icon dựa trên state
-                    // Nếu đang show: hiện icon "open"
-                    // Nếu đang ẩn: hiện icon "close"
                     src={showPassword ? eyeOpenIcon : eyeCloseIcon}
                     alt="Toggle password visibility"
-                    // Thêm kích thước cho icon (w-5 h-5 tương đương 1.25rem)
                     className="w-5 h-5"
                   />
                 </button>
               </div>
             </div>
 
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
 
-            <Button
-              type="submit"
-              className="w-full gap-2 bg-[#1A4D8F] text-white hover:bg-[#245EB0] active:bg-[#153A6B] active:scale-95 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
+            <Button 
+              type="submit" 
               disabled={loading}
+              className="w-full h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+              style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
               {loading && <Spinner size={16} light />}
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
             </Button>
-
 
             <button
               type="button"
-              className="w-full text-sm text-center text-gray-500 cursor-pointer hover:text-gray-700 hover:underline disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={loading}
+              className="text-sm text-gray-500 hover:text-[#00AEEF] w-full text-center transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Forgot password?
+              Quên mật khẩu?
             </button>
           </form>
 
-          {/* Separator */}
+          {/* Cute Separator */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-300" />
+              <span className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="px-2 text-gray-500 bg-white">or select a role (dev mode)</span>
+              <span className="bg-white px-3 text-gray-500 font-medium rounded-full">
+                hoặc chọn vai trò (dev mode) ⚙️
+              </span>
             </div>
           </div>
 
-          {/* Role Selection Buttons */}
+          {/* Cute Role Selection Buttons */}
           <div className="grid grid-cols-3 gap-3">
-            {/* Teller (solid) */}
-            <Button
+            <button
               onClick={() => handleRoleSelect('teller')}
-              className="bg-[#1A4D8F] text-white hover:bg-[#245EB0] active:bg-[#153A6B] active:scale-95 transition disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={loading}
+              className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)' }}
             >
-              Teller
-            </Button>
-
-            {/* Accountant (outline) — bỏ hẳn prop variant để tránh xung đột */}
-            <Button
+              <div className="text-center">
+                <div className="text-2xl mb-1">🏦</div>
+                <p className="text-xs font-semibold text-[#1A4D8F]">Teller</p>
+              </div>
+            </button>
+            
+            <button
               onClick={() => handleRoleSelect('accountant')}
-              className="border border-[#1A4D8F] text-[#1A4D8F] bg-transparent
-                        hover:bg-[#E6F2FF] active:bg-[#D7E8FF]
-                        active:scale-95 transition
-                        disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={loading}
+              className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ background: 'linear-gradient(135deg, #DFF9F4 0%, #FFF7D6 100%)' }}
             >
-              Accountant
-            </Button>
-
-            {/* Admin (soft) */}
-            <Button
+              <div className="text-center">
+                <div className="text-2xl mb-1">📊</div>
+                <p className="text-xs font-semibold text-[#00AEEF]">Accountant</p>
+              </div>
+            </button>
+            
+            <button
               onClick={() => handleRoleSelect('admin')}
-              className="bg-[#E0F2FE] text-[#1A4D8F] hover:bg-[#BEE3FD] active:scale-95 transition disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={loading}
+              className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{ background: 'linear-gradient(135deg, #FFE8F0 0%, #F3E8FF 100%)' }}
             >
-              Admin
-            </Button>
-
+              <div className="text-center">
+                <div className="text-2xl mb-1">👑</div>
+                <p className="text-xs font-semibold text-[#BE185D]">Admin</p>
+              </div>
+            </button>
           </div>
 
-          <div className="text-center">
-            <p className="text-xs text-gray-500">
-              ⚙ Dev Mode Enabled — Role buttons visible for testing
-            </p>
+          {/* Dev Mode Indicator */}
+          <div className="text-center pt-2">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-2 rounded-full border border-purple-100">
+              <Sparkles size={14} className="text-purple-400" />
+              <p className="text-xs text-purple-600 font-medium">
+                Dev Mode — Nút vai trò để test
+              </p>
+            </div>
           </div>
         </CardContent>
 
@@ -202,10 +266,13 @@ export default function Login({ onLogin }) {
         {loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-white/20 backdrop-blur-[1px] animate-fade-in">
             <span className="spinner inline-block animate-spin rounded-full border-4 border-[#1A4D8F] border-t-transparent" />
-            <p className="mt-3 text-[#1A4D8F] font-medium text-sm animate-wave">Loading...</p>
+            <p className="mt-3 text-[#1A4D8F] font-medium text-sm animate-wave">Đang tải...</p>
           </div>
         )}
       </Card>
+
+      {/* Bottom decoration */}
+      <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F] opacity-50" />
     </div>
   );
 }

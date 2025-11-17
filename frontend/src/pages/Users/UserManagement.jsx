@@ -30,45 +30,46 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog";
-import { UserPlus, Edit, UserX, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { UserPlus, Edit, UserX, AlertTriangle, CheckCircle2, Users2, Sparkles } from 'lucide-react';
+import { StarDecor } from '../../components/CuteComponents';
 
 export default function UserManagement({ user }) {
   const [users, setUsers] = useState([
     {
       id: 'U001',
       username: 'teller1',
-      fullName: 'John Doe',
+      fullName: 'Nguyễn Văn A',
       email: 'teller1@kasa.com',
       role: 'teller',
-      status: 'active',
-      createdDate: '2025-01-10'
-    },
-    {
-      id: 'U002',
-      username: 'accountant1',
-      fullName: 'Jane Smith',
-      email: 'accountant1@kasa.com',
-      role: 'accountant',
       status: 'active',
       createdDate: '2025-01-15'
     },
     {
-      id: 'U003',
-      username: 'admin1',
-      fullName: 'Bob Johnson',
-      email: 'admin1@kasa.com',
-      role: 'admin',
+      id: 'U002',
+      username: 'accountant1',
+      fullName: 'Trần Thị B',
+      email: 'accountant1@kasa.com',
+      role: 'accountant',
       status: 'active',
       createdDate: '2025-02-01'
     },
     {
+      id: 'U003',
+      username: 'admin1',
+      fullName: 'Lê Văn C',
+      email: 'admin@kasa.com',
+      role: 'admin',
+      status: 'active',
+      createdDate: '2025-01-01'
+    },
+    {
       id: 'U004',
       username: 'teller2',
-      fullName: 'Alice Brown',
+      fullName: 'Phạm Thị D',
       email: 'teller2@kasa.com',
       role: 'teller',
       status: 'disabled',
-      createdDate: '2025-02-10'
+      createdDate: '2025-03-10'
     }
   ]);
 
@@ -160,23 +161,23 @@ export default function UserManagement({ user }) {
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'admin':
-        return { backgroundColor: '#1A4D8F', color: 'white' };
+        return 'bg-purple-100 text-purple-700 border-purple-200';
       case 'accountant':
-        return { backgroundColor: '#00AEEF', color: 'white' };
+        return 'bg-cyan-100 text-cyan-700 border-cyan-200';
       case 'teller':
-        return { backgroundColor: '#10B981', color: 'white' };
+        return 'bg-blue-100 text-blue-700 border-blue-200';
       default:
-        return { backgroundColor: '#6B7280', color: 'white' };
+        return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
 
   if (user.role !== 'admin') {
     return (
-      <Card>
+      <Card className="rounded-3xl border-0 shadow-xl">
         <CardContent className="p-12 text-center">
           <AlertTriangle size={64} className="mx-auto mb-4 text-yellow-500" />
-          <h3 className="mb-2 text-xl">Access Restricted</h3>
-          <p className="text-gray-600">Only administrators can access user management.</p>
+          <h3 className="mb-2 text-xl font-semibold">Truy Cập Bị Hạn Chế</h3>
+          <p className="text-gray-600">Chỉ quản trị viên mới có quyền quản lý người dùng.</p>
         </CardContent>
       </Card>
     );
@@ -185,84 +186,109 @@ export default function UserManagement({ user }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription>Manage system users and their roles</CardDescription>
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-8">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/50 rounded-full -mr-32 -mt-32" />
+          <StarDecor className="top-4 right-12" />
+          <Sparkles className="absolute top-6 right-32 text-purple-400 opacity-50" size={24} />
+          
+          <div className="flex items-center justify-between relative z-10">
+            <div className="flex items-start gap-4">
+              <div 
+                className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              >
+                <Users2 size={32} className="text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl mb-2 flex items-center gap-2">
+                  Quản Lý Người Dùng
+                  <span className="text-2xl">👥</span>
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Quản lý người dùng hệ thống và phân quyền
+                </CardDescription>
+              </div>
             </div>
             <Button 
               onClick={handleAddUser}
-              className="text-white"
-              style={{ backgroundColor: '#1A4D8F' }}
+              className="text-white h-12 px-6 rounded-xl shadow-lg font-medium"
+              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              <UserPlus size={16} className="mr-2" />
-              Add New User
+              <UserPlus size={18} className="mr-2" />
+              Thêm Người Dùng
             </Button>
           </div>
         </CardHeader>
       </Card>
 
       {/* Users Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>System Users ({users.length})</CardTitle>
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+          <CardTitle className="text-xl">
+            Danh Sách Người Dùng ({users.length})
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="border rounded-md">
+        <CardContent className="p-6">
+          <div className="border rounded-2xl overflow-hidden">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Username</TableHead>
-                  <TableHead>Full Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created Date</TableHead>
-                  <TableHead>Actions</TableHead>
+                <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
+                  <TableHead className="font-semibold">Tên Đăng Nhập</TableHead>
+                  <TableHead className="font-semibold">Họ Tên</TableHead>
+                  <TableHead className="font-semibold">Email</TableHead>
+                  <TableHead className="font-semibold">Vai Trò</TableHead>
+                  <TableHead className="font-semibold">Trạng Thái</TableHead>
+                  <TableHead className="font-semibold">Ngày Tạo</TableHead>
+                  <TableHead className="font-semibold text-center">Hành Động</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {users.map((userData) => (
-                  <TableRow key={userData.id}>
-                    <TableCell>{userData.username}</TableCell>
+                  <TableRow key={userData.id} className="hover:bg-[#F8F9FC] transition-colors">
+                    <TableCell className="font-medium">{userData.username}</TableCell>
                     <TableCell>{userData.fullName}</TableCell>
-                    <TableCell>{userData.email}</TableCell>
+                    <TableCell className="text-gray-600">{userData.email}</TableCell>
                     <TableCell>
                       <Badge 
-                        style={getRoleBadgeColor(userData.role)}
-                        className="capitalize"
+                        className={`${getRoleBadgeColor(userData.role)} border capitalize`}
                       >
-                        {userData.role}
+                        {userData.role === 'admin' ? 'Quản trị viên' : 
+                         userData.role === 'accountant' ? 'Kế toán' : 
+                         'Thu ngân'}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge 
-                        className={userData.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}
+                        className={userData.status === 'active' ? 
+                          'bg-green-100 text-green-700 border-green-200 border' : 
+                          'bg-gray-100 text-gray-700 border-gray-200 border'}
                       >
-                        {userData.status}
+                        {userData.status === 'active' ? 'Hoạt động' : 'Vô hiệu hóa'}
                       </Badge>
                     </TableCell>
                     <TableCell>{userData.createdDate}</TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 justify-center">
                         <Button 
                           size="sm"
                           variant="ghost"
                           onClick={() => handleEditUser(userData)}
+                          className="rounded-xl hover:bg-[#F3E8FF]"
                         >
                           <Edit size={14} className="mr-1" />
-                          Edit
+                          Sửa
                         </Button>
                         <Button 
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDisableUser(userData)}
-                          className={userData.status === 'active' ? 'text-red-600' : 'text-green-600'}
+                          className={`rounded-xl ${userData.status === 'active' ? 
+                            'text-red-600 hover:bg-red-50' : 
+                            'text-green-600 hover:bg-green-50'}`}
                         >
                           <UserX size={14} className="mr-1" />
-                          {userData.status === 'active' ? 'Disable' : 'Enable'}
+                          {userData.status === 'active' ? 'Vô hiệu' : 'Kích hoạt'}
                         </Button>
                       </div>
                     </TableCell>
@@ -276,82 +302,96 @@ export default function UserManagement({ user }) {
 
       {/* Add User Dialog */}
       <Dialog open={showAddUser} onOpenChange={setShowAddUser}>
-        <DialogContent>
+        <DialogContent className="rounded-3xl">
           <DialogHeader>
-            <DialogTitle>Add New User</DialogTitle>
-            <DialogDescription>Create a new system user account</DialogDescription>
+            <div className="flex items-center gap-3 mb-2">
+              <div 
+                className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              >
+                <UserPlus size={24} className="text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl">Thêm Người Dùng Mới</DialogTitle>
+                <DialogDescription>Tạo tài khoản người dùng mới trong hệ thống</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username" className="text-gray-700">Tên Đăng Nhập</Label>
               <Input
                 id="username"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                placeholder="Enter username"
+                placeholder="Nhập tên đăng nhập"
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="fullName" className="text-gray-700">Họ và Tên</Label>
               <Input
                 id="fullName"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                placeholder="Enter full name"
+                placeholder="Nhập họ và tên"
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-gray-700">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="Enter email"
+                placeholder="Nhập địa chỉ email"
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
+              <Label htmlFor="role" className="text-gray-700">Vai Trò</Label>
               <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
-                <SelectTrigger>
+                <SelectTrigger className="h-11 rounded-xl border-gray-200">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="teller">Teller</SelectItem>
-                  <SelectItem value="accountant">Accountant</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="teller">Thu Ngân</SelectItem>
+                  <SelectItem value="accountant">Kế Toán</SelectItem>
+                  <SelectItem value="admin">Quản Trị Viên</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-gray-700">Mật Khẩu</Label>
               <Input
                 id="password"
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="Enter password"
+                placeholder="Nhập mật khẩu"
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
           </div>
           <div className="flex gap-4">
             <Button 
               onClick={submitAddUser}
-              className="flex-1 text-white"
-              style={{ backgroundColor: '#1A4D8F' }}
+              className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
+              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Create User
+              Tạo Người Dùng
             </Button>
             <Button 
               onClick={() => setShowAddUser(false)}
               variant="outline"
-              className="flex-1"
+              className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Cancel
+              Hủy
             </Button>
           </div>
         </DialogContent>
@@ -359,50 +399,63 @@ export default function UserManagement({ user }) {
 
       {/* Edit User Dialog */}
       <Dialog open={showEditUser} onOpenChange={setShowEditUser}>
-        <DialogContent>
+        <DialogContent className="rounded-3xl">
           <DialogHeader>
-            <DialogTitle>Edit User</DialogTitle>
-            <DialogDescription>Update user information</DialogDescription>
+            <div className="flex items-center gap-3 mb-2">
+              <div 
+                className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              >
+                <Edit size={24} className="text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl">Chỉnh Sửa Người Dùng</DialogTitle>
+                <DialogDescription>Cập nhật thông tin người dùng</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="editUsername">Username</Label>
+              <Label htmlFor="editUsername" className="text-gray-700">Tên Đăng Nhập</Label>
               <Input
                 id="editUsername"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="editFullName">Full Name</Label>
+              <Label htmlFor="editFullName" className="text-gray-700">Họ và Tên</Label>
               <Input
                 id="editFullName"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="editEmail">Email</Label>
+              <Label htmlFor="editEmail" className="text-gray-700">Email</Label>
               <Input
                 id="editEmail"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="editRole">Role</Label>
+              <Label htmlFor="editRole" className="text-gray-700">Vai Trò</Label>
               <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
-                <SelectTrigger>
+                <SelectTrigger className="h-11 rounded-xl border-gray-200">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="teller">Teller</SelectItem>
-                  <SelectItem value="accountant">Accountant</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="teller">Thu Ngân</SelectItem>
+                  <SelectItem value="accountant">Kế Toán</SelectItem>
+                  <SelectItem value="admin">Quản Trị Viên</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -410,17 +463,17 @@ export default function UserManagement({ user }) {
           <div className="flex gap-4">
             <Button 
               onClick={submitEditUser}
-              className="flex-1 text-white"
-              style={{ backgroundColor: '#1A4D8F' }}
+              className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
+              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Update User
+              Cập Nhật
             </Button>
             <Button 
               onClick={() => setShowEditUser(false)}
               variant="outline"
-              className="flex-1"
+              className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Cancel
+              Hủy
             </Button>
           </div>
         </DialogContent>
@@ -428,41 +481,52 @@ export default function UserManagement({ user }) {
 
       {/* Disable Confirmation */}
       <AlertDialog open={showDisableConfirm} onOpenChange={setShowDisableConfirm}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-3xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {selectedUser?.status === 'active' ? 'Disable' : 'Enable'} User?
+            <AlertDialogTitle className="text-xl">
+              {selectedUser?.status === 'active' ? 'Vô Hiệu Hóa' : 'Kích Hoạt'} Người Dùng?
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to {selectedUser?.status === 'active' ? 'disable' : 'enable'} {selectedUser?.fullName}? 
-              {selectedUser?.status === 'active' && ' This user will no longer be able to access the system.'}
+            <AlertDialogDescription className="text-base">
+              Bạn có chắc chắn muốn {selectedUser?.status === 'active' ? 'vô hiệu hóa' : 'kích hoạt'} {selectedUser?.fullName}? 
+              {selectedUser?.status === 'active' && ' Người dùng này sẽ không thể truy cập hệ thống.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDisable}>Confirm</AlertDialogAction>
+            <AlertDialogCancel className="rounded-xl border-gray-200">Hủy</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDisable}
+              className="rounded-xl text-white shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+            >
+              Xác Nhận
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
       {/* Success Dialog */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent>
+        <DialogContent className="rounded-3xl">
           <DialogHeader>
             <div className="flex justify-center mb-4">
-              <CheckCircle2 size={64} className="text-green-500" />
+              <div 
+                className="w-20 h-20 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
+              >
+                <CheckCircle2 size={48} className="text-white" />
+              </div>
             </div>
-            <DialogTitle className="text-center">Success!</DialogTitle>
-            <DialogDescription className="text-center">
+            <DialogTitle className="text-center text-2xl">Thành Công!</DialogTitle>
+            <DialogDescription className="text-center text-base">
               {successMessage}
             </DialogDescription>
           </DialogHeader>
           <Button 
             onClick={() => setShowSuccess(false)}
-            className="w-full text-white"
-            style={{ backgroundColor: '#1A4D8F' }}
+            className="w-full h-12 text-white rounded-xl shadow-lg font-medium"
+            style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
           >
-            Close
+            Đóng
           </Button>
         </DialogContent>
       </Dialog>
