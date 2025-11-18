@@ -13,60 +13,42 @@ import {
 } from "../../components/ui/dialog";
 import { CheckCircle2, AlertCircle, Search, Coins, ArrowDownCircle, Sparkles, TrendingUp } from 'lucide-react';
 import { StarDecor, CoinsIllustration } from '../../components/CuteComponents';
+import { getAccountInfo, depositMoney } from '../../services/transactionService';
 
-// Mock account data
-const mockAccounts = {
-  'SA12345': {
-    id: 'SA12345',
-    customerName: 'Nguyen Van A',
-    type: 'no-term',
-    balance: 5000000,
-    openDate: '2025-01-15'
-  },
-  'SA12346': {
-    id: 'SA12346',
-    customerName: 'Tran Thi B',
-    type: 'fixed-3m',
-    balance: 10000000,
-    openDate: '2025-02-01'
-  },
-  'SA12347': {
-    id: 'SA12347',
-    customerName: 'Le Van C',
-    type: 'no-term',
-    balance: 7500000,
-    openDate: '2025-03-10'
-  }
-};
-
-export default function Deposit({ user }) {
+export default function Deposit() {
   const [accountId, setAccountId] = useState('');
   const [depositAmount, setDepositAmount] = useState('');
   const [accountInfo, setAccountInfo] = useState(null);
   const [error, setError] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   const [newBalance, setNewBalance] = useState(0);
+  const [isLookingUp, setIsLookingUp] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAccountLookup = () => {
+  const handleAccountLookup = async () => {
     setError('');
-    const account = mockAccounts[accountId];
+    setAccountInfo(null);
+    setIsLookingUp(true);
     
-    if (!account) {
-      setError('Account not found');
-      setAccountInfo(null);
-      return;
+    try {
+      const response = await getAccountInfo(accountId);
+      const account = response.data;
+      
+      if (account.type !== 'no-term') {
+        setError('Deposits are only allowed for No-Term savings accounts');
+        return;
+      }
+      
+      setAccountInfo(account);
+    } catch (err) {
+      console.error('Account lookup error:', err);
+      setError(err.message);
+    } finally {
+      setIsLookingUp(false);
     }
-
-    if (account.type !== 'no-term') {
-      setError('Deposits are only allowed for No-Term savings accounts');
-      setAccountInfo(null);
-      return;
-    }
-
-    setAccountInfo(account);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!accountInfo) {
@@ -86,21 +68,27 @@ export default function Deposit({ user }) {
       return;
     }
 
-    // Process deposit
-    const updatedBalance = accountInfo.balance + amount;
-    setNewBalance(updatedBalance);
-    setShowSuccess(true);
+    setIsSubmitting(true);
+    setError('');
     
-    // Update mock data
-    mockAccounts[accountId].balance = updatedBalance;
-    
-    // Reset form
-    setTimeout(() => {
-      setAccountId('');
-      setDepositAmount('');
-      setAccountInfo(null);
-      setError('');
-    }, 500);
+    try {
+      const response = await depositMoney(accountId, amount);
+      setNewBalance(response.data.balanceAfter);
+      setShowSuccess(true);
+      
+      // Reset form
+      setTimeout(() => {
+        setAccountId('');
+        setDepositAmount('');
+        setAccountInfo(null);
+        setError('');
+      }, 500);
+    } catch (err) {
+      console.error('Deposit error:', err);
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -156,10 +144,11 @@ export default function Deposit({ user }) {
               <Button
                 type="button"
                 onClick={handleAccountLookup}
+                disabled={isLookingUp || !accountId}
                 className="h-12 px-6 rounded-xl bg-[#1A4D8F] hover:bg-[#154171] text-white"
               >
                 <Search size={18} className="mr-2" />
-                Lookup
+                {isLookingUp ? 'Searching...' : 'Lookup'}
               </Button>
             </div>
 

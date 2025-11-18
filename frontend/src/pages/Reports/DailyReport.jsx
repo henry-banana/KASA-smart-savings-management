@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -14,12 +14,31 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FileDown, Calendar, TrendingUp, TrendingDown, DollarSign, Sparkles, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { CuteStatCard, StarDecor, SparkleDecor } from '../../components/CuteComponents';
+import { getDailyReport } from '../../services/reportService';
 
-export default function DailyReport({ user }) {
+export default function DailyReport() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [reportData, setReportData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Mock report data
-  const reportData = [
+  useEffect(() => {
+    const fetchReport = async () => {
+      setLoading(true);
+      try {
+        const response = await getDailyReport(selectedDate);
+        setReportData(response.data);
+      } catch (err) {
+        console.error('Report error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReport();
+  }, [selectedDate]);
+
+  // Mock breakdown by type - can be extended later
+  const typeBreakdown = [
     {
       type: 'No Term',
       deposits: 12,
@@ -40,7 +59,7 @@ export default function DailyReport({ user }) {
     }
   ];
 
-  const chartData = reportData.map(item => ({
+  const chartData = typeBreakdown.map(item => ({
     name: item.type,
     Deposits: item.deposits,
     Withdrawals: item.withdrawals,
@@ -48,14 +67,22 @@ export default function DailyReport({ user }) {
   }));
 
   const totals = {
-    deposits: reportData.reduce((sum, item) => sum + item.deposits, 0),
-    withdrawals: reportData.reduce((sum, item) => sum + item.withdrawals, 0),
-    difference: reportData.reduce((sum, item) => sum + item.difference, 0)
+    deposits: typeBreakdown.reduce((sum, item) => sum + item.deposits, 0),
+    withdrawals: typeBreakdown.reduce((sum, item) => sum + item.withdrawals, 0),
+    difference: typeBreakdown.reduce((sum, item) => sum + item.difference, 0)
   };
 
   const handleExport = () => {
     alert(`Exporting Daily Report for ${selectedDate} to PDF...`);
   };
+
+  if (loading || !reportData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 relative">
@@ -227,7 +254,7 @@ export default function DailyReport({ user }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {reportData.map((row, index) => (
+                {typeBreakdown.map((row, index) => (
                   <TableRow key={index} className="hover:bg-purple-50 transition-colors">
                     <TableCell className="font-medium text-gray-700">{row.type}</TableCell>
                     <TableCell className="text-right font-semibold text-green-600">

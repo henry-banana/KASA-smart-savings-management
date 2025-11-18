@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -33,7 +34,8 @@ import {
 import { UserPlus, Edit, UserX, AlertTriangle, CheckCircle2, Users2, Sparkles } from 'lucide-react';
 import { StarDecor } from '../../components/CuteComponents';
 
-export default function UserManagement({ user }) {
+export default function UserManagement() {
+  const { user } = useAuth();
   const [users, setUsers] = useState([
     {
       id: 'U001',

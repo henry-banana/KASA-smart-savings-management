@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Label } from '../../components/ui/label';
@@ -14,16 +14,35 @@ import {
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FileDown, Calendar, TrendingUp, Users, Award, BarChart3, Sparkles } from 'lucide-react';
 import { StarDecor, SparkleDecor } from '../../components/CuteComponents';
+import { getMonthlyReport } from '../../services/reportService';
 
-export default function MonthlyReport({ user }) {
+export default function MonthlyReport() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   
   const [selectedMonth, setSelectedMonth] = useState(currentMonth.toString());
   const [selectedYear, setSelectedYear] = useState(currentYear.toString());
+  const [reportData, setReportData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Mock report data
-  const reportData = [
+  useEffect(() => {
+    const fetchReport = async () => {
+      setLoading(true);
+      try {
+        const response = await getMonthlyReport(Number(selectedMonth), Number(selectedYear));
+        setReportData(response.data);
+      } catch (err) {
+        console.error('Monthly report error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReport();
+  }, [selectedMonth, selectedYear]);
+
+  // Mock breakdown by type - can be extended later when backend provides detailed breakdown
+  const typeBreakdown = [
     {
       type: 'No Term',
       opened: 45,
@@ -51,21 +70,29 @@ export default function MonthlyReport({ user }) {
     { day: 'Week 4', 'No Term': 8, '3 Months': 6, '6 Months': 6 }
   ];
 
-  const pieChartData = reportData.map(item => ({
+  const pieChartData = typeBreakdown.map(item => ({
     name: item.type,
     value: item.opened,
     color: item.type === 'No Term' ? '#00AEEF' : item.type === '3 Months' ? '#1A4D8F' : '#8B5CF6'
   }));
 
   const totals = {
-    opened: reportData.reduce((sum, item) => sum + item.opened, 0),
-    closed: reportData.reduce((sum, item) => sum + item.closed, 0),
-    difference: reportData.reduce((sum, item) => sum + item.difference, 0)
+    opened: typeBreakdown.reduce((sum, item) => sum + item.opened, 0),
+    closed: typeBreakdown.reduce((sum, item) => sum + item.closed, 0),
+    difference: typeBreakdown.reduce((sum, item) => sum + item.difference, 0)
   };
 
   const handleExport = () => {
     alert(`Exporting Monthly Report for ${selectedMonth}/${selectedYear} to PDF...`);
   };
+
+  if (loading || !reportData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
+  }
 
   const months = [
     { value: '1', label: 'Tháng 1' },
@@ -265,7 +292,7 @@ export default function MonthlyReport({ user }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {reportData.map((row, index) => (
+                {typeBreakdown.map((row, index) => (
                   <TableRow key={index} className="hover:bg-cyan-50 transition-colors">
                     <TableCell className="font-medium text-gray-700">{row.type}</TableCell>
                     <TableCell className="text-right font-semibold text-green-600">

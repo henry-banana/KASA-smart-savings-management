@@ -13,46 +13,9 @@ import {
 } from "../../components/ui/dialog";
 import { CheckCircle2, AlertCircle, Search, Wallet, ArrowUpCircle, Sparkles } from 'lucide-react';
 import { StarDecor, ReceiptIllustration } from '../../components/CuteComponents';
+import { getAccountInfo, withdrawMoney } from '../../services/transactionService';
 
-// Mock account data with maturity dates
-const mockAccounts = {
-  'SA12345': {
-    id: 'SA12345',
-    customerName: 'Nguyen Van A',
-    type: 'no-term',
-    balance: 5000000,
-    openDate: '2025-01-15',
-    interestRate: 0.02
-  },
-  'SA12346': {
-    id: 'SA12346',
-    customerName: 'Tran Thi B',
-    type: 'fixed-3m',
-    balance: 10000000,
-    openDate: '2024-11-01',
-    maturityDate: '2025-02-01',
-    interestRate: 0.045
-  },
-  'SA12347': {
-    id: 'SA12347',
-    customerName: 'Le Van C',
-    type: 'no-term',
-    balance: 7500000,
-    openDate: '2025-03-10',
-    interestRate: 0.02
-  },
-  'SA12348': {
-    id: 'SA12348',
-    customerName: 'Pham Thi D',
-    type: 'fixed-6m',
-    balance: 15000000,
-    openDate: '2024-09-01',
-    maturityDate: '2025-03-01',
-    interestRate: 0.055
-  }
-};
-
-export default function Withdraw({ user }) {
+export default function Withdraw() {
   const [accountId, setAccountId] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [accountInfo, setAccountInfo] = useState(null);
@@ -60,6 +23,8 @@ export default function Withdraw({ user }) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [calculatedInterest, setCalculatedInterest] = useState(0);
   const [totalPayout, setTotalPayout] = useState(0);
+  const [isLookingUp, setIsLookingUp] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const calculateDaysDifference = (startDate) => {
     const start = new Date(startDate);
@@ -69,28 +34,32 @@ export default function Withdraw({ user }) {
     return diffDays;
   };
 
-  const handleAccountLookup = () => {
+  const handleAccountLookup = async () => {
     setError('');
-    const account = mockAccounts[accountId];
+    setAccountInfo(null);
+    setIsLookingUp(true);
     
-    if (!account) {
-      setError('Account not found');
-      setAccountInfo(null);
-      return;
-    }
+    try {
+      const response = await getAccountInfo(accountId);
+      const account = response.data;
+      
+      const daysSinceOpen = calculateDaysDifference(account.openDate);
+      
+      if (daysSinceOpen < 15) {
+        setError(`Account must be open for at least 15 days. Current: ${daysSinceOpen} days`);
+        return;
+      }
 
-    const daysSinceOpen = calculateDaysDifference(account.openDate);
-    
-    if (daysSinceOpen < 15) {
-      setError(`Account must be open for at least 15 days. Current: ${daysSinceOpen} days`);
-      setAccountInfo(null);
-      return;
+      setAccountInfo({
+        ...account,
+        daysSinceOpen
+      });
+    } catch (err) {
+      console.error('Account lookup error:', err);
+      setError(err.message);
+    } finally {
+      setIsLookingUp(false);
     }
-
-    setAccountInfo({
-      ...account,
-      daysSinceOpen
-    });
   };
 
   const calculateInterest = (amount) => {
@@ -104,7 +73,7 @@ export default function Withdraw({ user }) {
     return Math.round(interest);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!accountInfo) {
@@ -141,24 +110,33 @@ export default function Withdraw({ user }) {
       }
     }
 
-    // Calculate interest and total payout
-    const interest = calculateInterest(amount);
-    const total = amount + interest;
+    setIsSubmitting(true);
+    setError('');
     
-    setCalculatedInterest(interest);
-    setTotalPayout(total);
-    setShowSuccess(true);
-    
-    // Update mock data
-    mockAccounts[accountId].balance -= amount;
-    
-    // Reset form
-    setTimeout(() => {
-      setAccountId('');
-      setWithdrawAmount('');
-      setAccountInfo(null);
-      setError('');
-    }, 500);
+    try {
+      // Calculate interest and total payout
+      const interest = calculateInterest(amount);
+      const total = amount + interest;
+      
+      const response = await withdrawMoney(accountId, amount);
+      
+      setCalculatedInterest(interest);
+      setTotalPayout(total);
+      setShowSuccess(true);
+      
+      // Reset form
+      setTimeout(() => {
+        setAccountId('');
+        setWithdrawAmount('');
+        setAccountInfo(null);
+        setError('');
+      }, 500);
+    } catch (err) {
+      console.error('Withdraw error:', err);
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFixedTermMatured = () => {

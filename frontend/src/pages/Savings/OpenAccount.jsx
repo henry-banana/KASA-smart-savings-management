@@ -14,8 +14,9 @@ import {
 } from "../../components/ui/dialog";
 import { CheckCircle2, PiggyBank, User as UserIcon, CreditCard, MapPin, Calendar, Coins, Sparkles, Heart } from 'lucide-react';
 import { StarDecor, PiggyBankIllustration } from '../../components/CuteComponents';
+import { createSavingBook } from '../../services/savingBookService';
 
-export default function OpenAccount({ user }) {
+export default function OpenAccount() {
   const [formData, setFormData] = useState({
     customerName: '',
     idCard: '',
@@ -28,8 +29,9 @@ export default function OpenAccount({ user }) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [accountCode, setAccountCode] = useState('');
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     const newErrors = {};
@@ -47,20 +49,29 @@ export default function OpenAccount({ user }) {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      const code = 'SA' + Math.floor(10000 + Math.random() * 90000);
-      setAccountCode(code);
-      setShowSuccess(true);
-      
-      setTimeout(() => {
-        setFormData({
-          customerName: '',
-          idCard: '',
-          address: '',
-          savingsType: '',
-          initialDeposit: '',
-          openDate: new Date().toISOString().split('T')[0]
-        });
-      }, 500);
+      setIsSubmitting(true);
+      try {
+        const response = await createSavingBook(formData);
+        setAccountCode(response.data.accountCode);
+        setShowSuccess(true);
+        
+        // Reset form after short delay
+        setTimeout(() => {
+          setFormData({
+            customerName: '',
+            idCard: '',
+            address: '',
+            savingsType: '',
+            initialDeposit: '',
+            openDate: new Date().toISOString().split('T')[0]
+          });
+        }, 500);
+      } catch (err) {
+        console.error('Create saving book error:', err);
+        setErrors({ submit: err.message });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -244,11 +255,12 @@ export default function OpenAccount({ user }) {
             <div className="flex gap-4 pt-6 border-t border-gray-100">
               <Button 
                 type="submit" 
+                disabled={isSubmitting}
                 className="flex-1 h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
                 style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
               >
                 <CheckCircle2 size={18} className="mr-2" />
-                Xác Nhận Mở Sổ
+                {isSubmitting ? 'Đang xử lý...' : 'Xác Nhận Mở Sổ'}
               </Button>
               <Button 
                 type="button" 

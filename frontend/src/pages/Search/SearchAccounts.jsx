@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -22,36 +22,41 @@ import {
 } from "../../components/ui/dialog";
 import { Search, FileDown, Eye, Sparkles, Filter, PiggyBank } from 'lucide-react';
 import { StarDecor, CuteEmptyState } from '../../components/CuteComponents';
+import { searchSavingBooks } from '../../services/savingBookService';
 
-// Mock data
-const mockAccountsData = [
-  { id: 'SA12345', customer: 'Nguyễn Văn A', type: 'no-term', openDate: '2025-01-15', balance: 5000000, status: 'active' },
-  { id: 'SA12346', customer: 'Trần Thị B', type: '3-months', openDate: '2024-11-15', balance: 10000000, status: 'active' },
-  { id: 'SA12347', customer: 'Lê Văn C', type: 'no-term', openDate: '2025-10-01', balance: 8000000, status: 'active' },
-  { id: 'SA12348', customer: 'Phạm Thị D', type: '6-months', openDate: '2024-08-20', balance: 15000000, status: 'active' },
-  { id: 'SA12349', customer: 'Hoàng Văn E', type: 'no-term', openDate: '2025-02-10', balance: 3500000, status: 'active' },
-  { id: 'SA12350', customer: 'Nguyễn Thị F', type: '3-months', openDate: '2024-12-01', balance: 7500000, status: 'active' },
-  { id: 'SA12351', customer: 'Vũ Văn G', type: '6-months', openDate: '2024-09-15', balance: 20000000, status: 'closed' },
-  { id: 'SA12352', customer: 'Đỗ Thị H', type: 'no-term', openDate: '2025-03-20', balance: 4200000, status: 'active' },
-];
-
-export default function SearchAccounts({ user }) {
+export default function SearchAccounts() {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredAccounts = mockAccountsData.filter(account => {
-    const matchesSearch = 
-      account.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      account.customer.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesType = typeFilter === 'all' || account.type === typeFilter;
-    const matchesStatus = statusFilter === 'all' || account.status === statusFilter;
+  // Fetch accounts when filters change
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      setLoading(true);
+      try {
+        const response = await searchSavingBooks(searchTerm, typeFilter, statusFilter);
+        setAccounts(response.data || []);
+      } catch (err) {
+        console.error('Search error:', err);
+        setAccounts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return matchesSearch && matchesType && matchesStatus;
-  });
+    // Debounce search
+    const timeoutId = setTimeout(() => {
+      fetchAccounts();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, typeFilter, statusFilter]);
+
+  const filteredAccounts = accounts;
 
   const handleViewDetails = (account) => {
     setSelectedAccount(account);

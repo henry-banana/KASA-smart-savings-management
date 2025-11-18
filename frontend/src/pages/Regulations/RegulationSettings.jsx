@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -21,7 +22,8 @@ import {
 import { CheckCircle2, AlertTriangle, History, Settings, Sparkles } from 'lucide-react';
 import { StarDecor } from '../../components/CuteComponents';
 
-export default function RegulationSettings({ user }) {
+export default function RegulationSettings() {
+  const { user } = useAuth();
   const [minDeposit, setMinDeposit] = useState('100000');
   const [minWithdrawalDays, setMinWithdrawalDays] = useState('15');
   const [showSuccess, setShowSuccess] = useState(false);

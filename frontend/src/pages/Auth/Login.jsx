@@ -1,5 +1,6 @@
 import './Login.css';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -7,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Lock, User, Sparkles, Star, Heart } from 'lucide-react';
 import eyeOpenIcon from '../../assets/eyeopen.png';
 import eyeCloseIcon from '../../assets/eyeclose.png';
+import { useConfig } from '@/contexts/ConfigContext';
+import { useAuth } from '@/hooks/useAuth';
 
 // Spinner thuần CSS/Tailwind (giữ size động)
 function Spinner({ size = 16, light = true }) {
@@ -20,12 +23,21 @@ function Spinner({ size = 16, light = true }) {
   );
 }
 
-export default function Login({ onLogin }) {
+export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  
+  // ✅ Use new hooks
+  const { devMode } = useConfig();
+  const { login: authLogin } = useAuth();
+  const navigate = useNavigate();
+  
+  // DEBUG: Log devMode value
+  console.log('🔍 devMode value:', devMode);
+  console.log('🔍 devMode type:', typeof devMode);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,18 +48,11 @@ export default function Login({ onLogin }) {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
-      if (data.roleName === "Teller") data.roleName = "teller";
-      else if (data.roleName === "Auditor") data.roleName = "accountant";
-      else if (data.roleName === "Administrator") data.roleName = "admin";
-      if (data.roleName) onLogin(data.roleName, username);
-      else throw new Error('Đăng nhập thành công nhưng không nhận được thông tin vai trò.');
+      // ✅ Use new authService through context
+      await authLogin({ username, password });
+      
+      // Navigate to dashboard after successful login
+      navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
       setError(err.message);
@@ -56,8 +61,20 @@ export default function Login({ onLogin }) {
     }
   };
 
-  const handleRoleSelect = (role) => {
-    onLogin(role, `${role}_user`);
+  const handleRoleSelect = async (role) => {
+    const roleCredentials = {
+      teller: { username: 'teller1', password: '123456' },
+      accountant: { username: 'accountant1', password: '123456' },
+      admin: { username: 'admin', password: 'admin123' }
+    };
+    
+    const creds = roleCredentials[role];
+    try {
+      await authLogin(creds);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const toggleShowPassword = () => {
@@ -200,66 +217,72 @@ export default function Login({ onLogin }) {
             </button>
           </form>
 
-          {/* Cute Separator */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-200" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-3 text-gray-500 font-medium rounded-full">
-                hoặc chọn vai trò (dev mode) ⚙️
-              </span>
-            </div>
-          </div>
+          {/* DEV MODE SECTION - Only show when DEV_MODE is true */}
+          {/* DEV MODE SECTION - Only show when devMode is true */}
+          {devMode && (
+            <>
+              {/* Cute Separator */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-gray-200" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-3 text-gray-500 font-medium rounded-full">
+                    hoặc chọn vai trò (dev mode) ⚙️
+                  </span>
+                </div>
+              </div>
 
-          {/* Cute Role Selection Buttons */}
-          <div className="grid grid-cols-3 gap-3">
-            <button
-              onClick={() => handleRoleSelect('teller')}
-              disabled={loading}
-              className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)' }}
-            >
-              <div className="text-center">
-                <div className="text-2xl mb-1">🏦</div>
-                <p className="text-xs font-semibold text-[#1A4D8F]">Teller</p>
+              {/* Cute Role Selection Buttons */}
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  onClick={() => handleRoleSelect('teller')}
+                  disabled={loading}
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)' }}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">🏦</div>
+                    <p className="text-xs font-semibold text-[#1A4D8F]">Teller</p>
+                  </div>
+                </button>
+                
+                <button
+                  onClick={() => handleRoleSelect('accountant')}
+                  disabled={loading}
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ background: 'linear-gradient(135deg, #DFF9F4 0%, #FFF7D6 100%)' }}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">📊</div>
+                    <p className="text-xs font-semibold text-[#00AEEF]">Accountant</p>
+                  </div>
+                </button>
+                
+                <button
+                  onClick={() => handleRoleSelect('admin')}
+                  disabled={loading}
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ background: 'linear-gradient(135deg, #FFE8F0 0%, #F3E8FF 100%)' }}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl mb-1">👑</div>
+                    <p className="text-xs font-semibold text-[#BE185D]">Admin</p>
+                  </div>
+                </button>
               </div>
-            </button>
-            
-            <button
-              onClick={() => handleRoleSelect('accountant')}
-              disabled={loading}
-              className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #DFF9F4 0%, #FFF7D6 100%)' }}
-            >
-              <div className="text-center">
-                <div className="text-2xl mb-1">📊</div>
-                <p className="text-xs font-semibold text-[#00AEEF]">Accountant</p>
-              </div>
-            </button>
-            
-            <button
-              onClick={() => handleRoleSelect('admin')}
-              disabled={loading}
-              className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #FFE8F0 0%, #F3E8FF 100%)' }}
-            >
-              <div className="text-center">
-                <div className="text-2xl mb-1">👑</div>
-                <p className="text-xs font-semibold text-[#BE185D]">Admin</p>
-              </div>
-            </button>
-          </div>
 
-          {/* Dev Mode Indicator */}
-          <div className="text-center pt-2">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-2 rounded-full border border-purple-100">
-              <Sparkles size={14} className="text-purple-400" />
-              <p className="text-xs text-purple-600 font-medium">
-                Dev Mode — Nút vai trò để test
-              </p>
-            </div>
-          </div>
+              {/* Dev Mode Indicator */}
+              <div className="text-center pt-2">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-2 rounded-full border border-purple-100">
+                  <Sparkles size={14} className="text-purple-400" />
+                  <p className="text-xs text-purple-600 font-medium">
+                    Dev Mode — Nút vai trò để test
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
 
         {/* Overlay khi loading */}

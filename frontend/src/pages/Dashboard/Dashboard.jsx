@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { 
@@ -17,7 +19,9 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { CuteStatCard, StarDecor } from '../../components/CuteComponents';
 
-export default function Dashboard({ user, onNavigate }) {
+export default function Dashboard() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const stats = [
     {
       title: 'Tổng Số Sổ Hoạt Động',
@@ -76,7 +80,7 @@ export default function Dashboard({ user, onNavigate }) {
   const quickActions = [
     { 
       label: 'Mở Sổ Tiết Kiệm', 
-      screen: 'open-account', 
+      path: '/savings/open', 
       gradient: 'linear-gradient(135deg, #1A4D8F 0%, #2563A8 100%)',
       icon: <PiggyBank size={32} />,
       emoji: '🏦',
@@ -84,7 +88,7 @@ export default function Dashboard({ user, onNavigate }) {
     },
     { 
       label: 'Gửi Tiền', 
-      screen: 'deposit', 
+      path: '/savings/deposit', 
       gradient: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)',
       icon: <Coins size={32} />,
       emoji: '💰',
@@ -92,7 +96,7 @@ export default function Dashboard({ user, onNavigate }) {
     },
     { 
       label: 'Rút Tiền', 
-      screen: 'withdraw', 
+      path: '/savings/withdraw', 
       gradient: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)',
       icon: <Receipt size={32} />,
       emoji: '💵',
@@ -100,7 +104,7 @@ export default function Dashboard({ user, onNavigate }) {
     },
     { 
       label: 'Tra Cứu Sổ', 
-      screen: 'search', 
+      path: '/search', 
       gradient: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
       icon: <Search size={32} />,
       emoji: '🔍',
@@ -108,7 +112,7 @@ export default function Dashboard({ user, onNavigate }) {
     },
     { 
       label: 'Báo Cáo Ngày', 
-      screen: 'daily-report', 
+      path: '/reports/daily', 
       gradient: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
       icon: <FileText size={32} />,
       emoji: '📊',
@@ -116,7 +120,7 @@ export default function Dashboard({ user, onNavigate }) {
     },
     { 
       label: 'Báo Cáo Tháng', 
-      screen: 'monthly-report', 
+      path: '/reports/monthly', 
       gradient: 'linear-gradient(135deg, #EC4899 0%, #F472B6 100%)',
       icon: <FileText size={32} />,
       emoji: '📈',
@@ -150,7 +154,7 @@ export default function Dashboard({ user, onNavigate }) {
             {visibleActions.map((action, index) => (
               <button
                 key={index}
-                onClick={() => onNavigate(action.screen)}
+                onClick={() => navigate(action.path)}
                 className="group relative overflow-hidden rounded-2xl p-6 text-left transition-all duration-300 hover:scale-105 hover:shadow-xl border-2 border-transparent hover:border-white"
                 style={{ background: action.gradient }}
               >

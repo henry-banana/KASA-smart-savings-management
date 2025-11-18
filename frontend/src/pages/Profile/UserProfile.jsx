@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -14,7 +15,8 @@ import {
 import { UserCircle, Mail, Phone, MapPin, Lock, CheckCircle2, Sparkles } from 'lucide-react';
 import { StarDecor } from '../../components/CuteComponents';
 
-export default function UserProfile({ user }) {
+export default function UserProfile() {
+  const { user } = useAuth();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showEditContact, setShowEditContact] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
