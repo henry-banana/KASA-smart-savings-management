@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import Login from './pages/Auth/Login';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -12,73 +14,70 @@ import RegulationSettings from './pages/Regulations/RegulationSettings';
 import UserManagement from './pages/Users/UserManagement';
 import UserProfile from './pages/Profile/UserProfile';
 
-export default function App() {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [currentScreen, setCurrentScreen] = useState('dashboard');
-
-  const handleLogin = (role, username = 'user') => {
-    const roleNames = {
-      teller: 'Teller User',
-      accountant: 'Accountant User',
-      admin: 'Admin User'
-    };
-    
-    setCurrentUser({
-      username,
-      role: role,
-      fullName: roleNames[role]
-    });
-    setCurrentScreen('dashboard');
-  };
-
-  const handleLogout = () => {
-    setCurrentUser(null);
-    setCurrentScreen('dashboard');
-  };
-
-  const handleNavigate = (screen) => {
-    setCurrentScreen(screen);
-  };
-
-  if (!currentUser) {
-    return <Login onLogin={handleLogin} />;
+// Protected Route wrapper
+function ProtectedRoute({ children }) {
+  const { isAuthenticated, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      </div>
+    );
   }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+}
 
-  const renderScreen = () => {
-    switch (currentScreen) {
-      case 'dashboard':
-        return <Dashboard user={currentUser} onNavigate={handleNavigate} />;
-      case 'open-account':
-        return <OpenAccount user={currentUser} />;
-      case 'deposit':
-        return <Deposit user={currentUser} />;
-      case 'withdraw':
-        return <Withdraw user={currentUser} />;
-      case 'search':
-        return <SearchAccounts user={currentUser} />;
-      case 'daily-report':
-        return <DailyReport user={currentUser} />;
-      case 'monthly-report':
-        return <MonthlyReport user={currentUser} />;
-      case 'regulations':
-        return <RegulationSettings user={currentUser} />;
-      case 'users':
-        return <UserManagement user={currentUser} />;
-      case 'profile':
-        return <UserProfile user={currentUser} />;
-      default:
-        return <Dashboard user={currentUser} onNavigate={handleNavigate} />;
-    }
-  };
-
+export default function App() {
   return (
-    <Layout
-      user={currentUser}
-      currentScreen={currentScreen}
-      onNavigate={handleNavigate}
-      onLogout={handleLogout}
-    >
-      {renderScreen()}
-    </Layout>
+    <BrowserRouter>
+      <Routes>
+        {/* Public Route */}
+        <Route path="/login" element={<Login />} />
+        
+        {/* Protected Routes */}
+        <Route path="/" element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          
+          {/* Savings Routes */}
+          <Route path="savings">
+            <Route path="open" element={<OpenAccount />} />
+            <Route path="deposit" element={<Deposit />} />
+            <Route path="withdraw" element={<Withdraw />} />
+          </Route>
+          
+          {/* Search Route */}
+          <Route path="search" element={<SearchAccounts />} />
+          
+          {/* Reports Routes */}
+          <Route path="reports">
+            <Route path="daily" element={<DailyReport />} />
+            <Route path="monthly" element={<MonthlyReport />} />
+          </Route>
+          
+          {/* Regulations Route */}
+          <Route path="regulations" element={<RegulationSettings />} />
+          
+          {/* Users Route */}
+          <Route path="users" element={<UserManagement />} />
+          
+          {/* Profile Route */}
+          <Route path="profile" element={<UserProfile />} />
+        </Route>
+        
+        {/* Catch all - redirect to dashboard */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

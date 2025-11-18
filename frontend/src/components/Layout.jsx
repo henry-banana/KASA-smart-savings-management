@@ -1,4 +1,6 @@
 import React from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   LayoutDashboard, 
   UserPlus, 
@@ -27,21 +29,30 @@ import {
 } from "./ui/alert-dialog";
 import { BackgroundDecor } from './CuteComponents';
 
-export default function Layout({ user, currentScreen, onNavigate, onLogout, children }) {
+export default function Layout() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['teller', 'accountant', 'admin'] },
-    { id: 'open-account', label: 'Mở Sổ', icon: UserPlus, roles: ['teller', 'admin'] },
-    { id: 'deposit', label: 'Gửi Tiền', icon: ArrowDownToLine, roles: ['teller', 'admin'] },
-    { id: 'withdraw', label: 'Rút Tiền', icon: ArrowUpFromLine, roles: ['teller', 'admin'] },
-    { id: 'search', label: 'Tra Cứu', icon: Search, roles: ['teller', 'accountant', 'admin'] },
-    { id: 'daily-report', label: 'Báo Cáo Ngày', icon: FileText, roles: ['accountant', 'admin'] },
-    { id: 'monthly-report', label: 'Báo Cáo Tháng', icon: FileText, roles: ['accountant', 'admin'] },
-    { id: 'regulations', label: 'Quy Định', icon: Settings, roles: ['admin'] },
-    { id: 'users', label: 'Người Dùng', icon: Users, roles: ['admin'] },
-    { id: 'profile', label: 'Hồ Sơ', icon: UserCircle, roles: ['teller', 'accountant', 'admin'] },
+    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['teller', 'accountant', 'admin'] },
+    { path: '/savings/open', label: 'Mở Sổ', icon: UserPlus, roles: ['teller', 'admin'] },
+    { path: '/savings/deposit', label: 'Gửi Tiền', icon: ArrowDownToLine, roles: ['teller', 'admin'] },
+    { path: '/savings/withdraw', label: 'Rút Tiền', icon: ArrowUpFromLine, roles: ['teller', 'admin'] },
+    { path: '/search', label: 'Tra Cứu', icon: Search, roles: ['teller', 'accountant', 'admin'] },
+    { path: '/reports/daily', label: 'Báo Cáo Ngày', icon: FileText, roles: ['accountant', 'admin'] },
+    { path: '/reports/monthly', label: 'Báo Cáo Tháng', icon: FileText, roles: ['accountant', 'admin'] },
+    { path: '/regulations', label: 'Quy Định', icon: Settings, roles: ['admin'] },
+    { path: '/users', label: 'Người Dùng', icon: Users, roles: ['admin'] },
+    { path: '/profile', label: 'Hồ Sơ', icon: UserCircle, roles: ['teller', 'accountant', 'admin'] },
   ];
 
-  const visibleMenuItems = menuItems.filter(item => item.roles.includes(user.role));
+  const visibleMenuItems = menuItems.filter(item => item.roles.includes(user?.role));
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const roleColors = {
     teller: { bg: '#DFF9F4', text: '#059669', border: '#6EE7B7' },
@@ -49,7 +60,7 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
     admin: { bg: '#FFE8F0', text: '#BE185D', border: '#FBCFE8' }
   };
 
-  const currentRole = roleColors[user.role] || roleColors.teller;
+  const currentRole = roleColors[user?.role] || roleColors.teller;
 
   return (
     <div className="min-h-screen bg-[#F5F6FA] cute-bg-pattern relative">
@@ -79,11 +90,11 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
           <div className="space-y-1">
             {visibleMenuItems.map((item) => {
               const Icon = item.icon;
-              const isActive = currentScreen === item.id;
+              const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
               return (
                 <button
-                  key={item.id}
-                  onClick={() => onNavigate(item.id)}
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                     isActive 
                       ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm' 
@@ -121,9 +132,9 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-white text-xl font-semibold">
-                {menuItems.find(item => item.id === currentScreen)?.label || 'Dashboard'}
+                {menuItems.find(item => item.path === location.pathname)?.label || 'Dashboard'}
               </h2>
-              <p className="text-sm text-white/80 mt-0.5">Xin chào, {user.fullName} 👋</p>
+              <p className="text-sm text-white/80 mt-0.5">Xin chào, {user?.fullName} 👋</p>
             </div>
             
             <div className="flex items-center gap-4">
@@ -143,10 +154,10 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%)'
                   }}
                 >
-                  {user.fullName.charAt(0).toUpperCase()}
+                  {user?.fullName?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-white font-medium">{user.fullName}</p>
+                  <p className="text-sm text-white font-medium">{user?.fullName || 'User'}</p>
                   <span 
                     className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-1"
                     style={{
@@ -155,7 +166,7 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
                       border: `1px solid ${currentRole.border}`
                     }}
                   >
-                    {user.role?.toUpperCase()}
+                    {user?.role?.toUpperCase() || 'USER'}
                   </span>
                 </div>
               </div>
@@ -182,7 +193,7 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
                   <AlertDialogFooter>
                     <AlertDialogCancel className="rounded-xl">Hủy</AlertDialogCancel>
                     <AlertDialogAction 
-                      onClick={onLogout}
+                      onClick={handleLogout}
                       className="rounded-xl bg-[#00AEEF] hover:bg-[#0098D4]"
                     >
                       Xác Nhận
@@ -196,7 +207,7 @@ export default function Layout({ user, currentScreen, onNavigate, onLogout, chil
 
         {/* Page Content */}
         <main className="p-8">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>
