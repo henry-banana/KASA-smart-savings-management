@@ -2,7 +2,6 @@ import { USE_MOCK } from '@/config/app.config';
 import { authApi } from '@/api/authApi';
 import { mockAuthAdapter } from '@/mocks/adapters/authAdapter';
 
-// ✅ Bây giờ uncomment dòng này để dùng mock
 const authAdapter = USE_MOCK ? mockAuthAdapter : authApi;
 
 export const authService = {

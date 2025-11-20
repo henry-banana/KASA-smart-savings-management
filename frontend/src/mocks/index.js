@@ -1,5 +1,147 @@
-export { authMockData } from './authMockData';
-export { transactionMockData } from './transactionMockData';
-export { savingBookMockData } from './savingBookMockData';
-export { searchMockData } from './searchMockData';
-export { reportMockData } from './reportMockData';
+/**
+ * Centralized Mock Data Export
+ * 
+ * IMPORTANT: Response structure vs Data
+ * - responses/ = Response TEMPLATES + Builder functions (no hardcoded data)
+ * - data/ = Actual mock data entities
+ * 
+ * Usage:
+ * ```js
+ * import { mockCustomers, buildGetAllCustomersResponse } from '@/mocks';
+ * const response = buildGetAllCustomersResponse(mockCustomers);
+ * ```
+ */
+
+// ==================== RESPONSE TEMPLATES & BUILDERS ====================
+// These export BUILDER FUNCTIONS to create responses from data
+
+// Auth
+export { default as authResponses, buildLoginSuccessResponse } from './responses/auth.responses.js';
+
+// Customer
+export { 
+  default as customerResponses,
+  buildAddCustomerResponse,
+  buildGetAllCustomersResponse,
+  buildGetCustomerByIdResponse,
+  buildUpdateCustomerResponse,
+  buildDeleteCustomerResponse
+} from './responses/customer.responses.js';
+
+// SavingBook
+export {
+  default as savingBookResponses,
+  buildAddSavingBookResponse,
+  buildGetSavingBookByIdResponse,
+  buildUpdateSavingBookResponse,
+  buildDeleteSavingBookResponse,
+  buildCloseSavingBookResponse
+} from './responses/savingBook.responses.js';
+
+// Transaction
+export {
+  default as transactionResponses,
+  buildDepositTransactionResponse,
+  buildWithdrawTransactionResponse,
+  buildGetAllTransactionsResponse,
+  buildGetTransactionByIdResponse,
+  buildUpdateTransactionResponse,
+  buildDeleteTransactionResponse,
+  buildGetTransactionsByBookIdResponse
+} from './responses/transaction.responses.js';
+
+// TypeSaving
+export {
+  default as typeSavingResponses,
+  buildCreateTypeSavingResponse,
+  buildGetAllTypeSavingsResponse,
+  buildGetTypeSavingByIdResponse,
+  buildUpdateTypeSavingResponse,
+  buildDeleteTypeSavingResponse
+} from './responses/typeSaving.responses.js';
+
+// Reports (đề xuất cho backend - backend chưa có)
+export { default as dailyReportResponses, buildDailyReportResponse } from './responses/dailyReport.responses.js';
+export { default as monthlyReportResponses, buildMonthlyReportResponse } from './responses/monthlyReport.responses.js';
+export { default as customerReportResponses, buildCustomerSummaryResponse } from './responses/customerReport.responses.js';
+export { default as interestReportResponses, buildInterestReportResponse } from './responses/interestReport.responses.js';
+export { default as transactionRangeReportResponses, buildTransactionRangeReportResponse } from './responses/transactionRangeReport.responses.js';
+
+// ==================== MOCK DATA ENTITIES ====================
+// Base data entities matching database schema - USE THESE FOR ACTUAL DATA
+
+export { 
+  mockCustomers,
+  findCustomerById,
+  findCustomerByIdCard,
+  addCustomer,
+  updateCustomer,
+  deleteCustomer
+} from './data/customers.js';
+
+export {
+  mockTypeSavings,
+  findTypeSavingById,
+  findTypeSavingByName,
+  addTypeSaving,
+  updateTypeSaving,
+  deleteTypeSaving
+} from './data/typeSavings.js';
+
+export {
+  mockSavingBooks,
+  findSavingBookById,
+  findSavingBooksByCustomer,
+  findSavingBooksByType,
+  findActiveSavingBooks,
+  addSavingBook,
+  updateSavingBook,
+  updateSavingBookBalance,
+  closeSavingBook,
+  deleteSavingBook
+} from './data/savingBooks.js';
+
+export {
+  mockTransactions,
+  findTransactionById,
+  findTransactionsByBookId,
+  findTransactionsByType,
+  findTransactionsByDateRange,
+  addTransaction,
+  updateTransaction,
+  deleteTransaction,
+  generateTransactionId
+} from './data/transactions.js';
+
+export {
+  mockEmployees,
+  mockRoles,
+  findEmployeeById,
+  findEmployeesByRole,
+  addEmployee,
+  updateEmployee,
+  deleteEmployee,
+  findRoleById,
+  findRoleByName
+} from './data/employees.js';
+
+export {
+  mockUserAccounts,
+  findUserByUsername,
+  findUserByCredentials,
+  updateLastLogin,
+  addUserAccount,
+  updateUserPassword,
+  deleteUserAccount
+} from './data/users.js';
+
+// ==================== ADAPTERS ====================
+// API adapters for transforming between frontend and backend formats
+
+export * from './adapters/authAdapter.js';
+export * from './adapters/accountAdapter.js';
+export * from './adapters/savingBookAdapter.js';
+export * from './adapters/transactionAdapter.js';
+export * from './adapters/reportAdapter.js';
+
+
