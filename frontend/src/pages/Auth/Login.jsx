@@ -49,10 +49,14 @@ export default function Login() {
     setError('');
     try {
       // ✅ Use new authService through context
-      await authLogin({ username, password });
-      
-      // Navigate to dashboard after successful login
-      navigate('/dashboard');
+      const userData = await authLogin({ username, password });
+
+      // userData.role đã là: 'admin' | 'teller' | 'accountant'
+      if (userData?.role === 'admin') {
+        navigate('/regulations');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       console.error('Login error:', err);
       setError(err.message);
@@ -69,12 +73,22 @@ export default function Login() {
     };
     
     const creds = roleCredentials[role];
-    try {
-      await authLogin(creds);
+    setLoading(true);
+  setError('');
+  try {
+    const userData = await authLogin(creds);
+
+    if (userData?.role === 'admin') {
+      navigate('/regulations');
+    } else {
       navigate('/dashboard');
-    } catch (err) {
-      setError(err.message);
     }
+  } catch (err) {
+    console.error('Quick role login error:', err);
+    setError(err.message || 'Đăng nhập nhanh thất bại');
+  } finally {
+    setLoading(false);
+  }
   };
 
   const toggleShowPassword = () => {
@@ -83,45 +97,45 @@ export default function Login() {
   
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+      className="relative flex items-center justify-center min-h-screen p-4 overflow-hidden"
       style={{ background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 50%, #FFF7D6 100%)' }}
     >
       {/* 🎨 Cute Background Decorations */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <Sparkles className="absolute top-20 left-20 text-yellow-300 opacity-40" size={40} />
-        <Star className="absolute top-40 right-32 text-pink-300 opacity-30" size={32} fill="currentColor" />
-        <Heart className="absolute bottom-32 left-40 text-red-200 opacity-25" size={28} fill="currentColor" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <Sparkles className="absolute text-yellow-300 top-20 left-20 opacity-40" size={40} />
+        <Star className="absolute text-pink-300 top-40 right-32 opacity-30" size={32} fill="currentColor" />
+        <Heart className="absolute text-red-200 opacity-25 bottom-32 left-40" size={28} fill="currentColor" />
         <Sparkles className="absolute bottom-40 right-20 text-cyan-300 opacity-40" size={36} />
         
         {/* Floating circles */}
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-200 rounded-full opacity-10 blur-2xl animate-pulse" />
-        <div className="absolute bottom-1/3 right-1/3 w-40 h-40 bg-pink-200 rounded-full opacity-10 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute w-32 h-32 bg-blue-200 rounded-full top-1/4 left-1/4 opacity-10 blur-2xl animate-pulse" />
+        <div className="absolute w-40 h-40 bg-pink-200 rounded-full bottom-1/3 right-1/3 opacity-10 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
-      <Card className="w-full max-w-md shadow-2xl border-0 relative z-10 rounded-3xl overflow-hidden">
+      <Card className="relative z-10 w-full max-w-md overflow-hidden border-0 shadow-2xl rounded-3xl">
         {/* Gradient Top Bar */}
-        <div className="h-2 bg-gradient-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
+        <div className="h-2 bg-linear-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
         
-        <CardHeader className="space-y-4 text-center pt-8 pb-6 relative">
+        <CardHeader className="relative pt-8 pb-6 space-y-4 text-center">
           {/* Logo with cute design */}
-          <div className="mx-auto relative">
+          <div className="relative mx-auto">
             <div 
-              className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg relative overflow-hidden"
+              className="relative flex items-center justify-center w-20 h-20 overflow-hidden shadow-lg rounded-3xl"
               style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
-              <span className="text-white text-3xl font-bold">K</span>
-              <Sparkles className="absolute -top-1 -right-1 text-yellow-300 opacity-80" size={20} />
-              <Star className="absolute -bottom-1 -left-1 text-pink-300 opacity-60" size={16} fill="currentColor" />
+              <span className="text-3xl font-bold text-white">K</span>
+              <Sparkles className="absolute text-yellow-300 -top-1 -right-1 opacity-80" size={20} />
+              <Star className="absolute text-pink-300 -bottom-1 -left-1 opacity-60" size={16} fill="currentColor" />
             </div>
             
             {/* Decorative elements around logo */}
-            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-pink-200 opacity-60 animate-pulse" />
-            <div className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-cyan-200 opacity-60 animate-pulse" style={{ animationDelay: '0.5s' }} />
+            <div className="absolute w-6 h-6 bg-pink-200 rounded-full -top-2 -right-2 opacity-60 animate-pulse" />
+            <div className="absolute w-4 h-4 rounded-full -bottom-2 -left-2 bg-cyan-200 opacity-60 animate-pulse" style={{ animationDelay: '0.5s' }} />
           </div>
 
           <div>
             <CardTitle 
-              className="text-3xl mb-2"
+              className="mb-2 text-3xl"
               style={{ 
                 background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)',
                 WebkitBackgroundClip: 'text',
@@ -134,17 +148,17 @@ export default function Login() {
             <CardDescription className="text-base">
               Savings Management System
             </CardDescription>
-            <h3 className="text-gray-700 pt-3 font-medium">Log in to KASA ✨</h3>
+            <h3 className="pt-3 font-medium text-gray-700">Log in to KASA ✨</h3>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-6 px-8 pb-8">
+        <CardContent className="px-8 pb-8 space-y-6">
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4" aria-busy={loading}>
             <div className="space-y-2">
               <Label htmlFor="username" className="text-gray-700">Tên đăng nhập</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <User className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2" size={18} />
                 <Input
                   id="username"
                   type="text"
@@ -163,7 +177,7 @@ export default function Login() {
             <div className="space-y-2">
               <Label htmlFor="password" className="text-gray-700">Mật khẩu</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                <Lock className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2" size={18} />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -193,7 +207,7 @@ export default function Login() {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+              <div className="p-3 border border-red-200 bg-red-50 rounded-xl">
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
@@ -227,7 +241,7 @@ export default function Login() {
                   <span className="w-full border-t border-gray-200" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-3 text-gray-500 font-medium rounded-full">
+                  <span className="px-3 font-medium text-gray-500 bg-white rounded-full">
                     hoặc chọn vai trò (dev mode) ⚙️
                   </span>
                 </div>
@@ -242,7 +256,7 @@ export default function Login() {
                   style={{ background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)' }}
                 >
                   <div className="text-center">
-                    <div className="text-2xl mb-1">🏦</div>
+                    <div className="mb-1 text-2xl">🏦</div>
                     <p className="text-xs font-semibold text-[#1A4D8F]">Teller</p>
                   </div>
                 </button>
@@ -254,7 +268,7 @@ export default function Login() {
                   style={{ background: 'linear-gradient(135deg, #DFF9F4 0%, #FFF7D6 100%)' }}
                 >
                   <div className="text-center">
-                    <div className="text-2xl mb-1">📊</div>
+                    <div className="mb-1 text-2xl">📊</div>
                     <p className="text-xs font-semibold text-[#00AEEF]">Accountant</p>
                   </div>
                 </button>
@@ -266,17 +280,17 @@ export default function Login() {
                   style={{ background: 'linear-gradient(135deg, #FFE8F0 0%, #F3E8FF 100%)' }}
                 >
                   <div className="text-center">
-                    <div className="text-2xl mb-1">👑</div>
+                    <div className="mb-1 text-2xl">👑</div>
                     <p className="text-xs font-semibold text-[#BE185D]">Admin</p>
                   </div>
                 </button>
               </div>
 
               {/* Dev Mode Indicator */}
-              <div className="text-center pt-2">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-2 rounded-full border border-purple-100">
+              <div className="pt-2 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 border border-purple-100 rounded-full bg-linear-to-r from-purple-50 to-pink-50">
                   <Sparkles size={14} className="text-purple-400" />
-                  <p className="text-xs text-purple-600 font-medium">
+                  <p className="text-xs font-medium text-purple-600">
                     Dev Mode — Nút vai trò để test
                   </p>
                 </div>
@@ -295,7 +309,7 @@ export default function Login() {
       </Card>
 
       {/* Bottom decoration */}
-      <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F] opacity-50" />
+      <div className="absolute bottom-0 left-0 right-0 h-2 bg-linear-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F] opacity-50" />
     </div>
   );
 }

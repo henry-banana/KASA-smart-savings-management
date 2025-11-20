@@ -13,6 +13,7 @@ import MonthlyReport from './pages/Reports/MonthlyReport';
 import RegulationSettings from './pages/Regulations/RegulationSettings';
 import UserManagement from './pages/Users/UserManagement';
 import UserProfile from './pages/Profile/UserProfile';
+import NotFound from './pages/Errors/NotFound';
 
 // Protected Route wrapper
 function ProtectedRoute({ children }) {
@@ -20,8 +21,8 @@ function ProtectedRoute({ children }) {
   
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-12 h-12 border-b-2 border-blue-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -41,11 +42,14 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         
         {/* Protected Routes */}
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Layout />
-          </ProtectedRoute>
-        }>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           
@@ -73,10 +77,13 @@ export default function App() {
           
           {/* Profile Route */}
           <Route path="profile" element={<UserProfile />} />
+
+          {/* 🔥 404 cho các đường dẫn sai nhưng vẫn nằm trong Layout */}
+          <Route path="*" element={<NotFound />} />
         </Route>
-        
-        {/* Catch all - redirect to dashboard */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
+        {/* Catch all ngoài Layout → đưa về login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );
