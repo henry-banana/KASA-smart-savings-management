@@ -1,9 +1,11 @@
 import { 
-  mockAccounts, 
-  findAccountById, 
-  addAccount, 
-  updateAccountBalance 
-} from '../data/accounts';
+  mockSavingBooks,
+  findSavingBookById, 
+  addSavingBook, 
+  updateSavingBookBalance 
+} from '../data/savingBooks.js';
+import { mockCustomers, findCustomerById } from '../data/customers.js';
+import { mockTypeSavings, findTypeSavingById } from '../data/typeSavings.js';
 import { randomDelay, generateId } from '../utils';
 import { logger } from '@/utils/logger';
 
@@ -12,41 +14,90 @@ export const mockAccountAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Get Account', { id });
     
-    const account = findAccountById(id);
-    if (!account) {
+    const savingBook = findSavingBookById(id);
+    if (!savingBook) {
       throw new Error('Không tìm thấy sổ tiết kiệm');
     }
     
-    return account;
+    const customer = findCustomerById(savingBook.customerid);
+    const typeSaving = findTypeSavingById(savingBook.typesavingid);
+    
+    // Map to old format for compatibility
+    return {
+      id: savingBook.bookid,
+      customerId: savingBook.customerid,
+      customerName: customer?.fullname,
+      idCard: customer?.idcard,
+      address: customer?.address,
+      type: typeSaving?.typename,
+      balance: savingBook.balance,
+      openDate: savingBook.opendate,
+      status: savingBook.status
+    };
   },
 
   async createAccount(accountData) {
     await randomDelay();
     logger.info('🎭 Mock Create Account', { customerName: accountData.customer_name });
     
-    const newAccount = {
-      id: generateId('SA'),
-      customerId: generateId('CUST'),
-      customer_name: accountData.customer_name,
-      customerName: accountData.customer_name,
-      id_card: accountData.id_card,
-      idCard: accountData.id_card,
-      address: accountData.address,
-      savings_type: accountData.savings_type,
-      type: accountData.savings_type,
+    // Find or create customer
+    let customer = mockCustomers.find(c => c.idcard === accountData.id_card);
+    if (!customer) {
+      customer = {
+        customerid: generateId('CUST'),
+        fullname: accountData.customer_name,
+        idcard: accountData.id_card,
+        address: accountData.address,
+        phone: '',
+        email: '',
+        dateofbirth: ''
+      };
+      mockCustomers.push(customer);
+    }
+    
+    // Find typesaving
+    const typeSaving = mockTypeSavings.find(ts => ts.typename === accountData.savings_type);
+    
+    const newSavingBook = {
+      bookid: generateId('SB'),
+      customerid: customer.customerid,
+      typesavingid: typeSaving?.typesavingid || 'TS001',
+      opendate: accountData.open_date,
+      maturitydate: null,
+      initialdeposit: parseFloat(accountData.initial_deposit),
       balance: parseFloat(accountData.initial_deposit),
-      open_date: accountData.open_date,
-      openDate: accountData.open_date,
+      interestrate: typeSaving?.interestrate || 0.02,
       status: 'active'
     };
     
-    addAccount(newAccount);
-    return newAccount;
+    addSavingBook(newSavingBook);
+    
+    // Return in old format
+    return {
+      id: newSavingBook.bookid,
+      customerId: customer.customerid,
+      customer_name: customer.fullname,
+      customerName: customer.fullname,
+      id_card: customer.idcard,
+      idCard: customer.idcard,
+      address: customer.address,
+      savings_type: typeSaving?.typename,
+      type: typeSaving?.typename,
+      balance: newSavingBook.balance,
+      open_date: newSavingBook.opendate,
+      openDate: newSavingBook.opendate,
+      status: 'active'
+    };
   },
 
   async deposit(accountId, amount) {
     await randomDelay();
     logger.info('🎭 Mock Deposit', { accountId, amount });
+    
+    const result = updateSavingBookBalance(accountId, amount);
+    if (!result) {
+      throw new Error('Không tìm thấy sổ tiết kiệm');
+    }
     
     const account = findAccountById(accountId);
     if (!account) {
