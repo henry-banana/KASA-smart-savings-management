@@ -22,7 +22,7 @@ class TransactionService {
         transactiontype: type,
         note,
         tellerid
-      });
+      });  
     }else{
       // tạo giao dịch mới
       newTransaction = await transactionRepository.create({
@@ -43,9 +43,6 @@ class TransactionService {
     }else{
       throw new Error("Teller ID is not exists.")
     }
-
-    
-
 
     // // có thể cập nhật số dư nếu nghiệp vụ yêu cầu
     // if (type === "Deposit") {

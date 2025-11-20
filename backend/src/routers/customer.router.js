@@ -5,9 +5,14 @@ import {
   getCustomerById,
   updateCustomer,
   deleteCustomer,
+  searchCustomer,
 } from "../controllers/Customer/customer.controller.js";
 
 const router = express.Router();
+
+// Search customer (by keyword: id or name)
+// GET /api/customer/search?keyword=...
+router.get("/search", searchCustomer);
 
 // Thêm khách hàng mới
 // POST /api/customer/add
