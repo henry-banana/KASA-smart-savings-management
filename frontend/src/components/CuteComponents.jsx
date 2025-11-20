@@ -74,8 +74,14 @@ export function ReceiptIllustration({ size = 120, className = "" }) {
   );
 }
 
-// 💫 Cute Empty State Component
-export function CuteEmptyState({ icon = 'piggy', title, description, action }) {
+// 💫 Cute Empty State Component (Enhanced)
+export function CuteEmptyState({ 
+  icon = 'piggy', 
+  title, 
+  description, 
+  action,
+  className = ""
+}) {
   const illustrations = {
     piggy: <PiggyBankIllustration />,
     coins: <CoinsIllustration />,
@@ -83,11 +89,21 @@ export function CuteEmptyState({ icon = 'piggy', title, description, action }) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-      {illustrations[icon]}
-      <h3 className="mt-6 text-lg text-gray-700">{title}</h3>
-      <p className="mt-2 text-sm text-gray-500 max-w-sm">{description}</p>
-      {action && <div className="mt-6">{action}</div>}
+    <div className={`flex flex-col items-center justify-center py-16 px-4 text-center animate-in fade-in-50 duration-500 ${className}`}>
+      <div className="animate-in zoom-in-95 duration-700">
+        {illustrations[icon]}
+      </div>
+      <h3 className="mt-6 text-lg font-semibold text-gray-700 animate-in slide-in-from-bottom-4 duration-500 delay-200">
+        {title}
+      </h3>
+      <p className="mt-2 text-sm text-gray-500 max-w-sm animate-in slide-in-from-bottom-4 duration-500 delay-300">
+        {description}
+      </p>
+      {action && (
+        <div className="mt-6 animate-in slide-in-from-bottom-4 duration-500 delay-500">
+          {action}
+        </div>
+      )}
     </div>
   );
 }
@@ -133,11 +149,11 @@ export function CuteBadge({ children, variant = 'primary', className = "" }) {
 export function CuteStatCard({ title, value, change, trend, icon, gradient, iconColor }) {
   return (
     <div 
-      className="relative overflow-hidden rounded-2xl p-6 bg-white shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 cute-card-hover"
+      className="relative overflow-hidden rounded-2xl p-6 bg-white border border-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-default"
     >
       {/* Decorative Background */}
       <div 
-        className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-5 -mr-16 -mt-16"
+        className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-5 -mr-16 -mt-16 transition-opacity duration-300 group-hover:opacity-10"
         style={{ background: gradient }}
       />
       <StarDecor className="top-3 right-3" />
@@ -155,7 +171,7 @@ export function CuteStatCard({ title, value, change, trend, icon, gradient, icon
               <span className={`text-sm ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
                 {change}
               </span>
-              <span className="text-sm text-gray-500">từ tuần trước</span>
+              <span className="text-sm text-gray-500">from last week</span>
             </div>
           )}
         </div>

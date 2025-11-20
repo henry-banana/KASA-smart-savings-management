@@ -24,7 +24,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const stats = [
     {
-      title: 'Tổng Số Sổ Hoạt Động',
+      title: 'Active Accounts',
       value: '1,247',
       change: '+12.5%',
       trend: 'up',
@@ -33,7 +33,7 @@ export default function Dashboard() {
       iconColor: '#ffffff'
     },
     {
-      title: 'Tổng Tiền Gửi Hôm Nay',
+      title: 'Deposits Today',
       value: '₫45.28M',
       change: '+8.2%',
       trend: 'up',
@@ -42,7 +42,7 @@ export default function Dashboard() {
       iconColor: '#ffffff'
     },
     {
-      title: 'Tổng Tiền Rút Hôm Nay',
+      title: 'Withdrawals Today',
       value: '₫23.15M',
       change: '-3.1%',
       trend: 'down',
@@ -51,7 +51,7 @@ export default function Dashboard() {
       iconColor: '#ffffff'
     },
     {
-      title: 'Khách Hàng Hoạt Động',
+      title: 'Active Customers',
       value: '892',
       change: '+5.4%',
       trend: 'up',
@@ -72,14 +72,14 @@ export default function Dashboard() {
   ];
 
   const accountTypeData = [
-    { name: 'Không Kỳ Hạn', value: 45, color: '#1A4D8F' },
-    { name: '3 Tháng', value: 30, color: '#00AEEF' },
-    { name: '6 Tháng', value: 25, color: '#60A5FA' }
+    { name: 'No Term', value: 45, color: '#1A4D8F' },
+    { name: '3 Months', value: 30, color: '#00AEEF' },
+    { name: '6 Months', value: 25, color: '#60A5FA' }
   ];
 
   const quickActions = [
     { 
-      label: 'Mở Sổ Tiết Kiệm', 
+      label: 'Open Account', 
       path: '/savings/open', 
       gradient: 'linear-gradient(135deg, #1A4D8F 0%, #2563A8 100%)',
       icon: <PiggyBank size={32} />,
@@ -87,7 +87,7 @@ export default function Dashboard() {
       roles: ['teller', 'admin'] 
     },
     { 
-      label: 'Gửi Tiền', 
+      label: 'Make Deposit', 
       path: '/savings/deposit', 
       gradient: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)',
       icon: <Coins size={32} />,
@@ -95,7 +95,7 @@ export default function Dashboard() {
       roles: ['teller', 'admin'] 
     },
     { 
-      label: 'Rút Tiền', 
+      label: 'Make Withdrawal', 
       path: '/savings/withdraw', 
       gradient: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)',
       icon: <Receipt size={32} />,
@@ -103,7 +103,7 @@ export default function Dashboard() {
       roles: ['teller', 'admin'] 
     },
     { 
-      label: 'Tra Cứu Sổ', 
+      label: 'Search Accounts', 
       path: '/search', 
       gradient: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
       icon: <Search size={32} />,
@@ -111,7 +111,7 @@ export default function Dashboard() {
       roles: ['teller', 'accountant', 'admin'] 
     },
     { 
-      label: 'Báo Cáo Ngày', 
+      label: 'Daily Report', 
       path: '/reports/daily', 
       gradient: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
       icon: <FileText size={32} />,
@@ -119,7 +119,7 @@ export default function Dashboard() {
       roles: ['accountant', 'admin'] 
     },
     { 
-      label: 'Báo Cáo Tháng', 
+      label: 'Monthly Report', 
       path: '/reports/monthly', 
       gradient: 'linear-gradient(135deg, #EC4899 0%, #F472B6 100%)',
       icon: <FileText size={32} />,
@@ -146,7 +146,7 @@ export default function Dashboard() {
           <StarDecor className="top-4 right-8" />
           <CardTitle className="flex items-center gap-2 relative z-10">
             <Sparkles size={20} className="text-cyan-500" />
-            Chức Năng Nhanh
+            Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
@@ -172,7 +172,7 @@ export default function Dashboard() {
                     <span className="text-3xl">{action.emoji}</span>
                   </div>
                   <h4 className="text-white font-semibold text-lg">{action.label}</h4>
-                  <p className="text-white/80 text-sm mt-1">Nhấn để truy cập</p>
+                  <p className="text-white/80 text-sm mt-1">Click to access</p>
                 </div>
               </button>
             ))}
@@ -187,7 +187,7 @@ export default function Dashboard() {
           <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
             <CardTitle className="flex items-center gap-2">
               <TrendingUp size={20} className="text-[#1A4D8F]" />
-              Gửi & Rút Tiền Tuần Này
+              Deposits & Withdrawals This Week
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
@@ -201,8 +201,8 @@ export default function Dashboard() {
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                 />
                 <Legend />
-                <Bar dataKey="deposits" fill="#1A4D8F" name="Gửi Tiền" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="withdrawals" fill="#00AEEF" name="Rút Tiền" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="deposits" fill="#1A4D8F" name="Deposits" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="withdrawals" fill="#00AEEF" name="Withdrawals" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -263,9 +263,9 @@ export default function Dashboard() {
         <CardContent className="p-6">
           <div className="space-y-3">
             {[
-              { id: 'SA00123', customer: 'Nguyễn Văn A', type: 'Gửi tiền', amount: '+₫5,000,000', time: '10:30 SA', emoji: '💰', color: '#00AEEF' },
-              { id: 'SA00124', customer: 'Trần Thị B', type: 'Rút tiền', amount: '-₫2,000,000', time: '10:15 SA', emoji: '💵', color: '#F59E0B' },
-              { id: 'SA00125', customer: 'Lê Văn C', type: 'Gửi tiền', amount: '+₫10,000,000', time: '09:45 SA', emoji: '💰', color: '#00AEEF' },
+              { id: 'SA00123', customer: 'Nguyễn Văn A', type: 'Deposit', amount: '+₫5,000,000', time: '10:30 SA', emoji: '💰', color: '#00AEEF' },
+              { id: 'SA00124', customer: 'Trần Thị B', type: 'Withdrawal', amount: '-₫2,000,000', time: '10:15 SA', emoji: '💵', color: '#F59E0B' },
+              { id: 'SA00125', customer: 'Lê Văn C', type: 'Deposit', amount: '+₫10,000,000', time: '09:45 SA', emoji: '💰', color: '#00AEEF' },
               { id: 'SA00126', customer: 'Phạm Thị D', type: 'Mở sổ mới', amount: '₫1,000,000', time: '09:30 SA', emoji: '🏦', color: '#1A4D8F' }
             ].map((transaction, index) => (
               <div 
@@ -286,8 +286,8 @@ export default function Dashboard() {
                 </div>
                 <div className="text-right">
                   <p className={`font-semibold ${
-                    transaction.type === 'Gửi tiền' ? 'text-green-600' : 
-                    transaction.type === 'Rút tiền' ? 'text-red-600' : 
+                    transaction.type === 'Deposit' ? 'text-green-600' : 
+                    transaction.type === 'Withdrawal' ? 'text-red-600' : 
                     'text-gray-900'
                   }`}>
                     {transaction.amount}
