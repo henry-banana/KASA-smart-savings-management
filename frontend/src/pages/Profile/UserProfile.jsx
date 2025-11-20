@@ -81,30 +81,30 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="max-w-4xl space-y-6">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
       {/* Profile Header */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardContent className="p-8 bg-gradient-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
-          <StarDecor className="top-4 right-12" />
-          <Sparkles className="absolute top-6 right-32 text-purple-400 opacity-50" size={24} />
+      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+        <CardContent className="p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
+          <StarDecor className="top-4 right-8 sm:right-12" />
+          <Sparkles className="absolute top-6 right-20 sm:right-32 text-purple-400 opacity-50" size={20} />
           
-          <div className="flex items-center gap-6 relative z-10">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 relative z-10">
             <div 
-              className="flex items-center justify-center w-24 h-24 rounded-full shadow-xl border-4 border-white"
+              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-xl border-4 border-white flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              <UserCircle size={64} className="text-white" />
+              <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
             </div>
-            <div className="flex-1">
-              <h2 className="mb-2 text-3xl font-bold text-gray-900">{user.fullName}</h2>
-              <div className="flex items-center gap-3 mb-2">
+            <div className="flex-1 text-center sm:text-left min-w-0">
+              <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-gray-900 truncate">{user.fullName}</h2>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
                 <Badge className={`${getRoleBadgeColor(user.role)} border font-medium`}>
-                  {user.role === 'admin' ? '🔑 Quản trị viên' : 
-                   user.role === 'accountant' ? '💼 Kế toán' : 
-                   '💰 Thu ngân'}
+                  {user.role === 'admin' ? '🔑 Administrator' : 
+                   user.role === 'accountant' ? '💼 Accountant' : 
+                   '💰 Teller'}
                 </Badge>
                 <Badge className="text-green-700 bg-green-100 border-green-200 border font-medium">
-                  ✓ Hoạt động
+                  ✓ Active
                 </Badge>
               </div>
               <p className="text-sm text-gray-700">@{user.username}</p>
@@ -118,15 +118,15 @@ export default function UserProfile() {
         <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-xl">Thông Tin Liên Hệ</CardTitle>
-              <CardDescription>Chi tiết liên hệ cá nhân của bạn</CardDescription>
+              <CardTitle className="text-xl">Contact Information</CardTitle>
+              <CardDescription>Your personal contact details</CardDescription>
             </div>
             <Button 
               onClick={() => setShowEditContact(true)}
               variant="outline"
               className="rounded-xl border-gray-200"
             >
-              Chỉnh Sửa
+              Edit
             </Button>
           </div>
         </CardHeader>
@@ -147,7 +147,7 @@ export default function UserProfile() {
                 <Phone size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700">Số Điện Thoại</p>
+                <p className="text-sm font-medium text-gray-700">Phone Number</p>
                 <p className="text-sm text-gray-900">{contactInfo.phone}</p>
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function UserProfile() {
                 <MapPin size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700">Địa Chỉ</p>
+                <p className="text-sm font-medium text-gray-700">Address</p>
                 <p className="text-sm text-gray-900">{contactInfo.address}</p>
               </div>
             </div>
@@ -168,8 +168,8 @@ export default function UserProfile() {
       {/* Security Settings */}
       <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
-          <CardTitle className="text-xl">Cài Đặt Bảo Mật</CardTitle>
-          <CardDescription>Quản lý bảo mật tài khoản của bạn</CardDescription>
+          <CardTitle className="text-xl">Security Settings</CardTitle>
+          <CardDescription>Manage your account security</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
@@ -179,8 +179,8 @@ export default function UserProfile() {
                   <Lock size={20} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">Mật Khẩu</p>
-                  <p className="text-sm text-gray-600">Đã thay đổi 30 ngày trước</p>
+                  <p className="text-sm font-medium text-gray-900">Password</p>
+                  <p className="text-sm text-gray-600">Changed 30 days ago</p>
                 </div>
               </div>
               <Button 
@@ -188,7 +188,7 @@ export default function UserProfile() {
                 className="rounded-xl bg-white border border-yellow-200 hover:bg-yellow-50"
                 variant="outline"
               >
-                Đổi Mật Khẩu
+                Change Password
               </Button>
             </div>
           </div>
@@ -198,37 +198,37 @@ export default function UserProfile() {
       {/* Account Details */}
       <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
-          <CardTitle className="text-xl">Chi Tiết Tài Khoản</CardTitle>
+          <CardTitle className="text-xl">Account Details</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Tên Đăng Nhập</p>
+              <p className="mb-1 text-sm font-medium text-gray-600">Username</p>
               <p className="text-sm font-semibold text-gray-900">{user.username}</p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">ID Người Dùng</p>
+              <p className="mb-1 text-sm font-medium text-gray-600">User ID</p>
               <p className="text-sm font-semibold text-gray-900">U{Math.floor(1000 + Math.random() * 9000)}</p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Tài Khoản Được Tạo</p>
-              <p className="text-sm font-semibold text-gray-900">15 Tháng 1, 2025</p>
+              <p className="mb-1 text-sm font-medium text-gray-600">Account Created</p>
+              <p className="text-sm font-semibold text-gray-900">January 15, 2025</p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Đăng Nhập Lần Cuối</p>
-              <p className="text-sm font-semibold text-gray-900">Hôm nay lúc 09:30 AM</p>
+              <p className="mb-1 text-sm font-medium text-gray-600">Last Login</p>
+              <p className="text-sm font-semibold text-gray-900">Today at 09:30 AM</p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Phòng Ban</p>
+              <p className="mb-1 text-sm font-medium text-gray-600">Department</p>
               <p className="text-sm font-semibold text-gray-900 capitalize">
-                {user.role === 'admin' ? 'Quản trị' : 
-                 user.role === 'accountant' ? 'Kế toán' : 
-                 'Thu ngân'}
+                {user.role === 'admin' ? 'Administration' : 
+                 user.role === 'accountant' ? 'Accounting' : 
+                 'Teller'}
               </p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Trạng Thái</p>
-              <Badge className="text-green-700 bg-green-100 border-green-200 border">✓ Hoạt động</Badge>
+              <p className="mb-1 text-sm font-medium text-gray-600">Status</p>
+              <Badge className="text-green-700 bg-green-100 border-green-200 border">✓ Active</Badge>
             </div>
           </div>
         </CardContent>
@@ -270,45 +270,45 @@ export default function UserProfile() {
                 <Lock size={24} className="text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl">Đổi Mật Khẩu</DialogTitle>
-                <DialogDescription>Cập nhật mật khẩu tài khoản của bạn</DialogDescription>
+                <DialogTitle className="text-xl">Change Password</DialogTitle>
+                <DialogDescription>Update your account password</DialogDescription>
               </div>
             </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPassword" className="text-gray-700">Mật Khẩu Hiện Tại</Label>
+              <Label htmlFor="currentPassword" className="text-gray-700">Current Password</Label>
               <Input
                 id="currentPassword"
                 type="password"
                 value={passwordData.currentPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                placeholder="Nhập mật khẩu hiện tại"
+                placeholder="Enter current password"
                 className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="newPassword" className="text-gray-700">Mật Khẩu Mới</Label>
+              <Label htmlFor="newPassword" className="text-gray-700">New Password</Label>
               <Input
                 id="newPassword"
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                placeholder="Nhập mật khẩu mới"
+                placeholder="Enter new password"
                 className="h-11 rounded-xl border-gray-200"
               />
-              <p className="text-xs text-gray-500">Phải có ít nhất 6 ký tự</p>
+              <p className="text-xs text-gray-500">Must be at least 6 characters</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-gray-700">Xác Nhận Mật Khẩu Mới</Label>
+              <Label htmlFor="confirmPassword" className="text-gray-700">Confirm New Password</Label>
               <Input
                 id="confirmPassword"
                 type="password"
                 value={passwordData.confirmPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                placeholder="Xác nhận mật khẩu mới"
+                placeholder="Confirm new password"
                 className="h-11 rounded-xl border-gray-200"
               />
             </div>
@@ -319,7 +319,7 @@ export default function UserProfile() {
               className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Đổi Mật Khẩu
+              Change Password
             </Button>
             <Button 
               onClick={() => {
@@ -329,7 +329,7 @@ export default function UserProfile() {
               variant="outline"
               className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Hủy
+              Cancel
             </Button>
           </div>
         </DialogContent>
@@ -347,14 +347,14 @@ export default function UserProfile() {
                 <Mail size={24} className="text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl">Chỉnh Sửa Thông Tin Liên Hệ</DialogTitle>
-                <DialogDescription>Cập nhật chi tiết liên hệ của bạn</DialogDescription>
+                <DialogTitle className="text-xl">Edit Contact Information</DialogTitle>
+                <DialogDescription>Update your contact details</DialogDescription>
               </div>
             </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700">Địa Chỉ Email</Label>
+              <Label htmlFor="email" className="text-gray-700">Email Address</Label>
               <Input
                 id="email"
                 type="email"
@@ -365,7 +365,7 @@ export default function UserProfile() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-gray-700">Số Điện Thoại</Label>
+              <Label htmlFor="phone" className="text-gray-700">Phone Number</Label>
               <Input
                 id="phone"
                 type="tel"
@@ -376,7 +376,7 @@ export default function UserProfile() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address" className="text-gray-700">Địa Chỉ</Label>
+              <Label htmlFor="address" className="text-gray-700">Address</Label>
               <Input
                 id="address"
                 value={contactInfo.address}
@@ -391,14 +391,14 @@ export default function UserProfile() {
               className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Cập Nhật Thông Tin
+              Update Information
             </Button>
             <Button 
               onClick={() => setShowEditContact(false)}
               variant="outline"
               className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Hủy
+              Cancel
             </Button>
           </div>
         </DialogContent>
@@ -416,7 +416,7 @@ export default function UserProfile() {
                 <CheckCircle2 size={48} className="text-white" />
               </div>
             </div>
-            <DialogTitle className="text-center text-2xl">Thành Công!</DialogTitle>
+            <DialogTitle className="text-center text-2xl">Success!</DialogTitle>
             <DialogDescription className="text-center text-base">
               {successMessage}
             </DialogDescription>
@@ -426,7 +426,7 @@ export default function UserProfile() {
             className="w-full h-12 text-white rounded-xl shadow-lg font-medium"
             style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
           >
-            Đóng
+            Close
           </Button>
         </DialogContent>
       </Dialog>

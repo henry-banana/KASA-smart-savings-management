@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
+import { MonthPicker } from '../../components/ui/month-picker';
 import { Label } from '../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import {
   Table,
   TableBody,
@@ -12,34 +12,56 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { FileDown, Calendar, TrendingUp, Users, Award, BarChart3, Sparkles } from 'lucide-react';
+import { FileDown, Calendar, TrendingUp, Users, Award, BarChart3, Sparkles, Search } from 'lucide-react';
 import { StarDecor, SparkleDecor } from '../../components/CuteComponents';
 import { getMonthlyReport } from '../../services/reportService';
 
 export default function MonthlyReport() {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-  
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth.toString());
-  const [selectedYear, setSelectedYear] = useState(currentYear.toString());
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchReport = async () => {
-      setLoading(true);
-      try {
-        const response = await getMonthlyReport(Number(selectedMonth), Number(selectedYear));
-        setReportData(response.data);
-      } catch (err) {
-        console.error('Monthly report error:', err);
-      } finally {
-        setLoading(false);
+  // Check if selected month is current month or in the future
+  const isMonthInvalid = () => {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const selectedMonth = selectedDate.getMonth();
+    const selectedYear = selectedDate.getFullYear();
+    
+    return selectedYear > currentYear || 
+           (selectedYear === currentYear && selectedMonth >= currentMonth);
+  };
+
+  // Generate report function - only called when user clicks button
+  const handleGenerateReport = async () => {
+    if (isMonthInvalid()) {
+      setError('Cannot generate report for current or future months. Please select a past month.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const month = selectedDate.getMonth() + 1;
+      const year = selectedDate.getFullYear();
+      const response = await getMonthlyReport(month, year);
+      
+      if (!response.success || !response.data) {
+        setError('No data found for the selected month. Please try another month.');
+        setReportData(null);
+        return;
       }
-    };
-
-    fetchReport();
-  }, [selectedMonth, selectedYear]);
+      
+      setReportData(response.data);
+    } catch (err) {
+      console.error('Monthly report error:', err);
+      setError('Failed to generate report. Please try again or select a different month.');
+      setReportData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Mock breakdown by type - can be extended later when backend provides detailed breakdown
   const typeBreakdown = [
@@ -83,117 +105,101 @@ export default function MonthlyReport() {
   };
 
   const handleExport = () => {
-    alert(`Exporting Monthly Report for ${selectedMonth}/${selectedYear} to PDF...`);
+    const month = selectedDate.getMonth() + 1;
+    const year = selectedDate.getFullYear();
+    alert(`Exporting Monthly Report for ${month}/${year} to PDF...`);
   };
 
-  if (loading || !reportData) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-      </div>
-    );
-  }
-
-  const months = [
-    { value: '1', label: 'Tháng 1' },
-    { value: '2', label: 'Tháng 2' },
-    { value: '3', label: 'Tháng 3' },
-    { value: '4', label: 'Tháng 4' },
-    { value: '5', label: 'Tháng 5' },
-    { value: '6', label: 'Tháng 6' },
-    { value: '7', label: 'Tháng 7' },
-    { value: '8', label: 'Tháng 8' },
-    { value: '9', label: 'Tháng 9' },
-    { value: '10', label: 'Tháng 10' },
-    { value: '11', label: 'Tháng 11' },
-    { value: '12', label: 'Tháng 12' }
-  ];
-
-  const years = Array.from({ length: 5 }, (_, i) => (currentYear - 2 + i).toString());
-
   return (
-    <div className="space-y-6 relative">
-      {/* Decorative elements */}
-      <SparkleDecor className="top-4 right-12" />
-      <StarDecor className="top-8 left-24" />
-      
+    <div className="space-y-4 sm:space-y-6">
       {/* Report Header */}
-      <Card className="relative overflow-hidden border-0 shadow-lg">
-        <div 
-          className="absolute inset-0 opacity-10"
-          style={{
-            background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)'
-          }}
-        />
-        <CardHeader className="relative">
+      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 border-b border-gray-100 pb-6">
           <div className="flex items-center gap-3 mb-2">
             <div 
-              className="p-3 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)' }}
+              className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
-              <BarChart3 className="text-white" size={24} />
+              <Calendar size={24} className="text-white" />
             </div>
-            <div>
-              <CardTitle className="text-2xl bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                Báo Cáo Tháng (BM5.2)
+            <div className="flex-1">
+              <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
+                <span>📅</span>
+                Monthly Report (BM5.2)
               </CardTitle>
-              <CardDescription className="text-base">
-                Xem hoạt động tài khoản theo tháng và loại tiết kiệm
+              <CardDescription className="text-sm sm:text-base">
+                View monthly account activity and trends
               </CardDescription>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="relative">
-          <div className="flex items-end gap-4">
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="month" className="text-gray-700 font-medium">
-                <Calendar size={16} className="inline mr-2" />
-                Tháng
-              </Label>
-              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                <SelectTrigger className="rounded-xl border-2 border-cyan-100 focus:border-cyan-400">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {months.map(month => (
-                    <SelectItem key={month.value} value={month.value}>
-                      {month.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row items-end gap-4">
+            <div className="flex-1 w-full space-y-2">
+              <Label htmlFor="reportMonth">Select Month</Label>
+              <MonthPicker
+                date={selectedDate}
+                onSelect={setSelectedDate}
+                placeholder="Pick a month"
+                maxDate={new Date()}
+              />
             </div>
-
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="year" className="text-gray-700 font-medium">Năm</Label>
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="rounded-xl border-2 border-cyan-100 focus:border-cyan-400">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map(year => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Button 
-              onClick={handleExport}
-              className="rounded-xl text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-              style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)' }}
+            <Button
+              onClick={handleGenerateReport}
+              disabled={loading || isMonthInvalid()}
+              className="w-full sm:w-auto h-12 rounded-xl px-6 text-white shadow-lg hover:shadow-xl transition-shadow"
+              style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
-              <FileDown size={16} className="mr-2" />
-              Xuất Báo Cáo
+              <Search size={18} className="mr-2" />
+              {loading ? 'Generating...' : isMonthInvalid() ? 'Invalid Month' : 'Generate Report'}
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {/* Error Message */}
+      {error && (
+        <Card className="border-2 border-red-200 bg-red-50 rounded-2xl">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                <span className="text-2xl">⚠️</span>
+              </div>
+              <div>
+                <h4 className="font-semibold text-red-900">No Data Found</h4>
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Show results only after generate */}
+      {reportData && (
+        <>
+          {/* Report Data Card */}
+          <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Transaction Summary</CardTitle>
+                  <CardDescription>
+                    Report for {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </CardDescription>
+                </div>
+                <Button
+                  onClick={handleExport}
+                  variant="outline"
+                  className="rounded-xl shadow-sm hover:shadow-md"
+                >
+                  <FileDown size={18} className="mr-2" />
+                  Export PDF
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              {/* Summary Cards */}
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div 
           className="relative overflow-hidden rounded-2xl p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-300 border-0"
         >
@@ -205,11 +211,11 @@ export default function MonthlyReport() {
           
           <div className="flex items-start justify-between relative">
             <div className="flex-1">
-              <p className="text-sm text-gray-600 mb-2">Tài Khoản Mở Mới</p>
+              <p className="text-sm text-gray-600 mb-2">New Accounts Opened</p>
               <h3 className="text-2xl font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
                 {totals.opened}
               </h3>
-              <p className="text-xs text-gray-500">Tài khoản mới trong tháng</p>
+              <p className="text-xs text-gray-500">New accounts this month</p>
             </div>
             <div 
               className="w-14 h-14 rounded-2xl flex items-center justify-center"
@@ -231,11 +237,11 @@ export default function MonthlyReport() {
           
           <div className="flex items-start justify-between relative">
             <div className="flex-1">
-              <p className="text-sm text-gray-600 mb-2">Tài Khoản Đóng</p>
+              <p className="text-sm text-gray-600 mb-2">Accounts Closed</p>
               <h3 className="text-2xl font-semibold bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent mb-2">
                 {totals.closed}
               </h3>
-              <p className="text-xs text-gray-500">Tài khoản đóng trong tháng</p>
+              <p className="text-xs text-gray-500">Accounts closed this month</p>
             </div>
             <div 
               className="w-14 h-14 rounded-2xl flex items-center justify-center"
@@ -257,11 +263,11 @@ export default function MonthlyReport() {
           
           <div className="flex items-start justify-between relative">
             <div className="flex-1">
-              <p className="text-sm text-gray-600 mb-2">Tăng Trưởng Ròng</p>
+              <p className="text-sm text-gray-600 mb-2">Net Growth</p>
               <h3 className="text-2xl font-semibold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
                 +{totals.difference}
               </h3>
-              <p className="text-xs text-gray-500">Tăng trưởng tài khoản</p>
+              <p className="text-xs text-gray-500">Account growth</p>
             </div>
             <div 
               className="w-14 h-14 rounded-2xl flex items-center justify-center"
@@ -270,14 +276,16 @@ export default function MonthlyReport() {
               <TrendingUp className="text-white" size={24} />
             </div>
           </div>
-        </div>
-      </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Data Table */}
-      <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
+          {/* Data Table */}
+          <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 border-b-2 border-cyan-100">
           <CardTitle className="text-xl text-gray-800">
-            Báo Cáo Chi Tiết - {months[parseInt(selectedMonth) - 1]?.label} {selectedYear}
+            Detailed Report - {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -285,10 +293,10 @@ export default function MonthlyReport() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100">
-                  <TableHead className="font-semibold text-gray-700">Loại Tiết Kiệm</TableHead>
-                  <TableHead className="text-right font-semibold text-gray-700">Tài Khoản Mở</TableHead>
-                  <TableHead className="text-right font-semibold text-gray-700">Tài Khoản Đóng</TableHead>
-                  <TableHead className="text-right font-semibold text-gray-700">Chênh Lệch Ròng</TableHead>
+                  <TableHead className="font-semibold text-gray-700">Savings Type</TableHead>
+                  <TableHead className="text-right font-semibold text-gray-700">Accounts Opened</TableHead>
+                  <TableHead className="text-right font-semibold text-gray-700">Accounts Closed</TableHead>
+                  <TableHead className="text-right font-semibold text-gray-700">Net Change</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -307,7 +315,7 @@ export default function MonthlyReport() {
                   </TableRow>
                 ))}
                 <TableRow className="bg-gradient-to-r from-cyan-100 to-blue-100 font-bold">
-                  <TableCell className="font-bold text-gray-800">Tổng Cộng</TableCell>
+                  <TableCell className="font-bold text-gray-800">Total</TableCell>
                   <TableCell className="text-right font-bold text-green-700">
                     {totals.opened}
                   </TableCell>
@@ -319,7 +327,7 @@ export default function MonthlyReport() {
                   </TableCell>
                 </TableRow>
               </TableBody>
-            </Table>
+              </Table>
           </div>
         </CardContent>
       </Card>
@@ -329,9 +337,9 @@ export default function MonthlyReport() {
         {/* Line Chart */}
         <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b-2 border-green-100">
-            <CardTitle className="text-xl text-gray-800">Xu Hướng Theo Tuần</CardTitle>
+            <CardTitle className="text-xl text-gray-800">Weekly Trends</CardTitle>
             <CardDescription className="text-gray-600">
-              Tài khoản mới mở theo tuần
+              New accounts opened by week
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
@@ -344,9 +352,9 @@ export default function MonthlyReport() {
                   contentStyle={{ borderRadius: '12px', border: '2px solid #E5E7EB' }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="No Term" stroke="#00AEEF" strokeWidth={3} dot={{ r: 5 }} name="Không Kỳ Hạn" />
-                <Line type="monotone" dataKey="3 Months" stroke="#1A4D8F" strokeWidth={3} dot={{ r: 5 }} name="3 Tháng" />
-                <Line type="monotone" dataKey="6 Months" stroke="#8B5CF6" strokeWidth={3} dot={{ r: 5 }} name="6 Tháng" />
+                <Line type="monotone" dataKey="No Term" stroke="#00AEEF" strokeWidth={3} dot={{ r: 5 }} name="No Term" />
+                <Line type="monotone" dataKey="3 Months" stroke="#1A4D8F" strokeWidth={3} dot={{ r: 5 }} name="3 Months" />
+                <Line type="monotone" dataKey="6 Months" stroke="#8B5CF6" strokeWidth={3} dot={{ r: 5 }} name="6 Months" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -355,9 +363,9 @@ export default function MonthlyReport() {
         {/* Pie Chart */}
         <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b-2 border-purple-100">
-            <CardTitle className="text-xl text-gray-800">Phân Bổ Loại Tài Khoản</CardTitle>
+            <CardTitle className="text-xl text-gray-800">Account Type Distribution</CardTitle>
             <CardDescription className="text-gray-600">
-              Phần trăm tài khoản mới theo loại
+              Percentage of new accounts by type
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
@@ -391,37 +399,39 @@ export default function MonthlyReport() {
         <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b-2 border-amber-100">
           <CardTitle className="text-xl text-gray-800 flex items-center gap-2">
             <Award size={20} className="text-amber-600" />
-            Chỉ Số Hiệu Suất
+            Performance Metrics
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 space-y-2">
-              <p className="text-sm text-gray-600 font-medium">Tỷ Lệ Tăng Trưởng</p>
+              <p className="text-sm text-gray-600 font-medium">Growth Rate</p>
               <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                 {((totals.difference / (totals.opened - totals.difference || 1)) * 100).toFixed(1)}%
               </p>
-              <p className="text-xs text-gray-500">Tăng trưởng so với tháng trước</p>
+              <p className="text-xs text-gray-500">Growth compared to last month</p>
             </div>
 
             <div className="p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 space-y-2">
-              <p className="text-sm text-gray-600 font-medium">Tỷ Lệ Giữ Chân</p>
+              <p className="text-sm text-gray-600 font-medium">Retention Rate</p>
               <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 {(((totals.opened - totals.closed) / totals.opened * 100) || 0).toFixed(1)}%
               </p>
-              <p className="text-xs text-gray-500">Tài khoản được giữ lại</p>
+              <p className="text-xs text-gray-500">Accounts retained</p>
             </div>
 
             <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 space-y-2">
-              <p className="text-sm text-gray-600 font-medium">TB Tài Khoản Mới/Ngày</p>
+              <p className="text-sm text-gray-600 font-medium">Avg New Accounts/Day</p>
               <p className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 {(totals.opened / 30).toFixed(1)}
               </p>
-              <p className="text-xs text-gray-500">Trung bình mỗi ngày</p>
+              <p className="text-xs text-gray-500">Average per day</p>
             </div>
           </div>
         </CardContent>
       </Card>
+        </>
+      )}
     </div>
   );
 }

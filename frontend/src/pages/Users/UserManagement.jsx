@@ -178,76 +178,78 @@ export default function UserManagement() {
       <Card className="rounded-3xl border-0 shadow-xl">
         <CardContent className="p-12 text-center">
           <AlertTriangle size={64} className="mx-auto mb-4 text-yellow-500" />
-          <h3 className="mb-2 text-xl font-semibold">Truy Cập Bị Hạn Chế</h3>
-          <p className="text-gray-600">Chỉ quản trị viên mới có quyền quản lý người dùng.</p>
+          <h3 className="mb-2 text-xl font-semibold">Access Restricted</h3>
+          <p className="text-gray-600">Only administrators have permission to manage users.</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/50 rounded-full -mr-32 -mt-32" />
-          <StarDecor className="top-4 right-12" />
-          <Sparkles className="absolute top-6 right-32 text-purple-400 opacity-50" size={24} />
+      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <StarDecor className="top-4 right-8 sm:right-12" />
+          <Sparkles className="absolute top-6 right-20 sm:right-32 text-purple-400 opacity-50" size={20} />
           
-          <div className="flex items-center justify-between relative z-10">
-            <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
+            <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
               <div 
-                className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+                className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
                 style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
               >
-                <Users2 size={32} className="text-white" />
+                <Users2 size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
               </div>
-              <div>
-                <CardTitle className="text-2xl mb-2 flex items-center gap-2">
-                  Quản Lý Người Dùng
-                  <span className="text-2xl">👥</span>
+              <div className="flex-1 min-w-0">
+                <CardTitle className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2 flex items-center gap-2">
+                  <span className="truncate">User Management</span>
+                  <span className="text-xl sm:text-2xl flex-shrink-0">👥</span>
                 </CardTitle>
-                <CardDescription className="text-base">
-                  Quản lý người dùng hệ thống và phân quyền
+                <CardDescription className="text-sm sm:text-base">
+                  Manage system users and permissions
                 </CardDescription>
               </div>
             </div>
             <Button 
               onClick={handleAddUser}
-              className="text-white h-12 px-6 rounded-xl shadow-lg font-medium"
+              className="w-full sm:w-auto text-white h-10 sm:h-11 lg:h-12 px-4 sm:px-6 rounded-xl shadow-lg font-medium text-sm sm:text-base flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              <UserPlus size={18} className="mr-2" />
-              Thêm Người Dùng
+              <UserPlus size={16} className="sm:w-[18px] sm:h-[18px] mr-2" />
+              <span className="hidden sm:inline">Add User</span>
+              <span className="sm:hidden">Add</span>
             </Button>
           </div>
         </CardHeader>
       </Card>
 
       {/* Users Table */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
-          <CardTitle className="text-xl">
-            Danh Sách Người Dùng ({users.length})
+      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100 p-4 sm:p-6">
+          <CardTitle className="text-base sm:text-lg lg:text-xl">
+            User List ({users.length})
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
-          <div className="border rounded-2xl overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
-                  <TableHead className="font-semibold">Tên Đăng Nhập</TableHead>
-                  <TableHead className="font-semibold">Họ Tên</TableHead>
-                  <TableHead className="font-semibold">Email</TableHead>
-                  <TableHead className="font-semibold">Vai Trò</TableHead>
-                  <TableHead className="font-semibold">Trạng Thái</TableHead>
-                  <TableHead className="font-semibold">Ngày Tạo</TableHead>
-                  <TableHead className="font-semibold text-center">Hành Động</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.map((userData) => (
-                  <TableRow key={userData.id} className="hover:bg-[#F8F9FC] transition-colors">
+        <CardContent className="p-4 sm:p-6">
+          <div className="border rounded-xl lg:rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
+                    <TableHead className="font-semibold text-xs sm:text-sm">Username</TableHead>
+                    <TableHead className="font-semibold text-xs sm:text-sm hidden md:table-cell">Full Name</TableHead>
+                    <TableHead className="font-semibold text-xs sm:text-sm hidden lg:table-cell">Email</TableHead>
+                    <TableHead className="font-semibold text-xs sm:text-sm">Role</TableHead>
+                    <TableHead className="font-semibold text-xs sm:text-sm">Status</TableHead>
+                    <TableHead className="font-semibold text-xs sm:text-sm hidden sm:table-cell">Created Date</TableHead>
+                    <TableHead className="font-semibold text-center text-xs sm:text-sm">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map((userData) => (
+                    <TableRow key={userData.id} className="hover:bg-[#F8F9FC] transition-colors">
                     <TableCell className="font-medium">{userData.username}</TableCell>
                     <TableCell>{userData.fullName}</TableCell>
                     <TableCell className="text-gray-600">{userData.email}</TableCell>
@@ -255,9 +257,9 @@ export default function UserManagement() {
                       <Badge 
                         className={`${getRoleBadgeColor(userData.role)} border capitalize`}
                       >
-                        {userData.role === 'admin' ? 'Quản trị viên' : 
-                         userData.role === 'accountant' ? 'Kế toán' : 
-                         'Thu ngân'}
+                        {userData.role === 'admin' ? 'Administrator' : 
+                         userData.role === 'accountant' ? 'Accountant' : 
+                         'Teller'}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -266,7 +268,7 @@ export default function UserManagement() {
                           'bg-green-100 text-green-700 border-green-200 border' : 
                           'bg-gray-100 text-gray-700 border-gray-200 border'}
                       >
-                        {userData.status === 'active' ? 'Hoạt động' : 'Vô hiệu hóa'}
+                        {userData.status === 'active' ? 'Active' : 'Disabled'}
                       </Badge>
                     </TableCell>
                     <TableCell>{userData.createdDate}</TableCell>
@@ -279,7 +281,7 @@ export default function UserManagement() {
                           className="rounded-xl hover:bg-[#F3E8FF]"
                         >
                           <Edit size={14} className="mr-1" />
-                          Sửa
+                          Edit
                         </Button>
                         <Button 
                           size="sm"
@@ -290,7 +292,7 @@ export default function UserManagement() {
                             'text-green-600 hover:bg-green-50'}`}
                         >
                           <UserX size={14} className="mr-1" />
-                          {userData.status === 'active' ? 'Vô hiệu' : 'Kích hoạt'}
+                          {userData.status === 'active' ? 'Disable' : 'Enable'}
                         </Button>
                       </div>
                     </TableCell>
@@ -298,6 +300,7 @@ export default function UserManagement() {
                 ))}
               </TableBody>
             </Table>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -314,30 +317,30 @@ export default function UserManagement() {
                 <UserPlus size={24} className="text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl">Thêm Người Dùng Mới</DialogTitle>
-                <DialogDescription>Tạo tài khoản người dùng mới trong hệ thống</DialogDescription>
+                <DialogTitle className="text-xl">Add New User</DialogTitle>
+                <DialogDescription>Create a new user account in the system</DialogDescription>
               </div>
             </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-gray-700">Tên Đăng Nhập</Label>
+              <Label htmlFor="username" className="text-gray-700">Username</Label>
               <Input
                 id="username"
                 value={formData.username}
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                placeholder="Nhập tên đăng nhập"
+                placeholder="Enter username"
                 className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fullName" className="text-gray-700">Họ và Tên</Label>
+              <Label htmlFor="fullName" className="text-gray-700">Full Name</Label>
               <Input
                 id="fullName"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                placeholder="Nhập họ và tên"
+                placeholder="Enter full name"
                 className="h-11 rounded-xl border-gray-200"
               />
             </div>
@@ -349,33 +352,33 @@ export default function UserManagement() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="Nhập địa chỉ email"
+                placeholder="Enter email address"
                 className="h-11 rounded-xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role" className="text-gray-700">Vai Trò</Label>
+              <Label htmlFor="role" className="text-gray-700">Role</Label>
               <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
                 <SelectTrigger className="h-11 rounded-xl border-gray-200">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  <SelectItem value="teller">Thu Ngân</SelectItem>
-                  <SelectItem value="accountant">Kế Toán</SelectItem>
-                  <SelectItem value="admin">Quản Trị Viên</SelectItem>
+                  <SelectItem value="teller">Teller</SelectItem>
+                  <SelectItem value="accountant">Accountant</SelectItem>
+                  <SelectItem value="admin">Administrator</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-700">Mật Khẩu</Label>
+              <Label htmlFor="password" className="text-gray-700">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="Nhập mật khẩu"
+                placeholder="Enter password"
                 className="h-11 rounded-xl border-gray-200"
               />
             </div>
@@ -386,14 +389,14 @@ export default function UserManagement() {
               className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Tạo Người Dùng
+              Create User
             </Button>
             <Button 
               onClick={() => setShowAddUser(false)}
               variant="outline"
               className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Hủy
+              Cancel
             </Button>
           </div>
         </DialogContent>
@@ -411,14 +414,14 @@ export default function UserManagement() {
                 <Edit size={24} className="text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl">Chỉnh Sửa Người Dùng</DialogTitle>
-                <DialogDescription>Cập nhật thông tin người dùng</DialogDescription>
+                <DialogTitle className="text-xl">Edit User</DialogTitle>
+                <DialogDescription>Update user information</DialogDescription>
               </div>
             </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="editUsername" className="text-gray-700">Tên Đăng Nhập</Label>
+              <Label htmlFor="editUsername" className="text-gray-700">Username</Label>
               <Input
                 id="editUsername"
                 value={formData.username}
@@ -428,7 +431,7 @@ export default function UserManagement() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="editFullName" className="text-gray-700">Họ và Tên</Label>
+              <Label htmlFor="editFullName" className="text-gray-700">Full Name</Label>
               <Input
                 id="editFullName"
                 value={formData.fullName}
@@ -449,15 +452,15 @@ export default function UserManagement() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="editRole" className="text-gray-700">Vai Trò</Label>
+              <Label htmlFor="editRole" className="text-gray-700">Role</Label>
               <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
                 <SelectTrigger className="h-11 rounded-xl border-gray-200">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  <SelectItem value="teller">Thu Ngân</SelectItem>
-                  <SelectItem value="accountant">Kế Toán</SelectItem>
-                  <SelectItem value="admin">Quản Trị Viên</SelectItem>
+                  <SelectItem value="teller">Teller</SelectItem>
+                  <SelectItem value="accountant">Accountant</SelectItem>
+                  <SelectItem value="admin">Administrator</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -468,14 +471,14 @@ export default function UserManagement() {
               className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Cập Nhật
+              Update
             </Button>
             <Button 
               onClick={() => setShowEditUser(false)}
               variant="outline"
               className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Hủy
+              Cancel
             </Button>
           </div>
         </DialogContent>
@@ -486,21 +489,21 @@ export default function UserManagement() {
         <AlertDialogContent className="rounded-3xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-xl">
-              {selectedUser?.status === 'active' ? 'Vô Hiệu Hóa' : 'Kích Hoạt'} Người Dùng?
+              {selectedUser?.status === 'active' ? 'Disable' : 'Enable'} User?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-base">
-              Bạn có chắc chắn muốn {selectedUser?.status === 'active' ? 'vô hiệu hóa' : 'kích hoạt'} {selectedUser?.fullName}? 
-              {selectedUser?.status === 'active' && ' Người dùng này sẽ không thể truy cập hệ thống.'}
+              Are you sure you want to {selectedUser?.status === 'active' ? 'disable' : 'enable'} {selectedUser?.fullName}? 
+              {selectedUser?.status === 'active' && ' This user will not be able to access the system.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl border-gray-200">Hủy</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-xl border-gray-200">Cancel</AlertDialogCancel>
             <AlertDialogAction 
               onClick={confirmDisable}
               className="rounded-xl text-white shadow-lg"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Xác Nhận
+              Confirm
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -518,7 +521,7 @@ export default function UserManagement() {
                 <CheckCircle2 size={48} className="text-white" />
               </div>
             </div>
-            <DialogTitle className="text-center text-2xl">Thành Công!</DialogTitle>
+            <DialogTitle className="text-center text-2xl">Success!</DialogTitle>
             <DialogDescription className="text-center text-base">
               {successMessage}
             </DialogDescription>
@@ -528,7 +531,7 @@ export default function UserManagement() {
             className="w-full h-12 text-white rounded-xl shadow-lg font-medium"
             style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
           >
-            Đóng
+            Close
           </Button>
         </DialogContent>
       </Dialog>

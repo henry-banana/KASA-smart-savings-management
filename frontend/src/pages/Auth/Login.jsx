@@ -42,7 +42,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
-      setError('Vui lòng nhập tên đăng nhập và mật khẩu');
+      setError('Please enter username and password');
       return;
     }
     setLoading(true);
@@ -132,9 +132,9 @@ export default function Login() {
               KASA
             </CardTitle>
             <CardDescription className="text-base">
-              Hệ Thống Quản Lý Sổ Tiết Kiệm
+              Savings Management System
             </CardDescription>
-            <h3 className="text-gray-700 pt-3 font-medium">Đăng nhập vào KASA ✨</h3>
+            <h3 className="text-gray-700 pt-3 font-medium">Log in to KASA ✨</h3>
           </div>
         </CardHeader>
 
@@ -181,7 +181,7 @@ export default function Login() {
                   onClick={toggleShowPassword}
                   disabled={loading}
                   className="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-full text-gray-500 cursor-pointer rounded-r-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  aria-label={showPassword ? "Hiện mật khẩu" : "Ẩn mật khẩu"}
+                  aria-label={showPassword ? "Show password" : "Hide password"}
                 >
                   <img
                     src={showPassword ? eyeOpenIcon : eyeCloseIcon}
@@ -213,7 +213,7 @@ export default function Login() {
               disabled={loading}
               className="text-sm text-gray-500 hover:text-[#00AEEF] w-full text-center transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Quên mật khẩu?
+              Forgot password?
             </button>
           </form>
 

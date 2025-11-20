@@ -30,23 +30,23 @@ export default function RegulationSettings() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [interestRates, setInterestRates] = useState([
-    { type: 'Không Kỳ Hạn', rate: '2.0', editable: false },
-    { type: '3 Tháng', rate: '4.5', editable: false },
-    { type: '6 Tháng', rate: '5.5', editable: false }
+    { type: 'No Term', rate: '2.0', editable: true },
+    { type: '3 Months', rate: '4.5', editable: true },
+    { type: '6 Months', rate: '5.5', editable: true }
   ]);
 
   const changeHistory = [
     {
       date: '2025-11-01',
       user: 'admin',
-      field: 'Số Tiền Gửi Tối Thiểu',
+      field: 'Minimum Deposit Amount',
       oldValue: '50.000 đ',
       newValue: '100.000 đ'
     },
     {
       date: '2025-10-15',
       user: 'admin',
-      field: 'Số Ngày Rút Tối Thiểu',
+      field: 'Minimum Withdrawal Days',
       oldValue: '10 ngày',
       newValue: '15 ngày'
     },
@@ -96,36 +96,36 @@ export default function RegulationSettings() {
       <Card className="rounded-3xl border-0 shadow-xl">
         <CardContent className="p-12 text-center">
           <AlertTriangle size={64} className="mx-auto mb-4 text-yellow-500" />
-          <h3 className="mb-2 text-xl font-semibold">Truy Cập Bị Hạn Chế</h3>
-          <p className="text-gray-600">Chỉ quản trị viên mới có quyền cấu hình quy định.</p>
+          <h3 className="mb-2 text-xl font-semibold">Access Restricted</h3>
+          <p className="text-gray-600">Only administrators have permission to configure regulations.</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Settings Form */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/50 rounded-full -mr-32 -mt-32" />
-          <StarDecor className="top-4 right-12" />
-          <Sparkles className="absolute top-6 right-32 text-purple-400 opacity-50" size={24} />
+      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <StarDecor className="top-4 right-8 sm:right-12" />
+          <Sparkles className="absolute top-6 right-20 sm:right-32 text-purple-400 opacity-50" size={20} />
           
-          <div className="flex items-start gap-4 relative z-10">
+          <div className="flex items-start gap-3 sm:gap-4 relative z-10">
             <div 
-              className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              <Settings size={32} className="text-white" />
+              <Settings size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
             <div className="flex-1">
               <CardTitle className="text-2xl mb-2 flex items-center gap-2">
-                Cài Đặt Quy Định (QĐ6)
+                Regulation Settings (QĐ6)
                 <span className="text-2xl">⚙️</span>
               </CardTitle>
               <CardDescription className="text-base">
-                Cấu hình các quy định và quy tắc toàn hệ thống
+                Configure system-wide regulations and rules
               </CardDescription>
             </div>
           </div>
@@ -137,12 +137,12 @@ export default function RegulationSettings() {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-2 h-2 rounded-full bg-purple-500"></div>
-                <h4 className="font-semibold text-gray-900">Quy Định Cơ Bản</h4>
+                <h4 className="font-semibold text-gray-900">Basic Regulations</h4>
               </div>
               
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="minDeposit" className="text-gray-700">Số Tiền Gửi Tối Thiểu (VND)</Label>
+                  <Label htmlFor="minDeposit" className="text-gray-700">Minimum Deposit (VND)</Label>
                   <Input
                     id="minDeposit"
                     type="number"
@@ -150,11 +150,11 @@ export default function RegulationSettings() {
                     onChange={(e) => setMinDeposit(e.target.value)}
                     className="h-11 rounded-xl border-gray-200"
                   />
-                  <p className="text-xs text-gray-500">Số tiền tối thiểu để mở tài khoản hoặc gửi tiền</p>
+                  <p className="text-xs text-gray-500">Minimum amount to open account or deposit</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="minWithdrawalDays" className="text-gray-700">Kỳ Hạn Rút Tối Thiểu (Ngày)</Label>
+                  <Label htmlFor="minWithdrawalDays" className="text-gray-700">Minimum Withdrawal Period (Days)</Label>
                   <Input
                     id="minWithdrawalDays"
                     type="number"
@@ -162,7 +162,7 @@ export default function RegulationSettings() {
                     onChange={(e) => setMinWithdrawalDays(e.target.value)}
                     className="h-11 rounded-xl border-gray-200"
                   />
-                  <p className="text-xs text-gray-500">Số ngày tối thiểu trước khi được phép rút tiền</p>
+                  <p className="text-xs text-gray-500">Minimum days before withdrawal allowed</p>
                 </div>
               </div>
             </div>
@@ -171,15 +171,15 @@ export default function RegulationSettings() {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-2 h-2 rounded-full bg-purple-500"></div>
-                <h4 className="font-semibold text-gray-900">Lãi Suất Theo Loại Sổ</h4>
+                <h4 className="font-semibold text-gray-900">Interest Rates by Account Type</h4>
               </div>
               
               <div className="border rounded-2xl overflow-hidden">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
-                      <TableHead className="font-semibold">Loại Sổ Tiết Kiệm</TableHead>
-                      <TableHead className="font-semibold">Lãi Suất (% năm)</TableHead>
+                      <TableHead className="font-semibold">Savings Account Type</TableHead>
+                      <TableHead className="font-semibold">Interest Rate (% per year)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -208,7 +208,7 @@ export default function RegulationSettings() {
                 className="h-12 px-8 text-white rounded-xl shadow-lg font-medium"
                 style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
               >
-                Cập Nhật Quy Định
+                Update Regulations
               </Button>
               <Button 
                 type="button" 
@@ -224,7 +224,7 @@ export default function RegulationSettings() {
                   ]);
                 }}
               >
-                Đặt Lại Mặc Định
+                Reset to Default
               </Button>
             </div>
           </form>
@@ -234,31 +234,31 @@ export default function RegulationSettings() {
       {/* Current Regulations Summary */}
       <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
-          <CardTitle className="text-xl">Tóm Tắt Quy Định Hiện Tại</CardTitle>
+          <CardTitle className="text-xl">Current Regulations Summary</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="p-6 rounded-2xl border-2 border-blue-100" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)' }}>
-              <h5 className="text-sm font-semibold text-blue-900 mb-4">Quy Định Gửi & Rút Tiền</h5>
+              <h5 className="text-sm font-semibold text-blue-900 mb-4">Deposit & Withdrawal Regulations</h5>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-blue-800">Số Tiền Gửi Tối Thiểu:</span>
+                  <span className="text-sm text-blue-800">Minimum Deposit:</span>
                   <span className="text-sm font-semibold text-blue-900">₫{Number(minDeposit).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-blue-800">Kỳ Hạn Giữ Tối Thiểu:</span>
-                  <span className="text-sm font-semibold text-blue-900">{minWithdrawalDays} ngày</span>
+                  <span className="text-sm text-blue-800">Minimum Holding Period:</span>
+                  <span className="text-sm font-semibold text-blue-900">{minWithdrawalDays} days</span>
                 </div>
               </div>
             </div>
 
             <div className="p-6 rounded-2xl border-2 border-green-100" style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)' }}>
-              <h5 className="text-sm font-semibold text-green-900 mb-4">Lãi Suất</h5>
+              <h5 className="text-sm font-semibold text-green-900 mb-4">Interest Rates</h5>
               <div className="space-y-3">
                 {interestRates.map((item, index) => (
                   <div key={index} className="flex justify-between items-center">
                     <span className="text-sm text-green-800">{item.type}:</span>
-                    <span className="text-sm font-semibold text-green-900">{item.rate}% mỗi năm</span>
+                    <span className="text-sm font-semibold text-green-900">{item.rate}% per year</span>
                   </div>
                 ))}
               </div>
@@ -278,8 +278,8 @@ export default function RegulationSettings() {
               <History size={20} className="text-white" />
             </div>
             <div>
-              <CardTitle className="text-xl">Lịch Sử Thay Đổi</CardTitle>
-              <CardDescription>Theo dõi tất cả thay đổi quy định của quản trị viên</CardDescription>
+              <CardTitle className="text-xl">Change History</CardTitle>
+              <CardDescription>Track all regulation changes by administrators</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -288,11 +288,11 @@ export default function RegulationSettings() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
-                  <TableHead className="font-semibold">Ngày</TableHead>
-                  <TableHead className="font-semibold">Thay Đổi Bởi</TableHead>
-                  <TableHead className="font-semibold">Trường</TableHead>
-                  <TableHead className="font-semibold">Giá Trị Cũ</TableHead>
-                  <TableHead className="font-semibold">Giá Trị Mới</TableHead>
+                  <TableHead className="font-semibold">Date</TableHead>
+                  <TableHead className="font-semibold">Changed By</TableHead>
+                  <TableHead className="font-semibold">Field</TableHead>
+                  <TableHead className="font-semibold">Old Value</TableHead>
+                  <TableHead className="font-semibold">New Value</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -323,9 +323,9 @@ export default function RegulationSettings() {
                 <AlertTriangle size={24} className="text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl">Xác Nhận Thay Đổi Quy Định</DialogTitle>
+                <DialogTitle className="text-xl">Confirm Regulation Change</DialogTitle>
                 <DialogDescription className="text-base">
-                  Bạn có chắc chắn muốn cập nhật quy định hệ thống? Điều này sẽ ảnh hưởng đến tất cả giao dịch tương lai.
+                  Are you sure you want to update system regulations? This will affect all future transactions.
                 </DialogDescription>
               </div>
             </div>
@@ -334,7 +334,7 @@ export default function RegulationSettings() {
             <div className="p-4 border-2 border-yellow-200 rounded-2xl bg-yellow-50">
               <p className="text-sm text-yellow-900 flex items-center gap-2">
                 <AlertTriangle size={16} />
-                Thay đổi sẽ có hiệu lực ngay lập tức và áp dụng cho tất cả tài khoản.
+                Changes will take effect immediately and apply to all accounts.
               </p>
             </div>
           </div>
@@ -344,14 +344,14 @@ export default function RegulationSettings() {
               className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Xác Nhận Thay Đổi
+              Confirm Change
             </Button>
             <Button 
               onClick={() => setShowConfirm(false)}
               variant="outline"
               className="flex-1 h-12 rounded-xl border-gray-200"
             >
-              Hủy
+              Cancel
             </Button>
           </div>
         </DialogContent>
@@ -369,19 +369,19 @@ export default function RegulationSettings() {
                 <CheckCircle2 size={48} className="text-white" />
               </div>
             </div>
-            <DialogTitle className="text-center text-2xl">Đã Cập Nhật Quy Định!</DialogTitle>
+            <DialogTitle className="text-center text-2xl">Regulations Updated!</DialogTitle>
             <DialogDescription className="text-center text-base">
-              Các quy định hệ thống đã được cập nhật thành công.
+              System regulations have been successfully updated.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="p-4 space-y-2 rounded-2xl bg-gray-50 border border-gray-200">
-              <p className="text-sm font-semibold text-gray-700">Quy định đã cập nhật:</p>
+              <p className="text-sm font-semibold text-gray-700">Updated regulations:</p>
               <ul className="space-y-1 text-sm list-disc list-inside text-gray-600">
-                <li>Số Tiền Gửi Tối Thiểu: ₫{Number(minDeposit).toLocaleString()}</li>
-                <li>Kỳ Hạn Rút Tối Thiểu: {minWithdrawalDays} ngày</li>
+                <li>Minimum Deposit: ₫{Number(minDeposit).toLocaleString()}</li>
+                <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
                 {interestRates.map((item, index) => (
-                  <li key={index}>Lãi Suất {item.type}: {item.rate}%</li>
+                  <li key={index}>Interest Rate {item.type}: {item.rate}%</li>
                 ))}
               </ul>
             </div>
@@ -391,7 +391,7 @@ export default function RegulationSettings() {
             className="w-full h-12 text-white rounded-xl shadow-lg font-medium"
             style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
           >
-            Đóng
+            Close
           </Button>
         </DialogContent>
       </Dialog>

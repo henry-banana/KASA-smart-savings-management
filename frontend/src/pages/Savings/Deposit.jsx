@@ -13,6 +13,7 @@ import {
 } from "../../components/ui/dialog";
 import { CheckCircle2, AlertCircle, Search, Coins, ArrowDownCircle, Sparkles, TrendingUp } from 'lucide-react';
 import { StarDecor, CoinsIllustration } from '../../components/CuteComponents';
+import { AccountInfoSkeleton } from '../../components/ui/loading-skeleton';
 import { getAccountInfo, depositMoney } from '../../services/transactionService';
 
 export default function Deposit() {
@@ -92,42 +93,42 @@ export default function Deposit() {
   };
 
   return (
-    <div className="max-w-4xl">
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+    <div className="max-w-4xl mx-auto">
+      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
         {/* Cute Header */}
-        <CardHeader className="bg-gradient-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/50 rounded-full -mr-32 -mt-32" />
-          <StarDecor className="top-4 right-12" />
-          <Sparkles className="absolute top-6 right-32 text-cyan-300 opacity-50" size={24} />
+        <CardHeader className="bg-gradient-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <StarDecor className="top-4 right-8 sm:right-12" />
+          <Sparkles className="absolute top-6 right-20 sm:right-32 text-cyan-300 opacity-50" size={20} />
           
-          <div className="flex items-start gap-4 relative z-10">
+          <div className="flex items-start gap-3 sm:gap-4 relative z-10">
             <div 
-              className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)' }}
             >
-              <ArrowDownCircle size={32} className="text-white" />
+              <ArrowDownCircle size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
-            <div className="flex-1">
-              <CardTitle className="text-2xl mb-2 flex items-center gap-2">
-                Make Deposit
-                <span className="text-2xl">💰</span>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2 flex items-center gap-2">
+                <span className="truncate">Make Deposit</span>
+                <span className="text-xl sm:text-2xl flex-shrink-0">💰</span>
               </CardTitle>
-              <CardDescription className="text-base">
-                Deposit money into a savings account (BM2)
+              <CardDescription className="text-sm sm:text-base">
+                Deposit money to savings account (Form BM2)
               </CardDescription>
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="p-8 space-y-6">
+        <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Account Lookup Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Search size={20} className="text-[#1A4D8F]" />
-              <h3 className="font-semibold text-gray-900">Account Lookup</h3>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <Search size={18} className="sm:w-5 sm:h-5 text-[#1A4D8F]" />
+              <h3 className="text-sm sm:text-base font-semibold text-gray-900">Account Lookup</h3>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <Input
                   value={accountId}
@@ -136,8 +137,8 @@ export default function Deposit() {
                     setAccountInfo(null);
                     setError('');
                   }}
-                  placeholder="Enter account ID (e.g., SA12345)"
-                  className="h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  placeholder="Enter account code (e.g., SA12345)"
+                  className="h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                   onKeyPress={(e) => e.key === 'Enter' && handleAccountLookup()}
                 />
               </div>
@@ -145,10 +146,10 @@ export default function Deposit() {
                 type="button"
                 onClick={handleAccountLookup}
                 disabled={isLookingUp || !accountId}
-                className="h-12 px-6 rounded-xl bg-[#1A4D8F] hover:bg-[#154171] text-white"
+                className="h-11 sm:h-12 px-4 sm:px-6 rounded-xl bg-[#1A4D8F] hover:bg-[#154171] text-white text-sm sm:text-base"
               >
-                <Search size={18} className="mr-2" />
-                {isLookingUp ? 'Searching...' : 'Lookup'}
+                <Search size={16} className="sm:w-[18px] sm:h-[18px] sm:mr-2" />
+                {isLookingUp ? 'Searching...' : 'Search'}
               </Button>
             </div>
 
@@ -160,6 +161,10 @@ export default function Deposit() {
                   <p className="text-sm text-red-600">{error}</p>
                 </div>
               </div>
+            )}
+
+            {isLookingUp && (
+              <AccountInfoSkeleton />
             )}
 
             {accountInfo && (
@@ -280,17 +285,17 @@ export default function Deposit() {
 
       {/* Success Modal */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent className="rounded-3xl max-w-md">
+        <DialogContent className="rounded-3xl max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
           <DialogHeader>
             <div className="flex flex-col items-center mb-4">
-              <div className="relative">
+              <div className="relative animate-in zoom-in-0 duration-500">
                 <div 
-                  className="w-24 h-24 rounded-full flex items-center justify-center mb-4"
+                  className="w-24 h-24 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30"
                   style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
                 >
-                  <TrendingUp size={48} className="text-white" />
+                  <TrendingUp size={48} className="text-white animate-in zoom-in-50 duration-700" />
                 </div>
-                <Sparkles className="absolute -top-2 -right-2 text-yellow-400" size={24} />
+                <Sparkles className="absolute -top-2 -right-2 text-yellow-400 animate-pulse" size={24} />
               </div>
               <CoinsIllustration size={80} />
             </div>
@@ -304,7 +309,7 @@ export default function Deposit() {
           
           <div className="space-y-3 py-4">
             <div 
-              className="p-6 rounded-2xl space-y-3 border-2"
+              className="p-6 rounded-2xl space-y-3 border-2 animate-in slide-in-from-bottom-4 duration-500 delay-200"
               style={{ 
                 background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)',
                 borderColor: '#00AEEF40'
@@ -331,7 +336,7 @@ export default function Deposit() {
           
           <Button 
             onClick={() => setShowSuccess(false)}
-            className="w-full h-12 text-white rounded-full font-medium shadow-lg"
+            className="w-full h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)' }}
           >
             Close

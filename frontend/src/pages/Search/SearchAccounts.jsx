@@ -22,6 +22,7 @@ import {
 } from "../../components/ui/dialog";
 import { Search, FileDown, Eye, Sparkles, Filter, PiggyBank } from 'lucide-react';
 import { StarDecor, CuteEmptyState } from '../../components/CuteComponents';
+import { TableSkeleton } from '../../components/ui/loading-skeleton';
 import { searchSavingBooks } from '../../services/savingBookService';
 
 export default function SearchAccounts() {
@@ -70,9 +71,9 @@ export default function SearchAccounts() {
 
   const getTypeLabel = (type) => {
     const labels = {
-      'no-term': 'Không Kỳ Hạn',
-      '3-months': '3 Tháng',
-      '6-months': '6 Tháng'
+      'no-term': 'No Term',
+      '3-months': '3 Months',
+      '6-months': '6 Months'
     };
     return labels[type] || type;
   };
@@ -87,80 +88,80 @@ export default function SearchAccounts() {
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+    <div className="space-y-4 sm:space-y-6">
+      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
         {/* Cute Header */}
-        <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/50 rounded-full -mr-32 -mt-32" />
-          <StarDecor className="top-4 right-12" />
-          <Sparkles className="absolute top-6 right-32 text-purple-400 opacity-50" size={24} />
+        <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <StarDecor className="top-4 right-8 sm:right-12" />
+          <Sparkles className="absolute top-6 right-20 sm:right-32 text-purple-400 opacity-50" size={20} />
           
-          <div className="flex items-start gap-4 relative z-10">
+          <div className="flex items-start gap-3 sm:gap-4 relative z-10">
             <div 
-              className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              <Search size={32} className="text-white" />
+              <Search size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
-            <div className="flex-1">
-              <CardTitle className="text-2xl mb-2 flex items-center gap-2">
-                Tra Cứu Sổ Tiết Kiệm
-                <span className="text-2xl">🔍</span>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2 flex items-center gap-2">
+                <span className="truncate">Search Accounts</span>
+                <span className="text-xl sm:text-2xl flex-shrink-0">🔍</span>
               </CardTitle>
-              <CardDescription className="text-base">
-                Tìm kiếm và xem chi tiết thông tin sổ tiết kiệm
+              <CardDescription className="text-sm sm:text-base">
+                Search and manage savings accounts (Form BM4)
               </CardDescription>
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="p-8 space-y-6">
+        <CardContent className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
           {/* Search & Filter Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Filter size={20} className="text-[#8B5CF6]" />
-              <h3 className="font-semibold text-gray-900">Bộ Lọc Tìm Kiếm</h3>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <Filter size={18} className="sm:w-5 sm:h-5 text-[#8B5CF6]" />
+              <h3 className="text-sm sm:text-base font-semibold text-gray-900">Search Filters</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-1 space-y-2">
-                <Label className="text-gray-700">Tìm Kiếm</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div className="sm:col-span-2 lg:col-span-1 space-y-2">
+                <Label className="text-gray-700 text-sm sm:text-base">Search</Label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                   <Input
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Mã sổ hoặc tên khách hàng..."
-                    className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all"
+                    placeholder="Account code or customer name..."
+                    className="pl-10 h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all text-sm sm:text-base"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-gray-700">Loại Sổ</Label>
+                <Label className="text-gray-700 text-sm sm:text-base">Account Type</Label>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="h-12 rounded-xl border-gray-200">
-                    <SelectValue placeholder="Tất cả" />
+                  <SelectTrigger className="h-11 sm:h-12 rounded-xl border-gray-200 text-sm sm:text-base">
+                    <SelectValue placeholder="All" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
-                    <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="no-term">Không Kỳ Hạn</SelectItem>
-                    <SelectItem value="3-months">3 Tháng</SelectItem>
-                    <SelectItem value="6-months">6 Tháng</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="no-term">No Term</SelectItem>
+                    <SelectItem value="3-months">3 Months</SelectItem>
+                    <SelectItem value="6-months">6 Months</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-gray-700">Trạng Thái</Label>
+                <Label className="text-gray-700">Status</Label>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="h-12 rounded-xl border-gray-200">
-                    <SelectValue placeholder="Tất cả" />
+                    <SelectValue placeholder="All" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
-                    <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="active">Đang Hoạt Động</SelectItem>
-                    <SelectItem value="closed">Đã Đóng</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -168,7 +169,7 @@ export default function SearchAccounts() {
 
             <div className="flex items-center justify-between pt-2">
               <p className="text-sm text-gray-600">
-                Tìm thấy <span className="font-semibold text-[#8B5CF6]">{filteredAccounts.length}</span> sổ tiết kiệm
+                Found <span className="font-semibold text-[#8B5CF6]">{filteredAccounts.length}</span> savings accounts
               </p>
               <Button 
                 variant="outline" 
@@ -184,23 +185,27 @@ export default function SearchAccounts() {
 
           {/* Results Table */}
           <div className="rounded-2xl border border-gray-200 overflow-hidden">
-            {filteredAccounts.length === 0 ? (
+            {loading ? (
+              <div className="p-6">
+                <TableSkeleton rows={5} columns={7} />
+              </div>
+            ) : filteredAccounts.length === 0 ? (
               <CuteEmptyState
                 icon="piggy"
-                title="Không tìm thấy kết quả"
-                description="Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm"
+                title="No results found"
+                description="Try adjusting your filters or search keywords"
               />
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
-                    <TableHead className="font-semibold">Mã Sổ</TableHead>
-                    <TableHead className="font-semibold">Khách Hàng</TableHead>
-                    <TableHead className="font-semibold">Loại Sổ</TableHead>
-                    <TableHead className="font-semibold">Ngày Mở</TableHead>
-                    <TableHead className="font-semibold text-right">Số Dư</TableHead>
-                    <TableHead className="font-semibold">Trạng Thái</TableHead>
-                    <TableHead className="font-semibold text-center">Hành Động</TableHead>
+                    <TableHead className="font-semibold">Account Code</TableHead>
+                    <TableHead className="font-semibold">Customer</TableHead>
+                    <TableHead className="font-semibold">Type</TableHead>
+                    <TableHead className="font-semibold">Open Date</TableHead>
+                    <TableHead className="font-semibold text-right">Balance</TableHead>
+                    <TableHead className="font-semibold">Status</TableHead>
+                    <TableHead className="font-semibold text-center">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -220,11 +225,11 @@ export default function SearchAccounts() {
                       <TableCell>
                         {account.status === 'active' ? (
                           <Badge className="bg-green-100 text-green-700 border-green-200 border">
-                            Hoạt Động
+                            Active
                           </Badge>
                         ) : (
                           <Badge className="bg-gray-100 text-gray-700 border-gray-200 border">
-                            Đã Đóng
+                            Closed
                           </Badge>
                         )}
                       </TableCell>
@@ -260,8 +265,8 @@ export default function SearchAccounts() {
                 <PiggyBank size={28} className="text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl">Chi Tiết Sổ Tiết Kiệm</DialogTitle>
-                <DialogDescription>Thông tin chi tiết của sổ</DialogDescription>
+                <DialogTitle className="text-xl">Savings Account Details</DialogTitle>
+                <DialogDescription>Detailed account information</DialogDescription>
               </div>
             </div>
           </DialogHeader>
@@ -276,37 +281,37 @@ export default function SearchAccounts() {
                 }}
               >
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Mã Sổ:</span>
+                  <span className="text-sm text-gray-600">Account Code:</span>
                   <span className="font-semibold text-lg text-[#8B5CF6]">{selectedAccount.id}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Khách Hàng:</span>
+                  <span className="text-sm text-gray-600">Customer:</span>
                   <span className="font-medium">{selectedAccount.customer}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Loại Sổ:</span>
+                  <span className="text-sm text-gray-600">Account Type:</span>
                   <Badge className={`${getTypeBadgeColor(selectedAccount.type)} border`}>
                     {getTypeLabel(selectedAccount.type)}
                   </Badge>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Ngày Mở:</span>
+                  <span className="text-sm text-gray-600">Opening Date:</span>
                   <span className="font-medium">{selectedAccount.openDate}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Trạng Thái:</span>
+                  <span className="text-sm text-gray-600">Status:</span>
                   {selectedAccount.status === 'active' ? (
                     <Badge className="bg-green-100 text-green-700 border-green-200 border">
-                      ✓ Hoạt Động
+                      ✓ Active
                     </Badge>
                   ) : (
                     <Badge className="bg-gray-100 text-gray-700 border-gray-200 border">
-                      Đã Đóng
+                      Closed
                     </Badge>
                   )}
                 </div>
                 <div className="flex justify-between pt-3 border-t border-gray-200">
-                  <span className="font-medium text-gray-700">Số Dư:</span>
+                  <span className="font-medium text-gray-700">Balance:</span>
                   <span className="text-xl font-bold text-green-600">
                     ₫{selectedAccount.balance.toLocaleString()}
                   </span>
@@ -320,7 +325,7 @@ export default function SearchAccounts() {
             className="w-full h-12 text-white rounded-full font-medium shadow-lg"
             style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
           >
-            Đóng
+            Close
           </Button>
         </DialogContent>
       </Dialog>

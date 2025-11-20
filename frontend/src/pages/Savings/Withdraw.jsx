@@ -13,6 +13,7 @@ import {
 } from "../../components/ui/dialog";
 import { CheckCircle2, AlertCircle, Search, Wallet, ArrowUpCircle, Sparkles } from 'lucide-react';
 import { StarDecor, ReceiptIllustration } from '../../components/CuteComponents';
+import { AccountInfoSkeleton } from '../../components/ui/loading-skeleton';
 import { getAccountInfo, withdrawMoney } from '../../services/transactionService';
 
 export default function Withdraw() {
@@ -147,42 +148,42 @@ export default function Withdraw() {
   };
 
   return (
-    <div className="max-w-4xl">
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+    <div className="max-w-4xl mx-auto">
+      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
         {/* Cute Header */}
-        <CardHeader className="bg-gradient-to-r from-[#FFF7D6] to-[#FFE8F0] border-b border-gray-100 relative overflow-hidden pb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/50 rounded-full -mr-32 -mt-32" />
-          <StarDecor className="top-4 right-12" />
-          <Sparkles className="absolute top-6 right-32 text-amber-400 opacity-50" size={24} />
+        <CardHeader className="bg-gradient-to-r from-[#FFF7D6] to-[#FFE8F0] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <StarDecor className="top-4 right-8 sm:right-12" />
+          <Sparkles className="absolute top-6 right-20 sm:right-32 text-amber-400 opacity-50" size={20} />
           
-          <div className="flex items-start gap-4 relative z-10">
+          <div className="flex items-start gap-3 sm:gap-4 relative z-10">
             <div 
-              className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg"
+              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}
             >
-              <ArrowUpCircle size={32} className="text-white" />
+              <ArrowUpCircle size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
-            <div className="flex-1">
-              <CardTitle className="text-2xl mb-2 flex items-center gap-2">
-                Make Withdrawal (BM3)
-                <span className="text-2xl">💵</span>
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2 flex items-center gap-2">
+                <span className="truncate">Make Withdrawal (BM3)</span>
+                <span className="text-xl sm:text-2xl flex-shrink-0">💵</span>
               </CardTitle>
-              <CardDescription className="text-base">
+              <CardDescription className="text-sm sm:text-base">
                 Withdraw money from a savings account
               </CardDescription>
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="p-8 space-y-6">
+        <CardContent className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
           {/* Account Lookup Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-4">
-              <Search size={20} className="text-[#F59E0B]" />
-              <h3 className="font-semibold text-gray-900">Account Lookup</h3>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
+              <Search size={18} className="sm:w-5 sm:h-5 text-[#F59E0B]" />
+              <h3 className="text-sm sm:text-base font-semibold text-gray-900">Account Lookup</h3>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <Input
                   value={accountId}
@@ -192,7 +193,7 @@ export default function Withdraw() {
                     setError('');
                   }}
                   placeholder="Enter account ID (e.g., SA12345)"
-                  className="h-12 rounded-xl border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
+                  className="h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all text-sm sm:text-base"
                   onKeyPress={(e) => e.key === 'Enter' && handleAccountLookup()}
                 />
               </div>
@@ -207,7 +208,7 @@ export default function Withdraw() {
               </Button>
             </div>
 
-            {error && (
+            {error && !accountInfo && (
               <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
                 <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
                 <div>
@@ -215,6 +216,10 @@ export default function Withdraw() {
                   <p className="text-sm text-red-600">{error}</p>
                 </div>
               </div>
+            )}
+
+            {isLookingUp && (
+              <AccountInfoSkeleton />
             )}
 
             {accountInfo && (
@@ -368,17 +373,17 @@ export default function Withdraw() {
 
       {/* Success Modal */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent className="rounded-3xl max-w-md">
+        <DialogContent className="rounded-3xl max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
           <DialogHeader>
             <div className="flex flex-col items-center mb-4">
-              <div className="relative">
+              <div className="relative animate-in zoom-in-0 duration-500">
                 <div 
-                  className="w-24 h-24 rounded-full flex items-center justify-center mb-4"
+                  className="w-24 h-24 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30"
                   style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
                 >
-                  <CheckCircle2 size={48} className="text-white" />
+                  <CheckCircle2 size={48} className="text-white animate-in zoom-in-50 duration-700" />
                 </div>
-                <Sparkles className="absolute -top-2 -right-2 text-yellow-400" size={24} />
+                <Sparkles className="absolute -top-2 -right-2 text-yellow-400 animate-pulse" size={24} />
               </div>
               <ReceiptIllustration size={80} />
             </div>
@@ -392,7 +397,7 @@ export default function Withdraw() {
           
           <div className="space-y-3 py-4">
             <div 
-              className="p-6 rounded-2xl space-y-3 border-2"
+              className="p-6 rounded-2xl space-y-3 border-2 animate-in slide-in-from-bottom-4 duration-500 delay-200"
               style={{ 
                 background: 'linear-gradient(135deg, #FFF7D6 0%, #FFE8F0 100%)',
                 borderColor: '#F59E0B40'
@@ -423,7 +428,7 @@ export default function Withdraw() {
           
           <Button 
             onClick={() => setShowSuccess(false)}
-            className="w-full h-12 text-white rounded-full font-medium shadow-lg"
+            className="w-full h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}
           >
             Close
