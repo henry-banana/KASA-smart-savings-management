@@ -60,3 +60,18 @@ export async function deleteCustomer(req, res) {
     res.status(err.status || 500).json({ message: err.message });
   }
 }
+
+
+// Tìm kiếm khách hàng theo keyword
+export async function searchCustomer(req, res) {
+  try {
+    const { keyword } = req.query; // /api/customers/search?keyword=abc
+
+    const result = await customerService.searchCustomers(keyword);
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.error("❌ Error searching customers:", err);
+    res.status(err.status || 500).json({ message: err.message });
+  }
+}

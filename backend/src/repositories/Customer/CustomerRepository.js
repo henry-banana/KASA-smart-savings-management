@@ -20,6 +20,21 @@ export class CustomerRepository {
   async delete(customerId) {
     return await Customer.delete(customerId);
   }
+
+  // Tìm khách hàng theo tên (keyword)
+  async findByName(keyword) {
+    if (!keyword) return [];
+
+    const customers = await Customer.getAll(); // trả về mảng trực tiếp
+
+    const normalizedKeyword = keyword.trim().toLowerCase();
+    return customers.filter(cust =>
+      cust.fullname?.toLowerCase().includes(normalizedKeyword)
+    );
+  }
+
+
+
 }
 
 export const customerRepository = new CustomerRepository();
