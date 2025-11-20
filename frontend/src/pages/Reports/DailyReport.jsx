@@ -16,6 +16,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { FileDown, Search, TrendingUp, TrendingDown, DollarSign, Sparkles, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { CuteStatCard, StarDecor, SparkleDecor } from '../../components/CuteComponents';
 import { getDailyReport } from '../../services/reportService';
+import { RoleGuard } from '../../components/RoleGuard';
 
 export default function DailyReport() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -100,19 +101,20 @@ export default function DailyReport() {
   };
 
   return (
+    <RoleGuard allow={['accountant']}>
     <div className="space-y-4 sm:space-y-6">
       {/* Report Header */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b border-gray-100 pb-6">
+      <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
+        <CardHeader className="pb-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
           <div className="flex items-center gap-3 mb-2">
             <div 
-              className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-lg"
+              className="flex items-center justify-center w-12 h-12 shadow-lg sm:w-14 sm:h-14 rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
             >
               <Sparkles size={24} className="text-white" />
             </div>
             <div className="flex-1">
-              <CardTitle className="text-xl sm:text-2xl flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
                 <span>📊</span>
                 Daily Report (BM5.1)
               </CardTitle>
@@ -123,7 +125,7 @@ export default function DailyReport() {
           </div>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="flex flex-col sm:flex-row items-end gap-4">
+          <div className="flex flex-col items-end gap-4 sm:flex-row">
             <div className="flex-1 w-full space-y-2">
               <Label htmlFor="reportDate">Select Date</Label>
               <DatePicker
@@ -140,7 +142,7 @@ export default function DailyReport() {
             <Button
               onClick={handleGenerateReport}
               disabled={loading || isDateInvalid()}
-              className="w-full sm:w-auto h-12 rounded-xl px-6 text-white shadow-lg hover:shadow-xl transition-shadow"
+              className="w-full h-12 px-6 text-white transition-shadow shadow-lg sm:w-auto rounded-xl hover:shadow-xl"
               style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
             >
               <Search size={18} className="mr-2" />
@@ -155,7 +157,7 @@ export default function DailyReport() {
         <Card className="border-2 border-red-200 bg-red-50 rounded-2xl">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+              <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
                 <span className="text-2xl">⚠️</span>
               </div>
               <div>
@@ -173,18 +175,18 @@ export default function DailyReport() {
           {/* Summary Cards */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div 
-              className="relative overflow-hidden rounded-2xl p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-300 border-0"
+              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
             >
               <div 
-                className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10 -mr-16 -mt-16"
+                className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
                 style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
               />
               <StarDecor className="top-3 right-3" />
               
-              <div className="flex items-start justify-between relative">
+              <div className="relative flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-2">Total Deposits</p>
-                  <h3 className="text-2xl font-semibold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
+                  <p className="mb-2 text-sm text-gray-600">Total Deposits</p>
+                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text">
                     ₫{totals.deposits.toLocaleString()}
                   </h3>
                   <div className="flex items-center gap-1">
@@ -193,7 +195,7 @@ export default function DailyReport() {
                   </div>
                 </div>
                 <div 
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                  className="flex items-center justify-center w-14 h-14 rounded-2xl"
                   style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
                 >
                   <TrendingUp className="text-white" size={24} />
@@ -202,18 +204,18 @@ export default function DailyReport() {
             </div>
 
             <div 
-              className="relative overflow-hidden rounded-2xl p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-300 border-0"
+              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
             >
               <div 
-                className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10 -mr-16 -mt-16"
+                className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
                 style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)' }}
               />
               <StarDecor className="top-3 right-3" />
               
-              <div className="flex items-start justify-between relative">
+              <div className="relative flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-2">Total Withdrawals</p>
-                  <h3 className="text-2xl font-semibold bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text text-transparent mb-2">
+                  <p className="mb-2 text-sm text-gray-600">Total Withdrawals</p>
+                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text">
                     ₫{totals.withdrawals.toLocaleString()}
                   </h3>
                   <div className="flex items-center gap-1">
@@ -222,7 +224,7 @@ export default function DailyReport() {
                   </div>
                 </div>
                 <div 
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                  className="flex items-center justify-center w-14 h-14 rounded-2xl"
                   style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)' }}
                 >
                   <TrendingDown className="text-white" size={24} />
@@ -231,18 +233,18 @@ export default function DailyReport() {
             </div>
 
             <div 
-              className="relative overflow-hidden rounded-2xl p-6 bg-white shadow-lg hover:shadow-xl transition-all duration-300 border-0"
+              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
             >
               <div 
-                className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10 -mr-16 -mt-16"
+                className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
                 style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)' }}
               />
               <StarDecor className="top-3 right-3" />
               
-              <div className="flex items-start justify-between relative">
+              <div className="relative flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-2">Net Difference</p>
-                  <h3 className="text-2xl font-semibold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
+                  <p className="mb-2 text-sm text-gray-600">Net Difference</p>
+                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text">
                     ₫{totals.difference.toLocaleString()}
                   </h3>
                   <div className="flex items-center gap-1">
@@ -251,7 +253,7 @@ export default function DailyReport() {
                   </div>
                 </div>
                 <div 
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                  className="flex items-center justify-center w-14 h-14 rounded-2xl"
                   style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)' }}
                 >
                   <Sparkles className="text-white" size={24} />
@@ -261,8 +263,8 @@ export default function DailyReport() {
           </div>
 
           {/* Data Table */}
-          <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 border-b-2 border-purple-100">
+          <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+        <CardHeader className="border-b-2 border-purple-100 bg-gradient-to-r from-blue-50 to-purple-50">
           <CardTitle className="text-xl text-gray-800">
             Detailed Report - {format(selectedDate, 'dd/MM/yyyy')}
           </CardTitle>
@@ -273,35 +275,35 @@ export default function DailyReport() {
               <TableHeader>
                 <TableRow className="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100">
                   <TableHead className="font-semibold text-gray-700">Savings Type</TableHead>
-                  <TableHead className="text-right font-semibold text-gray-700">Total Deposits</TableHead>
-                  <TableHead className="text-right font-semibold text-gray-700">Total Withdrawals</TableHead>
-                  <TableHead className="text-right font-semibold text-gray-700">Difference</TableHead>
+                  <TableHead className="font-semibold text-right text-gray-700">Total Deposits</TableHead>
+                  <TableHead className="font-semibold text-right text-gray-700">Total Withdrawals</TableHead>
+                  <TableHead className="font-semibold text-right text-gray-700">Difference</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {typeBreakdown.map((row, index) => (
-                  <TableRow key={index} className="hover:bg-purple-50 transition-colors">
+                  <TableRow key={index} className="transition-colors hover:bg-purple-50">
                     <TableCell className="font-medium text-gray-700">{row.type}</TableCell>
-                    <TableCell className="text-right font-semibold text-green-600">
+                    <TableCell className="font-semibold text-right text-green-600">
                       ₫{row.deposits.toLocaleString()}
                     </TableCell>
-                    <TableCell className="text-right font-semibold text-red-600">
+                    <TableCell className="font-semibold text-right text-red-600">
                       ₫{row.withdrawals.toLocaleString()}
                     </TableCell>
-                    <TableCell className="text-right font-semibold text-blue-600">
+                    <TableCell className="font-semibold text-right text-blue-600">
                       ₫{row.difference.toLocaleString()}
                     </TableCell>
                   </TableRow>
                 ))}
-                <TableRow className="bg-gradient-to-r from-purple-100 to-pink-100 font-bold">
+                <TableRow className="font-bold bg-gradient-to-r from-purple-100 to-pink-100">
                   <TableCell className="font-bold text-gray-800">Total</TableCell>
-                  <TableCell className="text-right font-bold text-green-700">
+                  <TableCell className="font-bold text-right text-green-700">
                     ₫{totals.deposits.toLocaleString()}
                   </TableCell>
-                  <TableCell className="text-right font-bold text-red-700">
+                  <TableCell className="font-bold text-right text-red-700">
                     ₫{totals.withdrawals.toLocaleString()}
                   </TableCell>
-                  <TableCell className="text-right font-bold text-blue-700">
+                  <TableCell className="font-bold text-right text-blue-700">
                     ₫{totals.difference.toLocaleString()}
                   </TableCell>
                 </TableRow>
@@ -312,8 +314,8 @@ export default function DailyReport() {
       </Card>
 
       {/* Chart Visualization */}
-      <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 border-b-2 border-blue-100">
+      <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+        <CardHeader className="border-b-2 border-blue-100 bg-gradient-to-r from-cyan-50 to-blue-50">
           <CardTitle className="text-xl text-gray-800">Visual Comparison</CardTitle>
           <CardDescription className="text-gray-600">
             Deposit/Withdrawal Chart by Account Type (million VND)
@@ -351,27 +353,27 @@ export default function DailyReport() {
       </Card>
 
       {/* Transaction Statistics */}
-      <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b-2 border-green-100">
+      <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+        <CardHeader className="border-b-2 border-green-100 bg-gradient-to-r from-green-50 to-emerald-50">
           <CardTitle className="text-xl text-gray-800">Transaction Statistics</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="space-y-4 p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50">
-              <h4 className="text-sm font-semibold text-green-700 flex items-center gap-2">
+            <div className="p-4 space-y-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50">
+              <h4 className="flex items-center gap-2 text-sm font-semibold text-green-700">
                 <TrendingUp size={16} />
                 Deposit Transactions
               </h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
                   <span className="text-sm text-gray-700">No Term</span>
                   <span className="text-sm font-semibold text-green-600">23 transactions</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
                   <span className="text-sm text-gray-700">3 Months</span>
                   <span className="text-sm font-semibold text-green-600">15 transactions</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
                   <span className="text-sm text-gray-700">6 Months</span>
                   <span className="text-sm font-semibold text-green-600">12 transactions</span>
                 </div>
@@ -382,21 +384,21 @@ export default function DailyReport() {
               </div>
             </div>
 
-            <div className="space-y-4 p-4 rounded-xl bg-gradient-to-br from-red-50 to-rose-50">
-              <h4 className="text-sm font-semibold text-red-700 flex items-center gap-2">
+            <div className="p-4 space-y-4 rounded-xl bg-gradient-to-br from-red-50 to-rose-50">
+              <h4 className="flex items-center gap-2 text-sm font-semibold text-red-700">
                 <TrendingDown size={16} />
                 Withdrawal Transactions
               </h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
                   <span className="text-sm text-gray-700">No Term</span>
                   <span className="text-sm font-semibold text-red-600">8 transactions</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
                   <span className="text-sm text-gray-700">3 Months</span>
                   <span className="text-sm font-semibold text-red-600">5 transactions</span>
                 </div>
-                <div className="flex items-center justify-between p-2 rounded-lg bg-white shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
                   <span className="text-sm text-gray-700">6 Months</span>
                   <span className="text-sm font-semibold text-red-600">2 transactions</span>
                 </div>
@@ -412,5 +414,6 @@ export default function DailyReport() {
       </>
       )}
     </div>
+    </RoleGuard>
   );
 }

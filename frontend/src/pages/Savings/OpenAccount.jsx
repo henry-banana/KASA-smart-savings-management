@@ -15,6 +15,7 @@ import {
 import { CheckCircle2, PiggyBank, User as UserIcon, CreditCard, MapPin, Calendar, Coins, Sparkles, Heart } from 'lucide-react';
 import { StarDecor, PiggyBankIllustration } from '../../components/CuteComponents';
 import { createSavingBook } from '../../services/savingBookService';
+import { RoleGuard } from '../../components/RoleGuard';
 
 export default function OpenAccount() {
   const [formData, setFormData] = useState({
@@ -82,25 +83,26 @@ export default function OpenAccount() {
   ];
 
   return (
+    <RoleGuard allow={['teller']}>
     <div className="max-w-4xl mx-auto">
-      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+      <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
         {/* Cute Header with Gradient */}
         <CardHeader className="bg-gradient-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
           <StarDecor className="top-4 right-8 sm:right-12" />
-          <Sparkles className="absolute top-6 right-20 sm:right-32 text-cyan-300 opacity-50" size={20} />
+          <Sparkles className="absolute opacity-50 top-6 right-20 sm:right-32 text-cyan-300" size={20} />
           
-          <div className="flex items-start gap-3 sm:gap-4 relative z-10">
+          <div className="relative z-10 flex items-start gap-3 sm:gap-4">
             <div 
-              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
+              className="flex items-center justify-center flex-shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
-              <PiggyBank size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
+              <PiggyBank size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2 flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
                 <span className="truncate">Open New Savings Account</span>
-                <span className="text-xl sm:text-2xl flex-shrink-0">🏦</span>
+                <span className="flex-shrink-0 text-xl sm:text-2xl">🏦</span>
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
                 Create a new savings account for customer (Form BM1)
@@ -115,14 +117,14 @@ export default function OpenAccount() {
             <div className="space-y-4 sm:space-y-6">
               <div className="flex items-center gap-2 mb-3 sm:mb-4">
                 <UserIcon size={18} className="sm:w-5 sm:h-5 text-[#1A4D8F]" />
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900">Customer Information</h3>
+                <h3 className="text-sm font-semibold text-gray-900 sm:text-base">Customer Information</h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="customerName" className="text-gray-700 text-sm sm:text-base">Customer Name *</Label>
+                  <Label htmlFor="customerName" className="text-sm text-gray-700 sm:text-base">Customer Name *</Label>
                   <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                    <UserIcon className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2" size={16} />
                     <Input
                       id="customerName"
                       value={formData.customerName}
@@ -132,16 +134,16 @@ export default function OpenAccount() {
                     />
                   </div>
                   {errors.customerName && (
-                    <p className="text-xs sm:text-sm text-red-500 flex items-center gap-1">
+                    <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
                       <span className="text-xs">⚠️</span> {errors.customerName}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="idCard" className="text-gray-700 text-sm sm:text-base">ID Card Number *</Label>
+                  <Label htmlFor="idCard" className="text-sm text-gray-700 sm:text-base">ID Card Number *</Label>
                   <div className="relative">
-                    <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                    <CreditCard className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2" size={16} />
                     <Input
                       id="idCard"
                       value={formData.idCard}
@@ -151,7 +153,7 @@ export default function OpenAccount() {
                     />
                   </div>
                   {errors.idCard && (
-                    <p className="text-xs sm:text-sm text-red-500 flex items-center gap-1">
+                    <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
                       <span className="text-xs">⚠️</span> {errors.idCard}
                     </p>
                   )}
@@ -159,9 +161,9 @@ export default function OpenAccount() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-gray-700 text-sm sm:text-base">Address *</Label>
+                <Label htmlFor="address" className="text-sm text-gray-700 sm:text-base">Address *</Label>
                 <div className="relative">
-                  <MapPin className="absolute left-3 top-3 text-gray-400" size={16} />
+                  <MapPin className="absolute text-gray-400 left-3 top-3" size={16} />
                   <Textarea
                     id="address"
                     value={formData.address}
@@ -172,7 +174,7 @@ export default function OpenAccount() {
                   />
                 </div>
                 {errors.address && (
-                  <p className="text-xs sm:text-sm text-red-500 flex items-center gap-1">
+                  <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
                     <span className="text-xs">⚠️</span> {errors.address}
                   </p>
                 )}
@@ -180,15 +182,15 @@ export default function OpenAccount() {
             </div>
 
             {/* Savings Details Section */}
-            <div className="space-y-4 sm:space-y-6 pt-4">
+            <div className="pt-4 space-y-4 sm:space-y-6">
               <div className="flex items-center gap-2 mb-3 sm:mb-4">
                 <Coins size={18} className="sm:w-5 sm:h-5 text-[#00AEEF]" />
-                <h3 className="text-sm sm:text-base font-semibold text-gray-900">Savings Account Details</h3>
+                <h3 className="text-sm font-semibold text-gray-900 sm:text-base">Savings Account Details</h3>
               </div>
 
               <div className="space-y-3">
-                <Label className="text-gray-700 text-sm sm:text-base">Savings Type * (Select one)</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                <Label className="text-sm text-gray-700 sm:text-base">Savings Type * (Select one)</Label>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
                   {savingsTypes.map((type) => (
                     <button
                       key={type.id}
@@ -228,17 +230,17 @@ export default function OpenAccount() {
                   ))}
                 </div>
                 {errors.savingsType && (
-                  <p className="text-xs sm:text-sm text-red-500 flex items-center gap-1">
+                  <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
                     <span className="text-xs">⚠️</span> {errors.savingsType}
                   </p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="initialDeposit" className="text-gray-700 text-sm sm:text-base">Initial Deposit (VND) *</Label>
+                  <Label htmlFor="initialDeposit" className="text-sm text-gray-700 sm:text-base">Initial Deposit (VND) *</Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm sm:text-base">₫</span>
+                    <span className="absolute text-sm font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2 sm:text-base">₫</span>
                     <Input
                       id="initialDeposit"
                       type="number"
@@ -249,26 +251,26 @@ export default function OpenAccount() {
                     />
                   </div>
                   {errors.initialDeposit && (
-                    <p className="text-xs sm:text-sm text-red-500 flex items-center gap-1">
+                    <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
                       <span className="text-xs">⚠️</span> {errors.initialDeposit}
                     </p>
                   )}
-                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <p className="flex items-center gap-1 text-xs text-gray-500">
                     <span>💡</span> Minimum amount: ₫100,000
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="openDate" className="text-gray-700 text-sm sm:text-base">Opening Date</Label>
+                  <Label htmlFor="openDate" className="text-sm text-gray-700 sm:text-base">Opening Date</Label>
                   <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                    <Calendar className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2" size={16} />
                     <Input
                       id="openDate"
                       type="date"
                       value={formData.openDate}
                       onChange={(e) => setFormData({ ...formData, openDate: e.target.value })}
                       disabled
-                      className="pl-10 h-11 sm:h-12 rounded-xl border-gray-200 bg-gray-50 text-sm sm:text-base"
+                      className="pl-10 text-sm border-gray-200 h-11 sm:h-12 rounded-xl bg-gray-50 sm:text-base"
                     />
                   </div>
                 </div>
@@ -276,7 +278,7 @@ export default function OpenAccount() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-100">
+            <div className="flex flex-col gap-3 pt-4 border-t border-gray-100 sm:flex-row sm:gap-4 sm:pt-6">
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
@@ -289,7 +291,7 @@ export default function OpenAccount() {
               <Button 
                 type="button" 
                 variant="outline" 
-                className="h-11 sm:h-12 sm:px-8 rounded-full border-gray-300 hover:bg-gray-50 text-sm sm:text-base"
+                className="text-sm border-gray-300 rounded-full h-11 sm:h-12 sm:px-8 hover:bg-gray-50 sm:text-base"
                 onClick={() => {
                   setFormData({
                     customerName: '',
@@ -314,55 +316,55 @@ export default function OpenAccount() {
         <DialogContent className="rounded-2xl sm:rounded-3xl max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
           <DialogHeader>
             <div className="flex flex-col items-center mb-3 sm:mb-4">
-              <div className="relative animate-in zoom-in-0 duration-500">
+              <div className="relative duration-500 animate-in zoom-in-0">
                 <div 
-                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center mb-3 sm:mb-4 shadow-lg shadow-green-500/30"
+                  className="flex items-center justify-center w-20 h-20 mb-3 rounded-full shadow-lg sm:w-24 sm:h-24 sm:mb-4 shadow-green-500/30"
                   style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
                 >
-                  <CheckCircle2 size={40} className="sm:w-12 sm:h-12 text-white animate-in zoom-in-50 duration-700" />
+                  <CheckCircle2 size={40} className="text-white duration-700 sm:w-12 sm:h-12 animate-in zoom-in-50" />
                 </div>
-                <Sparkles className="absolute -top-2 -right-2 text-yellow-400 animate-pulse" size={20} />
-                <Heart className="absolute -bottom-2 -left-2 text-pink-400 animate-bounce" size={16} fill="currentColor" />
+                <Sparkles className="absolute text-yellow-400 -top-2 -right-2 animate-pulse" size={20} />
+                <Heart className="absolute text-pink-400 -bottom-2 -left-2 animate-bounce" size={16} fill="currentColor" />
               </div>
               <PiggyBankIllustration size={60} className="sm:w-20" />
             </div>
-            <DialogTitle className="text-center text-xl sm:text-2xl">
+            <DialogTitle className="text-xl text-center sm:text-2xl">
               Account Opened Successfully! 🎉
             </DialogTitle>
-            <DialogDescription className="text-center text-sm sm:text-base">
+            <DialogDescription className="text-sm text-center sm:text-base">
               Your new savings account has been created
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-3 py-3 sm:py-4">
+          <div className="py-3 space-y-3 sm:py-4">
             <div 
-              className="p-4 sm:p-6 rounded-2xl space-y-2 sm:space-y-3 border-2 animate-in slide-in-from-bottom-4 duration-500 delay-200"
+              className="p-4 space-y-2 duration-500 delay-200 border-2 sm:p-6 rounded-2xl sm:space-y-3 animate-in slide-in-from-bottom-4"
               style={{ 
                 background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)',
                 borderColor: '#00AEEF40'
               }}
             >
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-xs sm:text-sm text-gray-600">Account Code:</span>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs text-gray-600 sm:text-sm">Account Code:</span>
                 <span className="font-semibold text-base sm:text-lg text-[#1A4D8F] truncate">{accountCode}</span>
               </div>
               <div className="flex justify-between gap-2">
-                <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Customer:</span>
-                <span className="font-medium text-sm sm:text-base truncate text-right">{formData.customerName}</span>
+                <span className="flex-shrink-0 text-xs text-gray-600 sm:text-sm">Customer:</span>
+                <span className="text-sm font-medium text-right truncate sm:text-base">{formData.customerName}</span>
               </div>
               <div className="flex justify-between gap-2">
-                <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Type:</span>
-                <span className="font-medium text-sm sm:text-base capitalize truncate text-right">
+                <span className="flex-shrink-0 text-xs text-gray-600 sm:text-sm">Type:</span>
+                <span className="text-sm font-medium text-right capitalize truncate sm:text-base">
                   {savingsTypes.find(t => t.id === formData.savingsType)?.name}
                 </span>
               </div>
               <div className="flex justify-between gap-2">
-                <span className="text-xs sm:text-sm text-gray-600">Amount:</span>
-                <span className="font-semibold text-sm sm:text-base text-green-600 truncate">₫{Number(formData.initialDeposit).toLocaleString()}</span>
+                <span className="text-xs text-gray-600 sm:text-sm">Amount:</span>
+                <span className="text-sm font-semibold text-green-600 truncate sm:text-base">₫{Number(formData.initialDeposit).toLocaleString()}</span>
               </div>
               <div className="flex justify-between gap-2">
-                <span className="text-xs sm:text-sm text-gray-600">Opening Date:</span>
-                <span className="font-medium text-sm sm:text-base">{formData.openDate}</span>
+                <span className="text-xs text-gray-600 sm:text-sm">Opening Date:</span>
+                <span className="text-sm font-medium sm:text-base">{formData.openDate}</span>
               </div>
             </div>
           </div>
@@ -377,5 +379,6 @@ export default function OpenAccount() {
         </DialogContent>
       </Dialog>
     </div>
+    </RoleGuard> 
   );
 }

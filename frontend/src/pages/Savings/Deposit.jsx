@@ -15,6 +15,7 @@ import { CheckCircle2, AlertCircle, Search, Coins, ArrowDownCircle, Sparkles, Tr
 import { StarDecor, CoinsIllustration } from '../../components/CuteComponents';
 import { AccountInfoSkeleton } from '../../components/ui/loading-skeleton';
 import { getAccountInfo, depositMoney } from '../../services/transactionService';
+import { RoleGuard } from '../../components/RoleGuard';
 
 export default function Deposit() {
   const [accountId, setAccountId] = useState('');
@@ -93,25 +94,26 @@ export default function Deposit() {
   };
 
   return (
+    <RoleGuard allow={['teller']}>
     <div className="max-w-4xl mx-auto">
-      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+      <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
         {/* Cute Header */}
         <CardHeader className="bg-gradient-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
           <StarDecor className="top-4 right-8 sm:right-12" />
-          <Sparkles className="absolute top-6 right-20 sm:right-32 text-cyan-300 opacity-50" size={20} />
+          <Sparkles className="absolute opacity-50 top-6 right-20 sm:right-32 text-cyan-300" size={20} />
           
-          <div className="flex items-start gap-3 sm:gap-4 relative z-10">
+          <div className="relative z-10 flex items-start gap-3 sm:gap-4">
             <div 
-              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
+              className="flex items-center justify-center flex-shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)' }}
             >
-              <ArrowDownCircle size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
+              <ArrowDownCircle size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2 flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
                 <span className="truncate">Make Deposit</span>
-                <span className="text-xl sm:text-2xl flex-shrink-0">💰</span>
+                <span className="flex-shrink-0 text-xl sm:text-2xl">💰</span>
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
                 Deposit money to savings account (Form BM2)
@@ -120,15 +122,15 @@ export default function Deposit() {
           </div>
         </CardHeader>
 
-        <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6">
+        <CardContent className="p-4 space-y-6 sm:p-6 lg:p-8">
           {/* Account Lookup Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
               <Search size={18} className="sm:w-5 sm:h-5 text-[#1A4D8F]" />
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900">Account Lookup</h3>
+              <h3 className="text-sm font-semibold text-gray-900 sm:text-base">Account Lookup</h3>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <div className="flex-1">
                 <Input
                   value={accountId}
@@ -154,7 +156,7 @@ export default function Deposit() {
             </div>
 
             {error && !accountInfo && (
-              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
+              <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-2xl">
                 <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-red-700">Error</p>
@@ -169,7 +171,7 @@ export default function Deposit() {
 
             {accountInfo && (
               <div 
-                className="p-6 rounded-2xl border-2 space-y-3 relative overflow-hidden"
+                className="relative p-6 space-y-3 overflow-hidden border-2 rounded-2xl"
                 style={{ 
                   background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)',
                   borderColor: '#00AEEF40'
@@ -186,7 +188,7 @@ export default function Deposit() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Account Type:</span>
-                  <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+                  <Badge className="text-blue-700 bg-blue-100 border-blue-200">
                     No Term
                   </Badge>
                 </div>
@@ -202,7 +204,7 @@ export default function Deposit() {
 
           {/* Deposit Form */}
           {accountInfo && (
-            <form onSubmit={handleSubmit} className="space-y-6 pt-4 border-t border-gray-100">
+            <form onSubmit={handleSubmit} className="pt-4 space-y-6 border-t border-gray-100">
               <div className="space-y-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Coins size={20} className="text-[#00AEEF]" />
@@ -212,7 +214,7 @@ export default function Deposit() {
                 <div className="space-y-2">
                   <Label htmlFor="depositAmount" className="text-gray-700">Deposit Amount (VND) *</Label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-lg">₫</span>
+                    <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">₫</span>
                     <Input
                       id="depositAmount"
                       type="number"
@@ -225,13 +227,13 @@ export default function Deposit() {
                       className="pl-8 h-14 text-lg rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <p className="flex items-center gap-1 text-xs text-gray-500">
                     <span>💡</span> Minimum amount: ₫100,000
                   </p>
                 </div>
 
                 {error && accountInfo && (
-                  <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
+                  <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-2xl">
                     <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
                     <p className="text-sm text-red-600">{error}</p>
                   </div>
@@ -240,7 +242,7 @@ export default function Deposit() {
                 {/* Quick Amount Buttons */}
                 <div className="space-y-2">
                   <Label className="text-gray-700">Quick Amount:</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                     {[100000, 500000, 1000000, 5000000].map((amount) => (
                       <button
                         key={amount}
@@ -267,7 +269,7 @@ export default function Deposit() {
                 <Button 
                   type="button" 
                   variant="outline"
-                  className="h-12 px-8 rounded-full border-gray-300 hover:bg-gray-50"
+                  className="h-12 px-8 border-gray-300 rounded-full hover:bg-gray-50"
                   onClick={() => {
                     setAccountId('');
                     setDepositAmount('');
@@ -285,21 +287,21 @@ export default function Deposit() {
 
       {/* Success Modal */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent className="rounded-3xl max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+        <DialogContent className="max-w-md duration-300 rounded-3xl animate-in fade-in-0 zoom-in-95">
           <DialogHeader>
             <div className="flex flex-col items-center mb-4">
-              <div className="relative animate-in zoom-in-0 duration-500">
+              <div className="relative duration-500 animate-in zoom-in-0">
                 <div 
-                  className="w-24 h-24 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30"
+                  className="flex items-center justify-center w-24 h-24 mb-4 rounded-full shadow-lg shadow-green-500/30"
                   style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
                 >
-                  <TrendingUp size={48} className="text-white animate-in zoom-in-50 duration-700" />
+                  <TrendingUp size={48} className="text-white duration-700 animate-in zoom-in-50" />
                 </div>
-                <Sparkles className="absolute -top-2 -right-2 text-yellow-400 animate-pulse" size={24} />
+                <Sparkles className="absolute text-yellow-400 -top-2 -right-2 animate-pulse" size={24} />
               </div>
               <CoinsIllustration size={80} />
             </div>
-            <DialogTitle className="text-center text-2xl">
+            <DialogTitle className="text-2xl text-center">
               Deposit Successful! 🎉
             </DialogTitle>
             <DialogDescription className="text-center">
@@ -307,9 +309,9 @@ export default function Deposit() {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-3 py-4">
+          <div className="py-4 space-y-3">
             <div 
-              className="p-6 rounded-2xl space-y-3 border-2 animate-in slide-in-from-bottom-4 duration-500 delay-200"
+              className="p-6 space-y-3 duration-500 delay-200 border-2 rounded-2xl animate-in slide-in-from-bottom-4"
               style={{ 
                 background: 'linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)',
                 borderColor: '#00AEEF40'
@@ -344,5 +346,6 @@ export default function Deposit() {
         </DialogContent>
       </Dialog>
     </div>
+    </RoleGuard>
   );
 }

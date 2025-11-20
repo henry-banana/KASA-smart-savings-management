@@ -14,10 +14,12 @@ import {
   Sparkles,
   PiggyBank,
   Coins,
-  Receipt
+  Receipt,
+  AlertTriangle
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { CuteStatCard, StarDecor } from '../../components/CuteComponents';
+import { RoleGuard } from '../../components/RoleGuard';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -84,7 +86,7 @@ export default function Dashboard() {
       gradient: 'linear-gradient(135deg, #1A4D8F 0%, #2563A8 100%)',
       icon: <PiggyBank size={32} />,
       emoji: '🏦',
-      roles: ['teller', 'admin'] 
+      roles: ['teller'] 
     },
     { 
       label: 'Make Deposit', 
@@ -92,7 +94,7 @@ export default function Dashboard() {
       gradient: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)',
       icon: <Coins size={32} />,
       emoji: '💰',
-      roles: ['teller', 'admin'] 
+      roles: ['teller'] 
     },
     { 
       label: 'Make Withdrawal', 
@@ -100,7 +102,7 @@ export default function Dashboard() {
       gradient: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)',
       icon: <Receipt size={32} />,
       emoji: '💵',
-      roles: ['teller', 'admin'] 
+      roles: ['teller'] 
     },
     { 
       label: 'Search Accounts', 
@@ -108,7 +110,7 @@ export default function Dashboard() {
       gradient: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
       icon: <Search size={32} />,
       emoji: '🔍',
-      roles: ['teller', 'accountant', 'admin'] 
+      roles: ['teller', 'accountant'] 
     },
     { 
       label: 'Daily Report', 
@@ -116,7 +118,7 @@ export default function Dashboard() {
       gradient: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
       icon: <FileText size={32} />,
       emoji: '📊',
-      roles: ['accountant', 'admin'] 
+      roles: ['accountant'] 
     },
     { 
       label: 'Monthly Report', 
@@ -124,55 +126,57 @@ export default function Dashboard() {
       gradient: 'linear-gradient(135deg, #EC4899 0%, #F472B6 100%)',
       icon: <FileText size={32} />,
       emoji: '📈',
-      roles: ['accountant', 'admin'] 
+      roles: ['accountant'] 
     }
   ];
 
+  
   const visibleActions = quickActions.filter(action => action.roles.includes(user.role));
-
+  
   return (
+    <RoleGuard allow={['teller', 'accountant']}>
     <div className="space-y-8">
       {/* 📊 Stats Grid - Cute Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <CuteStatCard key={index} {...stat} />
         ))}
       </div>
 
       {/* 🎯 Quick Actions - Cute Menu Cards */}
-      <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/50 rounded-full -mr-20 -mt-20" />
+      <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+        <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-full bg-white/50" />
           <StarDecor className="top-4 right-8" />
-          <CardTitle className="flex items-center gap-2 relative z-10">
+          <CardTitle className="relative z-10 flex items-center gap-2">
             <Sparkles size={20} className="text-cyan-500" />
             Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {visibleActions.map((action, index) => (
               <button
                 key={index}
                 onClick={() => navigate(action.path)}
-                className="group relative overflow-hidden rounded-2xl p-6 text-left transition-all duration-300 hover:scale-105 hover:shadow-xl border-2 border-transparent hover:border-white"
+                className="relative p-6 overflow-hidden text-left transition-all duration-300 border-2 border-transparent group rounded-2xl hover:scale-105 hover:shadow-xl hover:border-white"
                 style={{ background: action.gradient }}
               >
                 {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500" />
+                <div className="absolute top-0 right-0 w-24 h-24 -mt-12 -mr-12 transition-transform duration-500 rounded-full bg-white/10 group-hover:scale-150" />
                 <StarDecor className="top-2 right-2" />
                 
                 <div className="relative z-10">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="flex items-center justify-center transition-transform duration-300 w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm group-hover:scale-110">
                       <div className="text-white">
                         {action.icon}
                       </div>
                     </div>
                     <span className="text-3xl">{action.emoji}</span>
                   </div>
-                  <h4 className="text-white font-semibold text-lg">{action.label}</h4>
-                  <p className="text-white/80 text-sm mt-1">Click to access</p>
+                  <h4 className="text-lg font-semibold text-white">{action.label}</h4>
+                  <p className="mt-1 text-sm text-white/80">Click to access</p>
                 </div>
               </button>
             ))}
@@ -181,10 +185,10 @@ export default function Dashboard() {
       </Card>
 
       {/* 📈 Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Bar Chart */}
-        <Card className="lg:col-span-2 border-0 shadow-lg rounded-2xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+        <Card className="overflow-hidden border-0 shadow-lg lg:col-span-2 rounded-2xl">
+          <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
             <CardTitle className="flex items-center gap-2">
               <TrendingUp size={20} className="text-[#1A4D8F]" />
               Deposits & Withdrawals This Week
@@ -209,8 +213,8 @@ export default function Dashboard() {
         </Card>
 
         {/* Pie Chart */}
-        <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+        <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+          <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
             <CardTitle className="flex items-center gap-2">
               <PiggyBank size={20} className="text-[#00AEEF]" />
               Loại Sổ
@@ -252,10 +256,10 @@ export default function Dashboard() {
       </div>
 
       {/* 🔔 Recent Transactions */}
-      <Card className="border-0 shadow-lg rounded-2xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/50 rounded-full -mr-20 -mt-20" />
-          <CardTitle className="flex items-center gap-2 relative z-10">
+      <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+        <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-full bg-white/50" />
+          <CardTitle className="relative z-10 flex items-center gap-2">
             <Receipt size={20} className="text-[#00AEEF]" />
             Giao Dịch Gần Đây
           </CardTitle>
@@ -270,11 +274,11 @@ export default function Dashboard() {
             ].map((transaction, index) => (
               <div 
                 key={index} 
-                className="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all duration-200 bg-white"
+                className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:shadow-md"
               >
                 <div className="flex items-center gap-4">
                   <div 
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-sm"
+                    className="flex items-center justify-center w-12 h-12 text-2xl shadow-sm rounded-2xl"
                     style={{ backgroundColor: `${transaction.color}15` }}
                   >
                     {transaction.emoji}
@@ -300,5 +304,6 @@ export default function Dashboard() {
         </CardContent>
       </Card>
     </div>
+    </RoleGuard>
   );
 }

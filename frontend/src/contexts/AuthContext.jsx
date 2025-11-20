@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }) => {
     const userData = await authService.login(credentials);
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    return userData;
   };
 
   const logout = () => {
@@ -59,8 +60,8 @@ export const AuthProvider = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-12 h-12 border-b-2 border-blue-500 rounded-full animate-spin" />
       </div>
     );
   }

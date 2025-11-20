@@ -21,6 +21,7 @@ import {
 } from "../../components/ui/dialog";
 import { CheckCircle2, AlertTriangle, History, Settings, Sparkles } from 'lucide-react';
 import { StarDecor } from '../../components/CuteComponents';
+import { RoleGuard } from '../../components/RoleGuard';
 
 export default function RegulationSettings() {
   const { user } = useAuth();
@@ -91,36 +92,25 @@ export default function RegulationSettings() {
     });
   };
 
-  if (user.role !== 'admin') {
-    return (
-      <Card className="rounded-3xl border-0 shadow-xl">
-        <CardContent className="p-12 text-center">
-          <AlertTriangle size={64} className="mx-auto mb-4 text-yellow-500" />
-          <h3 className="mb-2 text-xl font-semibold">Access Restricted</h3>
-          <p className="text-gray-600">Only administrators have permission to configure regulations.</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
+    <RoleGuard allow={['admin']}>
     <div className="space-y-4 sm:space-y-6">
       {/* Settings Form */}
-      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+      <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
         <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
           <StarDecor className="top-4 right-8 sm:right-12" />
-          <Sparkles className="absolute top-6 right-20 sm:right-32 text-purple-400 opacity-50" size={20} />
+          <Sparkles className="absolute text-purple-400 opacity-50 top-6 right-20 sm:right-32" size={20} />
           
-          <div className="flex items-start gap-3 sm:gap-4 relative z-10">
+          <div className="relative z-10 flex items-start gap-3 sm:gap-4">
             <div 
-              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
+              className="flex items-center justify-center flex-shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              <Settings size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
+              <Settings size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
             </div>
             <div className="flex-1">
-              <CardTitle className="text-2xl mb-2 flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 mb-2 text-2xl">
                 Regulation Settings (QĐ6)
                 <span className="text-2xl">⚙️</span>
               </CardTitle>
@@ -136,7 +126,7 @@ export default function RegulationSettings() {
             {/* Basic Settings */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                 <h4 className="font-semibold text-gray-900">Basic Regulations</h4>
               </div>
               
@@ -148,7 +138,7 @@ export default function RegulationSettings() {
                     type="number"
                     value={minDeposit}
                     onChange={(e) => setMinDeposit(e.target.value)}
-                    className="h-11 rounded-xl border-gray-200"
+                    className="border-gray-200 h-11 rounded-xl"
                   />
                   <p className="text-xs text-gray-500">Minimum amount to open account or deposit</p>
                 </div>
@@ -160,7 +150,7 @@ export default function RegulationSettings() {
                     type="number"
                     value={minWithdrawalDays}
                     onChange={(e) => setMinWithdrawalDays(e.target.value)}
-                    className="h-11 rounded-xl border-gray-200"
+                    className="border-gray-200 h-11 rounded-xl"
                   />
                   <p className="text-xs text-gray-500">Minimum days before withdrawal allowed</p>
                 </div>
@@ -170,11 +160,11 @@ export default function RegulationSettings() {
             {/* Interest Rates */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                 <h4 className="font-semibold text-gray-900">Interest Rates by Account Type</h4>
               </div>
               
-              <div className="border rounded-2xl overflow-hidden">
+              <div className="overflow-hidden border rounded-2xl">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
@@ -192,7 +182,7 @@ export default function RegulationSettings() {
                             step="0.1"
                             value={item.rate}
                             onChange={(e) => handleUpdateRate(index, e.target.value)}
-                            className="w-32 h-10 rounded-xl border-gray-200"
+                            className="w-32 h-10 border-gray-200 rounded-xl"
                           />
                         </TableCell>
                       </TableRow>
@@ -205,7 +195,7 @@ export default function RegulationSettings() {
             <div className="flex gap-4 pt-4">
               <Button 
                 type="submit"
-                className="h-12 px-8 text-white rounded-xl shadow-lg font-medium"
+                className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
                 style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
               >
                 Update Regulations
@@ -213,7 +203,7 @@ export default function RegulationSettings() {
               <Button 
                 type="button" 
                 variant="outline"
-                className="h-12 px-8 rounded-xl border-gray-200"
+                className="h-12 px-8 border-gray-200 rounded-xl"
                 onClick={() => {
                   setMinDeposit('100000');
                   setMinWithdrawalDays('15');
@@ -232,31 +222,31 @@ export default function RegulationSettings() {
       </Card>
 
       {/* Current Regulations Summary */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+      <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
         <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Current Regulations Summary</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="p-6 rounded-2xl border-2 border-blue-100" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)' }}>
-              <h5 className="text-sm font-semibold text-blue-900 mb-4">Deposit & Withdrawal Regulations</h5>
+            <div className="p-6 border-2 border-blue-100 rounded-2xl" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)' }}>
+              <h5 className="mb-4 text-sm font-semibold text-blue-900">Deposit & Withdrawal Regulations</h5>
               <div className="space-y-3">
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <span className="text-sm text-blue-800">Minimum Deposit:</span>
                   <span className="text-sm font-semibold text-blue-900">₫{Number(minDeposit).toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <span className="text-sm text-blue-800">Minimum Holding Period:</span>
                   <span className="text-sm font-semibold text-blue-900">{minWithdrawalDays} days</span>
                 </div>
               </div>
             </div>
 
-            <div className="p-6 rounded-2xl border-2 border-green-100" style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)' }}>
-              <h5 className="text-sm font-semibold text-green-900 mb-4">Interest Rates</h5>
+            <div className="p-6 border-2 border-green-100 rounded-2xl" style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)' }}>
+              <h5 className="mb-4 text-sm font-semibold text-green-900">Interest Rates</h5>
               <div className="space-y-3">
                 {interestRates.map((item, index) => (
-                  <div key={index} className="flex justify-between items-center">
+                  <div key={index} className="flex items-center justify-between">
                     <span className="text-sm text-green-800">{item.type}:</span>
                     <span className="text-sm font-semibold text-green-900">{item.rate}% per year</span>
                   </div>
@@ -268,11 +258,11 @@ export default function RegulationSettings() {
       </Card>
 
       {/* Change History */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+      <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
         <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <div className="flex items-center gap-3">
             <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              className="flex items-center justify-center w-10 h-10 rounded-xl"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
               <History size={20} className="text-white" />
@@ -284,7 +274,7 @@ export default function RegulationSettings() {
           </div>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="border rounded-2xl overflow-hidden">
+          <div className="overflow-hidden border rounded-2xl">
             <Table>
               <TableHeader>
                 <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
@@ -301,8 +291,8 @@ export default function RegulationSettings() {
                     <TableCell className="font-medium">{change.date}</TableCell>
                     <TableCell>{change.user}</TableCell>
                     <TableCell>{change.field}</TableCell>
-                    <TableCell className="text-red-600 font-medium">{change.oldValue}</TableCell>
-                    <TableCell className="text-green-600 font-medium">{change.newValue}</TableCell>
+                    <TableCell className="font-medium text-red-600">{change.oldValue}</TableCell>
+                    <TableCell className="font-medium text-green-600">{change.newValue}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -317,7 +307,7 @@ export default function RegulationSettings() {
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
               <div 
-                className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                className="flex items-center justify-center w-12 h-12 rounded-2xl"
                 style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}
               >
                 <AlertTriangle size={24} className="text-white" />
@@ -332,7 +322,7 @@ export default function RegulationSettings() {
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="p-4 border-2 border-yellow-200 rounded-2xl bg-yellow-50">
-              <p className="text-sm text-yellow-900 flex items-center gap-2">
+              <p className="flex items-center gap-2 text-sm text-yellow-900">
                 <AlertTriangle size={16} />
                 Changes will take effect immediately and apply to all accounts.
               </p>
@@ -341,7 +331,7 @@ export default function RegulationSettings() {
           <div className="flex gap-4">
             <Button 
               onClick={confirmUpdate}
-              className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
+              className="flex-1 h-12 font-medium text-white shadow-lg rounded-xl"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
               Confirm Change
@@ -349,7 +339,7 @@ export default function RegulationSettings() {
             <Button 
               onClick={() => setShowConfirm(false)}
               variant="outline"
-              className="flex-1 h-12 rounded-xl border-gray-200"
+              className="flex-1 h-12 border-gray-200 rounded-xl"
             >
               Cancel
             </Button>
@@ -363,21 +353,21 @@ export default function RegulationSettings() {
           <DialogHeader>
             <div className="flex justify-center mb-4">
               <div 
-                className="w-20 h-20 rounded-full flex items-center justify-center"
+                className="flex items-center justify-center w-20 h-20 rounded-full"
                 style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
               >
                 <CheckCircle2 size={48} className="text-white" />
               </div>
             </div>
-            <DialogTitle className="text-center text-2xl">Regulations Updated!</DialogTitle>
-            <DialogDescription className="text-center text-base">
+            <DialogTitle className="text-2xl text-center">Regulations Updated!</DialogTitle>
+            <DialogDescription className="text-base text-center">
               System regulations have been successfully updated.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
-            <div className="p-4 space-y-2 rounded-2xl bg-gray-50 border border-gray-200">
+            <div className="p-4 space-y-2 border border-gray-200 rounded-2xl bg-gray-50">
               <p className="text-sm font-semibold text-gray-700">Updated regulations:</p>
-              <ul className="space-y-1 text-sm list-disc list-inside text-gray-600">
+              <ul className="space-y-1 text-sm text-gray-600 list-disc list-inside">
                 <li>Minimum Deposit: ₫{Number(minDeposit).toLocaleString()}</li>
                 <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
                 {interestRates.map((item, index) => (
@@ -388,7 +378,7 @@ export default function RegulationSettings() {
           </div>
           <Button 
             onClick={() => setShowSuccess(false)}
-            className="w-full h-12 text-white rounded-xl shadow-lg font-medium"
+            className="w-full h-12 font-medium text-white shadow-lg rounded-xl"
             style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
           >
             Close
@@ -396,5 +386,6 @@ export default function RegulationSettings() {
         </DialogContent>
       </Dialog>
     </div>
+    </RoleGuard>
   );
 }

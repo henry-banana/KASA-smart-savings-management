@@ -15,6 +15,7 @@ import { CheckCircle2, AlertCircle, Search, Wallet, ArrowUpCircle, Sparkles } fr
 import { StarDecor, ReceiptIllustration } from '../../components/CuteComponents';
 import { AccountInfoSkeleton } from '../../components/ui/loading-skeleton';
 import { getAccountInfo, withdrawMoney } from '../../services/transactionService';
+import { RoleGuard } from '../../components/RoleGuard';
 
 export default function Withdraw() {
   const [accountId, setAccountId] = useState('');
@@ -148,25 +149,26 @@ export default function Withdraw() {
   };
 
   return (
+    <RoleGuard allow={['teller']}>
     <div className="max-w-4xl mx-auto">
-      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+      <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
         {/* Cute Header */}
         <CardHeader className="bg-gradient-to-r from-[#FFF7D6] to-[#FFE8F0] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-          <div className="absolute top-0 right-0 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 rounded-full -mr-16 sm:-mr-24 lg:-mr-32 -mt-16 sm:-mt-24 lg:-mt-32" />
+          <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
           <StarDecor className="top-4 right-8 sm:right-12" />
-          <Sparkles className="absolute top-6 right-20 sm:right-32 text-amber-400 opacity-50" size={20} />
+          <Sparkles className="absolute opacity-50 top-6 right-20 sm:right-32 text-amber-400" size={20} />
           
-          <div className="flex items-start gap-3 sm:gap-4 relative z-10">
+          <div className="relative z-10 flex items-start gap-3 sm:gap-4">
             <div 
-              className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0"
+              className="flex items-center justify-center flex-shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}
             >
-              <ArrowUpCircle size={24} className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
+              <ArrowUpCircle size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-lg sm:text-xl lg:text-2xl mb-1 sm:mb-2 flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
                 <span className="truncate">Make Withdrawal (BM3)</span>
-                <span className="text-xl sm:text-2xl flex-shrink-0">💵</span>
+                <span className="flex-shrink-0 text-xl sm:text-2xl">💵</span>
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
                 Withdraw money from a savings account
@@ -175,15 +177,15 @@ export default function Withdraw() {
           </div>
         </CardHeader>
 
-        <CardContent className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
+        <CardContent className="p-4 space-y-4 sm:p-6 lg:p-8 sm:space-y-6">
           {/* Account Lookup Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
               <Search size={18} className="sm:w-5 sm:h-5 text-[#F59E0B]" />
-              <h3 className="text-sm sm:text-base font-semibold text-gray-900">Account Lookup</h3>
+              <h3 className="text-sm font-semibold text-gray-900 sm:text-base">Account Lookup</h3>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <div className="flex-1">
                 <Input
                   value={accountId}
@@ -200,7 +202,7 @@ export default function Withdraw() {
               <Button
                 type="button"
                 onClick={handleAccountLookup}
-                className="h-12 px-6 rounded-xl text-white"
+                className="h-12 px-6 text-white rounded-xl"
                 style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}
               >
                 <Search size={18} className="mr-2" />
@@ -209,7 +211,7 @@ export default function Withdraw() {
             </div>
 
             {error && !accountInfo && (
-              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
+              <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-2xl">
                 <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-red-700">Error</p>
@@ -224,7 +226,7 @@ export default function Withdraw() {
 
             {accountInfo && (
               <div 
-                className="p-6 rounded-2xl border-2 space-y-3 relative overflow-hidden"
+                className="relative p-6 space-y-3 overflow-hidden border-2 rounded-2xl"
                 style={{ 
                   background: 'linear-gradient(135deg, #FFF7D6 0%, #FFE8F0 100%)',
                   borderColor: '#F59E0B40'
@@ -292,7 +294,7 @@ export default function Withdraw() {
                   Withdrawal Amount (VND) *
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-lg">₫</span>
+                  <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">₫</span>
                   <Input
                     id="withdrawAmount"
                     type="number"
@@ -311,7 +313,7 @@ export default function Withdraw() {
                 </div>
                 {accountInfo && withdrawAmount && (
                   <div 
-                    className="p-5 rounded-2xl border-2"
+                    className="p-5 border-2 rounded-2xl"
                     style={{ 
                       background: 'linear-gradient(135deg, #FFF7D6 0%, #ffffff 100%)',
                       borderColor: '#F59E0B20'
@@ -343,7 +345,7 @@ export default function Withdraw() {
               <Button 
                 type="button" 
                 variant="outline"
-                className="h-12 px-8 rounded-full border-gray-300 hover:bg-gray-50"
+                className="h-12 px-8 border-gray-300 rounded-full hover:bg-gray-50"
                 onClick={() => {
                   setAccountId('');
                   setWithdrawAmount('');
@@ -373,21 +375,21 @@ export default function Withdraw() {
 
       {/* Success Modal */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent className="rounded-3xl max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+        <DialogContent className="max-w-md duration-300 rounded-3xl animate-in fade-in-0 zoom-in-95">
           <DialogHeader>
             <div className="flex flex-col items-center mb-4">
-              <div className="relative animate-in zoom-in-0 duration-500">
+              <div className="relative duration-500 animate-in zoom-in-0">
                 <div 
-                  className="w-24 h-24 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30"
+                  className="flex items-center justify-center w-24 h-24 mb-4 rounded-full shadow-lg shadow-green-500/30"
                   style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
                 >
-                  <CheckCircle2 size={48} className="text-white animate-in zoom-in-50 duration-700" />
+                  <CheckCircle2 size={48} className="text-white duration-700 animate-in zoom-in-50" />
                 </div>
-                <Sparkles className="absolute -top-2 -right-2 text-yellow-400 animate-pulse" size={24} />
+                <Sparkles className="absolute text-yellow-400 -top-2 -right-2 animate-pulse" size={24} />
               </div>
               <ReceiptIllustration size={80} />
             </div>
-            <DialogTitle className="text-center text-2xl">
+            <DialogTitle className="text-2xl text-center">
               Withdrawal Successful! 🎉
             </DialogTitle>
             <DialogDescription className="text-center">
@@ -395,9 +397,9 @@ export default function Withdraw() {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-3 py-4">
+          <div className="py-4 space-y-3">
             <div 
-              className="p-6 rounded-2xl space-y-3 border-2 animate-in slide-in-from-bottom-4 duration-500 delay-200"
+              className="p-6 space-y-3 duration-500 delay-200 border-2 rounded-2xl animate-in slide-in-from-bottom-4"
               style={{ 
                 background: 'linear-gradient(135deg, #FFF7D6 0%, #FFE8F0 100%)',
                 borderColor: '#F59E0B40'
@@ -436,5 +438,6 @@ export default function Withdraw() {
         </DialogContent>
       </Dialog>
     </div>
+    </RoleGuard>
   );
 }
