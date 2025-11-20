@@ -1,8 +1,14 @@
 import { 
-  mockAccounts, 
-  findAccountById 
-} from '../data/accounts';
-import { searchMockData } from '../searchMockData';
+  mockSavingBooks,
+  findSavingBookById,
+  findSavingBooksByCustomer
+} from '../data/savingBooks';
+import { 
+  findCustomerById 
+} from '../data/customers';
+import { 
+  findTypeSavingById 
+} from '../data/typeSavings';
 import { randomDelay, generateId } from '../utils';
 import { logger } from '@/utils/logger';
 
@@ -11,7 +17,25 @@ export const mockSavingBookAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Search', { keyword, typeFilter, statusFilter });
     
-    let results = searchMockData.accounts.filter(account => {
+    // Map savingBooks to old account format for backward compatibility
+    let results = mockSavingBooks.map(sb => {
+      const customer = findCustomerById(sb.customerid);
+      const type = findTypeSavingById(sb.typesavingid);
+      
+      return {
+        id: sb.bookid,
+        customer: customer?.fullname || 'Unknown',
+        type: type?.typename || 'Unknown',
+        status: sb.status,
+        balance: sb.balance,
+        openDate: sb.opendate,
+        interestRate: type?.interestrate || 0,
+        term: type?.term || 0
+      };
+    });
+    
+    // Apply filters
+    results = results.filter(account => {
       const matchesSearch = !keyword || 
         account.id.toLowerCase().includes(keyword.toLowerCase()) ||
         account.customer.toLowerCase().includes(keyword.toLowerCase());
@@ -33,10 +57,25 @@ export const mockSavingBookAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Get Saving Book', { id });
     
-    const account = searchMockData.accounts.find(acc => acc.id === id);
-    if (!account) {
+    const savingBook = findSavingBookById(id);
+    if (!savingBook) {
       throw new Error('Không tìm thấy sổ tiết kiệm');
     }
+    
+    const customer = findCustomerById(savingBook.customerid);
+    const type = findTypeSavingById(savingBook.typesavingid);
+    
+    // Map to old format
+    const account = {
+      id: savingBook.bookid,
+      customer: customer?.fullname || 'Unknown',
+      type: type?.typename || 'Unknown',
+      status: savingBook.status,
+      balance: savingBook.balance,
+      openDate: savingBook.opendate,
+      interestRate: type?.interestrate || 0,
+      term: type?.term || 0
+    };
     
     return { success: true, data: account };
   }
