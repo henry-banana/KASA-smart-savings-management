@@ -69,7 +69,7 @@ export default function Login() {
     const roleCredentials = {
       teller: { username: 'teller1', password: '123456' },
       accountant: { username: 'accountant1', password: '123456' },
-      admin: { username: 'admin', password: 'admin123' }
+      admin: { username: 'admin1', password: 'admin123' }
     };
     
     const creds = roleCredentials[role];

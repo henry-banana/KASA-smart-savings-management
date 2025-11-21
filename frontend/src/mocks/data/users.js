@@ -68,7 +68,7 @@ export const findUserByCredentials = (userid, password) => {
     'teller1': '123456',
     'teller2': '123456',
     'accountant1': '123456',
-    'admin': 'admin123'
+    'admin1': 'admin123'
   };
   
   const user = mockUserAccounts.find(u => u.userid === userid);

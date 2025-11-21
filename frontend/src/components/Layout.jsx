@@ -125,7 +125,7 @@ export default function Layout() {
         <div className="relative p-6 border-b border-white/10">
           <div className="flex items-center justify-between">
             <button 
-              onClick={() => handleNavigate('/dashboard')}
+              onClick={() => handleNavigate('/')}
               className={`flex items-center gap-3 hover:opacity-80 transition-all duration-300 ${
                 !isMobile && isSidebarCollapsed ? 'justify-center w-full' : ''
               }`}
@@ -245,7 +245,7 @@ export default function Layout() {
               
               {/* Logo - Click to Home */}
               <button
-                onClick={() => handleNavigate('/dashboard')}
+                onClick={() => handleNavigate('/')}
                 className="flex items-center gap-2 transition-opacity hover:opacity-90 group"
               >
                 <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden shadow-lg rounded-xl bg-white/20 backdrop-blur-sm">
