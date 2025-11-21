@@ -62,6 +62,25 @@ class CustomerService {
 
     return { message: "Customer deleted successfully." };
   }
+
+  // Tìm kiếm khách hàng theo keyword (ID hoặc tên)
+  async searchCustomers(keyword) {
+    if (!keyword) return [];
+
+    const isId = /^\d+$/.test(keyword); // nếu toàn số → tìm theo ID
+
+    let result;
+    if (isId) {
+      const customer = await customerRepository.findById(keyword);
+      result = customer ? [customer] : [];
+    } else {
+      // tìm theo tên (có thể dùng LIKE hoặc tương đương trong repository)
+      result = await customerRepository.findByName(keyword);
+    }
+
+    return result;
+  }
+
 }
 
 export const customerService = new CustomerService();

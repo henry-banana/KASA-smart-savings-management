@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors"; // <-- import cors
+import cors from "cors"; 
+import { setupSwagger } from "./src/config/swagger.js";
 import authRoutes from "./src/routers/userAccount.rouiter.js";
 import employeeRoutes from './src/routers/employee.router.js';
 import savingBookRoutes from './src/routers/savingBook.router.js';
@@ -11,6 +12,7 @@ import typeSavingRoutes from './src/routers/typeSaving.router.js';
 dotenv.config();
 
 const app = express();
+setupSwagger(app);
 
 // CORS: cho phép frontend từ domain/port khác gọi API
 app.use(cors({
@@ -31,4 +33,5 @@ app.use("/api/typesaving", typeSavingRoutes);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
+  console.log("Swagger docs: http://localhost:3000/api/docs");
 });
