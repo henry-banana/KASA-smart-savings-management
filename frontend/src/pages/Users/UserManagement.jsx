@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { userApi } from '@/api/userApi';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -37,44 +38,9 @@ import { RoleGuard } from '../../components/RoleGuard';
 
 export default function UserManagement() {
   const { user } = useAuth();
-  const [users, setUsers] = useState([
-    {
-      id: 'U001',
-      username: 'teller1',
-      fullName: 'Nguyễn Văn A',
-      email: 'teller1@kasa.com',
-      role: 'teller',
-      status: 'active',
-      createdDate: '2025-01-15'
-    },
-    {
-      id: 'U002',
-      username: 'accountant1',
-      fullName: 'Trần Thị B',
-      email: 'accountant1@kasa.com',
-      role: 'accountant',
-      status: 'active',
-      createdDate: '2025-02-01'
-    },
-    {
-      id: 'U003',
-      username: 'admin1',
-      fullName: 'Lê Văn C',
-      email: 'admin@kasa.com',
-      role: 'admin',
-      status: 'active',
-      createdDate: '2025-01-01'
-    },
-    {
-      id: 'U004',
-      username: 'teller2',
-      fullName: 'Phạm Thị D',
-      email: 'teller2@kasa.com',
-      role: 'teller',
-      status: 'disabled',
-      createdDate: '2025-03-10'
-    }
-  ]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [showAddUser, setShowAddUser] = useState(false);
   const [showEditUser, setShowEditUser] = useState(false);
@@ -90,6 +56,25 @@ export default function UserManagement() {
     role: 'teller',
     password: ''
   });
+
+  // Fetch users on mount
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await userApi.getAllUsers();
+      setUsers(data);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch users');
+      console.error('Error fetching users:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAddUser = () => {
     setFormData({
@@ -119,45 +104,51 @@ export default function UserManagement() {
     setShowDisableConfirm(true);
   };
 
-  const confirmDisable = () => {
+  const confirmDisable = async () => {
     if (selectedUser) {
-      setUsers(users.map(u => 
-        u.id === selectedUser.id 
-          ? { ...u, status: u.status === 'active' ? 'disabled' : 'active' }
-          : u
-      ));
-      setSuccessMessage(`User ${selectedUser.status === 'active' ? 'disabled' : 'enabled'} successfully`);
-      setShowSuccess(true);
+      try {
+        await userApi.toggleUserStatus(selectedUser.username);
+        await fetchUsers(); // Refresh list
+        setSuccessMessage(`User ${selectedUser.status === 'active' ? 'disabled' : 'enabled'} successfully`);
+        setShowSuccess(true);
+      } catch (err) {
+        setError(err.message || 'Failed to update user status');
+        console.error('Error toggling user status:', err);
+      }
     }
     setShowDisableConfirm(false);
   };
 
-  const submitAddUser = () => {
-    const newUser = {
-      id: `U${String(users.length + 1).padStart(3, '0')}`,
-      username: formData.username,
-      fullName: formData.fullName,
-      email: formData.email,
-      role: formData.role,
-      status: 'active',
-      createdDate: new Date().toISOString().split('T')[0]
-    };
-    setUsers([...users, newUser]);
-    setShowAddUser(false);
-    setSuccessMessage('User created successfully');
-    setShowSuccess(true);
+  const submitAddUser = async () => {
+    try {
+      await userApi.createUser(formData);
+      await fetchUsers(); // Refresh list
+      setShowAddUser(false);
+      setSuccessMessage('User created successfully');
+      setShowSuccess(true);
+    } catch (err) {
+      setError(err.message || 'Failed to create user');
+      console.error('Error creating user:', err);
+    }
   };
 
-  const submitEditUser = () => {
+  const submitEditUser = async () => {
     if (selectedUser) {
-      setUsers(users.map(u =>
-        u.id === selectedUser.id
-          ? { ...u, username: formData.username, fullName: formData.fullName, email: formData.email, role: formData.role }
-          : u
-      ));
-      setShowEditUser(false);
-      setSuccessMessage('User updated successfully');
-      setShowSuccess(true);
+      try {
+        await userApi.updateUser(selectedUser.username, {
+          username: formData.username,
+          fullName: formData.fullName,
+          email: formData.email,
+          role: formData.role
+        });
+        await fetchUsers(); // Refresh list
+        setShowEditUser(false);
+        setSuccessMessage('User updated successfully');
+        setShowSuccess(true);
+      } catch (err) {
+        setError(err.message || 'Failed to update user');
+        console.error('Error updating user:', err);
+      }
     }
   };
 
@@ -189,6 +180,18 @@ export default function UserManagement() {
   return (
     <RoleGuard allow={['admin']}>
       <div className="space-y-4 sm:space-y-6">
+        {/* Error Alert */}
+        {error && (
+          <Card className="overflow-hidden border-red-200 shadow-xl bg-red-50 rounded-2xl">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3 text-red-800">
+                <AlertTriangle size={20} />
+                <span>{error}</span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Header */}
         <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
           <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
@@ -237,7 +240,18 @@ export default function UserManagement() {
           <CardContent className="p-4 sm:p-6">
             <div className="overflow-hidden border rounded-xl lg:rounded-2xl">
               <div className="overflow-x-auto">
-                <Table>
+                {loading ? (
+                  <div className="py-12 text-center">
+                    <div className="inline-block w-8 h-8 border-4 border-purple-200 rounded-full animate-spin border-t-purple-600"></div>
+                    <p className="mt-4 text-gray-600">Loading users...</p>
+                  </div>
+                ) : users.length === 0 ? (
+                  <div className="py-12 text-center text-gray-500">
+                    <Users2 size={48} className="mx-auto mb-4 opacity-50" />
+                    <p>No users found</p>
+                  </div>
+                ) : (
+                  <Table>
                   <TableHeader>
                     <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
                       <TableHead className="text-xs font-semibold sm:text-sm">Username</TableHead>
@@ -302,6 +316,7 @@ export default function UserManagement() {
                   ))}
                 </TableBody>
               </Table>
+              )}
               </div>
             </div>
           </CardContent>
