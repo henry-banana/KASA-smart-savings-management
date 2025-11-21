@@ -34,6 +34,22 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function HomeRedirect() {
+  const { user } = useAuth();
+
+  // Nếu chưa có user (vừa mount) thì tạm cho về dashboard,
+  // ProtectedRoute sẽ tự chặn nếu chưa đăng nhập
+  if (!user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  if (user.role === 'admin') {
+    return <Navigate to="/regulations" replace />;
+  }
+
+  return <Navigate to="/dashboard" replace />;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -50,7 +66,7 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route index element={<HomeRedirect />} />
           <Route path="dashboard" element={<Dashboard />} />
           
           {/* Savings Routes */}

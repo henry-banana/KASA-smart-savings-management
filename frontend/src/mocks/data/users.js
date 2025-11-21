@@ -8,24 +8,32 @@ export const mockUserAccounts = [
     userid: "teller1",
     password: "$2b$10$abcdefghijklmnopqrstuv", // hashed password for '123456'
     employeeid: "EMP001",
+    role: "teller",
+    fullName: "Nguyễn Văn Teller",
     lastlogin: "2025-11-20T08:30:00.000Z"
   },
   {
     userid: "teller2",
     password: "$2b$10$abcdefghijklmnopqrstuv", // hashed password for '123456'
     employeeid: "EMP002",
+    role: "teller",
+    fullName: "Trần Thị Teller",
     lastlogin: "2025-11-19T09:15:00.000Z"
   },
   {
-    userid: "auditor1",
+    userid: "accountant1",
     password: "$2b$10$abcdefghijklmnopqrstuv", // hashed password for '123456'
     employeeid: "EMP003",
+    role: "accountant",
+    fullName: "Lê Văn Kế Toán",
     lastlogin: "2025-11-20T07:45:00.000Z"
   },
   {
     userid: "admin",
     password: "$2b$10$xyz123adminpasswordhash", // hashed password for 'admin123'
     employeeid: "EMP004",
+    role: "admin",
+    fullName: "Phạm Thị Quản Trị",
     lastlogin: "2025-11-20T08:00:00.000Z"
   }
 ];
@@ -43,7 +51,7 @@ export const findUserByCredentials = (userid, password) => {
   const plainPasswords = {
     'teller1': '123456',
     'teller2': '123456',
-    'auditor1': '123456',
+    'accountant1': '123456',
     'admin': 'admin123'
   };
   
