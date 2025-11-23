@@ -175,13 +175,6 @@ const router = express.Router();
  *         description: Employee not found
  */
 
-router.post("/add", addEmployee);
-router.get("/", getAllEmployees);
-router.get("/:id", getEmployeeById);
-router.put("/:id", updateEmployee);
-router.delete("/:id", deleteEmployee);
-
-export default router;
 
 /**
  * @swagger
@@ -201,3 +194,14 @@ export default router;
  *         branchID:
  *           type: integer
  */
+
+import { verifyToken } from "../middleware/auth.middleware.js";
+
+
+router.post("/add", verifyToken, addEmployee);
+router.get("/", getAllEmployees);
+router.get("/:id", getEmployeeById);
+router.put("/:id", updateEmployee);
+router.delete("/:id", deleteEmployee);
+
+export default router;

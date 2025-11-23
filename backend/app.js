@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors"; 
 import { setupSwagger } from "./src/config/swagger.js";
-import authRoutes from "./src/routers/userAccount.rouiter.js";
+import authRoutes from "./src/routers/userAccount.router.js";
 import employeeRoutes from './src/routers/employee.router.js';
 import savingBookRoutes from './src/routers/savingBook.router.js';
 import transactionRoutes from './src/routers/transaction.router.js';
