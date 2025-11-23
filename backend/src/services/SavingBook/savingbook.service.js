@@ -1,6 +1,7 @@
 import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
 import {customerRepository} from "../../repositories/Customer/CustomerRepository.js"
 import {typeSavingRepository} from "../../repositories/TypeSaving/TypeSavingRepository.js"
+import {transactionRepository} from "../../repositories/Transaction/TransactionRepository.js"
 
 class SavingBookService {
   
@@ -85,12 +86,50 @@ class SavingBookService {
   }
 
   // Lấy thông tin sổ tiết kiệm theo ID
-  async getSavingBookById(bookID) {
-    const savingBook = await savingBookRepository.findById(bookID);
-    if (!savingBook) throw new Error("Saving book not found");
+  // Lấy thông tin sổ tiết kiệm theo ID
+async getSavingBookById(bookID) {
+  // 1. Lấy thông tin sổ tiết kiệm
+  const savingBook = await savingBookRepository.findById(bookID);
+  if (!savingBook) throw new Error("Saving book not found");
 
-    return savingBook;
-  }
+  // 2. Lấy khách hàng theo customerid
+  const customer = await customerRepository.findById(savingBook.customerid);
+  if (!customer) throw new Error("Customer not found");
+
+  // 3. Lấy loại sổ tiết kiệm
+  const typeSaving = await typeSavingRepository.getTypeSavingById(savingBook.typeid);
+  if (!typeSaving) throw new Error("TypeSaving not found");
+
+  // 4. Lấy danh sách giao dịch
+  const transactions = await transactionRepository.findById(bookID);
+
+  // 5. Trả về đúng format phản hồi bạn yêu cầu
+  return {
+    message: "Get savingbook successfully",
+    success: true,
+    data: {
+      bookid: savingBook.bookid,
+      citizenid: customer.citizenid,
+      customerName: customer.fullname,
+      typesavingid: typeSaving.typeid,
+      opendate: savingBook.registertime,
+      maturitydate: savingBook.maturitydate,
+      balance: savingBook.currentbalance,
+      status: savingBook.status,
+
+      typesaving: {
+        typesavingid: typeSaving.typeid,
+        typename: typeSaving.typename,
+        term: typeSaving.termperiod,
+        interestrate: typeSaving.interest,
+        minimumdeposit: typeSaving.minimumdeposit
+      },
+
+      transactions: transactions || []
+    }
+  };
+}
+
 }
 
 export const savingBookService = new SavingBookService();
