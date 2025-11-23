@@ -4,12 +4,24 @@ import { userAccountService } from "../../services/UserAccount/userAccount.servi
 export async function getAllUserAccounts(req, res) {
   try {
     const result = await userAccountService.getAllUserAccounts();
-    res.status(200).json(result);
+
+    return res.status(200).json({
+      message: "User accounts retrieved successfully",
+      success: true,
+      data: result, // danh sách user accounts
+      total: result.length,
+    });
+
   } catch (err) {
     console.error("❌ Error getting user accounts:", err);
-    res.status(err.status || 500).json({ message: err.message });
+
+    return res.status(err.status || 500).json({
+      message: "Failed to retrieve user accounts",
+      success: false,
+    });
   }
 }
+
 
 // Lấy thông tin tài khoản theo ID
 export async function getUserAccountById(req, res) {
