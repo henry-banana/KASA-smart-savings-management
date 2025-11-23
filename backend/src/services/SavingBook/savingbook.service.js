@@ -97,7 +97,7 @@ async getSavingBookById(bookID) {
   if (!customer) throw new Error("Customer not found");
 
   // 3. Lấy loại sổ tiết kiệm
-  const typeSaving = await typeSavingRepository.getTypeSavingById(savingBook.typeid);
+  const typeSaving = await typeSavingRepository.findById(savingBook.typeid);
   if (!typeSaving) throw new Error("TypeSaving not found");
 
   // 4. Lấy danh sách giao dịch
