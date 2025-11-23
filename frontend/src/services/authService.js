@@ -32,7 +32,8 @@ export const authService = {
       id: userData.userId || userData.id,
       username: userData.username,
       fullName: userData.fullName,
-      role: roleMap[userData.roleName] || userData.roleName?.toLowerCase()
+      role: roleMap[userData.roleName] || userData.roleName?.toLowerCase(),
+      status: userData.status || 'active',
     };
   }
 };

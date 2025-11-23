@@ -143,5 +143,6 @@ export * from './adapters/accountAdapter.js';
 export * from './adapters/savingBookAdapter.js';
 export * from './adapters/transactionAdapter.js';
 export * from './adapters/reportAdapter.js';
+export * from './adapters/userAdapter.js';
 
 
