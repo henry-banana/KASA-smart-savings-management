@@ -1,24 +1,54 @@
 import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
-import { userAccountRepository } from "../../repositories/UserAccount/UserAccountRepository.js";
+import {customerRepository} from "../../repositories/Customer/CustomerRepository.js"
+import {typeSavingRepository} from "../../repositories/TypeSaving/TypeSavingRepository.js"
 
 class SavingBookService {
   
   // Thêm sổ tiết kiệm mới
-  async addSavingBook({ typeID, customerID, currentBalance }) {
-    if (!typeID || !customerID || !currentBalance) {
+  async addSavingBook({ typeSavingID, initialDeposit, employeeID, citizenID}) {
+    if (!typeSavingID || !initialDeposit || !employeeID || !citizenID) {
       throw new Error("Missing required information.");
     }
 
+    const customer = await customerRepository.findByCitizenID(citizenID)
+
+    // 2. Lấy thông tin loại sổ tiết kiệm
+    const typeSaving = await typeSavingRepository.getTypeSavingById(typeSavingID);
+    if (!typeSaving) {
+      throw new Error("TypeSaving not found: " + typeSavingID);
+    }
+
+    // 3. Tính ngày mở và ngày đáo hạn
+    const maturityDate = new Date();
+    maturityDate.setMonth(maturityDate.getMonth() + typeSaving.term);
+
     // Tạo sổ tiết kiệm mới
+    //PHau: chưa thêm nhân viên nào tạo ????
     const newSavingBook = await savingBookRepository.create({
-      typeid: typeID,
-      customerid: customerID,
-      currentbalance: currentBalance
+      typeid: typeSavingID,
+      customerid: customer.customerid,
+      currentbalance: initialDeposit
     });
 
+    newSavingBook.citizenid = citizenID
+
+    // 5. Trả về đúng format response bạn cần
     return {
-      message: "Saving book created successfully.",
-      savingBook: newSavingBook,
+      bookid: newSavingBook.bookid,
+      citizenid: citizenID,
+      customerName: customer.name,
+      typesavingid: typeSavingID,
+      opendate: newSavingBook.opendate,
+      maturitydate: newSavingBook.maturitydate,
+      balance: initialDeposit,
+      status: newSavingBook.status,
+      typesaving: {
+        typesavingid: typeSavingID,
+        typename: typeSaving.typename,
+        term: typeSaving.termperiod,
+        interestrate: typeSaving.interest,
+        minimumdeposit: typeSaving.minimumdeposit,
+      }
     };
   }
 
