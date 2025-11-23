@@ -11,7 +11,7 @@ export async function login(req, res) {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ message: "Missing username or password" });
+      return res.status(400).json({ message: "Username and password are required" });
     }
 
     // JOIN 3 bảng để lấy roleName thông qua Employee
@@ -21,6 +21,7 @@ export async function login(req, res) {
         userid,
         password,
         employee:employee (
+          fullname,
           role:role (
             rolename
           )
@@ -48,21 +49,42 @@ export async function login(req, res) {
     // Lấy roleName từ join Employee → Role
     const roleName = userData.employee?.role?.rolename || "Unknown";
 
+    // Lấy thêm thông tin fullName, status
+    const fullName = userData.employee?.fullname || "Unknown"; 
+    const status = userData.employee?.accountstatus || "active"; 
+
+    // 🔹 Kiểm tra tài khoản bị vô hiệu hóa
+    if (status !== "active") {
+      return res.status(403).json({
+        message: "Account disabled. Contact administrator.",
+        success: false,
+      });
+    }
+
     // Tạo JWT
     const token = jwt.sign(
       {
-        userId: userData.userid,
-        role: roleName,
+        userId: userData.userid,           // id duy nhất
+        username: userData.userid,         // username
+        role: roleName,                     // role: admin, teller...
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES || "1d" }
     );
 
+
     return res.status(200).json({
       message: "Login successful",
       success: true,
-      roleName,
-      token,   
+      data: {
+        userId: userData.userid,
+        username: userData.userid,  
+        fullName,
+        roleName,
+        status,
+        token, 
+      },
+      
     });
 
   } catch (err) {

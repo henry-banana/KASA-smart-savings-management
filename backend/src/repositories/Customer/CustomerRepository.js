@@ -5,6 +5,10 @@ export class CustomerRepository {
     return await Customer.getById(customerId);
   }
 
+  async findByCitizenID(citizenID){
+    return await Customer.getByCitizenID(citizenID);
+  }
+
   async findAll() {
     return await Customer.getAll();
   }
