@@ -15,6 +15,7 @@ export function verifyToken(req, res, next) {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
+      // trong contract để 401 => cần hỏi lại
       return res.status(403).json({ message: "Token is invalid or expired" });
     }
 
