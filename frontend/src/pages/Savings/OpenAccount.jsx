@@ -141,14 +141,14 @@ export default function OpenAccount() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="idCard" className="text-sm text-gray-700 sm:text-base">ID Card Number *</Label>
+                  <Label htmlFor="idCard" className="text-sm text-gray-700 sm:text-base">ID Citizen Number *</Label>
                   <div className="relative">
                     <CreditCard className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2" size={16} />
                     <Input
                       id="idCard"
                       value={formData.idCard}
                       onChange={(e) => setFormData({ ...formData, idCard: e.target.value })}
-                      placeholder="Enter ID card number"
+                      placeholder="Enter ID citizen number"
                       className="pl-10 h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     />
                   </div>
