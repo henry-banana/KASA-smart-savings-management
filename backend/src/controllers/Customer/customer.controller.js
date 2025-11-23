@@ -4,10 +4,21 @@ import { customerService } from "../../services/Customer/customer.service.js";
 export async function addCustomer(req, res) {
   try {
     const result = await customerService.addCustomer(req.body);
-    res.status(201).json(result);
+
+    return res.status(201).json({
+      message: "Customer added successfully",
+      success: true,
+      total: 1,
+      data: result,
+    });
+
   } catch (err) {
     console.error("❌ Error adding customer:", err);
-    res.status(err.status || 500).json({ message: err.message });
+
+    return res.status(err.status || 500).json({
+      message: "Failed to add customer",
+      success: false,
+    });
   }
 }
 
@@ -15,10 +26,21 @@ export async function addCustomer(req, res) {
 export async function getAllCustomers(req, res) {
   try {
     const result = await customerService.getAllCustomers();
-    res.status(200).json(result);
+
+    return res.status(200).json({
+      message: "Get customers successfully",
+      success: true,
+      total: result.length,
+      data: result,
+    });
+
   } catch (err) {
     console.error("❌ Error getting customers:", err);
-    res.status(err.status || 500).json({ message: err.message });
+
+    return res.status(err.status || 500).json({
+      message: "Failed to retrieve customers",
+      success: false,
+    });
   }
 }
 
@@ -27,13 +49,28 @@ export async function getCustomerById(req, res) {
   try {
     const { id } = req.params;
     const result = await customerService.getCustomerById(id);
+
     if (!result) {
-      return res.status(404).json({ message: "Customer not found" });
+      return res.status(404).json({
+        message: "Customer not found",
+        success: false,
+      });
     }
-    res.status(200).json(result);
+
+    return res.status(200).json({
+      message: "Get customer successfully",
+      success: true,
+      total: 1,
+      data: result,
+    });
+
   } catch (err) {
     console.error("❌ Error getting customer by ID:", err);
-    res.status(err.status || 500).json({ message: err.message });
+
+    return res.status(err.status || 500).json({
+      message: "Failed to retrieve customer",
+      success: false,
+    });
   }
 }
 
@@ -42,10 +79,28 @@ export async function updateCustomer(req, res) {
   try {
     const { id } = req.params;
     const result = await customerService.updateCustomer(id, req.body);
-    res.status(200).json(result);
+
+    if (!result) {
+      return res.status(404).json({
+        message: "Customer not found",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Customer updated successfully",
+      success: true,
+      total: 1,
+      data: result,
+    });
+
   } catch (err) {
     console.error("❌ Error updating customer:", err);
-    res.status(err.status || 500).json({ message: err.message });
+
+    return res.status(err.status || 500).json({
+      message: "Failed to update customer",
+      success: false,
+    });
   }
 }
 
@@ -54,24 +109,50 @@ export async function deleteCustomer(req, res) {
   try {
     const { id } = req.params;
     const result = await customerService.deleteCustomer(id);
-    res.status(200).json(result);
+
+    if (!result) {
+      return res.status(404).json({
+        message: "Customer not found",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Customer deleted successfully",
+      success: true,
+      total: 1,
+      data: result,
+    });
+
   } catch (err) {
     console.error("❌ Error deleting customer:", err);
-    res.status(err.status || 500).json({ message: err.message });
+
+    return res.status(err.status || 500).json({
+      message: "Failed to delete customer",
+      success: false,
+    });
   }
 }
-
 
 // Tìm kiếm khách hàng theo keyword
 export async function searchCustomer(req, res) {
   try {
-    const { keyword } = req.query; // /api/customers/search?keyword=abc
-
+    const { keyword } = req.query;
     const result = await customerService.searchCustomers(keyword);
 
-    res.status(200).json(result);
+    return res.status(200).json({
+      message: "Search customers successfully",
+      success: true,
+      total: result.length,
+      data: result,
+    });
+
   } catch (err) {
     console.error("❌ Error searching customers:", err);
-    res.status(err.status || 500).json({ message: err.message });
+
+    return res.status(err.status || 500).json({
+      message: "Failed to search customers",
+      success: false,
+    });
   }
 }
