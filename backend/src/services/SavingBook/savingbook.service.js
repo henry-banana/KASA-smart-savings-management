@@ -103,11 +103,8 @@ async getSavingBookById(bookID) {
   // 4. Lấy danh sách giao dịch
   const transactions = await transactionRepository.findById(bookID);
 
-  // 5. Trả về đúng format phản hồi bạn yêu cầu
   return {
-    message: "Get savingbook successfully",
-    success: true,
-    data: {
+
       bookid: savingBook.bookid,
       citizenid: customer.citizenid,
       customerName: customer.fullname,
@@ -126,7 +123,7 @@ async getSavingBookById(bookID) {
       },
 
       transactions: transactions || []
-    }
+    
   };
 }
 

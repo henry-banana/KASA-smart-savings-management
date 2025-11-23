@@ -69,8 +69,6 @@ export async function deleteSavingBook(req, res) {
     return res.status(200).json({
       message: "Saving book deleted successfully",
       success: true,
-      total: 1,
-      data: result,
     });
 
   } catch (err) {
