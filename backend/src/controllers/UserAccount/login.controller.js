@@ -64,12 +64,14 @@ export async function login(req, res) {
     // Tạo JWT
     const token = jwt.sign(
       {
-        userId: userData.userid,
-        role: roleName,
+        userId: userData.userid,           // id duy nhất
+        username: userData.userid,         // username
+        role: roleName,                     // role: admin, teller...
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES || "1d" }
     );
+
 
     return res.status(200).json({
       message: "Login successful",
