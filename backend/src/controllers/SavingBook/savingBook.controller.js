@@ -142,3 +142,32 @@ export async function searchSavingBook(req, res) {
     });
   }
 }
+
+
+// Tất toán sổ tiết kiệm
+export async function closeSavingBook(req, res) {
+  try {
+    const { id } = req.params;
+    const { employeeID } = req.body; 
+    const result = await savingBookService.closeSavingBook(id, employeeID);
+
+    if (!result) {
+      return res.status(404).json({
+        message: "Saving book not found or already closed",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Saving book closed successfully",
+      success: true,
+      data: result,
+    });
+  } catch (err) {
+    console.error("❌ Error closing saving book:", err);
+    return res.status(err.status || 500).json({
+      message: "Failed to close saving book",
+      success: false,
+    });
+  }
+}

@@ -4,7 +4,8 @@ import {
   updateSavingBook,
   deleteSavingBook,
   getSavingBookById,
-  searchSavingBook
+  searchSavingBook,
+  closeSavingBook
 } from "../controllers/SavingBook/savingBook.controller.js";
 
 const router = express.Router();
@@ -24,5 +25,7 @@ router.get("/search", searchSavingBook);
 // Lấy thông tin sổ tiết kiệm theo ID
 router.get("/:id", getSavingBookById);
 
+//Tất toán sổ
+router.post("/:id/close", closeSavingBook);
 
 export default router;

@@ -1,7 +1,7 @@
 import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
 import {customerRepository} from "../../repositories/Customer/CustomerRepository.js"
-import {typeSavingRepository} from "../../repositories/TypeSaving/TypeSavingRepository.js"
-import {transactionRepository} from "../../repositories/Transaction/TransactionRepository.js"
+import { typeSavingRepository } from "../../repositories/TypeSaving/TypeSavingRepository.js";
+import {TransactionRepository, transactionRepository} from "../../repositories/Transaction/TransactionRepository.js"
 import { raw } from "express";
 
 class SavingBookService {
@@ -113,7 +113,7 @@ class SavingBookService {
         maturitydate: savingBook.maturitydate,
         balance: savingBook.currentbalance,
         status: savingBook.status,
-
+ 
         typesaving: {
           typesavingid: typeSaving.typeid,
           typename: typeSaving.typename,
@@ -157,6 +157,58 @@ class SavingBookService {
     return results || []
   }
 
+  // Tất toán sổ tiết kiệm
+  async closeSavingBook(bookID, employeeID) {
+    // 1. Lấy thông tin sổ tiết kiệm và kiểm tra trạng thái
+    const savingBook = await savingBookRepository.findById(bookID);
+    if (!savingBook || savingBook.status === "Close") {
+      // Nếu không tìm thấy hoặc đã đóng, trả về null
+      return null;
+    }
+
+    // 2. Lấy thông tin liên quan (loại sổ, khách hàng)
+    const typeSaving = await typeSavingRepository.findById(savingBook.typeid);
+    if (!typeSaving) throw new Error("TypeSaving not found for this book");
+
+    const customer = await customerRepository.findById(savingBook.customerid);
+    if (!customer) throw new Error("Customer not found for this book");
+
+    // 3. Tính toán tiền lãi
+    const openDate = new Date(savingBook.registertime);
+    const closeDate = new Date();
+    const timeDiff = closeDate.getTime() - openDate.getTime();
+    const daysHeld = Math.floor(timeDiff / (1000 * 3600 * 24));
+
+    // Giả sử lãi suất được tính theo năm (365 ngày)
+    // Logic này có thể cần phức tạp hơn tùy theo quy định (rút trước hạn, đúng hạn,...)
+    const interestEarned = (savingBook.currentbalance * (typeSaving.interest / 100) * (daysHeld / 365));
+    const finalAmount = savingBook.currentbalance + interestEarned;
+
+    // 4. Tạo giao dịch tất toán
+    const settlementTransaction = await transactionRepository.create({
+      bookid: bookID,
+      tellerid: employeeID,
+      transactiondate: closeDate.toISOString(),
+      amount: finalAmount,
+      transactiontype: "WithDraw", // 'Settlement'
+      note: `Tất toán sổ tiết kiệm. Gốc: ${savingBook.currentbalance}, Lãi: ${interestEarned.toFixed(2)}`,
+    });
+
+    // 5. Cập nhật trạng thái và thời gian đóng sổ tiết kiệm
+    const updatedBook = await savingBookRepository.update(bookID, {
+      status: "Close",
+      currentbalance: 0,
+      closetime: closeDate.toISOString(),
+    });
+
+    // 6. Trả về kết quả theo định dạng yêu cầu
+    return {
+      bookId: bookID,
+      finalBalance: finalAmount,
+      interest: interestEarned,
+      status: "closed", // Hoặc updatedBook.status.toLowerCase()
+    };
+  }
 }
 
 export const savingBookService = new SavingBookService();
