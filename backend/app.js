@@ -8,6 +8,7 @@ import savingBookRoutes from './src/routers/savingBook.router.js';
 import transactionRoutes from './src/routers/transaction.router.js';
 import customerRoutes from './src/routers/customer.router.js';
 import typeSavingRoutes from './src/routers/typeSaving.router.js';
+import reportRoutes from './src/routers/report.router.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/api/savingbook", savingBookRoutes);
 app.use("/api/transaction", transactionRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/typesaving", typeSavingRoutes);
+app.use("/api/report", reportRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
