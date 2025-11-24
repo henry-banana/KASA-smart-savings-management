@@ -20,6 +20,20 @@ export class SavingBookRepository {
   async delete(bookid) {
     return await SavingBookModel.delete(bookid);
   }
+
+  
+  async findByCustomerName(keyword) {
+    return await SavingBookModel.searchByCustomerName(keyword);
+  }
+
+  async findByCustomerCitizenID(keyword){
+    return await SavingBookModel.searchByCustomerCitizenID(keyword);
+  }
+
+  async findByBookID(keyword){
+    return await SavingBookModel.searchByBookID(keyword);
+  }
+
 }
 
 // Xuất instance sẵn

@@ -110,3 +110,35 @@ export async function getSavingBookById(req, res) {
     });
   }
 }
+
+
+// Tìm kiếm sổ tiết kiệm theo keyword
+export async function searchSavingBook(req, res) {
+  try {
+    const { keyword } = req.query;
+
+    // Nếu không có keyword thì báo lỗi
+    if (!keyword || keyword.trim() === "") {
+      return res.status(400).json({
+        message: "Keyword is required",
+        success: false,
+      });
+    }
+
+    // Gọi service
+    const result = await savingBookService.searchSavingBook(keyword);
+
+    return res.status(200).json({
+      message: "Search saving books successfully",
+      success: true,
+      total: result.length,
+      data: result,
+    });
+
+  } catch (err) {
+    return res.status(err.status || 500).json({
+      message: err.message || "Failed to search saving books",
+      success: false,
+    });
+  }
+}

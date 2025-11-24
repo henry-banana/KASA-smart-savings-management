@@ -2,6 +2,7 @@ import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRe
 import {customerRepository} from "../../repositories/Customer/CustomerRepository.js"
 import {typeSavingRepository} from "../../repositories/TypeSaving/TypeSavingRepository.js"
 import {transactionRepository} from "../../repositories/Transaction/TransactionRepository.js"
+import { raw } from "express";
 
 class SavingBookService {
   
@@ -86,46 +87,75 @@ class SavingBookService {
   }
 
   // Lấy thông tin sổ tiết kiệm theo ID
-  // Lấy thông tin sổ tiết kiệm theo ID
-async getSavingBookById(bookID) {
-  // 1. Lấy thông tin sổ tiết kiệm
-  const savingBook = await savingBookRepository.findById(bookID);
-  if (!savingBook) throw new Error("Saving book not found");
+  async getSavingBookById(bookID) {
+    // 1. Lấy thông tin sổ tiết kiệm
+    const savingBook = await savingBookRepository.findById(bookID);
+    if (!savingBook) throw new Error("Saving book not found");
 
-  // 2. Lấy khách hàng theo customerid
-  const customer = await customerRepository.findById(savingBook.customerid);
-  if (!customer) throw new Error("Customer not found");
+    // 2. Lấy khách hàng theo customerid
+    const customer = await customerRepository.findById(savingBook.customerid);
+    if (!customer) throw new Error("Customer not found");
 
-  // 3. Lấy loại sổ tiết kiệm
-  const typeSaving = await typeSavingRepository.findById(savingBook.typeid);
-  if (!typeSaving) throw new Error("TypeSaving not found");
+    // 3. Lấy loại sổ tiết kiệm
+    const typeSaving = await typeSavingRepository.findById(savingBook.typeid);
+    if (!typeSaving) throw new Error("TypeSaving not found");
 
-  // 4. Lấy danh sách giao dịch
-  const transactions = await transactionRepository.findById(bookID);
+    // 4. Lấy danh sách giao dịch
+    const transactions = await transactionRepository.findById(bookID);
 
-  return {
+    return {
 
-      bookid: savingBook.bookid,
-      citizenid: customer.citizenid,
-      customerName: customer.fullname,
-      typesavingid: typeSaving.typeid,
-      opendate: savingBook.registertime,
-      maturitydate: savingBook.maturitydate,
-      balance: savingBook.currentbalance,
-      status: savingBook.status,
-
-      typesaving: {
+        bookid: savingBook.bookid,
+        citizenid: customer.citizenid,
+        customerName: customer.fullname,
         typesavingid: typeSaving.typeid,
-        typename: typeSaving.typename,
-        term: typeSaving.termperiod,
-        interestrate: typeSaving.interest,
-        minimumdeposit: typeSaving.minimumdeposit
-      },
+        opendate: savingBook.registertime,
+        maturitydate: savingBook.maturitydate,
+        balance: savingBook.currentbalance,
+        status: savingBook.status,
 
-      transactions: transactions || []
-    
-  };
-}
+        typesaving: {
+          typesavingid: typeSaving.typeid,
+          typename: typeSaving.typename,
+          term: typeSaving.termperiod,
+          interestrate: typeSaving.interest,
+          minimumdeposit: typeSaving.minimumdeposit
+        },
+
+        transactions: transactions || []
+      
+    };
+  }
+
+  // Tìm kiếm sổ tiết kiệm
+  async searchSavingBook(keyword) {
+    const trimmedKeyword = keyword.trim();
+    if (!trimmedKeyword) {
+      return [];
+    }
+
+    let results = [];
+    const isOnlyDigits = /^\d+$/.test(trimmedKeyword);
+    // Regex để kiểm tra chuỗi chỉ chứa chữ cái (hỗ trợ Unicode) và khoảng trắng
+    const isOnlyLettersAndSpaces = /^[\p{L}\s]+$/u.test(trimmedKeyword);
+
+    if (trimmedKeyword.startsWith('0') && isOnlyDigits) {
+      // Tìm kiếm theo Citizen ID
+      results = await savingBookRepository.findByCustomerCitizenID(trimmedKeyword);
+    } else if (isOnlyDigits) {
+      // Tìm kiếm theo Book ID
+      // Do cầm join bảng để in dữ liệu theo format nên sẽ tạo hàm riêng
+      results = await savingBookRepository.findByBookID(trimmedKeyword);
+
+    } else if (isOnlyLettersAndSpaces) {
+      // Tìm kiếm theo tên khách hàng
+      results = await savingBookRepository.findByCustomerName(trimmedKeyword);
+    }else{
+      throw new Error("Keyword is only contain number or letter");
+    }
+
+    return results || []
+  }
 
 }
 
