@@ -17,6 +17,7 @@ export class BaseModel {
   constructor(tableName, primaryKey = "id") {
     this.tableName = tableName;
     this.primaryKey = primaryKey;
+    this.db = supabase;
   }
 
   /**
