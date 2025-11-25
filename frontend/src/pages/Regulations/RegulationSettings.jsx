@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { getRegulations, updateRegulations } from '@/services/regulationService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -29,6 +30,29 @@ export default function RegulationSettings() {
   const [minWithdrawalDays, setMinWithdrawalDays] = useState('15');
   const [showSuccess, setShowSuccess] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch regulations on mount
+  useEffect(() => {
+    const fetchRegulations = async () => {
+      try {
+        setLoading(true);
+        const response = await getRegulations();
+        if (response.success && response.data) {
+          setMinDeposit(String(response.data.minimumDepositAmount));
+          setMinWithdrawalDays(String(response.data.minimumTermDays));
+        }
+      } catch (err) {
+        console.error('Failed to fetch regulations:', err);
+        setError('Failed to load regulations');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRegulations();
+  }, []);
 
   const [interestRates, setInterestRates] = useState([
     { type: 'No Term', rate: '2.0', editable: true },
@@ -78,18 +102,41 @@ export default function RegulationSettings() {
     setShowConfirm(true);
   };
 
-  const confirmUpdate = () => {
-    setShowConfirm(false);
-    setShowSuccess(true);
-    
-    // Add to history (mock)
-    changeHistory.unshift({
-      date: new Date().toISOString().split('T')[0],
-      user: user.username,
-      field: 'Regulations',
-      oldValue: 'Previous',
-      newValue: 'Updated'
-    });
+  const confirmUpdate = async () => {
+    try {
+      setShowConfirm(false);
+      setLoading(true);
+      
+      const payload = {
+        minimumDepositAmount: Number(minDeposit),
+        minimumTermDays: Number(minWithdrawalDays)
+      };
+      
+      const response = await updateRegulations(payload);
+      
+      if (response.success && response.data) {
+        // Update local state from response
+        setMinDeposit(String(response.data.minimumDepositAmount));
+        setMinWithdrawalDays(String(response.data.minimumTermDays));
+        setShowSuccess(true);
+        
+        // Add to history (mock)
+        changeHistory.unshift({
+          date: new Date().toISOString().split('T')[0],
+          user: user.username,
+          field: 'Regulations',
+          oldValue: 'Previous',
+          newValue: 'Updated'
+        });
+      } else {
+        setError(response.message || 'Failed to update regulations');
+      }
+    } catch (err) {
+      console.error('Failed to update regulations:', err);
+      setError('Failed to update regulations');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -122,9 +169,28 @@ export default function RegulationSettings() {
         </CardHeader>
 
         <CardContent className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Basic Settings */}
-            <div className="space-y-4">
+          {/* Error Message */}
+          {error && (
+            <div className="p-4 mb-6 border-2 border-red-200 rounded-2xl bg-red-50">
+              <p className="flex items-center gap-2 text-sm text-red-900">
+                <AlertTriangle size={16} />
+                {error}
+              </p>
+            </div>
+          )}
+
+          {/* Loading State */}
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="w-12 h-12 mx-auto mb-4 border-4 border-purple-200 rounded-full border-t-purple-600 animate-spin"></div>
+                <p className="text-gray-600">Loading regulations...</p>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Basic Settings */}
+              <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                 <h4 className="font-semibold text-gray-900">Basic Regulations</h4>
@@ -197,13 +263,15 @@ export default function RegulationSettings() {
                 type="submit"
                 className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
                 style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+                disabled={loading}
               >
-                Update Regulations
+                {loading ? 'Updating...' : 'Update Regulations'}
               </Button>
               <Button 
                 type="button" 
                 variant="outline"
                 className="h-12 px-8 border-gray-200 rounded-xl"
+                disabled={loading}
                 onClick={() => {
                   setMinDeposit('100000');
                   setMinWithdrawalDays('15');
@@ -218,10 +286,22 @@ export default function RegulationSettings() {
               </Button>
             </div>
           </form>
+          )}
         </CardContent>
       </Card>
 
       {/* Current Regulations Summary */}
+      {!loading && (
+      <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
+        <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+          <CardTitle className="text-xl">Current Regulations Summary</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+        </CardContent>
+      </Card>)}
+
+      {/* Current Regulations Summary */}
+      {!loading && (
       <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Current Regulations Summary</CardTitle>
@@ -256,8 +336,10 @@ export default function RegulationSettings() {
           </div>
         </CardContent>
       </Card>
+      )}
 
       {/* Change History */}
+      {!loading && (
       <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <div className="flex items-center gap-3">
@@ -300,6 +382,7 @@ export default function RegulationSettings() {
           </div>
         </CardContent>
       </Card>
+      )}
 
       {/* Confirmation Dialog */}
       <Dialog open={showConfirm} onOpenChange={setShowConfirm}>

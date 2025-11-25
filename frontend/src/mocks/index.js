@@ -67,6 +67,23 @@ export { default as customerReportResponses, buildCustomerSummaryResponse } from
 export { default as interestReportResponses, buildInterestReportResponse } from './responses/interestReport.responses.js';
 export { default as transactionRangeReportResponses, buildTransactionRangeReportResponse } from './responses/transactionRangeReport.responses.js';
 
+// Regulations (QĐ6)
+export {
+  default as regulationResponses,
+  buildGetRegulationsResponse,
+  buildUpdateRegulationsResponse,
+  buildRegulationErrorResponse
+} from './responses/regulation.responses.js';
+
+// Profile (Current User)
+export {
+  default as profileResponses,
+  buildGetProfileResponse,
+  buildUpdateProfileResponse,
+  buildChangePasswordSuccessResponse,
+  buildProfileErrorResponse
+} from './responses/profile.responses.js';
+
 // ==================== MOCK DATA ENTITIES ====================
 // Base data entities matching database schema - USE THESE FOR ACTUAL DATA
 
@@ -135,6 +152,18 @@ export {
   deleteUserAccount
 } from './data/users.js';
 
+export {
+  getRegulations,
+  updateRegulations
+} from './data/regulations.js';
+
+export {
+  currentUserProfile,
+  getCurrentProfile,
+  updateCurrentProfile,
+  setCurrentUser
+} from './data/profile.js';
+
 // ==================== ADAPTERS ====================
 // API adapters for transforming between frontend and backend formats
 
@@ -144,5 +173,7 @@ export * from './adapters/savingBookAdapter.js';
 export * from './adapters/transactionAdapter.js';
 export * from './adapters/reportAdapter.js';
 export * from './adapters/userAdapter.js';
+export * from './adapters/regulationAdapter.js';
+export * from './adapters/profileAdapter.js';
 
 
