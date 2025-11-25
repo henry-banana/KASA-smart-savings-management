@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -15,6 +15,7 @@ import {
 import { CheckCircle2, PiggyBank, User as UserIcon, CreditCard, MapPin, Calendar, Coins, Sparkles, Heart } from 'lucide-react';
 import { StarDecor, PiggyBankIllustration } from '../../components/CuteComponents';
 import { createSavingBook } from '../../services/savingBookService';
+import { getInterestRates } from '@/services/dashboardService';
 import { RoleGuard } from '../../components/RoleGuard';
 
 export default function OpenAccount() {
@@ -76,11 +77,40 @@ export default function OpenAccount() {
     }
   };
 
-  const savingsTypes = [
-    { id: 'no-term', name: 'No Term', description: 'Flexible withdrawal', interestRate: 2.0, emoji: '🔄', color: 'from-[#1A4D8F] to-[#2563A8]' },
-    { id: '3-months', name: '3 Months', description: 'Fixed for 3 months', interestRate: 4.5, emoji: '📅', color: 'from-[#00AEEF] to-[#33BFF3]' },
-    { id: '6-months', name: '6 Months', description: 'Best rate available', interestRate: 5.5, emoji: '⭐', color: 'from-[#60A5FA] to-[#93C5FD]' }
-  ];
+  const [savingTypes, setSavingTypes] = useState([]);
+  const [loadingTypes, setLoadingTypes] = useState(true);
+
+  useEffect(() => {
+    const fetchTypes = async () => {
+      setLoadingTypes(true);
+      try {
+        const resp = await getInterestRates();
+        if (resp.success && Array.isArray(resp.data)) {
+          const mapped = resp.data.map(ts => ({
+            id: ts.typeSavingId,
+            name: ts.typeName,
+            description: ts.term === 0 ? 'Flexible withdrawal' : `Fixed term ${ts.term} month${ts.term > 1 ? 's' : ''}`,
+            interestRate: ts.rate,
+            term: ts.term,
+            emoji: ts.term === 0 ? '🔄' : (ts.term === 3 ? '📅' : (ts.term === 6 ? '⭐' : '🔥')),
+            color: ts.term === 0
+              ? 'from-[#1A4D8F] to-[#2563A8]'
+              : ts.term === 3
+                ? 'from-[#00AEEF] to-[#33BFF3]'
+                : ts.term === 6
+                  ? 'from-[#60A5FA] to-[#93C5FD]'
+                  : 'from-[#10B981] to-[#34D399]'
+          }));
+          setSavingTypes(mapped);
+        }
+      } catch (e) {
+        console.error('Failed to load saving types', e);
+      } finally {
+        setLoadingTypes(false);
+      }
+    };
+    fetchTypes();
+  }, []);
 
   return (
     <RoleGuard allow={['teller']}>
@@ -191,7 +221,10 @@ export default function OpenAccount() {
               <div className="space-y-3">
                 <Label className="text-sm text-gray-700 sm:text-base">Savings Type * (Select one)</Label>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-                  {savingsTypes.map((type) => (
+                  {loadingTypes && (
+                    <div className="col-span-3 text-sm text-gray-500">Loading types...</div>
+                  )}
+                  {!loadingTypes && savingTypes.map((type) => (
                     <button
                       key={type.id}
                       type="button"
@@ -202,7 +235,7 @@ export default function OpenAccount() {
                       className={`relative p-4 rounded-2xl border-2 transition-all duration-200 text-left group ${
                         formData.savingsType === type.id
                           ? 'border-[#00AEEF] bg-linear-to-br ' + type.color + ' text-white shadow-lg scale-105'
-                          : 'border-gray-200 bg-white hover:border-[#00AEEF] hover:shadow-md hover:scale-102'
+                          : 'border-gray-200 bg-white hover:border-[#00AEEF] hover:shadow-md hover:scale-[1.02]'
                       }`}
                     >
                       <div className="flex items-start justify-between mb-3">
@@ -355,7 +388,7 @@ export default function OpenAccount() {
               <div className="flex justify-between gap-2">
                 <span className="shrink-0 text-xs text-gray-600 sm:text-sm">Type:</span>
                 <span className="text-sm font-medium text-right capitalize truncate sm:text-base">
-                  {savingsTypes.find(t => t.id === formData.savingsType)?.name}
+                  {savingTypes.find(t => t.id === formData.savingsType)?.name}
                 </span>
               </div>
               <div className="flex justify-between gap-2">

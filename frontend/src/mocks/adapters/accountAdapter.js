@@ -56,17 +56,20 @@ export const mockAccountAdapter = {
     }
     
     // Find typesaving
-    const typeSaving = mockTypeSavings.find(ts => ts.typename === accountData.savings_type);
+    // Support passing either typeSavingId or typeName in savings_type
+    const typeSaving = mockTypeSavings.find(ts => 
+      ts.typeSavingId === accountData.savings_type || ts.typeName === accountData.savings_type
+    );
     
     const newSavingBook = {
       bookid: generateId('SB'),
       customerid: customer.customerid,
-      typeid: typeSaving?.typesavingid || 'TS01',
+      typeid: typeSaving?.typeSavingId || 'TS01',
       registertime: accountData.open_date,
       maturitydate: null,
       initialdeposit: parseFloat(accountData.initial_deposit),
       currentbalance: parseFloat(accountData.initial_deposit),
-      interestrate: typeSaving?.interestrate || 0.02,
+      interestrate: typeSaving?.interestRate || 0.2,
       status: 'active'
     };
     
@@ -81,8 +84,8 @@ export const mockAccountAdapter = {
       id_card: customer.citizenid,
       idCard: customer.citizenid,
       address: customer.address,
-      savings_type: typeSaving?.typename,
-      type: typeSaving?.typename,
+      savings_type: typeSaving?.typeName,
+      type: typeSaving?.typeName,
       balance: newSavingBook.currentbalance,
       open_date: newSavingBook.registertime,
       openDate: newSavingBook.registertime,
