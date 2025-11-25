@@ -66,9 +66,6 @@ export const mockTypeSavingAdapter = {
     if (!data.interestRate || data.interestRate <= 0) {
       throw new Error('Interest rate must be greater than 0');
     }
-    if (!data.minimumDeposit || data.minimumDeposit <= 0) {
-      throw new Error('Minimum deposit must be greater than 0');
-    }
 
     // Check if type name already exists
     if (findTypeSavingByName(data.typename)) {
