@@ -31,7 +31,7 @@ export function TableSkeleton({ rows = 5, columns = 6 }) {
 // 💳 Account Info Skeleton - For loading account details
 export function AccountInfoSkeleton() {
   return (
-    <div className="rounded-2xl border-2 border-cyan-200 bg-gradient-to-br from-cyan-50 to-blue-50 p-6 space-y-4 animate-pulse">
+    <div className="rounded-2xl border-2 border-cyan-200 bg-linear-to-br from-cyan-50 to-blue-50 p-6 space-y-4 animate-pulse">
       <div className="flex items-center gap-2 mb-4">
         <Skeleton className="w-5 h-5 rounded-full" />
         <Skeleton className="h-5 w-40" />

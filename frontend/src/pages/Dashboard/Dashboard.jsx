@@ -21,6 +21,8 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { CuteStatCard, StarDecor } from '../../components/CuteComponents';
 import { RoleGuard } from '../../components/RoleGuard';
+import { StatCardSkeleton } from '../../components/ui/loading-skeleton';
+import { Skeleton } from '../../components/ui/skeleton';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -82,7 +84,7 @@ export default function Dashboard() {
     { name: '6 Months', value: 0, color: '#60A5FA' }
   ]);
   
-  const [_loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   
   // Fetch dashboard data on mount
   useEffect(() => {
@@ -207,9 +209,18 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* 📊 Stats Grid - Cute Cards */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
-          <CuteStatCard key={index} {...stat} />
-        ))}
+        {loading ? (
+          <>
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+          </>
+        ) : (
+          stats.map((stat, index) => (
+            <CuteStatCard key={index} {...stat} />
+          ))
+        )}
       </div>
 
       {/* 🎯 Quick Actions - Cute Menu Cards */}
@@ -224,7 +235,23 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {visibleActions.map((action, index) => (
+            {loading ? (
+              <>
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <div key={index} className="relative p-6 overflow-hidden rounded-2xl bg-linear-to-br from-gray-200 to-gray-300 animate-pulse">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <Skeleton className="w-14 h-14 rounded-2xl bg-white/40" />
+                        <Skeleton className="w-8 h-8 rounded-full bg-white/40" />
+                      </div>
+                      <Skeleton className="h-5 w-32 bg-white/40" />
+                      <Skeleton className="h-4 w-24 bg-white/40" />
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              visibleActions.map((action, index) => (
               <button
                 key={index}
                 onClick={() => navigate(action.path)}
@@ -248,7 +275,8 @@ export default function Dashboard() {
                   <p className="mt-1 text-sm text-white/80">Click to access</p>
                 </div>
               </button>
-            ))}
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
@@ -264,8 +292,20 @@ export default function Dashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={depositWithdrawalData}>
+            {loading ? (
+              <div className="space-y-4">
+                <div className="flex justify-between items-end h-[300px] px-4">
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <div key={i} className="flex flex-col items-center gap-2 flex-1">
+                      <Skeleton className={`w-12 bg-gray-300 animate-pulse`} style={{ height: `${Math.random() * 200 + 50}px` }} />
+                      <Skeleton className="w-8 h-3 bg-gray-200" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={depositWithdrawalData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
                 <XAxis dataKey="name" stroke="#64748B" />
                 <YAxis stroke="#64748B" />
@@ -278,6 +318,7 @@ export default function Dashboard() {
                 <Bar dataKey="withdrawals" fill="#00AEEF" name="Withdrawals" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
 
@@ -290,6 +331,25 @@ export default function Dashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
+            {loading ? (
+              <div className="space-y-4">
+                <div className="flex items-center justify-center h-[300px]">
+                  <Skeleton className="w-48 h-48 rounded-full bg-gray-300 animate-pulse" />
+                </div>
+                <div className="space-y-2">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="w-3 h-3 rounded-full bg-gray-300" />
+                        <Skeleton className="h-4 w-24 bg-gray-200" />
+                      </div>
+                      <Skeleton className="h-4 w-20 bg-gray-200" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -320,6 +380,8 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+            </>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -334,6 +396,25 @@ export default function Dashboard() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
+          {loading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl animate-pulse">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="w-12 h-12 rounded-2xl bg-gray-300" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-32 bg-gray-300" />
+                      <Skeleton className="h-3 w-40 bg-gray-200" />
+                    </div>
+                  </div>
+                  <div className="text-right space-y-2">
+                    <Skeleton className="h-4 w-24 bg-gray-300" />
+                    <Skeleton className="h-3 w-16 bg-gray-200" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <div className="space-y-3">
             {[
               { id: 'SA00123', customer: 'Nguyễn Văn A', type: 'Deposit', amount: '+₫5,000,000', time: '10:30 SA', emoji: '💰', color: '#00AEEF' },
@@ -370,6 +451,7 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
+          )}
         </CardContent>
       </Card>
     </div>
