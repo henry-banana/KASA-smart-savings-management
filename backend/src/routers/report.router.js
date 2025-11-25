@@ -1,10 +1,19 @@
 import express from "express";
-import { getDailyReport } from "../controllers/Report/report.controller.js";
+import {
+  getDailyReport,
+  getMonthlyReport,
+  getInterestReport,
+  getTransactionsReport,
+  getSavingBookSummary
+} from "../controllers/Report/report.controller.js";
 
 const router = express.Router();
 
-// Báo cáo theo ngày
-// Ví dụ: GET /api/report/daily?date=2025-01-20
+
 router.get("/daily", getDailyReport);
+router.get("/monthly", getMonthlyReport);
+router.get("/interest", getInterestReport);
+router.get("/transactions", getTransactionsReport);
+router.get("/savingbook-summary", getSavingBookSummary);
 
 export default router;
