@@ -9,7 +9,7 @@ export const mockAuthAdapter = {
     
     const { username, password } = credentials;
     const user = findUserByCredentials(username, password);
-    console.log(user.userid, user.userid, user.role, user.fullName);
+    
     if (!user) {
       throw new Error('Tên đăng nhập hoặc mật khẩu không đúng');
     }

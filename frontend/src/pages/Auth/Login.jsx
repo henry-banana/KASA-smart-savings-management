@@ -10,6 +10,7 @@ import eyeOpenIcon from '../../assets/eyeopen.png';
 import eyeCloseIcon from '../../assets/eyeclose.png';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/utils/logger';
 
 // Spinner thuần CSS/Tailwind (giữ size động)
 function Spinner({ size = 16, light = true }) {
@@ -35,10 +36,6 @@ export default function Login() {
   const { login: authLogin } = useAuth();
   const navigate = useNavigate();
   
-  // DEBUG: Log devMode value
-  console.log('🔍 devMode value:', devMode);
-  console.log('🔍 devMode type:', typeof devMode);
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !password) {
@@ -58,8 +55,8 @@ export default function Login() {
         navigate('/dashboard');
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err.message);
+      logger.error('Login failed', err);
+      setError(err.message || 'Failed to login');
     } finally {
       setLoading(false);
     }
