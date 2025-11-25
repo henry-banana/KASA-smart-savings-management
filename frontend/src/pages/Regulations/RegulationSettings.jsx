@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { getRegulations, updateRegulations } from '@/services/regulationService';
+import { getInterestRates, getChangeHistory } from '@/services/dashboardService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -38,10 +39,32 @@ export default function RegulationSettings() {
     const fetchRegulations = async () => {
       try {
         setLoading(true);
+        
+        // Fetch basic regulations
         const response = await getRegulations();
         if (response.success && response.data) {
           setMinDeposit(String(response.data.minimumDepositAmount));
           setMinWithdrawalDays(String(response.data.minimumTermDays));
+        }
+        
+        // Fetch interest rates
+        try {
+          const ratesResponse = await getInterestRates();
+          if (ratesResponse.success && ratesResponse.data) {
+            setInterestRates(ratesResponse.data);
+          }
+        } catch (err) {
+          console.error('Failed to fetch interest rates:', err);
+        }
+        
+        // Fetch change history
+        try {
+          const historyResponse = await getChangeHistory();
+          if (historyResponse.success && historyResponse.data) {
+            setChangeHistory(historyResponse.data);
+          }
+        } catch (err) {
+          console.error('Failed to fetch change history:', err);
         }
       } catch (err) {
         console.error('Failed to fetch regulations:', err);
@@ -60,36 +83,7 @@ export default function RegulationSettings() {
     { type: '6 Months', rate: '5.5', editable: true }
   ]);
 
-  const changeHistory = [
-    {
-      date: '2025-11-01',
-      user: 'admin',
-      field: 'Minimum Deposit Amount',
-      oldValue: '50.000 đ',
-      newValue: '100.000 đ'
-    },
-    {
-      date: '2025-10-15',
-      user: 'admin',
-      field: 'Minimum Withdrawal Days',
-      oldValue: '10 ngày',
-      newValue: '15 ngày'
-    },
-    {
-      date: '2025-09-20',
-      user: 'admin',
-      field: 'Lãi Suất 3 Tháng',
-      oldValue: '4.0%',
-      newValue: '4.5%'
-    },
-    {
-      date: '2025-08-10',
-      user: 'admin',
-      field: 'Lãi Suất 6 Tháng',
-      oldValue: '5.0%',
-      newValue: '5.5%'
-    }
-  ];
+  const [changeHistory, setChangeHistory] = useState([]);
 
   const handleUpdateRate = (index, newRate) => {
     const updated = [...interestRates];
@@ -120,14 +114,23 @@ export default function RegulationSettings() {
         setMinWithdrawalDays(String(response.data.minimumTermDays));
         setShowSuccess(true);
         
-        // Add to history (mock)
-        changeHistory.unshift({
-          date: new Date().toISOString().split('T')[0],
-          user: user.username,
-          field: 'Regulations',
-          oldValue: 'Previous',
-          newValue: 'Updated'
-        });
+        // Refresh change history from API
+        try {
+          const historyResponse = await getChangeHistory();
+          if (historyResponse.success && historyResponse.data) {
+            setChangeHistory(historyResponse.data);
+          }
+        } catch (err) {
+          console.error('Failed to refresh change history:', err);
+          // Fallback: add a placeholder entry
+          setChangeHistory(prev => [{
+            date: new Date().toISOString().split('T')[0],
+            user: user.username,
+            field: 'Regulations',
+            oldValue: 'Previous',
+            newValue: 'Updated'
+          }, ...prev]);
+        }
       } else {
         setError(response.message || 'Failed to update regulations');
       }

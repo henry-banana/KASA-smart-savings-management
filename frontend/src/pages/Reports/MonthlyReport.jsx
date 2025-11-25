@@ -64,45 +64,25 @@ export default function MonthlyReport() {
     }
   };
 
-  // Mock breakdown by type - can be extended later when backend provides detailed breakdown
-  const typeBreakdown = [
-    {
-      type: 'No Term',
-      opened: 45,
-      closed: 12,
-      difference: 33
-    },
-    {
-      type: '3 Months',
-      opened: 38,
-      closed: 10,
-      difference: 28
-    },
-    {
-      type: '6 Months',
-      opened: 32,
-      closed: 9,
-      difference: 23
-    }
-  ];
+  // Calculate breakdown by type from reportData
+  const typeBreakdown = reportData?.byTypeSaving || [];
 
-  const lineChartData = [
-    { day: 'Week 1', 'No Term': 12, '3 Months': 8, '6 Months': 7 },
-    { day: 'Week 2', 'No Term': 15, '3 Months': 10, '6 Months': 9 },
-    { day: 'Week 3', 'No Term': 10, '3 Months': 8, '6 Months': 6 },
-    { day: 'Week 4', 'No Term': 8, '3 Months': 6, '6 Months': 6 }
-  ];
+  const lineChartData = reportData?.dailyBreakdown || [];
 
   const pieChartData = typeBreakdown.map(item => ({
-    name: item.type,
-    value: item.opened,
-    color: item.type === 'No Term' ? '#00AEEF' : item.type === '3 Months' ? '#1A4D8F' : '#8B5CF6'
+    name: item.type || item.name,
+    value: item.opened || item.newSavingBooks || 0,
+    color: (item.type || item.name) === 'No Term' ? '#00AEEF' : (item.type || item.name) === '3 Months' ? '#1A4D8F' : '#8B5CF6'
   }));
 
-  const totals = {
-    opened: typeBreakdown.reduce((sum, item) => sum + item.opened, 0),
-    closed: typeBreakdown.reduce((sum, item) => sum + item.closed, 0),
-    difference: typeBreakdown.reduce((sum, item) => sum + item.difference, 0)
+  const totals = reportData?.summary ? {
+    opened: reportData.summary.newSavingBooks || 0,
+    closed: reportData.summary.closedSavingBooks || 0,
+    difference: (reportData.summary.newSavingBooks || 0) - (reportData.summary.closedSavingBooks || 0)
+  } : {
+    opened: typeBreakdown.reduce((sum, item) => sum + (item.opened || item.newSavingBooks || 0), 0),
+    closed: typeBreakdown.reduce((sum, item) => sum + (item.closed || item.closedSavingBooks || 0), 0),
+    difference: typeBreakdown.reduce((sum, item) => sum + ((item.opened || item.newSavingBooks || 0) - (item.closed || item.closedSavingBooks || 0)), 0)
   };
 
   const handleExport = () => {

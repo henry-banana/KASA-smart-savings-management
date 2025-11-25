@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { getDashboardStats } from '@/services/dashboardService';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { 
@@ -24,11 +25,13 @@ import { RoleGuard } from '../../components/RoleGuard';
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const stats = [
+  
+  // State for dashboard data
+  const [stats, _setStats] = useState([
     {
       title: 'Active Accounts',
-      value: '1,247',
-      change: '+12.5%',
+      value: '0',
+      change: '+0%',
       trend: 'up',
       icon: <Wallet size={28} />,
       gradient: 'linear-gradient(135deg, #1A4D8F 0%, #2563A8 100%)',
@@ -36,8 +39,8 @@ export default function Dashboard() {
     },
     {
       title: 'Deposits Today',
-      value: '₫45.28M',
-      change: '+8.2%',
+      value: '₫0',
+      change: '+0%',
       trend: 'up',
       icon: <ArrowDownIcon size={28} />,
       gradient: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)',
@@ -45,8 +48,8 @@ export default function Dashboard() {
     },
     {
       title: 'Withdrawals Today',
-      value: '₫23.15M',
-      change: '-3.1%',
+      value: '₫0',
+      change: '0%',
       trend: 'down',
       icon: <ArrowUpIcon size={28} />,
       gradient: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)',
@@ -54,30 +57,96 @@ export default function Dashboard() {
     },
     {
       title: 'Active Customers',
-      value: '892',
-      change: '+5.4%',
+      value: '0',
+      change: '+0%',
       trend: 'up',
       icon: <Users size={28} />,
       gradient: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
       iconColor: '#ffffff'
     }
-  ];
+  ]);
+  
+  const [depositWithdrawalData, _setDepositWithdrawalData] = useState([
+    { name: 'T2', deposits: 0, withdrawals: 0 },
+    { name: 'T3', deposits: 0, withdrawals: 0 },
+    { name: 'T4', deposits: 0, withdrawals: 0 },
+    { name: 'T5', deposits: 0, withdrawals: 0 },
+    { name: 'T6', deposits: 0, withdrawals: 0 },
+    { name: 'T7', deposits: 0, withdrawals: 0 },
+    { name: 'CN', deposits: 0, withdrawals: 0 }
+  ]);
 
-  const depositWithdrawalData = [
-    { name: 'T2', deposits: 12, withdrawals: 8 },
-    { name: 'T3', deposits: 15, withdrawals: 9.5 },
-    { name: 'T4', deposits: 18, withdrawals: 12 },
-    { name: 'T5', deposits: 14, withdrawals: 11 },
-    { name: 'T6', deposits: 20, withdrawals: 15 },
-    { name: 'T7', deposits: 16, withdrawals: 10 },
-    { name: 'CN', deposits: 10, withdrawals: 6 }
-  ];
-
-  const accountTypeData = [
-    { name: 'No Term', value: 45, color: '#1A4D8F' },
-    { name: '3 Months', value: 30, color: '#00AEEF' },
-    { name: '6 Months', value: 25, color: '#60A5FA' }
-  ];
+  const [accountTypeData, _setAccountTypeData] = useState([
+    { name: 'No Term', value: 0, color: '#1A4D8F' },
+    { name: '3 Months', value: 0, color: '#00AEEF' },
+    { name: '6 Months', value: 0, color: '#60A5FA' }
+  ]);
+  
+  const [_loading, setLoading] = useState(true);
+  
+  // Fetch dashboard data on mount
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const response = await getDashboardStats();
+        
+        if (response.success && response.data) {
+          const { stats: statsData, weeklyTransactions, accountTypeDistribution } = response.data;
+          
+          // Update stats cards
+          _setStats([
+            {
+              title: 'Active Accounts',
+              value: statsData.activeAccounts.toLocaleString(),
+              change: statsData.changes.activeAccounts,
+              trend: statsData.changes.activeAccounts.startsWith('+') ? 'up' : 'down',
+              icon: <Wallet size={28} />,
+              gradient: 'linear-gradient(135deg, #1A4D8F 0%, #2563A8 100%)',
+              iconColor: '#ffffff'
+            },
+            {
+              title: 'Deposits Today',
+              value: `₫${(statsData.depositsToday / 1000000).toFixed(2)}M`,
+              change: statsData.changes.depositsToday,
+              trend: statsData.changes.depositsToday.startsWith('+') ? 'up' : 'down',
+              icon: <ArrowDownIcon size={28} />,
+              gradient: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)',
+              iconColor: '#ffffff'
+            },
+            {
+              title: 'Withdrawals Today',
+              value: `₫${(statsData.withdrawalsToday / 1000000).toFixed(2)}M`,
+              change: statsData.changes.withdrawalsToday,
+              trend: statsData.changes.withdrawalsToday.startsWith('+') ? 'down' : 'up',
+              icon: <ArrowUpIcon size={28} />,
+              gradient: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)',
+              iconColor: '#ffffff'
+            },
+            {
+              title: 'Active Customers',
+              value: statsData.activeCustomers.toLocaleString(),
+              change: statsData.changes.activeCustomers,
+              trend: statsData.changes.activeCustomers.startsWith('+') ? 'up' : 'down',
+              icon: <Users size={28} />,
+              gradient: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
+              iconColor: '#ffffff'
+            }
+          ]);
+          
+          // Update charts
+          _setDepositWithdrawalData(weeklyTransactions);
+          _setAccountTypeData(accountTypeDistribution);
+        }
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, []);
 
   const quickActions = [
     { 
@@ -228,7 +297,7 @@ export default function Dashboard() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, value }) => `${value}%`}
+                  label={({ value }) => `${value}`}
                   outerRadius={90}
                   fill="#8884d8"
                   dataKey="value"
@@ -247,7 +316,7 @@ export default function Dashboard() {
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                     <span className="text-sm text-gray-600">{item.name}</span>
                   </div>
-                  <span className="text-sm font-semibold text-gray-900">{item.value}%</span>
+                  <span className="text-sm font-semibold text-gray-900">{item.value} accounts</span>
                 </div>
               ))}
             </div>

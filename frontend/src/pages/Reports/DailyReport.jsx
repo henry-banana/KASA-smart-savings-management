@@ -61,42 +61,28 @@ export default function DailyReport() {
     }
   };
 
-  // Mock breakdown by type - can be extended later
-  const typeBreakdown = [
-    {
-      type: 'No Term',
-      deposits: 12,
-      withdrawals: 5,
-      difference: 85000000
-    },
-    {
-      type: '3 Months',
-      deposits: 8,
-      withdrawals: 3,
-      difference: 67000000
-    },
-    {
-      type: '6 Months',
-      deposits: 6,
-      withdrawals: 2,
-      difference: 47000000
-    }
-  ];
+  // Calculate breakdown by type from reportData
+  const typeBreakdown = reportData?.byTypeSaving || [];
 
   const chartData = typeBreakdown.map(item => ({
-    name: item.type,
-    Deposits: item.deposits,
-    Withdrawals: item.withdrawals,
-    Difference: item.difference
+    name: item.type || item.name,
+    Deposits: item.deposits || item.totalDeposits || 0,
+    Withdrawals: item.withdrawals || item.totalWithdrawals || 0,
+    Difference: item.difference || item.netCashFlow || 0
   }));
 
-  const totals = {
-    deposits: typeBreakdown.reduce((sum, item) => sum + item.deposits, 0),
-    withdrawals: typeBreakdown.reduce((sum, item) => sum + item.withdrawals, 0),
-    difference: typeBreakdown.reduce((sum, item) => sum + item.difference, 0)
+  const totals = reportData?.summary ? {
+    deposits: reportData.summary.totalDeposits || 0,
+    withdrawals: reportData.summary.totalWithdrawals || 0,
+    difference: reportData.summary.netCashFlow || 0
+  } : {
+    deposits: typeBreakdown.reduce((sum, item) => sum + (item.deposits || item.totalDeposits || 0), 0),
+    withdrawals: typeBreakdown.reduce((sum, item) => sum + (item.withdrawals || item.totalWithdrawals || 0), 0),
+    difference: typeBreakdown.reduce((sum, item) => sum + (item.difference || item.netCashFlow || 0), 0)
   };
 
-  const handleExport = () => {
+  const _handleExport = () => {
+    // TODO: Implement PDF export when backend provides endpoint
     alert(`Exporting Daily Report for ${format(selectedDate, 'yyyy-MM-dd')} to PDF...`);
   };
 
