@@ -10,11 +10,12 @@
  * Build daily report response from transaction data
  * @param {string} date - Report date (YYYY-MM-DD)
  * @param {Object} summary - Summary statistics
+ * @param {Array} byTypeSaving - Breakdown by saving type
  * @param {Array} transactions - List of transactions for the day
  * @param {Array} newSavingBooks - List of new saving books opened
  * @returns {Object} Daily report response
  */
-export const buildDailyReportResponse = ({ date, summary, transactions, newSavingBooks }) => ({
+export const buildDailyReportResponse = ({ date, summary, byTypeSaving, transactions, newSavingBooks }) => ({
   message: "Daily report retrieved successfully",
   success: true,
   data: {
@@ -27,6 +28,7 @@ export const buildDailyReportResponse = ({ date, summary, transactions, newSavin
       closedSavingBooks: summary.closedSavingBooks || 0,
       transactionCount: summary.transactionCount || 0
     },
+    byTypeSaving: byTypeSaving || [],
     transactions: transactions || [],
     newSavingBooks: newSavingBooks || []
   }

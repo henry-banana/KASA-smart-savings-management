@@ -18,15 +18,15 @@ export const calculateDashboardStats = () => {
   
   // Today's transactions
   const todayTransactions = mockTransactions.filter(t => 
-    t.transactiondate?.startsWith(today)
+    t.transactionDate?.startsWith(today)
   );
   
   const depositsToday = todayTransactions
-    .filter(t => t.transactiontype === 'deposit')
+    .filter(t => t.type === 'deposit')
     .reduce((sum, t) => sum + t.amount, 0);
     
   const withdrawalsToday = todayTransactions
-    .filter(t => t.transactiontype === 'withdraw')
+    .filter(t => t.type === 'withdraw')
     .reduce((sum, t) => sum + t.amount, 0);
   
   // Active customers (customers with active saving books)
@@ -59,15 +59,15 @@ export const calculateWeeklyTransactions = () => {
     const dateStr = date.toISOString().split('T')[0];
     
     const dayTransactions = mockTransactions.filter(t =>
-      t.transactiondate?.startsWith(dateStr)
+      t.transactionDate?.startsWith(dateStr)
     );
     
     const deposits = dayTransactions
-      .filter(t => t.transactiontype === 'deposit')
+      .filter(t => t.type === 'deposit')
       .reduce((sum, t) => sum + t.amount, 0);
       
     const withdrawals = dayTransactions
-      .filter(t => t.transactiontype === 'withdraw')
+      .filter(t => t.type === 'withdraw')
       .reduce((sum, t) => sum + t.amount, 0);
     
     // Day names in Vietnamese

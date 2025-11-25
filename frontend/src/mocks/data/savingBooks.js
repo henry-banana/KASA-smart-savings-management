@@ -248,6 +248,240 @@ export const mockSavingBooks = [
     currentbalance: 0,
     interestrate: 0.02,
     status: "closed"
+  },
+  // Accounts opened in October 2025 (for testing monthly reports)
+  {
+    bookid: "SB00145",
+    customerid: "CUST023",
+    typeid: "TS002",
+    registertime: "2025-08-06",
+    maturitydate: "2025-11-06",
+    initialdeposit: 15000000,
+    currentbalance: 0,
+    interestrate: 0.045,
+    status: "closed"
+  },
+  {
+    bookid: "SB00146",
+    customerid: "CUST024",
+    typeid: "TS001",
+    registertime: "2025-10-08",
+    maturitydate: null,
+    initialdeposit: 8500000,
+    currentbalance: 0,
+    interestrate: 0.02,
+    status: "closed"
+  },
+  {
+    bookid: "SB00147",
+    customerid: "CUST025",
+    typeid: "TS003",
+    registertime: "2025-05-17",
+    maturitydate: "2025-11-17",
+    initialdeposit: 20000000,
+    currentbalance: 0,
+    interestrate: 0.055,
+    status: "closed"
+  },
+  {
+    bookid: "SB00148",
+    customerid: "CUST026",
+    typeid: "TS002",
+    registertime: "2025-08-23",
+    maturitydate: "2025-11-23",
+    initialdeposit: 10000000,
+    currentbalance: 0,
+    interestrate: 0.045,
+    status: "closed"
+  },
+  {
+    bookid: "SB00149",
+    customerid: "CUST027",
+    typeid: "TS001",
+    registertime: "2025-10-20",
+    maturitydate: null,
+    initialdeposit: 6000000,
+    currentbalance: 0,
+    interestrate: 0.02,
+    status: "closed"
+  },
+  {
+    bookid: "SB00150",
+    customerid: "CUST028",
+    typeid: "TS003",
+    registertime: "2025-10-25",
+    maturitydate: "2026-04-25",
+    initialdeposit: 15000000,
+    currentbalance: 15000000,
+    interestrate: 0.055,
+    status: "active"
+  },
+  {
+    bookid: "SB00151",
+    customerid: "CUST029",
+    typeid: "TS001",
+    registertime: "2025-10-28",
+    maturitydate: null,
+    initialdeposit: 6000000,
+    currentbalance: 6200000,
+    interestrate: 0.02,
+    status: "active"
+  },
+  // Accounts opened in November 2025 (for testing monthly reports)
+  {
+    bookid: "SB00152",
+    customerid: "CUST030",
+    typeid: "TS002",
+    registertime: "2025-11-02",
+    maturitydate: "2026-02-02",
+    initialdeposit: 9000000,
+    currentbalance: 9000000,
+    interestrate: 0.045,
+    status: "active"
+  },
+  {
+    bookid: "SB00153",
+    customerid: "CUST031",
+    typeid: "TS001",
+    registertime: "2025-11-05",
+    maturitydate: null,
+    initialdeposit: 4500000,
+    currentbalance: 4600000,
+    interestrate: 0.02,
+    status: "active"
+  },
+  {
+    bookid: "SB00154",
+    customerid: "CUST032",
+    typeid: "TS003",
+    registertime: "2025-11-08",
+    maturitydate: "2026-05-08",
+    initialdeposit: 14000000,
+    currentbalance: 14000000,
+    interestrate: 0.055,
+    status: "active"
+  },
+  {
+    bookid: "SB00155",
+    customerid: "CUST033",
+    typeid: "TS002",
+    registertime: "2025-11-10",
+    maturitydate: "2026-02-10",
+    initialdeposit: 11000000,
+    currentbalance: 11000000,
+    interestrate: 0.045,
+    status: "active"
+  },
+  {
+    bookid: "SB00156",
+    customerid: "CUST034",
+    typeid: "TS001",
+    registertime: "2025-11-12",
+    maturitydate: null,
+    initialdeposit: 5500000,
+    currentbalance: 5700000,
+    interestrate: 0.02,
+    status: "active"
+  },
+  {
+    bookid: "SB00157",
+    customerid: "CUST035",
+    typeid: "TS003",
+    registertime: "2025-11-15",
+    maturitydate: "2026-05-15",
+    initialdeposit: 18000000,
+    currentbalance: 18000000,
+    interestrate: 0.055,
+    status: "active"
+  },
+  // New accounts opened in November 2025 (comprehensive account opening tracking)
+  {
+    bookid: "SB00158",
+    customerid: "CUST036",
+    typeid: "TS001",
+    registertime: "2025-11-02",
+    maturitydate: null,
+    initialdeposit: 5000000,
+    currentbalance: 5000000,
+    interestrate: 0.02,
+    status: "active"
+  },
+  {
+    bookid: "SB00159",
+    customerid: "CUST037",
+    typeid: "TS003",
+    registertime: "2025-11-05",
+    maturitydate: "2026-05-05",
+    initialdeposit: 15000000,
+    currentbalance: 15000000,
+    interestrate: 0.055,
+    status: "active"
+  },
+  {
+    bookid: "SB00160",
+    customerid: "CUST038",
+    typeid: "TS002",
+    registertime: "2025-11-08",
+    maturitydate: "2026-02-08",
+    initialdeposit: 8000000,
+    currentbalance: 8000000,
+    interestrate: 0.045,
+    status: "active"
+  },
+  {
+    bookid: "SB00161",
+    customerid: "CUST039",
+    typeid: "TS001",
+    registertime: "2025-11-12",
+    maturitydate: null,
+    initialdeposit: 3500000,
+    currentbalance: 3500000,
+    interestrate: 0.02,
+    status: "active"
+  },
+  {
+    bookid: "SB00162",
+    customerid: "CUST040",
+    typeid: "TS003",
+    registertime: "2025-11-16",
+    maturitydate: "2026-05-16",
+    initialdeposit: 20000000,
+    currentbalance: 20000000,
+    interestrate: 0.055,
+    status: "active"
+  },
+  {
+    bookid: "SB00163",
+    customerid: "CUST041",
+    typeid: "TS002",
+    registertime: "2025-11-19",
+    maturitydate: "2026-02-19",
+    initialdeposit: 12000000,
+    currentbalance: 12000000,
+    interestrate: 0.045,
+    status: "active"
+  },
+  {
+    bookid: "SB00164",
+    customerid: "CUST042",
+    typeid: "TS001",
+    registertime: "2025-11-25",
+    maturitydate: null,
+    initialdeposit: 4500000,
+    currentbalance: 4500000,
+    interestrate: 0.02,
+    status: "active"
+  },
+  {
+    bookid: "SB00165",
+    customerid: "CUST043",
+    typeid: "TS003",
+    registertime: "2025-11-28",
+    maturitydate: "2026-05-28",
+    initialdeposit: 18000000,
+    currentbalance: 18000000,
+    interestrate: 0.055,
+    status: "active"
   }
 ];
 
