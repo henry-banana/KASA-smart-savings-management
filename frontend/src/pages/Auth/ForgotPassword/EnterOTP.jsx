@@ -4,12 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Shield, ArrowLeft, Sparkles, Star, Heart, Loader2 } from 'lucide-react';
 import { authService } from '../../../services/authService';
 import { logger } from '../../../utils/logger';
+import { useConfig } from '@/contexts/ConfigContext';
 
 export default function EnterOTP({ email, onVerify, onBack }) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const inputRefs = useRef([]);
+  const { devMode } = useConfig();
 
   useEffect(() => {
     // Focus first input on mount
@@ -217,12 +219,14 @@ export default function EnterOTP({ email, onVerify, onBack }) {
             Back
           </button>
 
-          {/* Dev Mode Info */}
-          <div className="bg-linear-to-r from-green-50 to-cyan-50 rounded-2xl p-4 border border-green-100">
-            <p className="text-xs text-green-700 text-center">
-              🔧 <strong>Dev Mode:</strong> Use code <span className="font-mono bg-white px-2 py-0.5 rounded">123456</span> for testing
-            </p>
-          </div>
+          {/* Dev Mode Info - Only show when devMode is true */}
+          {devMode && (
+            <div className="bg-linear-to-r from-green-50 to-cyan-50 rounded-2xl p-4 border border-green-100">
+              <p className="text-xs text-green-700 text-center">
+                🔧 <strong>Dev Mode:</strong> Use code <span className="font-mono bg-white px-2 py-0.5 rounded">123456</span> for testing
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 

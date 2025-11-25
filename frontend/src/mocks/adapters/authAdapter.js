@@ -1,4 +1,4 @@
-import { findUserByCredentials, findUserByUsername } from '../data/users';
+import { findUserByCredentials, findUserByUsername, updateUserPassword } from '../data/users';
 import { setCurrentUser } from '../data/profile';
 import { randomDelay } from '../utils';
 import { logger } from '@/utils/logger';
@@ -85,6 +85,13 @@ export const mockAuthAdapter = {
     
     if (!newPassword || newPassword.length < 8) {
       throw new Error('Mật khẩu phải có ít nhất 8 ký tự');
+    }
+
+    // Find user by email and update password
+    const user = findUserByUsername(email.split('@')[0]); // Extract username from email
+    if (user) {
+      updateUserPassword(user.userid, newPassword);
+      logger.info('🎭 Password updated for user:', user.userid);
     }
 
     return {

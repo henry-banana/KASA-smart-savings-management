@@ -9,7 +9,7 @@
 export const mockUserAccounts = [
   {
     userid: "teller1",
-    password: "$2b$10$abcdefghijklmnopqrstuv", // hashed password for '123456'
+    password: "123456", // Plain text password (would be hashed in production)
     employeeid: "EMP001",
     role: "teller",
     fullName: "Nguyễn Văn A",
@@ -25,7 +25,7 @@ export const mockUserAccounts = [
   },
   {
     userid: "accountant1",
-    password: "$2b$10$abcdefghijklmnopqrstuv", // hashed password for '123456'
+    password: "123456", // Plain text password (would be hashed in production)
     employeeid: "EMP002",
     role: "accountant",
     fullName: "Trần Thị B",
@@ -41,7 +41,7 @@ export const mockUserAccounts = [
   },
   {
     userid: "admin1",
-    password: "$2b$10$xyz123adminpasswordhash", // hashed password for 'admin123'
+    password: "admin123", // Plain text password (would be hashed in production)
     employeeid: "EMP003",
     role: "admin",
     fullName: "Lê Văn C",
@@ -57,7 +57,7 @@ export const mockUserAccounts = [
   },
   {
     userid: "teller2",
-    password: "$2b$10$abcdefghijklmnopqrstuv", // hashed password for '123456'
+    password: "123456", // Plain text password (would be hashed in production)
     employeeid: "EMP004",
     role: "teller",
     fullName: "Phạm Thị D",
@@ -87,15 +87,10 @@ export const getAllUsers = () => {
 export const findUserByCredentials = (userid, password) => {
   // In real app, password would be hashed and compared
   // For mock purposes, we'll use plain text comparison
-  const plainPasswords = {
-    'teller1': '123456',
-    'teller2': '123456',
-    'accountant1': '123456',
-    'admin1': 'admin123'
-  };
+  // Note: user.password field stores the actual password (would be hashed in production)
   
   const user = mockUserAccounts.find(u => u.userid === userid);
-  if (user && plainPasswords[userid] === password) {
+  if (user && user.password === password) {
     return user;
   }
   return null;
