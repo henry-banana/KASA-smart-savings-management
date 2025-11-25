@@ -1,7 +1,10 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import Login from './pages/Auth/Login';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import EnterOTP from './pages/Auth/EnterOTP';
+import ResetPassword from './pages/Auth/ResetPassword';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import OpenAccount from './pages/Savings/OpenAccount';
@@ -56,6 +59,10 @@ export default function App() {
       <Routes>
         {/* Public Route */}
         <Route path="/login" element={<Login />} />
+        {/* Forgot Password Flow (Public) */}
+        <Route path="/forgot-password" element={<ForgotPasswordRoute />} />
+        <Route path="/forgot-password/otp" element={<EnterOTPRoute />} />
+        <Route path="/forgot-password/reset" element={<ResetPasswordRoute />} />
         
         {/* Protected Routes */}
         <Route
@@ -102,5 +109,44 @@ export default function App() {
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
+  );
+}
+
+// Route wrappers to wire navigation + guard state
+function ForgotPasswordRoute() {
+  const navigate = useNavigate();
+  return (
+    <ForgotPassword
+      onContinue={(email) => navigate('/forgot-password/otp', { state: { email } })}
+      onBack={() => navigate('/login')}
+    />
+  );
+}
+
+function EnterOTPRoute() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
+  if (!email) return <Navigate to="/forgot-password" replace />;
+  return (
+    <EnterOTP
+      email={email}
+      onVerify={(otp) => navigate('/forgot-password/reset', { state: { email, otp } })}
+      onBack={() => navigate('/forgot-password')}
+    />
+  );
+}
+
+function ResetPasswordRoute() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
+  // Guard direct access
+  if (!email) return <Navigate to="/forgot-password" replace />;
+  return (
+    <ResetPassword
+      onSuccess={() => navigate('/login')}
+      onBack={() => navigate('/forgot-password/otp', { state: { email } })}
+    />
   );
 }

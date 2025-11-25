@@ -223,6 +223,7 @@ export default function Login() {
               type="button"
               disabled={loading}
               className="text-sm text-gray-500 hover:text-[#00AEEF] w-full text-center transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              onClick={() => navigate('/forgot-password')}
             >
               Forgot password?
             </button>
