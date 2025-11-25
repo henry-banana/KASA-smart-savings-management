@@ -105,3 +105,33 @@ export const getChangeHistory = async () => {
   
   return dashboardAdapter.getChangeHistory();
 };
+
+/**
+ * Get recent transactions
+ * TODO: Implement when backend provides recent transactions API
+ * 
+ * Expected response structure:
+ * {
+ *   success: true,
+ *   data: [
+ *     {
+ *       id: string,
+ *       customer: string,
+ *       type: string,
+ *       amount: string,
+ *       time: string,
+ *       emoji: string,
+ *       color: string
+ *     }
+ *   ]
+ * }
+ * 
+ * @returns {Promise<Object>} Recent transactions data
+ */
+export const getRecentTransactions = async () => {
+  if (!dashboardAdapter) {
+    throw new Error('Dashboard API not configured. Enable USE_MOCK or configure backend API.');
+  }
+  
+  return dashboardAdapter.getRecentTransactions();
+};

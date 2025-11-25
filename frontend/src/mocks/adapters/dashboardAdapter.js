@@ -136,5 +136,23 @@ export const mockDashboardAdapter = {
       message: 'Change history retrieved successfully',
       data: history
     };
+  },
+
+  /**
+   * Get recent transactions
+   * Simulates: GET /api/dashboard/recent-transactions
+   */
+  async getRecentTransactions() {
+    await randomDelay();
+    logger.info('🎭 Mock Recent Transactions');
+    
+    const { getRecentTransactions } = await import('../data/dashboard');
+    const transactions = getRecentTransactions();
+    
+    return {
+      success: true,
+      message: 'Recent transactions retrieved successfully',
+      data: transactions
+    };
   }
 };

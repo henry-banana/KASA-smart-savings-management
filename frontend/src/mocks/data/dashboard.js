@@ -131,6 +131,62 @@ export const mockChanges = {
 };
 
 /**
+ * Get recent transactions (last 5 transactions)
+ */
+export const getRecentTransactions = () => {
+  // Get last 5 transactions sorted by date desc
+  const recentTxns = [...mockTransactions]
+    .sort((a, b) => {
+      const dateA = new Date(a.transactionDate || '2025-01-01');
+      const dateB = new Date(b.transactionDate || '2025-01-01');
+      return dateB - dateA;
+    })
+    .slice(0, 5);
+  
+  return recentTxns.map(txn => {
+    // Find saving book for customer name
+    const savingBook = mockSavingBooks.find(sb => sb.bookId === txn.bookId);
+    const customerName = savingBook?.customerName || 'Unknown Customer';
+    const accountId = savingBook?.bookId || txn.bookId;
+    
+    // Format transaction data for display
+    let type, emoji, color, amountDisplay;
+    if (txn.type === 'deposit') {
+      type = 'Deposit';
+      emoji = '💰';
+      color = '#00AEEF';
+      amountDisplay = `+₫${txn.amount.toLocaleString()}`;
+    } else if (txn.type === 'withdraw') {
+      type = 'Withdrawal';
+      emoji = '💵';
+      color = '#F59E0B';
+      amountDisplay = `-₫${txn.amount.toLocaleString()}`;
+    } else {
+      type = 'Open Account';
+      emoji = '🏦';
+      color = '#1A4D8F';
+      amountDisplay = `₫${txn.amount.toLocaleString()}`;
+    }
+    
+    // Format time
+    const txnDate = new Date(txn.transactionDate || Date.now());
+    const hours = txnDate.getHours().toString().padStart(2, '0');
+    const minutes = txnDate.getMinutes().toString().padStart(2, '0');
+    const time = `${hours}:${minutes}`;
+    
+    return {
+      id: accountId,
+      customer: customerName,
+      type,
+      amount: amountDisplay,
+      time,
+      emoji,
+      color
+    };
+  });
+};
+
+/**
  * Get complete dashboard data
  */
 export const getDashboardData = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { getDashboardStats } from '@/services/dashboardService';
+import { getDashboardStats, getRecentTransactions } from '@/services/dashboardService';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { 
@@ -84,6 +84,8 @@ export default function Dashboard() {
     { name: '6 Months', value: 0, color: '#60A5FA' }
   ]);
   
+  const [recentTransactions, setRecentTransactions] = useState([]);
+  
   const [loading, setLoading] = useState(true);
   
   // Fetch dashboard data on mount
@@ -139,6 +141,16 @@ export default function Dashboard() {
           // Update charts
           _setDepositWithdrawalData(weeklyTransactions);
           _setAccountTypeData(accountTypeDistribution);
+        }
+        
+        // Fetch recent transactions
+        try {
+          const txnResponse = await getRecentTransactions();
+          if (txnResponse.success && txnResponse.data) {
+            setRecentTransactions(txnResponse.data);
+          }
+        } catch (err) {
+          console.error('Failed to fetch recent transactions:', err);
         }
       } catch (err) {
         console.error('Failed to fetch dashboard data:', err);
@@ -414,14 +426,13 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+          ) : recentTransactions.length === 0 ? (
+            <div className="py-8 text-center text-gray-500">
+              <p>No recent transactions</p>
+            </div>
           ) : (
           <div className="space-y-3">
-            {[
-              { id: 'SA00123', customer: 'Nguyễn Văn A', type: 'Deposit', amount: '+₫5,000,000', time: '10:30 SA', emoji: '💰', color: '#00AEEF' },
-              { id: 'SA00124', customer: 'Trần Thị B', type: 'Withdrawal', amount: '-₫2,000,000', time: '10:15 SA', emoji: '💵', color: '#F59E0B' },
-              { id: 'SA00125', customer: 'Lê Văn C', type: 'Deposit', amount: '+₫10,000,000', time: '09:45 SA', emoji: '💰', color: '#00AEEF' },
-              { id: 'SA00126', customer: 'Phạm Thị D', type: 'Mở sổ mới', amount: '₫1,000,000', time: '09:30 SA', emoji: '🏦', color: '#1A4D8F' }
-            ].map((transaction, index) => (
+            {recentTransactions.map((transaction, index) => (
               <div 
                 key={index} 
                 className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:shadow-md"
