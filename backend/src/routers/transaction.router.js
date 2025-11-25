@@ -5,6 +5,8 @@ import {
   getTransactionById,
   updateTransaction,
   deleteTransaction,
+  depositTransaction,
+  withdrawTransaction,
 } from "../controllers/Transaction/transaction.controller.js";
 
 const router = express.Router();
@@ -23,5 +25,11 @@ router.put("/:id", updateTransaction);
 
 //Xóa giao dịch
 router.delete("/:id", deleteTransaction);
+
+//Gửi tiền
+router.post("/deposit", depositTransaction);
+
+//Rút tiền
+router.post("/withdraw", withdrawTransaction);
 
 export default router;

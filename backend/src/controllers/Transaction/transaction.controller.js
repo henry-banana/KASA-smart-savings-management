@@ -133,3 +133,41 @@ export async function deleteTransaction(req, res) {
     });
   }
 }
+
+// Gửi tiền
+export async function depositTransaction(req, res) {
+  try { 
+    const result = await transactionService.depositTransaction(req.body);
+    return res.status(200).json({
+      message: "Deposit successfully",
+      success: true,
+      total: 1,
+      data: result,
+    });
+    } catch (err) {
+      console.error("❌ Error depositing money:", err);
+      return res.status(err.status || 500).json({
+        message: "Failed to deposit money",
+        success: false,
+      });
+    }
+}
+
+// Rút tiền
+export async function withdrawTransaction(req, res) {
+  try {
+    const result = await transactionService.withdrawTransaction(req.body);
+    return res.status(200).json({
+      message: "Withdraw successfully",
+      success: true,
+      total: 1,
+      data: result,
+    }); 
+    } catch (err) {
+      console.error("❌ Error depositing money:", err);
+      return res.status(err.status || 500).json({
+        message: "Failed to withdraw money",
+        success: false,
+      });
+    }
+}
