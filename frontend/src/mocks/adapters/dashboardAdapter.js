@@ -4,6 +4,7 @@
  */
 
 import { getDashboardData } from '../data/dashboard';
+import { mockTypeSavings, updateTypeSaving } from '../data/typeSavings';
 import { randomDelay } from '../utils';
 import { logger } from '@/utils/logger';
 
@@ -32,30 +33,18 @@ export const mockDashboardAdapter = {
   async getInterestRates() {
     await randomDelay();
     logger.info('🎭 Mock Interest Rates');
-    
+    // Derive dynamically from current mockTypeSavings
+    const data = mockTypeSavings.map(ts => ({
+      typeSavingId: ts.typeSavingId,
+      typeName: ts.typeName,
+      rate: ts.interestRate,
+      term: ts.term,
+      editable: true
+    }));
     return {
       success: true,
       message: 'Interest rates retrieved successfully',
-      data: [
-        { 
-          typeSavingId: 'TS01',
-          typeName: 'No Term', 
-          rate: 0.2,
-          editable: true 
-        },
-        { 
-          typeSavingId: 'TS02',
-          typeName: '3 Months', 
-          rate: 0.5,
-          editable: true 
-        },
-        { 
-          typeSavingId: 'TS03',
-          typeName: '6 Months', 
-          rate: 0.55,
-          editable: true 
-        }
-      ]
+      data
     };
   },
 
@@ -75,11 +64,30 @@ export const mockDashboardAdapter = {
       };
     }
     
-    // Simulate successful update
+    // Apply updates to underlying type savings
+    rates.forEach(r => {
+      const ts = mockTypeSavings.find(t => t.typeSavingId === r.typeSavingId);
+      if (!ts) return;
+      // Update interest rate if valid
+      if (typeof r.rate === 'number' && r.rate > 0) {
+        ts.interestRate = r.rate;
+      }
+      // Update term if provided and valid (allow 0 for no-term)
+      if (typeof r.term === 'number' && r.term >= 0) {
+        ts.term = r.term;
+      }
+    });
+    const updated = mockTypeSavings.map(ts => ({
+      typeSavingId: ts.typeSavingId,
+      typeName: ts.typeName,
+      rate: ts.interestRate,
+      term: ts.term,
+      editable: true
+    }));
     return {
       success: true,
       message: 'Interest rates updated successfully',
-      data: rates
+      data: updated
     };
   },
 

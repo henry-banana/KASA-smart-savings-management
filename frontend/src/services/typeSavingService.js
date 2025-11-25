@@ -1,6 +1,7 @@
 import { USE_MOCK } from '@/config/app.config';
 // import { typeSavingApi } from '@/api/typeSavingApi'; // TODO: Create when backend is ready
 import { mockTypeSavingAdapter } from '@/mocks/adapters/typeSavingAdapter';
+import { resetTypeSavings } from '@/mocks/data/typeSavings';
 
 const typeSavingAdapter = USE_MOCK ? mockTypeSavingAdapter : null; // TODO: Replace with typeSavingApi
 
@@ -95,4 +96,17 @@ export const deleteTypeSaving = async (typeSavingId) => {
   }
   
   return typeSavingAdapter.deleteTypeSaving(typeSavingId);
+};
+
+/**
+ * Reset all type savings to initial seed (mock only)
+ * @returns {Array} Seeded type savings after reset
+ */
+export const resetTypeSavingDefaults = async () => {
+  // Only available in mock mode
+  if (!typeSavingAdapter) {
+    throw new Error('Type saving service not configured');
+  }
+  const data = resetTypeSavings();
+  return data;
 };

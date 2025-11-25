@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { getRegulations, updateRegulations } from '@/services/regulationService';
-import { getInterestRates, getChangeHistory } from '@/services/dashboardService';
-import { createTypeSaving, deleteTypeSaving } from '@/services/typeSavingService';
+import { getInterestRates, getChangeHistory, updateInterestRates } from '@/services/dashboardService';
+import { createTypeSaving, deleteTypeSaving, resetTypeSavingDefaults } from '@/services/typeSavingService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -125,6 +125,24 @@ export default function RegulationSettings() {
         // Update local state from response
         setMinDeposit(String(response.data.minimumDepositAmount));
         setMinWithdrawalDays(String(response.data.minimumTermDays));
+        // Persist interest rate changes
+        try {
+          const ratesToUpdate = interestRates.map(r => ({
+            typeSavingId: r.typeSavingId,
+            typeName: r.typeName,
+            rate: Number(r.rate),
+            term: Number(r.term ?? 0),
+            editable: r.editable
+          }));
+          const rateUpdateResp = await updateInterestRates(ratesToUpdate);
+          if (rateUpdateResp.success) {
+            setInterestRates(rateUpdateResp.data);
+          }
+        } catch (e) {
+          console.error('Failed to update interest rates:', e);
+          setError('Failed to update interest rates');
+        }
+        setSuccessMessage('Regulations updated successfully');
         setShowSuccess(true);
         
         // Refresh change history from API
@@ -281,6 +299,7 @@ export default function RegulationSettings() {
                         />
                       </TableHead>
                       <TableHead className="font-semibold">Savings Account Type</TableHead>
+                      <TableHead className="font-semibold">Term (months)</TableHead>
                       <TableHead className="font-semibold">Interest Rate (% per month)</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -300,6 +319,19 @@ export default function RegulationSettings() {
                           />
                         </TableCell>
                         <TableCell className="font-medium">{item.typeName}</TableCell>
+                        <TableCell className="w-36">
+                          <Input
+                            type="number"
+                            step="1"
+                            value={item.term ?? 0}
+                            onChange={(e) => {
+                              const updated = [...interestRates];
+                              updated[index] = { ...updated[index], term: Number(e.target.value) };
+                              setInterestRates(updated);
+                            }}
+                            className="w-28 h-10 border-gray-200 rounded-xl"
+                          />
+                        </TableCell>
                         <TableCell>
                           <Input
                             type="number"
@@ -355,14 +387,22 @@ export default function RegulationSettings() {
                 variant="outline"
                 className="h-12 px-8 border-gray-200 rounded-xl"
                 disabled={loading}
-                onClick={() => {
-                  setMinDeposit('100000');
-                  setMinWithdrawalDays('15');
-                  setInterestRates([
-                    { typeSavingId: 'TS01', typeName: 'No Term', rate: '0.2', editable: false },
-                    { typeSavingId: 'TS02', typeName: '3 Months', rate: '0.5', editable: false },
-                    { typeSavingId: 'TS03', typeName: '6 Months', rate: '0.55', editable: false }
-                  ]);
+                onClick={async () => {
+                  try {
+                    setLoading(true);
+                    await resetTypeSavingDefaults();
+                    const ratesResp = await getInterestRates();
+                    if (ratesResp.success) {
+                      setInterestRates(ratesResp.data);
+                    }
+                    setSelectedTypeSavings([]);
+                    setSuccessMessage('Reset to default successfully');
+                    setShowSuccess(true);
+                  } catch (e) {
+                    setError(e.message || 'Failed to reset defaults');
+                  } finally {
+                    setLoading(false);
+                  }
                 }}
               >
                 Reset to Default
