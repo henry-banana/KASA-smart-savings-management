@@ -82,8 +82,7 @@ export const mockTypeSavingAdapter = {
       typeSavingId: newId,
       typeName: data.typename,
       term: Number(data.term),
-      interestRate: Number(data.interestRate),
-      minimumDeposit: Number(data.minimumDeposit)
+      interestRate: Number(data.interestRate)
     };
     
     addTypeSaving(newTypeSaving);
@@ -114,15 +113,11 @@ export const mockTypeSavingAdapter = {
     if (data.interestRate !== undefined && data.interestRate <= 0) {
       throw new Error('Interest rate must be greater than 0');
     }
-    if (data.minimumDeposit !== undefined && data.minimumDeposit <= 0) {
-      throw new Error('Minimum deposit must be greater than 0');
-    }
 
     const updates = {};
     if (data.typename) updates.typeName = data.typename;
     if (data.term !== undefined) updates.term = Number(data.term);
     if (data.interestRate !== undefined) updates.interestRate = Number(data.interestRate);
-    if (data.minimumDeposit !== undefined) updates.minimumDeposit = Number(data.minimumDeposit);
 
     const updatedTypeSaving = updateTypeSavingData(typeSavingId, updates);
     

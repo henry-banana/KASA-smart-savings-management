@@ -37,7 +37,6 @@ export const getTypeSavingById = async (typeSavingId) => {
  * @param {string} data.typename - Name of the type (e.g., "3 Months")
  * @param {number} data.term - Term in months (0 for no term)
  * @param {number} data.interestRate - Interest rate per month
- * @param {number} data.minimumDeposit - Minimum deposit amount in VND
  * @returns {Promise<Object>} Created type saving
  */
 export const createTypeSaving = async (data) => {
@@ -54,9 +53,6 @@ export const createTypeSaving = async (data) => {
   }
   if (!data.interestRate || Number(data.interestRate) <= 0) {
     throw new Error('Interest rate must be greater than 0');
-  }
-  if (!data.minimumDeposit || Number(data.minimumDeposit) <= 0) {
-    throw new Error('Minimum deposit must be greater than 0');
   }
 
   return typeSavingAdapter.createTypeSaving(data);

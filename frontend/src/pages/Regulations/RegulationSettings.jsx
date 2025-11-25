@@ -43,8 +43,7 @@ export default function RegulationSettings() {
   const [typeSavingForm, setTypeSavingForm] = useState({
     typename: '',
     term: '',
-    interestRate: '',
-    minimumDeposit: ''
+    interestRate: ''
   });
 
   // Fetch regulations on mount
@@ -743,17 +742,6 @@ export default function RegulationSettings() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="minimumDeposit" className="text-gray-700">Minimum Deposit (VND)</Label>
-              <Input
-                id="minimumDeposit"
-                type="number"
-                value={typeSavingForm.minimumDeposit}
-                onChange={(e) => setTypeSavingForm({ ...typeSavingForm, minimumDeposit: e.target.value })}
-                placeholder="e.g., 1000000"
-                className="border-gray-200 h-11 rounded-xl"
-              />
-            </div>
           </div>
           <div className="flex gap-4">
             <Button 
@@ -766,8 +754,7 @@ export default function RegulationSettings() {
                   const response = await createTypeSaving({
                     typename: typeSavingForm.typename,
                     term: Number(typeSavingForm.term),
-                    interestRate: Number(typeSavingForm.interestRate),
-                    minimumDeposit: Number(typeSavingForm.minimumDeposit)
+                    interestRate: Number(typeSavingForm.interestRate)
                   });
                   
                   if (response.success) {
@@ -779,8 +766,7 @@ export default function RegulationSettings() {
                     setTypeSavingForm({
                       typename: '',
                       term: '',
-                      interestRate: '',
-                      minimumDeposit: ''
+                      interestRate: ''
                     });
                     
                     // Refresh interest rates list
@@ -812,8 +798,7 @@ export default function RegulationSettings() {
                 setTypeSavingForm({
                   typename: '',
                   term: '',
-                  interestRate: '',
-                  minimumDeposit: ''
+                  interestRate: ''
                 });
               }}
               variant="outline"

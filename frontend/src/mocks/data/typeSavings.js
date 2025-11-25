@@ -9,29 +9,25 @@ export const _typeSavingSeed = [
     typeSavingId: "TS01",
     typeName: "No Term",
     term: 0,
-    interestRate: 0.2,
-    minimumDeposit: 1000000
+    interestRate: 0.2
   },
   {
     typeSavingId: "TS02",
     typeName: "3 Months",
     term: 3,
-    interestRate: 0.5,
-    minimumDeposit: 5000000
+    interestRate: 0.5
   },
   {
     typeSavingId: "TS03",
     typeName: "6 Months",
     term: 6,
-    interestRate: 0.55,
-    minimumDeposit: 10000000
+    interestRate: 0.55
   },
   {
     typeSavingId: "TS04",
     typeName: "12 Months",
     term: 12,
-    interestRate: 0.65,
-    minimumDeposit: 20000000
+    interestRate: 0.65
   }
 ];
 
