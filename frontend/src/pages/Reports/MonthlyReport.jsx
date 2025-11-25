@@ -1,420 +1,323 @@
 import React, { useState } from 'react';
+import { RoleGuard } from '../../components/RoleGuard';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
-import { MonthPicker } from '../../components/ui/month-picker';
 import { Label } from '../../components/ui/label';
+import { MonthPicker } from '../../components/ui/month-picker';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/ui/table";
-import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { FileDown, Calendar, TrendingUp, Users, Award, BarChart3, Sparkles, Search } from 'lucide-react';
-import { StarDecor, SparkleDecor } from '../../components/CuteComponents';
-import { getMonthlyReport } from '../../services/reportService';
-import { RoleGuard } from '../../components/RoleGuard';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../../components/ui/select';
+import { FileDown, Printer, Search } from 'lucide-react';
 
 export default function MonthlyReport() {
+  const { user } = useAuthContext();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [savingsType, setSavingsType] = useState('all');
   const [reportData, setReportData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
-  // Check if selected month is current month or in the future
-  const isMonthInvalid = () => {
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-    const selectedMonth = selectedDate.getMonth();
-    const selectedYear = selectedDate.getFullYear();
-    
-    return selectedYear > currentYear || 
-           (selectedYear === currentYear && selectedMonth >= currentMonth);
-  };
+  const handleGenerateReport = () => {
+    const daysInMonth = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth() + 1,
+      0
+    ).getDate();
 
-  // Generate report function - only called when user clicks button
-  const handleGenerateReport = async () => {
-    if (isMonthInvalid()) {
-      setError('Cannot generate report for current or future months. Please select a past month.');
-      return;
+    const mockData = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      mockData.push({
+        day: i,
+        opened: Math.floor(Math.random() * 10) + 1,
+        closed: Math.floor(Math.random() * 5),
+        difference: 0,
+      });
     }
-    setLoading(true);
-    setError(null);
-    try {
-      const month = selectedDate.getMonth() + 1;
-      const year = selectedDate.getFullYear();
-      const response = await getMonthlyReport(month, year);
-      
-      if (!response.success || !response.data) {
-        setError('No data found for the selected month. Please try another month.');
-        setReportData(null);
-        return;
-      }
-      
-      setReportData(response.data);
-    } catch (err) {
-      console.error('Monthly report error:', err);
-      setError('Failed to generate report. Please try again or select a different month.');
-      setReportData(null);
-    } finally {
-      setLoading(false);
-    }
+
+    mockData.forEach((item) => {
+      item.difference = item.opened - item.closed;
+    });
+
+    setReportData(mockData);
   };
 
-  // Calculate breakdown by type from reportData
-  const typeBreakdown = reportData?.byTypeSaving || [];
-
-  const lineChartData = reportData?.dailyBreakdown || [];
-
-  const pieChartData = typeBreakdown.map(item => ({
-    name: item.type || item.name,
-    value: item.opened || item.newSavingBooks || 0,
-    color: (item.type || item.name) === 'No Term' ? '#00AEEF' : (item.type || item.name) === '3 Months' ? '#1A4D8F' : '#8B5CF6'
-  }));
-
-  const totals = reportData?.summary ? {
-    opened: reportData.summary.newSavingBooks || 0,
-    closed: reportData.summary.closedSavingBooks || 0,
-    difference: (reportData.summary.newSavingBooks || 0) - (reportData.summary.closedSavingBooks || 0)
-  } : {
-    opened: typeBreakdown.reduce((sum, item) => sum + (item.opened || item.newSavingBooks || 0), 0),
-    closed: typeBreakdown.reduce((sum, item) => sum + (item.closed || item.closedSavingBooks || 0), 0),
-    difference: typeBreakdown.reduce((sum, item) => sum + ((item.opened || item.newSavingBooks || 0) - (item.closed || item.closedSavingBooks || 0)), 0)
-  };
+  const totals = reportData
+    ? reportData.reduce(
+        (acc, item) => ({
+          opened: acc.opened + item.opened,
+          closed: acc.closed + item.closed,
+          difference: acc.difference + item.difference,
+        }),
+        { opened: 0, closed: 0, difference: 0 }
+      )
+    : null;
 
   const handleExport = () => {
-    const month = selectedDate.getMonth() + 1;
-    const year = selectedDate.getFullYear();
-    alert(`Exporting Monthly Report for ${month}/${year} to PDF...`);
+    window.print();
   };
+
+  const savingsTypes = [
+    { value: 'all', label: 'All Types' },
+    { value: 'no-term', label: 'No Term' },
+    { value: '3-months', label: '3 Months' },
+    { value: '6-months', label: '6 Months' },
+    { value: '12-months', label: '12 Months' },
+  ];
 
   return (
     <RoleGuard allow={['accountant']}>
-    <div className="space-y-4 sm:space-y-6">
-      {/* Report Header */}
-      <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
-        <CardHeader className="pb-6 border-b border-gray-100 bg-linear-to-r from-blue-50 to-cyan-50">
-          <div className="flex items-center gap-3 mb-2">
-            <div 
-              className="flex items-center justify-center w-12 h-12 shadow-lg sm:w-14 sm:h-14 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
-            >
-              <Calendar size={24} className="text-white" />
-            </div>
-            <div className="flex-1">
-              <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
-                <span>📅</span>
-                Monthly Report (BM5.2)
-              </CardTitle>
-              <CardDescription className="text-sm sm:text-base">
-                View monthly account activity and trends
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="flex flex-col items-end gap-4 sm:flex-row">
-            <div className="flex-1 w-full space-y-2">
-              <Label htmlFor="reportMonth">Select Month</Label>
-              <MonthPicker
-                date={selectedDate}
-                onSelect={setSelectedDate}
-                placeholder="Pick a month"
-                maxDate={new Date()}
-              />
+      <div className="space-y-6">
+        {/* Report Header - Filter Controls */}
+        <Card className="border-0 shadow-xl rounded-3xl overflow-hidden print:hidden">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 pb-8">
+            <CardTitle className="flex items-center gap-2">
+              <span className="text-2xl">���</span>
+              BM5.2 – Monthly Opening/Closing Report
+            </CardTitle>
+            <CardDescription>Generate monthly savings book opening and closing report</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="space-y-2">
+                <Label>Savings Type</Label>
+                <Select value={savingsType} onValueChange={setSavingsType}>
+                  <SelectTrigger className="h-12 rounded-xl border-2">
+                    <SelectValue placeholder="Select savings type" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    {savingsTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Month</Label>
+                <MonthPicker
+                  date={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  placeholder="Pick a month"
+                />
+              </div>
             </div>
             <Button
               onClick={handleGenerateReport}
-              disabled={loading || isMonthInvalid()}
-              className="w-full h-12 px-6 text-white transition-shadow shadow-lg sm:w-auto rounded-xl hover:shadow-xl"
+              className="w-full h-12 rounded-xl px-6 text-white shadow-lg hover:shadow-xl"
               style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
               <Search size={18} className="mr-2" />
-              {loading ? 'Generating...' : isMonthInvalid() ? 'Invalid Month' : 'Generate Report'}
+              Generate Report
             </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Error Message */}
-      {error && (
-        <Card className="border-2 border-red-200 bg-red-50 rounded-2xl">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
-                <span className="text-2xl">⚠️</span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-red-900">No Data Found</h4>
-                <p className="text-sm text-red-700">{error}</p>
-              </div>
-            </div>
           </CardContent>
         </Card>
-      )}
 
-      {/* Show results only after generate */}
-      {reportData && (
-        <>
-          {/* Report Data Card */}
-          <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
-            <CardHeader className="bg-linear-to-r from-cyan-50 to-blue-50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Transaction Summary</CardTitle>
-                  <CardDescription>
-                    Report for {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                  </CardDescription>
-                </div>
-                <Button
-                  onClick={handleExport}
-                  variant="outline"
-                  className="shadow-sm rounded-xl hover:shadow-md"
-                >
-                  <FileDown size={18} className="mr-2" />
-                  Export PDF
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-6">
-              {/* Summary Cards */}
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <div 
-          className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
-        >
-          <div 
-            className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
-            style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
-          />
-          <StarDecor className="top-3 right-3" />
-          
-          <div className="relative flex items-start justify-between">
-            <div className="flex-1">
-              <p className="mb-2 text-sm text-gray-600">New Accounts Opened</p>
-              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text">
-                {totals.opened}
-              </h3>
-              <p className="text-xs text-gray-500">New accounts this month</p>
+        {/* Show results only after generate */}
+        {reportData && (
+          <>
+            {/* Print Actions - Hidden on Print */}
+            <div className="flex justify-end gap-3 print:hidden">
+              <Button
+                onClick={handleExport}
+                variant="outline"
+                className="rounded-xl shadow-sm hover:shadow-md"
+              >
+                <Printer size={18} className="mr-2" />
+                Print Report
+              </Button>
+              <Button
+                onClick={handleExport}
+                className="rounded-xl shadow-sm hover:shadow-md bg-gradient-to-r from-green-600 to-green-500 text-white"
+              >
+                <FileDown size={18} className="mr-2" />
+                Export PDF
+              </Button>
             </div>
-            <div 
-              className="flex items-center justify-center w-14 h-14 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
-            >
-              <Users className="text-white" size={24} />
-            </div>
-          </div>
-        </div>
 
-        <div 
-          className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
-        >
-          <div 
-            className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
-            style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)' }}
-          />
-          <StarDecor className="top-3 right-3" />
-          
-          <div className="relative flex items-start justify-between">
-            <div className="flex-1">
-              <p className="mb-2 text-sm text-gray-600">Accounts Closed</p>
-              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-red-600 to-rose-600 bg-clip-text">
-                {totals.closed}
-              </h3>
-              <p className="text-xs text-gray-500">Accounts closed this month</p>
-            </div>
-            <div 
-              className="flex items-center justify-center w-14 h-14 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)' }}
-            >
-              <FileDown className="text-white" size={24} />
-            </div>
-          </div>
-        </div>
-
-        <div 
-          className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
-        >
-          <div 
-            className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
-            style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)' }}
-          />
-          <StarDecor className="top-3 right-3" />
-          
-          <div className="relative flex items-start justify-between">
-            <div className="flex-1">
-              <p className="mb-2 text-sm text-gray-600">Net Growth</p>
-              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text">
-                +{totals.difference}
-              </h3>
-              <p className="text-xs text-gray-500">Account growth</p>
-            </div>
-            <div 
-              className="flex items-center justify-center w-14 h-14 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #1A4D8F 100%)' }}
-            >
-              <TrendingUp className="text-white" size={24} />
-            </div>
-          </div>
+            {/* Main Report Container - Printable */}
+            <div className="bg-white rounded-2xl shadow-xl p-8 print:shadow-none print:rounded-none print:p-12">
+              {/* Report Header */}
+              <div className="mb-8 space-y-4">
+                <h1 className="text-2xl font-bold text-[#1A4D8F] text-center tracking-tight">
+                  BM5.2 – MONTHLY OPENING/CLOSING SAVINGS BOOKS REPORT
+                </h1>
+                {/* Report Metadata */}
+                <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600 font-medium">Savings Type:</span>
+                    <span className="font-semibold text-[#1A4D8F] border-b-2 border-dotted border-gray-300 px-2 min-w-[120px]">
+                      {savingsTypes.find((t) => t.value === savingsType)?.label || 'All Types'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600 font-medium">Month:</span>
+                    <span className="font-semibold text-[#1A4D8F] border-b-2 border-dotted border-gray-300 px-2 min-w-[120px]">
+                      {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Data Table */}
-          <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-        <CardHeader className="border-b-2 bg-linear-to-r from-cyan-50 to-blue-50 border-cyan-100">
-          <CardTitle className="text-xl text-gray-800">
-            Detailed Report - {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-linear-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100">
-                  <TableHead className="font-semibold text-gray-700">Savings Type</TableHead>
-                  <TableHead className="font-semibold text-right text-gray-700">Accounts Opened</TableHead>
-                  <TableHead className="font-semibold text-right text-gray-700">Accounts Closed</TableHead>
-                  <TableHead className="font-semibold text-right text-gray-700">Net Change</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {typeBreakdown.map((row, index) => (
-                  <TableRow key={index} className="transition-colors hover:bg-cyan-50">
-                    <TableCell className="font-medium text-gray-700">{row.type}</TableCell>
-                    <TableCell className="font-semibold text-right text-green-600">
-                      {row.opened}
-                    </TableCell>
-                    <TableCell className="font-semibold text-right text-red-600">
-                      {row.closed}
-                    </TableCell>
-                    <TableCell className="font-semibold text-right text-blue-600">
-                      +{row.difference}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow className="font-bold bg-linear-to-r from-cyan-100 to-blue-100">
-                  <TableCell className="font-bold text-gray-800">Total</TableCell>
-                  <TableCell className="font-bold text-right text-green-700">
-                    {totals.opened}
-                  </TableCell>
-                  <TableCell className="font-bold text-right text-red-700">
-                    {totals.closed}
-                  </TableCell>
-                  <TableCell className="font-bold text-right text-blue-700">
-                    +{totals.difference}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-              </Table>
-          </div>
-        </CardContent>
-      </Card>
+              {/* Report Table */}
+              <div className="overflow-hidden rounded-xl border-2 border-gray-200 shadow-lg">
+                <table className="w-full border-collapse">
+                  {/* Table Header */}
+                  <thead>
+                    <tr className="bg-[#1A4D8F] text-white">
+                      <th className="py-4 px-4 text-center font-semibold border-r border-[#2563a8]" style={{ width: '10%' }}>
+                        No.
+                      </th>
+                      <th className="py-4 px-6 text-left font-semibold border-r border-[#2563a8]" style={{ width: '25%' }}>
+                        Date
+                      </th>
+                      <th className="py-4 px-6 text-right font-semibold border-r border-[#2563a8]" style={{ width: '20%' }}>
+                        Opened
+                      </th>
+                      <th className="py-4 px-6 text-right font-semibold border-r border-[#2563a8]" style={{ width: '20%' }}>
+                        Closed
+                      </th>
+                      <th className="py-4 px-6 text-right font-semibold" style={{ width: '25%' }}>
+                        Difference
+                      </th>
+                    </tr>
+                  </thead>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Line Chart */}
-        <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-          <CardHeader className="border-b-2 border-green-100 bg-linear-to-r from-green-50 to-emerald-50">
-            <CardTitle className="text-xl text-gray-800">Weekly Trends</CardTitle>
-            <CardDescription className="text-gray-600">
-              New accounts opened by week
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={lineChartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="day" stroke="#6B7280" />
-                <YAxis stroke="#6B7280" />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: '2px solid #E5E7EB' }}
-                />
-                <Legend />
-                <Line type="monotone" dataKey="No Term" stroke="#00AEEF" strokeWidth={3} dot={{ r: 5 }} name="No Term" />
-                <Line type="monotone" dataKey="3 Months" stroke="#1A4D8F" strokeWidth={3} dot={{ r: 5 }} name="3 Months" />
-                <Line type="monotone" dataKey="6 Months" stroke="#8B5CF6" strokeWidth={3} dot={{ r: 5 }} name="6 Months" />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+                  {/* Table Body */}
+                  <tbody>
+                    {reportData.map((row, index) => (
+                      <tr
+                        key={index}
+                        className={`${index % 2 === 0 ? 'bg-white' : 'bg-[#F5F7FA]'} hover:bg-blue-50 transition-colors`}
+                      >
+                        <td className="py-3 px-4 text-center text-gray-700 border-r border-gray-200">
+                          {index + 1}
+                        </td>
+                        <td className="py-3 px-6 text-left text-gray-800 font-medium border-r border-gray-200">
+                          {new Date(
+                            selectedDate.getFullYear(),
+                            selectedDate.getMonth(),
+                            row.day
+                          ).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </td>
+                        <td className="py-3 px-6 text-right text-green-600 font-semibold border-r border-gray-200">
+                          {row.opened}
+                        </td>
+                        <td className="py-3 px-6 text-right text-red-600 font-semibold border-r border-gray-200">
+                          {row.closed}
+                        </td>
+                        <td className={`py-3 px-6 text-right font-semibold ${row.difference >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                          {row.difference >= 0 ? '+' : ''}
+                          {row.difference}
+                        </td>
+                      </tr>
+                    ))}
 
-        {/* Pie Chart */}
-        <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-          <CardHeader className="border-b-2 border-purple-100 bg-linear-to-r from-purple-50 to-pink-50">
-            <CardTitle className="text-xl text-gray-800">Account Type Distribution</CardTitle>
-            <CardDescription className="text-gray-600">
-              Percentage of new accounts by type
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieChartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, value }) => `${name}: ${value}`}
-                  outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {pieChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: '2px solid #E5E7EB' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+                    {/* Total Row */}
+                    <tr className="bg-gradient-to-r from-gray-100 to-gray-50 border-t-2 border-[#1A4D8F]">
+                      <td colSpan={2} className="py-4 px-6 text-left font-bold text-[#1A4D8F] uppercase tracking-wide">
+                        Total
+                      </td>
+                      <td className="py-4 px-6 text-right font-bold text-green-600 text-lg border-r border-gray-300">
+                        {totals?.opened}
+                      </td>
+                      <td className="py-4 px-6 text-right font-bold text-red-600 text-lg border-r border-gray-300">
+                        {totals?.closed}
+                      </td>
+                      <td className={`py-4 px-6 text-right font-bold text-lg ${(totals?.difference || 0) >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                        {(totals?.difference || 0) >= 0 ? '+' : ''}
+                        {totals?.difference}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Report Footer - Summary Stats */}
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-l-4 border-green-500">
+                  <p className="text-sm font-medium text-green-700 mb-1">Total Opened</p>
+                  <p className="text-3xl font-bold text-green-600">{totals?.opened}</p>
+                  <p className="text-xs text-green-600 mt-1">accounts this month</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border-l-4 border-red-500">
+                  <p className="text-sm font-medium text-red-700 mb-1">Total Closed</p>
+                  <p className="text-3xl font-bold text-red-600">{totals?.closed}</p>
+                  <p className="text-xs text-red-600 mt-1">accounts this month</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-l-4 border-blue-500">
+                  <p className="text-sm font-medium text-blue-700 mb-1">Net Difference</p>
+                  <p className="text-3xl font-bold text-blue-600">{(totals?.difference || 0) >= 0 ? '+' : ''}{totals?.difference}</p>
+                  <p className="text-xs text-blue-600 mt-1">net growth this month</p>
+                </div>
+              </div>
+
+              {/* Report Signature Section */}
+              <div className="mt-12 pt-8 border-t-2 border-gray-200 print:block">
+                <div className="grid grid-cols-2 gap-12">
+                  <div className="text-center space-y-16">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 mb-2">Prepared By</p>
+                      <p className="font-semibold text-[#1A4D8F]">{user?.fullName}</p>
+                      <p className="text-xs text-gray-500 uppercase">{user?.role || user?.roleName}</p>
+                    </div>
+                    <div className="pt-2 border-t border-gray-300">
+                      <p className="text-xs text-gray-500">Signature & Date</p>
+                    </div>
+                  </div>
+
+                  <div className="text-center space-y-16">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 mb-2">Approved By</p>
+                      <p className="font-semibold text-[#1A4D8F]">____________________</p>
+                      <p className="text-xs text-gray-500 uppercase">Manager</p>
+                    </div>
+                    <div className="pt-2 border-t border-gray-300">
+                      <p className="text-xs text-gray-500">Signature & Date</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Report Generation Info */}
+              <div className="mt-8 text-center text-xs text-gray-400 print:block">
+                <p>
+                  Generated on {new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </p>
+                <p className="mt-1">KASA Savings Management System © 2025</p>
+              </div>
+            </div>
+
+            {/* Print Styles */}
+            <style>{`
+        @media print {
+          body {
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          @page { size: A4; margin: 15mm; }
+          .print\\:hidden { display: none !important; }
+          .print\\:block { display: block !important; }
+          table { page-break-inside: auto; }
+          tr { page-break-inside: avoid; page-break-after: auto; }
+          thead { display: table-header-group; }
+          tfoot { display: table-footer-group; }
+        }
+      `}</style>
+          </>
+        )}
       </div>
-
-      {/* Additional Statistics */}
-      <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-        <CardHeader className="border-b-2 bg-linear-to-r from-amber-50 to-orange-50 border-amber-100">
-          <CardTitle className="flex items-center gap-2 text-xl text-gray-800">
-            <Award size={20} className="text-amber-600" />
-            Performance Metrics
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="p-4 space-y-2 rounded-xl bg-linear-to-br from-blue-50 to-cyan-50">
-              <p className="text-sm font-medium text-gray-600">Growth Rate</p>
-              <p className="text-3xl font-bold text-transparent bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text">
-                {((totals.difference / (totals.opened - totals.difference || 1)) * 100).toFixed(1)}%
-              </p>
-              <p className="text-xs text-gray-500">Growth compared to last month</p>
-            </div>
-
-            <div className="p-4 space-y-2 rounded-xl bg-linear-to-br from-green-50 to-emerald-50">
-              <p className="text-sm font-medium text-gray-600">Retention Rate</p>
-              <p className="text-3xl font-bold text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text">
-                {(((totals.opened - totals.closed) / totals.opened * 100) || 0).toFixed(1)}%
-              </p>
-              <p className="text-xs text-gray-500">Accounts retained</p>
-            </div>
-
-            <div className="p-4 space-y-2 rounded-xl bg-linear-to-br from-purple-50 to-pink-50">
-              <p className="text-sm font-medium text-gray-600">Avg New Accounts/Day</p>
-              <p className="text-3xl font-bold text-transparent bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text">
-                {(totals.opened / 30).toFixed(1)}
-              </p>
-              <p className="text-xs text-gray-500">Average per day</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-        </>
-      )}
-    </div>
     </RoleGuard>
   );
 }
