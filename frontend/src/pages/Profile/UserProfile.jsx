@@ -84,13 +84,13 @@ export default function UserProfile() {
     <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
       {/* Profile Header */}
       <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
-        <CardContent className="p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
+        <CardContent className="p-4 sm:p-6 lg:p-8 bg-linear-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
           <StarDecor className="top-4 right-8 sm:right-12" />
           <Sparkles className="absolute top-6 right-20 sm:right-32 text-purple-400 opacity-50" size={20} />
           
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 relative z-10">
             <div 
-              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-xl border-4 border-white flex-shrink-0"
+              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-xl border-4 border-white shrink-0"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
               <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
@@ -115,7 +115,7 @@ export default function UserProfile() {
 
       {/* Contact Information */}
       <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+        <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-xl">Contact Information</CardTitle>
@@ -167,13 +167,13 @@ export default function UserProfile() {
 
       {/* Security Settings */}
       <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+        <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Security Settings</CardTitle>
           <CardDescription>Manage your account security</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-linear-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
               <div className="flex items-center gap-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}>
                   <Lock size={20} className="text-white" />
@@ -197,7 +197,7 @@ export default function UserProfile() {
 
       {/* Account Details */}
       <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+        <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Account Details</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
@@ -236,7 +236,7 @@ export default function UserProfile() {
 
       {/* Activity Summary */}
       <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
-        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+        <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Tóm Tắt Hoạt Động</CardTitle>
           <CardDescription>Thống kê hoạt động gần đây của bạn</CardDescription>
         </CardHeader>

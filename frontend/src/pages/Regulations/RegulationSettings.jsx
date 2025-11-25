@@ -97,14 +97,14 @@ export default function RegulationSettings() {
     <div className="space-y-4 sm:space-y-6">
       {/* Settings Form */}
       <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
-        <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+        <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
           <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
           <StarDecor className="top-4 right-8 sm:right-12" />
           <Sparkles className="absolute text-purple-400 opacity-50 top-6 right-20 sm:right-32" size={20} />
           
           <div className="relative z-10 flex items-start gap-3 sm:gap-4">
             <div 
-              className="flex items-center justify-center flex-shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+              className="flex items-center justify-center shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
               <Settings size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
@@ -167,7 +167,7 @@ export default function RegulationSettings() {
               <div className="overflow-hidden border rounded-2xl">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
+                    <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
                       <TableHead className="font-semibold">Savings Account Type</TableHead>
                       <TableHead className="font-semibold">Interest Rate (% per year)</TableHead>
                     </TableRow>
@@ -223,7 +223,7 @@ export default function RegulationSettings() {
 
       {/* Current Regulations Summary */}
       <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
-        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+        <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Current Regulations Summary</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
@@ -259,7 +259,7 @@ export default function RegulationSettings() {
 
       {/* Change History */}
       <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
-        <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+        <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <div className="flex items-center gap-3">
             <div 
               className="flex items-center justify-center w-10 h-10 rounded-xl"
@@ -277,7 +277,7 @@ export default function RegulationSettings() {
           <div className="overflow-hidden border rounded-2xl">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
+                <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
                   <TableHead className="font-semibold">Date</TableHead>
                   <TableHead className="font-semibold">Changed By</TableHead>
                   <TableHead className="font-semibold">Field</TableHead>

@@ -194,7 +194,7 @@ export default function UserManagement() {
 
         {/* Header */}
         <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
-          <CardHeader className="bg-gradient-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+          <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
             <Sparkles className="absolute text-purple-400 opacity-50 top-6 right-20 sm:right-32" size={20} />
@@ -202,7 +202,7 @@ export default function UserManagement() {
             <div className="relative z-10 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
               <div className="flex items-start flex-1 min-w-0 gap-3 sm:gap-4">
                 <div 
-                  className="flex items-center justify-center flex-shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+                  className="flex items-center justify-center shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
                   style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
                 >
                   <Users2 size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
@@ -210,7 +210,7 @@ export default function UserManagement() {
                 <div className="flex-1 min-w-0">
                   <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
                     <span className="truncate">User Management</span>
-                    <span className="flex-shrink-0 text-xl sm:text-2xl">👥</span>
+                    <span className="shrink-0 text-xl sm:text-2xl">👥</span>
                   </CardTitle>
                   <CardDescription className="text-sm sm:text-base">
                     Manage system users and permissions
@@ -219,7 +219,7 @@ export default function UserManagement() {
               </div>
               <Button 
                 onClick={handleAddUser}
-                className="flex-shrink-0 w-full h-10 px-4 text-sm font-medium text-white shadow-lg sm:w-auto sm:h-11 lg:h-12 sm:px-6 rounded-xl sm:text-base"
+                className="shrink-0 w-full h-10 px-4 text-sm font-medium text-white shadow-lg sm:w-auto sm:h-11 lg:h-12 sm:px-6 rounded-xl sm:text-base"
                 style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
               >
                 <UserPlus size={16} className="sm:w-[18px] sm:h-[18px] mr-2" />
@@ -232,7 +232,7 @@ export default function UserManagement() {
 
         {/* Users Table */}
         <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
-          <CardHeader className="bg-gradient-to-r from-[#F8F9FC] to-white border-b border-gray-100 p-4 sm:p-6">
+          <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100 p-4 sm:p-6">
             <CardTitle className="text-base sm:text-lg lg:text-xl">
               User List ({users.length})
             </CardTitle>
@@ -253,7 +253,7 @@ export default function UserManagement() {
                 ) : (
                   <Table>
                   <TableHeader>
-                    <TableRow className="bg-gradient-to-r from-[#F8F9FC] to-white hover:bg-gradient-to-r">
+                    <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
                       <TableHead className="text-xs font-semibold sm:text-sm">Username</TableHead>
                       <TableHead className="hidden text-xs font-semibold sm:text-sm md:table-cell">Full Name</TableHead>
                       <TableHead className="hidden text-xs font-semibold sm:text-sm lg:table-cell">Email</TableHead>

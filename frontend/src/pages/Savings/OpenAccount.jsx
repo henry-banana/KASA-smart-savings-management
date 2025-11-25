@@ -87,14 +87,14 @@ export default function OpenAccount() {
     <div className="max-w-4xl mx-auto">
       <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
         {/* Cute Header with Gradient */}
-        <CardHeader className="bg-gradient-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+        <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
           <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
           <StarDecor className="top-4 right-8 sm:right-12" />
           <Sparkles className="absolute opacity-50 top-6 right-20 sm:right-32 text-cyan-300" size={20} />
           
           <div className="relative z-10 flex items-start gap-3 sm:gap-4">
             <div 
-              className="flex items-center justify-center flex-shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+              className="flex items-center justify-center shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
               <PiggyBank size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
@@ -102,7 +102,7 @@ export default function OpenAccount() {
             <div className="flex-1 min-w-0">
               <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
                 <span className="truncate">Open New Savings Account</span>
-                <span className="flex-shrink-0 text-xl sm:text-2xl">🏦</span>
+                <span className="shrink-0 text-xl sm:text-2xl">🏦</span>
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
                 Create a new savings account for customer (Form BM1)
@@ -201,7 +201,7 @@ export default function OpenAccount() {
                       }}
                       className={`relative p-4 rounded-2xl border-2 transition-all duration-200 text-left group ${
                         formData.savingsType === type.id
-                          ? 'border-[#00AEEF] bg-gradient-to-br ' + type.color + ' text-white shadow-lg scale-105'
+                          ? 'border-[#00AEEF] bg-linear-to-br ' + type.color + ' text-white shadow-lg scale-105'
                           : 'border-gray-200 bg-white hover:border-[#00AEEF] hover:shadow-md hover:scale-102'
                       }`}
                     >
@@ -349,11 +349,11 @@ export default function OpenAccount() {
                 <span className="font-semibold text-base sm:text-lg text-[#1A4D8F] truncate">{accountCode}</span>
               </div>
               <div className="flex justify-between gap-2">
-                <span className="flex-shrink-0 text-xs text-gray-600 sm:text-sm">Customer:</span>
+                <span className="shrink-0 text-xs text-gray-600 sm:text-sm">Customer:</span>
                 <span className="text-sm font-medium text-right truncate sm:text-base">{formData.customerName}</span>
               </div>
               <div className="flex justify-between gap-2">
-                <span className="flex-shrink-0 text-xs text-gray-600 sm:text-sm">Type:</span>
+                <span className="shrink-0 text-xs text-gray-600 sm:text-sm">Type:</span>
                 <span className="text-sm font-medium text-right capitalize truncate sm:text-base">
                   {savingsTypes.find(t => t.id === formData.savingsType)?.name}
                 </span>
