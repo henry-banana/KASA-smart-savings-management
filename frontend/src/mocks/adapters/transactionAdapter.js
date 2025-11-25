@@ -1,5 +1,4 @@
 import { findSavingBookById, updateSavingBookBalance } from '../data/savingBooks.js';
-import { findCustomerById } from '../data/customers.js';
 import { findTypeSavingById } from '../data/typeSavings.js';
 import { addTransaction, generateTransactionId } from '../data/transactions.js';
 import { randomDelay } from '../utils';
@@ -15,18 +14,17 @@ export const mockTransactionAdapter = {
       throw new Error('Không tìm thấy tài khoản');
     }
     
-    const customer = findCustomerById(savingBook.customerid);
-    const typeSaving = findTypeSavingById(savingBook.typeid);
+    const typeSaving = findTypeSavingById(savingBook.typeSavingId);
     
     return { 
       success: true, 
       data: {
-        id: savingBook.bookid,
-        customerName: customer?.fullname,
+        id: savingBook.bookId,
+        customerName: savingBook.customerName,
         type: typeSaving?.typeName,
-        balance: savingBook.currentbalance,
-        openDate: savingBook.registertime,
-        interestRate: savingBook.interestrate
+        balance: savingBook.balance,
+        openDate: savingBook.openDate,
+        interestRate: typeSaving?.interestRate
       }
     };
   },
@@ -40,7 +38,7 @@ export const mockTransactionAdapter = {
       throw new Error('Không tìm thấy tài khoản');
     }
 
-    const typeSaving = findTypeSavingById(savingBook.typeid);
+    const typeSaving = findTypeSavingById(savingBook.typeSavingId);
     if (typeSaving && typeSaving.term !== 0) {
       throw new Error('Chỉ cho phép gửi tiền vào sổ không kỳ hạn');
     }
@@ -52,8 +50,8 @@ export const mockTransactionAdapter = {
 
     // Create transaction record
     const transaction = {
-      transactionid: generateTransactionId(),
-      bookid: accountCode,
+      transactionId: generateTransactionId(),
+      bookId: accountCode,
       transactiontype: 'deposit',
       amount,
       transactiondate: new Date().toISOString(),
@@ -88,21 +86,21 @@ export const mockTransactionAdapter = {
       throw new Error('Không tìm thấy tài khoản');
     }
 
-    if (amount > savingBook.currentbalance) {
+    if (amount > savingBook.balance) {
       throw new Error('Số dư không đủ');
     }
 
     // Check fixed-term withdrawal rules
-    const typeSaving = findTypeSavingById(savingBook.typeid);
-    if (typeSaving && typeSaving.term !== 0 && savingBook.maturitydate) {
+    const typeSaving = findTypeSavingById(savingBook.typeSavingId);
+    if (typeSaving && typeSaving.term !== 0 && savingBook.maturityDate) {
       const today = new Date();
-      const maturityDate = new Date(savingBook.maturitydate);
+      const maturityDate = new Date(savingBook.maturityDate);
       
       if (today < maturityDate) {
         throw new Error('Sổ có kỳ hạn chỉ được rút khi đến hạn');
       }
 
-      if (amount !== savingBook.currentbalance) {
+      if (amount !== savingBook.balance) {
         throw new Error('Sổ có kỳ hạn phải rút toàn bộ số dư khi đến hạn');
       }
     }
@@ -114,8 +112,8 @@ export const mockTransactionAdapter = {
 
     // Create transaction record
     const transaction = {
-      transactionid: generateTransactionId(),
-      bookid: accountCode,
+      transactionId: generateTransactionId(),
+      bookId: accountCode,
       transactiontype: 'withdraw',
       amount,
       transactiondate: new Date().toISOString(),

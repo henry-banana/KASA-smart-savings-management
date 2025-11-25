@@ -1105,7 +1105,7 @@ export const findTransactionById = (transactionid) => {
 };
 
 export const findTransactionsByBookId = (bookid) => {
-  return mockTransactions.filter(t => t.bookid === bookid);
+  return mockTransactions.filter(t => t.bookId === bookid);
 };
 
 export const findTransactionsByType = (transactiontype) => {

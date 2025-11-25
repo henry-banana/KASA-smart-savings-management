@@ -13,16 +13,11 @@
 /**
  * Builder functions - inject data here
  */
-export const buildAddSavingBookResponse = (savingBook, customer, typeSaving) => ({
+export const buildAddSavingBookResponse = (savingBook, typeSaving) => ({
   message: "Saving book created successfully",
   success: true,
   data: {
     ...savingBook,
-    customer: customer ? {
-      customerid: customer.customerid,
-      fullname: customer.fullname,
-      citizenid: customer.citizenid
-    } : undefined,
     typesaving: typeSaving ? {
       typeSavingId: typeSaving.typeSavingId,
       typeName: typeSaving.typeName,
@@ -33,17 +28,11 @@ export const buildAddSavingBookResponse = (savingBook, customer, typeSaving) => 
   }
 });
 
-export const buildGetSavingBookByIdResponse = (savingBook, customer, typeSaving, transactions) => ({
+export const buildGetSavingBookByIdResponse = (savingBook, typeSaving, transactions) => ({
   message: "Saving book retrieved successfully",
   success: true,
   data: {
     ...savingBook,
-    customer: customer ? {
-      customerid: customer.customerid,
-      fullname: customer.fullname,
-      citizenid: customer.citizenid,
-      phone: customer.phone
-    } : undefined,
     typesaving: typeSaving ? {
       typeSavingId: typeSaving.typeSavingId,
       typeName: typeSaving.typeName,
@@ -65,11 +54,11 @@ export const buildDeleteSavingBookResponse = () => ({
   success: true
 });
 
-export const buildCloseSavingBookResponse = (bookid, finalBalance, interest) => ({
+export const buildCloseSavingBookResponse = (bookId, finalBalance, interest) => ({
   message: "Saving book closed successfully",
   success: true,
   data: {
-    bookid,
+    bookId,
     finalBalance,
     interest,
     status: "closed"

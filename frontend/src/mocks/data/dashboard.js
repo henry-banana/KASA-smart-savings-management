@@ -33,7 +33,7 @@ export const calculateDashboardStats = () => {
   const activeCustomerIds = new Set(
     mockSavingBooks
       .filter(sb => sb.status === 'active')
-      .map(sb => sb.customerid)
+      .map(sb => sb.citizenId)
   );
   const activeCustomers = activeCustomerIds.size;
   
@@ -95,7 +95,7 @@ export const calculateAccountTypeDistribution = () => {
     .forEach(sb => {
       // Map type IDs to readable names
       let typeName;
-      switch(sb.typeid) {
+      switch(sb.typeSavingId) {
         case 'TS01':
           typeName = 'No Term';
           break;

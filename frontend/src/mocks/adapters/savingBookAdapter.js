@@ -1,11 +1,8 @@
 import { 
   mockSavingBooks,
   findSavingBookById,
-  findSavingBooksByCustomer
+  findSavingBooksByCitizenId
 } from '../data/savingBooks';
-import { 
-  findCustomerById 
-} from '../data/customers';
 import { 
   findTypeSavingById 
 } from '../data/typeSavings';
@@ -17,18 +14,17 @@ export const mockSavingBookAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Search', { keyword, typeFilter, statusFilter });
     
-    // Map savingBooks to old account format for backward compatibility
+    // Map savingBooks to account format with embedded customer data
     let results = mockSavingBooks.map(sb => {
-      const customer = findCustomerById(sb.customerid);
-      const type = findTypeSavingById(sb.typeid);
+      const type = findTypeSavingById(sb.typeSavingId);
       
       return {
-        id: sb.bookid,
-        customer: customer?.fullname || 'Unknown',
+        id: sb.bookId,
+        customer: sb.customerName,
         type: type?.typeName || 'Unknown',
         status: sb.status,
-        balance: sb.currentbalance,
-        openDate: sb.registertime,
+        balance: sb.balance,
+        openDate: sb.openDate,
         interestRate: type?.interestRate || 0,
         term: type?.term || 0
       };
@@ -62,17 +58,16 @@ export const mockSavingBookAdapter = {
       throw new Error('Không tìm thấy sổ tiết kiệm');
     }
     
-    const customer = findCustomerById(savingBook.customerid);
-    const type = findTypeSavingById(savingBook.typeid);
+    const type = findTypeSavingById(savingBook.typeSavingId);
     
-    // Map to old format
+    // Map to account format
     const account = {
-      id: savingBook.bookid,
-      customer: customer?.fullname || 'Unknown',
+      id: savingBook.bookId,
+      customer: savingBook.customerName,
       type: type?.typeName || 'Unknown',
       status: savingBook.status,
-      balance: savingBook.currentbalance,
-      openDate: savingBook.registertime,
+      balance: savingBook.balance,
+      openDate: savingBook.openDate,
       interestRate: type?.interestRate || 0,
       term: type?.term || 0
     };

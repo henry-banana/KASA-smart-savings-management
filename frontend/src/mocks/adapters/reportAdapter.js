@@ -40,8 +40,8 @@ export const mockReportAdapter = {
     // Calculate breakdown by type saving
     const byTypeSaving = mockTypeSavings.slice(0, 3).map(type => {
       // Get all saving books of this type
-      const booksOfType = mockSavingBooks.filter(sb => sb.typeid === type.typeSavingId);
-      const bookIds = booksOfType.map(sb => sb.bookid);
+      const booksOfType = mockSavingBooks.filter(sb => sb.typeSavingId === type.typeSavingId);
+      const bookIds = booksOfType.map(sb => sb.bookId);
       
       // Get transactions for these books on this date
       const typeTransactions = dailyTransactions.filter(t => bookIds.includes(t.bookId));
@@ -85,10 +85,10 @@ export const mockReportAdapter = {
     
     // Filter saving books opened/closed in this month
     const booksOpenedThisMonth = mockSavingBooks.filter(sb =>
-      sb.registertime?.startsWith(monthStr)
+      sb.openDate?.startsWith(monthStr)
     );
     const booksClosedThisMonth = mockSavingBooks.filter(sb =>
-      sb.status === 'closed' && sb.registertime?.startsWith(monthStr)
+      sb.status === 'closed' && sb.openDate?.startsWith(monthStr)
     );
     
     // Calculate summary
@@ -113,8 +113,8 @@ export const mockReportAdapter = {
     
     // Calculate breakdown by type saving
     const byTypeSaving = mockTypeSavings.slice(0, 3).map(type => {
-      const opened = booksOpenedThisMonth.filter(sb => sb.typeid === type.typeSavingId).length;
-      const closed = booksClosedThisMonth.filter(sb => sb.typeid === type.typeSavingId).length;
+      const opened = booksOpenedThisMonth.filter(sb => sb.typeSavingId === type.typeSavingId).length;
+      const closed = booksClosedThisMonth.filter(sb => sb.typeSavingId === type.typeSavingId).length;
       
       return {
         type: type.typeName,
@@ -143,8 +143,8 @@ export const mockReportAdapter = {
       };
       
       mockTypeSavings.slice(0, 3).forEach(type => {
-        const booksOfType = mockSavingBooks.filter(sb => sb.typeid === type.typeSavingId);
-        const bookIds = booksOfType.map(sb => sb.bookid);
+        const booksOfType = mockSavingBooks.filter(sb => sb.typeSavingId === type.typeSavingId);
+        const bookIds = booksOfType.map(sb => sb.bookId);
         const typeTransactions = dayTransactions.filter(t => bookIds.includes(t.bookId));
         
         dayData[type.typeName] = typeTransactions

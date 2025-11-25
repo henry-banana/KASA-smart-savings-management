@@ -14,17 +14,15 @@
 /**
  * Builder functions - inject data here
  */
-export const buildDepositTransactionResponse = (transaction, savingBook, customer, employee) => ({
+export const buildDepositTransactionResponse = (transaction, savingBook, employee) => ({
   message: "Deposit transaction completed successfully",
   success: true,
   data: {
     ...transaction,
     savingbook: savingBook ? {
-      bookid: savingBook.bookid,
-      customer: customer ? {
-        customerid: customer.customerid,
-        fullname: customer.fullname
-      } : undefined
+      bookId: savingBook.bookId,
+      customerName: savingBook.customerName,
+      citizenId: savingBook.citizenId
     } : undefined,
     employee: employee ? {
       employeeid: employee.employeeid,
@@ -33,20 +31,18 @@ export const buildDepositTransactionResponse = (transaction, savingBook, custome
   }
 });
 
-export const buildWithdrawTransactionResponse = (transaction, savingBook, customer, typeSaving, employee) => ({
+export const buildWithdrawTransactionResponse = (transaction, savingBook, typeSaving, employee) => ({
   message: "Withdrawal transaction completed successfully",
   success: true,
   data: {
     ...transaction,
     savingbook: savingBook ? {
-      bookid: savingBook.bookid,
-      customer: customer ? {
-        customerid: customer.customerid,
-        fullname: customer.fullname
-      } : undefined,
+      bookId: savingBook.bookId,
+      customerName: savingBook.customerName,
+      citizenId: savingBook.citizenId,
       typesaving: typeSaving ? {
         typeName: typeSaving.typeName,
-        maturitydate: savingBook.maturitydate
+        maturityDate: savingBook.maturityDate
       } : undefined
     } : undefined,
     employee: employee ? {
@@ -63,18 +59,15 @@ export const buildGetAllTransactionsResponse = (transactions) => ({
   total: transactions.length
 });
 
-export const buildGetTransactionByIdResponse = (transaction, savingBook, customer, typeSaving, employee, role) => ({
+export const buildGetTransactionByIdResponse = (transaction, savingBook, typeSaving, employee, role) => ({
   message: "Transaction retrieved successfully",
   success: true,
   data: {
     ...transaction,
     savingbook: savingBook ? {
-      bookid: savingBook.bookid,
-      customer: customer ? {
-        customerid: customer.customerid,
-        fullname: customer.fullname,
-        citizenid: customer.citizenid
-      } : undefined,
+      bookId: savingBook.bookId,
+      customerName: savingBook.customerName,
+      citizenId: savingBook.citizenId,
       typesaving: typeSaving ? {
         typeName: typeSaving.typeName,
         interestRate: typeSaving.interestRate
