@@ -238,7 +238,7 @@ export default function RegulationSettings() {
                   <TableHeader>
                     <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
                       <TableHead className="font-semibold">Savings Account Type</TableHead>
-                      <TableHead className="font-semibold">Interest Rate (% per year)</TableHead>
+                      <TableHead className="font-semibold">Interest Rate (% per month)</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -331,7 +331,7 @@ export default function RegulationSettings() {
                 {interestRates.map((item, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <span className="text-sm text-green-800">{item.typeName}:</span>
-                    <span className="text-sm font-semibold text-green-900">{item.rate}% per year</span>
+                    <span className="text-sm font-semibold text-green-900">{item.rate}% per month</span>
                   </div>
                 ))}
               </div>

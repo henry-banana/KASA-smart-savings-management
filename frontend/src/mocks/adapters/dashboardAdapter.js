@@ -92,32 +92,32 @@ export const mockDashboardAdapter = {
     logger.info('🎭 Mock Change History');
     
     // Mock history data
-    const history = [
+      const history = [
       {
         date: '2025-11-01',
         user: 'admin',
         field: 'Minimum Deposit Amount',
-        oldValue: '50.000 đ',
-        newValue: '100.000 đ'
+        oldValue: '50,000 VND',
+        newValue: '100,000 VND'
       },
       {
         date: '2025-10-15',
         user: 'admin',
         field: 'Minimum Withdrawal Days',
-        oldValue: '10 ngày',
-        newValue: '15 ngày'
+        oldValue: '10 days',
+        newValue: '15 days'
       },
       {
         date: '2025-09-20',
         user: 'admin',
-        field: 'Lãi Suất 3 Tháng',
+        field: '3-Month Interest Rate',
         oldValue: '4.0%',
         newValue: '4.5%'
       },
       {
         date: '2025-08-10',
         user: 'admin',
-        field: 'Lãi Suất 6 Tháng',
+        field: '6-Month Interest Rate',
         oldValue: '5.0%',
         newValue: '5.5%'
       }
