@@ -70,22 +70,43 @@ export default function SearchAccounts() {
     alert(`Exporting ${filteredAccounts.length} accounts to ${format.toUpperCase()}...`);
   };
 
-  const getTypeLabel = (type) => {
-    const labels = {
-      'no-term': 'No Term',
-      '3-months': '3 Months',
-      '6-months': '6 Months'
-    };
-    return labels[type] || type;
+  // Label: default to provided type string (supports dynamic types like "Không kỳ hạn", "12 Months", ...)
+  const getTypeLabel = (type) => type || 'Unknown';
+
+  // Deterministic color mapping for any type string using a palette
+  const TYPE_COLOR_CLASSES = [
+    'bg-blue-100 text-blue-700 border-blue-200',
+    'bg-cyan-100 text-cyan-700 border-cyan-200',
+    'bg-sky-100 text-sky-700 border-sky-200',
+    'bg-indigo-100 text-indigo-700 border-indigo-200',
+    'bg-violet-100 text-violet-700 border-violet-200',
+    'bg-purple-100 text-purple-700 border-purple-200',
+    'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200',
+    'bg-pink-100 text-pink-700 border-pink-200',
+    'bg-rose-100 text-rose-700 border-rose-200',
+    'bg-red-100 text-red-700 border-red-200',
+    'bg-orange-100 text-orange-700 border-orange-200',
+    'bg-amber-100 text-amber-700 border-amber-200',
+    'bg-yellow-100 text-yellow-800 border-yellow-200',
+    'bg-lime-100 text-lime-700 border-lime-200',
+    'bg-green-100 text-green-700 border-green-200',
+    'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'bg-teal-100 text-teal-700 border-teal-200'
+  ];
+
+  const hashString = (str) => {
+    let h = 0;
+    const s = String(str || '');
+    for (let i = 0; i < s.length; i++) {
+      h = (h << 5) - h + s.charCodeAt(i);
+      h |= 0;
+    }
+    return Math.abs(h);
   };
 
   const getTypeBadgeColor = (type) => {
-    const colors = {
-      'no-term': 'bg-blue-100 text-blue-700 border-blue-200',
-      '3-months': 'bg-cyan-100 text-cyan-700 border-cyan-200',
-      '6-months': 'bg-purple-100 text-purple-700 border-purple-200'
-    };
-    return colors[type] || 'bg-gray-100 text-gray-700 border-gray-200';
+    const idx = hashString(type) % TYPE_COLOR_CLASSES.length;
+    return TYPE_COLOR_CLASSES[idx];
   };
 
   return (

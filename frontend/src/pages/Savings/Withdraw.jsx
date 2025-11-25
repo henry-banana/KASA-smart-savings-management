@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -15,6 +15,7 @@ import { CheckCircle2, AlertCircle, Search, Wallet, ArrowUpCircle, Sparkles } fr
 import { StarDecor, ReceiptIllustration } from '../../components/CuteComponents';
 import { AccountInfoSkeleton } from '../../components/ui/loading-skeleton';
 import { getAccountInfo, withdrawMoney } from '../../services/transactionService';
+import { getRegulations } from '@/services/regulationService';
 import { RoleGuard } from '../../components/RoleGuard';
 
 export default function Withdraw() {
@@ -27,6 +28,22 @@ export default function Withdraw() {
   const [totalPayout, setTotalPayout] = useState(0);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [minWithdrawalDays, setMinWithdrawalDays] = useState(15);
+
+  // Load regulations (minimum withdrawal days)
+  useEffect(() => {
+    (async () => {
+      try {
+        const resp = await getRegulations();
+        if (resp?.success && resp.data?.minimumTermDays !== undefined) {
+          setMinWithdrawalDays(Number(resp.data.minimumTermDays));
+        }
+      } catch (e) {
+        // Fallback keeps default 15
+        console.warn('Failed to load regulations, using default min days = 15');
+      }
+    })();
+  }, []);
 
   const calculateDaysDifference = (startDate) => {
     const start = new Date(startDate);
@@ -47,8 +64,8 @@ export default function Withdraw() {
       
       const daysSinceOpen = calculateDaysDifference(account.openDate);
       
-      if (daysSinceOpen < 15) {
-        setError(`Account must be open for at least 15 days. Current: ${daysSinceOpen} days`);
+      if (daysSinceOpen < minWithdrawalDays) {
+        setError(`Account must be open for at least ${minWithdrawalDays} days. Current: ${daysSinceOpen} days`);
         return;
       }
 
@@ -363,7 +380,7 @@ export default function Withdraw() {
           <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
             <h5 className="mb-2 text-sm text-blue-900">Withdrawal Rules:</h5>
             <ul className="space-y-1 text-sm text-blue-800 list-disc list-inside">
-              <li>Account must be open for at least 15 days</li>
+              <li>Account must be open for at least {minWithdrawalDays} days</li>
               <li>No-Term accounts: Partial withdrawals allowed</li>
               <li>Fixed-Term accounts: Can only withdraw at maturity date</li>
               <li>Fixed-Term accounts: Must withdraw full balance at maturity</li>
