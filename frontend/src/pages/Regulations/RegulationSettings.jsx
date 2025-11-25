@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { getRegulations, updateRegulations } from '@/services/regulationService';
 import { getInterestRates, getChangeHistory } from '@/services/dashboardService';
+import { createTypeSaving } from '@/services/typeSavingService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -31,8 +32,17 @@ export default function RegulationSettings() {
   const [minWithdrawalDays, setMinWithdrawalDays] = useState('15');
   const [showSuccess, setShowSuccess] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showCreateTypeSaving, setShowCreateTypeSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const [typeSavingForm, setTypeSavingForm] = useState({
+    typename: '',
+    term: '',
+    interestRate: '',
+    minimumDeposit: ''
+  });
 
   // Fetch regulations on mount
   useEffect(() => {
@@ -263,6 +273,23 @@ export default function RegulationSettings() {
 
             <div className="flex gap-4 pt-4">
               <Button 
+                type="button"
+                onClick={() => setShowCreateTypeSaving(true)}
+                className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
+                style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
+                disabled={loading}
+              >
+                Create Regulations
+              </Button>
+              <Button 
+                type="submit"
+                className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
+                style={{ background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)' }}
+                disabled={loading}
+              >
+                Delete Regulations
+              </Button>
+              <Button 
                 type="submit"
                 className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
                 style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
@@ -445,9 +472,11 @@ export default function RegulationSettings() {
                 <CheckCircle2 size={48} className="text-white" />
               </div>
             </div>
-            <DialogTitle className="text-2xl text-center">Regulations Updated!</DialogTitle>
+            <DialogTitle className="text-2xl text-center">
+              {successMessage || 'Regulations Updated!'}
+            </DialogTitle>
             <DialogDescription className="text-base text-center">
-              System regulations have been successfully updated.
+              {successMessage ? 'Operation completed successfully.' : 'System regulations have been successfully updated.'}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
@@ -469,6 +498,143 @@ export default function RegulationSettings() {
           >
             Close
           </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Type Saving Dialog */}
+      <Dialog open={showCreateTypeSaving} onOpenChange={setShowCreateTypeSaving}>
+        <DialogContent className="rounded-3xl">
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div 
+                className="flex items-center justify-center w-12 h-12 shadow-lg rounded-2xl"
+                style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
+              >
+                <Settings size={24} className="text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl">Create New Savings Type</DialogTitle>
+                <DialogDescription>Add a new savings account type to the system</DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="typename" className="text-gray-700">Type Name</Label>
+              <Input
+                id="typename"
+                value={typeSavingForm.typename}
+                onChange={(e) => setTypeSavingForm({ ...typeSavingForm, typename: e.target.value })}
+                placeholder="e.g., 3 Months, 6 Months"
+                className="border-gray-200 h-11 rounded-xl"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="term" className="text-gray-700">Term (Months)</Label>
+              <Input
+                id="term"
+                type="number"
+                value={typeSavingForm.term}
+                onChange={(e) => setTypeSavingForm({ ...typeSavingForm, term: e.target.value })}
+                placeholder="0 for No Term, or number of months"
+                className="border-gray-200 h-11 rounded-xl"
+              />
+              <p className="text-xs text-gray-500">Enter 0 for no term (không kỳ hạn)</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="interestRate" className="text-gray-700">Interest Rate (% per month)</Label>
+              <Input
+                id="interestRate"
+                type="number"
+                step="0.01"
+                value={typeSavingForm.interestRate}
+                onChange={(e) => setTypeSavingForm({ ...typeSavingForm, interestRate: e.target.value })}
+                placeholder="e.g., 0.5 for 0.5%"
+                className="border-gray-200 h-11 rounded-xl"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="minimumDeposit" className="text-gray-700">Minimum Deposit (VND)</Label>
+              <Input
+                id="minimumDeposit"
+                type="number"
+                value={typeSavingForm.minimumDeposit}
+                onChange={(e) => setTypeSavingForm({ ...typeSavingForm, minimumDeposit: e.target.value })}
+                placeholder="e.g., 1000000"
+                className="border-gray-200 h-11 rounded-xl"
+              />
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <Button 
+              onClick={async () => {
+                try {
+                  setLoading(true);
+                  setError(null);
+                  
+                  // Call API POST /api/typesaving
+                  const response = await createTypeSaving({
+                    typename: typeSavingForm.typename,
+                    term: Number(typeSavingForm.term),
+                    interestRate: Number(typeSavingForm.interestRate),
+                    minimumDeposit: Number(typeSavingForm.minimumDeposit)
+                  });
+                  
+                  if (response.success) {
+                    setSuccessMessage(`Savings type "${response.data.typeName}" created successfully!`);
+                    setShowCreateTypeSaving(false);
+                    setShowSuccess(true);
+                    
+                    // Reset form
+                    setTypeSavingForm({
+                      typename: '',
+                      term: '',
+                      interestRate: '',
+                      minimumDeposit: ''
+                    });
+                    
+                    // Refresh interest rates list
+                    try {
+                      const ratesResponse = await getInterestRates();
+                      if (ratesResponse.success && ratesResponse.data) {
+                        setInterestRates(ratesResponse.data);
+                      }
+                    } catch (err) {
+                      console.error('Failed to refresh interest rates:', err);
+                    }
+                  }
+                } catch (err) {
+                  setError(err.message || 'Failed to create savings type');
+                  console.error('Error creating type saving:', err);
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              className="flex-1 h-12 font-medium text-white shadow-lg rounded-xl"
+              style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
+              disabled={loading}
+            >
+              Create Type
+            </Button>
+            <Button 
+              onClick={() => {
+                setShowCreateTypeSaving(false);
+                setTypeSavingForm({
+                  typename: '',
+                  term: '',
+                  interestRate: '',
+                  minimumDeposit: ''
+                });
+              }}
+              variant="outline"
+              className="flex-1 h-12 border-gray-200 rounded-xl"
+            >
+              Cancel
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
