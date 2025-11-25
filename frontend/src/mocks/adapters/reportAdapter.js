@@ -38,7 +38,7 @@ export const mockReportAdapter = {
     };
     
     // Calculate breakdown by type saving
-    const byTypeSaving = mockTypeSavings.slice(0, 3).map(type => {
+    const byTypeSaving = mockTypeSavings.map(type => {
       // Get all saving books of this type
       const booksOfType = mockSavingBooks.filter(sb => sb.typeSavingId === type.typeSavingId);
       const bookIds = booksOfType.map(sb => sb.bookId);
