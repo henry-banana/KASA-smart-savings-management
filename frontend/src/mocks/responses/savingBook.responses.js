@@ -21,7 +21,7 @@ export const buildAddSavingBookResponse = (savingBook, customer, typeSaving) => 
     customer: customer ? {
       customerid: customer.customerid,
       fullname: customer.fullname,
-      idcard: customer.idcard
+      citizenid: customer.citizenid
     } : undefined,
     typesaving: typeSaving ? {
       typesavingid: typeSaving.typesavingid,
@@ -41,7 +41,7 @@ export const buildGetSavingBookByIdResponse = (savingBook, customer, typeSaving,
     customer: customer ? {
       customerid: customer.customerid,
       fullname: customer.fullname,
-      idcard: customer.idcard,
+      citizenid: customer.citizenid,
       phone: customer.phone
     } : undefined,
     typesaving: typeSaving ? {

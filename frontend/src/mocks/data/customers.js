@@ -7,7 +7,7 @@ export const mockCustomers = [
   {
     customerid: "CUST001",
     fullname: "Nguyễn Văn A",
-    idcard: "079012345678",
+    citizenid: "079012345678",
     address: "123 Nguyễn Huệ, Quận 1, TP.HCM",
     phone: "0901234567",
     email: "nguyenvana@email.com",
@@ -16,7 +16,7 @@ export const mockCustomers = [
   {
     customerid: "CUST002",
     fullname: "Trần Thị B",
-    idcard: "079087654321",
+    citizenid: "079087654321",
     address: "456 Lê Lợi, Quận 1, TP.HCM",
     phone: "0907654321",
     email: "tranthib@email.com",
@@ -25,7 +25,7 @@ export const mockCustomers = [
   {
     customerid: "CUST003",
     fullname: "Lê Văn C",
-    idcard: "079011111111",
+    citizenid: "079011111111",
     address: "789 Điện Biên Phủ, Quận 3, TP.HCM",
     phone: "0909876543",
     email: "levanc@email.com",
@@ -34,7 +34,7 @@ export const mockCustomers = [
   {
     customerid: "CUST004",
     fullname: "Phạm Thị D",
-    idcard: "079022222222",
+    citizenid: "079022222222",
     address: "321 Hai Bà Trưng, Quận 3, TP.HCM",
     phone: "0908765432",
     email: "phamthid@email.com",
@@ -43,7 +43,7 @@ export const mockCustomers = [
   {
     customerid: "CUST005",
     fullname: "Hoàng Văn E",
-    idcard: "079033333333",
+    citizenid: "079033333333",
     address: "654 Lý Thường Kiệt, Quận 10, TP.HCM",
     phone: "0906543210",
     email: "hoangvane@email.com",
@@ -52,7 +52,7 @@ export const mockCustomers = [
   {
     customerid: "CUST006",
     fullname: "Nguyễn Thị F",
-    idcard: "079044444444",
+    citizenid: "079044444444",
     address: "987 Võ Văn Tần, Quận 3, TP.HCM",
     phone: "0905432109",
     email: "nguyenthif@email.com",
@@ -61,7 +61,7 @@ export const mockCustomers = [
   {
     customerid: "CUST007",
     fullname: "Vũ Văn G",
-    idcard: "079055555555",
+    citizenid: "079055555555",
     address: "147 Phan Xích Long, Phú Nhuận, TP.HCM",
     phone: "0904321098",
     email: "vuvang@email.com",
@@ -70,7 +70,7 @@ export const mockCustomers = [
   {
     customerid: "CUST008",
     fullname: "Đỗ Thị H",
-    idcard: "079066666666",
+    citizenid: "079066666666",
     address: "258 Cách Mạng Tháng Tám, Quận 10, TP.HCM",
     phone: "0903210987",
     email: "dothih@email.com",
@@ -85,8 +85,13 @@ export const findCustomerById = (customerid) => {
   return mockCustomers.find(c => c.customerid === customerid);
 };
 
+export const findCustomerByCitizenId = (citizenid) => {
+  return mockCustomers.find(c => c.citizenid === citizenid);
+};
+
+// Backward compatibility
 export const findCustomerByIdCard = (idcard) => {
-  return mockCustomers.find(c => c.idcard === idcard);
+  return findCustomerByCitizenId(idcard);
 };
 
 export const addCustomer = (customer) => {

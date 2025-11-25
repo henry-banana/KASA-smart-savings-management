@@ -16,7 +16,7 @@ export const mockTransactionAdapter = {
     }
     
     const customer = findCustomerById(savingBook.customerid);
-    const typeSaving = findTypeSavingById(savingBook.typesavingid);
+    const typeSaving = findTypeSavingById(savingBook.typeid);
     
     return { 
       success: true, 
@@ -24,8 +24,8 @@ export const mockTransactionAdapter = {
         id: savingBook.bookid,
         customerName: customer?.fullname,
         type: typeSaving?.typename,
-        balance: savingBook.balance,
-        openDate: savingBook.opendate,
+        balance: savingBook.currentbalance,
+        openDate: savingBook.registertime,
         interestRate: savingBook.interestrate
       }
     };
@@ -40,7 +40,7 @@ export const mockTransactionAdapter = {
       throw new Error('Không tìm thấy tài khoản');
     }
 
-    const typeSaving = findTypeSavingById(savingBook.typesavingid);
+    const typeSaving = findTypeSavingById(savingBook.typeid);
     if (typeSaving && typeSaving.typename !== 'no-term') {
       throw new Error('Chỉ cho phép gửi tiền vào sổ không kỳ hạn');
     }
@@ -88,12 +88,12 @@ export const mockTransactionAdapter = {
       throw new Error('Không tìm thấy tài khoản');
     }
 
-    if (amount > savingBook.balance) {
+    if (amount > savingBook.currentbalance) {
       throw new Error('Số dư không đủ');
     }
 
     // Check fixed-term withdrawal rules
-    const typeSaving = findTypeSavingById(savingBook.typesavingid);
+    const typeSaving = findTypeSavingById(savingBook.typeid);
     if (typeSaving && typeSaving.typename !== 'no-term' && savingBook.maturitydate) {
       const today = new Date();
       const maturityDate = new Date(savingBook.maturitydate);
@@ -102,7 +102,7 @@ export const mockTransactionAdapter = {
         throw new Error('Sổ có kỳ hạn chỉ được rút khi đến hạn');
       }
 
-      if (amount !== savingBook.balance) {
+      if (amount !== savingBook.currentbalance) {
         throw new Error('Sổ có kỳ hạn phải rút toàn bộ số dư khi đến hạn');
       }
     }
