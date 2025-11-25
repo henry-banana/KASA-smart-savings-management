@@ -47,17 +47,18 @@ export const depositMoney = async (accountCode, amount) => {
  * Rút tiền (BM3)
  * @param {string} accountCode - Mã sổ tiết kiệm
  * @param {number} amount - Số tiền rút
+ * @param {boolean} shouldCloseAccount - Có đóng tài khoản không (cho sổ có kỳ hạn)
  * @returns {Promise<Object>} Transaction result
  */
-export const withdrawMoney = async (accountCode, amount) => {
+export const withdrawMoney = async (accountCode, amount, shouldCloseAccount) => {
   if (!accountCode || !amount || amount <= 0) {
     throw new Error('Thông tin giao dịch không hợp lệ');
   }
 
   if (USE_MOCK) {
-    return mockTransactionAdapter.withdrawMoney(accountCode, amount);
+    return mockTransactionAdapter.withdrawMoney(accountCode, amount, shouldCloseAccount);
   } else {
     // Real API uses withdraw method
-    return accountApi.withdraw(accountCode, amount);
+    return accountApi.withdraw(accountCode, amount, shouldCloseAccount);
   }
 };

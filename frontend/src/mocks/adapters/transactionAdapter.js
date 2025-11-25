@@ -80,9 +80,9 @@ export const mockTransactionAdapter = {
     };
   },
 
-  async withdrawMoney(accountCode, amount) {
+  async withdrawMoney(accountCode, amount, shouldCloseAccount) {
     await randomDelay();
-    logger.info('🎭 Mock Withdraw', { accountCode, amount });
+    logger.info('🎭 Mock Withdraw', { accountCode, amount, shouldCloseAccount });
     
     const savingBook = findSavingBookById(accountCode);
     if (!savingBook) {
@@ -111,6 +111,14 @@ export const mockTransactionAdapter = {
     const result = updateSavingBookBalance(accountCode, -amount);
     if (!result) {
       throw new Error('Không thể cập nhật số dư');
+    }
+
+    // Close account if fixed-term closure requested OR balance reaches zero
+    if (shouldCloseAccount || result.balanceAfter === 0) {
+      const savingBookToClose = findSavingBookById(accountCode);
+      if (savingBookToClose) {
+        savingBookToClose.status = 'closed'; // Standard closed status string
+      }
     }
 
     // Create transaction record
