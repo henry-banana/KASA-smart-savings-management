@@ -61,35 +61,39 @@ export const mockAccountAdapter = {
       ts.typeSavingId === accountData.savings_type || ts.typeName === accountData.savings_type
     );
     
+    const bookId = generateId('SB');
     const newSavingBook = {
-      bookid: generateId('SB'),
-      customerid: customer.customerid,
-      typeid: typeSaving?.typeSavingId || 'TS01',
-      registertime: accountData.open_date,
-      maturitydate: null,
-      initialdeposit: parseFloat(accountData.initial_deposit),
-      currentbalance: parseFloat(accountData.initial_deposit),
-      interestrate: typeSaving?.interestRate || 0.2,
+      bookId: bookId, // camelCase to match mockSavingBooks format
+      citizenId: customer.citizenid,
+      customerName: customer.fullname,
+      typeSavingId: typeSaving?.typeSavingId || 'TS01',
+      openDate: accountData.open_date,
+      maturityDate: null,
+      balance: parseFloat(accountData.initial_deposit),
       status: 'active'
     };
     
     addSavingBook(newSavingBook);
     
-    // Return in old format
+    // Return in proper format with accountCode
     return {
-      id: newSavingBook.bookid,
-      customerId: customer.customerid,
-      customer_name: customer.fullname,
-      customerName: customer.fullname,
-      id_card: customer.citizenid,
-      idCard: customer.citizenid,
-      address: customer.address,
-      savings_type: typeSaving?.typeName,
-      type: typeSaving?.typeName,
-      balance: newSavingBook.currentbalance,
-      open_date: newSavingBook.registertime,
-      openDate: newSavingBook.registertime,
-      status: 'active'
+      success: true,
+      data: {
+        accountCode: bookId,
+        id: bookId,
+        customerId: customer.customerid,
+        customer_name: customer.fullname,
+        customerName: customer.fullname,
+        id_card: customer.citizenid,
+        idCard: customer.citizenid,
+        address: customer.address,
+        savings_type: typeSaving?.typeName,
+        type: typeSaving?.typeName,
+        balance: newSavingBook.currentbalance,
+        open_date: newSavingBook.registertime,
+        openDate: newSavingBook.registertime,
+        status: 'active'
+      }
     };
   },
 

@@ -30,8 +30,11 @@ export default function OpenAccount() {
 
   const [showSuccess, setShowSuccess] = useState(false);
   const [accountCode, setAccountCode] = useState('');
+  const [createdAccountData, setCreatedAccountData] = useState(null); // Save created data
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,6 +58,8 @@ export default function OpenAccount() {
       try {
         const response = await createSavingBook(formData);
         setAccountCode(response.data.accountCode);
+        // Save created data before resetting form
+        setCreatedAccountData({ ...formData });
         setShowSuccess(true);
         
         // Reset form after short delay
@@ -70,6 +75,8 @@ export default function OpenAccount() {
         }, 500);
       } catch (err) {
         console.error('Create saving book error:', err);
+        setErrorMessage(err.message || 'Failed to open account.');
+        setShowError(true);
         setErrors({ submit: err.message });
       } finally {
         setIsSubmitting(false);
@@ -383,21 +390,21 @@ export default function OpenAccount() {
               </div>
               <div className="flex justify-between gap-2">
                 <span className="shrink-0 text-xs text-gray-600 sm:text-sm">Customer:</span>
-                <span className="text-sm font-medium text-right truncate sm:text-base">{formData.customerName}</span>
+                <span className="text-sm font-medium text-right truncate sm:text-base">{createdAccountData?.customerName}</span>
               </div>
               <div className="flex justify-between gap-2">
                 <span className="shrink-0 text-xs text-gray-600 sm:text-sm">Type:</span>
                 <span className="text-sm font-medium text-right capitalize truncate sm:text-base">
-                  {savingTypes.find(t => t.id === formData.savingsType)?.name}
+                  {savingTypes.find(t => t.id === createdAccountData?.savingsType)?.name}
                 </span>
               </div>
               <div className="flex justify-between gap-2">
                 <span className="text-xs text-gray-600 sm:text-sm">Amount:</span>
-                <span className="text-sm font-semibold text-green-600 truncate sm:text-base">₫{Number(formData.initialDeposit).toLocaleString()}</span>
+                <span className="text-sm font-semibold text-green-600 truncate sm:text-base">₫{Number(createdAccountData?.initialDeposit || 0).toLocaleString()}</span>
               </div>
               <div className="flex justify-between gap-2">
                 <span className="text-xs text-gray-600 sm:text-sm">Opening Date:</span>
-                <span className="text-sm font-medium sm:text-base">{formData.openDate}</span>
+                <span className="text-sm font-medium sm:text-base">{createdAccountData?.openDate}</span>
               </div>
             </div>
           </div>
@@ -406,6 +413,33 @@ export default function OpenAccount() {
             onClick={() => setShowSuccess(false)}
             className="w-full h-11 sm:h-12 text-white rounded-full font-medium shadow-lg text-sm sm:text-base hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
+          >
+            Close
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Error Dialog for failed account opening */}
+      <Dialog open={showError} onOpenChange={setShowError}>
+        <DialogContent className="rounded-2xl sm:rounded-3xl max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+          <DialogHeader>
+            <div className="flex flex-col items-center mb-3 sm:mb-4">
+              <div className="flex items-center justify-center w-20 h-20 mb-3 rounded-full shadow-lg sm:w-24 sm:h-24 sm:mb-4 shadow-red-500/30" style={{ background: 'linear-gradient(135deg, #F87171 0%, #FBBF24 100%)' }}>
+                <Heart size={40} className="text-white animate-bounce" />
+              </div>
+              <PiggyBankIllustration size={60} className="sm:w-20" />
+            </div>
+            <DialogTitle className="text-xl text-center sm:text-2xl text-red-600">
+              Failed to Open Account
+            </DialogTitle>
+            <DialogDescription className="text-sm text-center sm:text-base text-red-500">
+              {errorMessage}
+            </DialogDescription>
+          </DialogHeader>
+          <Button 
+            onClick={() => setShowError(false)}
+            className="w-full h-11 sm:h-12 text-white rounded-full font-medium shadow-lg text-sm sm:text-base hover:shadow-xl hover:shadow-red-500/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            style={{ background: 'linear-gradient(135deg, #F87171 0%, #FBBF24 100%)' }}
           >
             Close
           </Button>

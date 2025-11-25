@@ -73,5 +73,20 @@ export const mockSavingBookAdapter = {
     };
     
     return { success: true, data: account };
+  },
+
+  async createSavingBook(formData) {
+    await randomDelay();
+    logger.info('🎭 Mock Create Saving Book', formData);
+    // Tạo mã sổ tiết kiệm giả lập
+    const now = new Date();
+    const code = `SBK${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}${Math.floor(1000 + Math.random() * 9000)}`;
+    // Có thể push vào mockSavingBooks nếu muốn lưu lại
+    return {
+      success: true,
+      data: {
+        accountCode: code
+      }
+    };
   }
 };
