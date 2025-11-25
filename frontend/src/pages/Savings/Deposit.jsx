@@ -195,7 +195,7 @@ export default function Deposit() {
                 <div className="flex items-center justify-between pt-2 border-t border-gray-200">
                   <span className="text-sm text-gray-600">Current Balance:</span>
                   <span className="text-lg font-bold text-green-600">
-                    ₫{accountInfo.balance.toLocaleString()}
+                    ₫{(accountInfo.balance ?? 0).toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -331,7 +331,7 @@ export default function Deposit() {
               </div>
               <div className="flex justify-between pt-3 border-t border-gray-200">
                 <span className="text-sm text-gray-600">New Balance:</span>
-                <span className="text-lg font-bold text-green-600">₫{newBalance.toLocaleString()}</span>
+                <span className="text-lg font-bold text-green-600">₫{(newBalance ?? 0).toLocaleString()}</span>
               </div>
             </div>
           </div>

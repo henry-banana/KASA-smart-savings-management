@@ -20,18 +20,18 @@ export const mockAccountAdapter = {
     }
     
     const customer = findCustomerById(savingBook.customerid);
-    const typeSaving = findTypeSavingById(savingBook.typesavingid);
+    const typeSaving = findTypeSavingById(savingBook.typeid);
     
     // Map to old format for compatibility
     return {
       id: savingBook.bookid,
       customerId: savingBook.customerid,
       customerName: customer?.fullname,
-      idCard: customer?.idcard,
+      idCard: customer?.citizenid,
       address: customer?.address,
       type: typeSaving?.typename,
-      balance: savingBook.balance,
-      openDate: savingBook.opendate,
+      balance: savingBook.currentbalance,
+      openDate: savingBook.registertime,
       status: savingBook.status
     };
   },
@@ -41,12 +41,12 @@ export const mockAccountAdapter = {
     logger.info('🎭 Mock Create Account', { customerName: accountData.customer_name });
     
     // Find or create customer
-    let customer = mockCustomers.find(c => c.idcard === accountData.id_card);
+    let customer = mockCustomers.find(c => c.citizenid === accountData.id_card);
     if (!customer) {
       customer = {
         customerid: generateId('CUST'),
         fullname: accountData.customer_name,
-        idcard: accountData.id_card,
+        citizenid: accountData.id_card,
         address: accountData.address,
         phone: '',
         email: '',
@@ -61,11 +61,11 @@ export const mockAccountAdapter = {
     const newSavingBook = {
       bookid: generateId('SB'),
       customerid: customer.customerid,
-      typesavingid: typeSaving?.typesavingid || 'TS001',
-      opendate: accountData.open_date,
+      typeid: typeSaving?.typesavingid || 'TS001',
+      registertime: accountData.open_date,
       maturitydate: null,
       initialdeposit: parseFloat(accountData.initial_deposit),
-      balance: parseFloat(accountData.initial_deposit),
+      currentbalance: parseFloat(accountData.initial_deposit),
       interestrate: typeSaving?.interestrate || 0.02,
       status: 'active'
     };
@@ -78,18 +78,20 @@ export const mockAccountAdapter = {
       customerId: customer.customerid,
       customer_name: customer.fullname,
       customerName: customer.fullname,
-      id_card: customer.idcard,
-      idCard: customer.idcard,
+      id_card: customer.citizenid,
+      idCard: customer.citizenid,
       address: customer.address,
       savings_type: typeSaving?.typename,
       type: typeSaving?.typename,
-      balance: newSavingBook.balance,
-      open_date: newSavingBook.opendate,
-      openDate: newSavingBook.opendate,
+      balance: newSavingBook.currentbalance,
+      open_date: newSavingBook.registertime,
+      openDate: newSavingBook.registertime,
       status: 'active'
     };
   },
 
+  // Note: deposit/withdraw are handled by transactionAdapter
+  // These methods are kept for backward compatibility but should not be used
   async deposit(accountId, amount) {
     await randomDelay();
     logger.info('🎭 Mock Deposit', { accountId, amount });
@@ -99,27 +101,15 @@ export const mockAccountAdapter = {
       throw new Error('Không tìm thấy sổ tiết kiệm');
     }
     
-    const account = findAccountById(accountId);
-    if (!account) {
-      throw new Error('Không tìm thấy sổ tiết kiệm');
-    }
-    
-    if (account.type !== 'no-term') {
-      throw new Error('Chỉ cho phép gửi tiền vào sổ không kỳ hạn');
-    }
-    
-    const balanceBefore = account.balance;
-    const updatedAccount = updateAccountBalance(accountId, amount);
-    
     return {
-      account: updatedAccount,
+      account: result.savingBook,
       transaction: {
         id: generateId('TXN'),
         accountId,
         type: 'deposit',
         amount,
-        balanceBefore,
-        balanceAfter: updatedAccount.balance,
+        balanceBefore: result.balanceBefore,
+        balanceAfter: result.balanceAfter,
         timestamp: new Date().toISOString()
       }
     };
@@ -129,27 +119,26 @@ export const mockAccountAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Withdraw', { accountId, amount });
     
-    const account = findAccountById(accountId);
-    if (!account) {
+    const savingBook = findSavingBookById(accountId);
+    if (!savingBook) {
       throw new Error('Không tìm thấy sổ tiết kiệm');
     }
     
-    if (account.balance < amount) {
+    if (savingBook.currentbalance < amount) {
       throw new Error('Số dư không đủ');
     }
     
-    const balanceBefore = account.balance;
-    const updatedAccount = updateAccountBalance(accountId, -amount);
+    const result = updateSavingBookBalance(accountId, -amount);
     
     return {
-      account: updatedAccount,
+      account: result.savingBook,
       transaction: {
         id: generateId('TXN'),
         accountId,
         type: 'withdraw',
         amount,
-        balanceBefore,
-        balanceAfter: updatedAccount.balance,
+        balanceBefore: result.balanceBefore,
+        balanceAfter: result.balanceAfter,
         timestamp: new Date().toISOString()
       }
     };
@@ -159,7 +148,21 @@ export const mockAccountAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Search', { query: params.query, type: params.type });
     
-    let results = [...mockAccounts];
+    // Map savingBooks to account format
+    let results = mockSavingBooks.map(sb => {
+      const customer = findCustomerById(sb.customerid);
+      const type = findTypeSavingById(sb.typeid);
+      
+      return {
+        id: sb.bookid,
+        customerName: customer?.fullname || 'Unknown',
+        idCard: customer?.citizenid || '',
+        type: type?.typename || 'Unknown',
+        balance: sb.currentbalance,
+        openDate: sb.registertime,
+        status: sb.status
+      };
+    });
     
     // Simple filter by search term
     if (params.query) {

@@ -246,7 +246,7 @@ export default function Withdraw() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Current Balance</p>
-                    <p className="text-sm font-semibold text-green-600">₫{accountInfo.balance.toLocaleString()}</p>
+                    <p className="text-sm font-semibold text-green-600">₫{(accountInfo.balance ?? 0).toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Open Date</p>

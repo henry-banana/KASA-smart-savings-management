@@ -20,15 +20,15 @@ export const mockSavingBookAdapter = {
     // Map savingBooks to old account format for backward compatibility
     let results = mockSavingBooks.map(sb => {
       const customer = findCustomerById(sb.customerid);
-      const type = findTypeSavingById(sb.typesavingid);
+      const type = findTypeSavingById(sb.typeid);
       
       return {
         id: sb.bookid,
         customer: customer?.fullname || 'Unknown',
         type: type?.typename || 'Unknown',
         status: sb.status,
-        balance: sb.balance,
-        openDate: sb.opendate,
+        balance: sb.currentbalance,
+        openDate: sb.registertime,
         interestRate: type?.interestrate || 0,
         term: type?.term || 0
       };
@@ -63,7 +63,7 @@ export const mockSavingBookAdapter = {
     }
     
     const customer = findCustomerById(savingBook.customerid);
-    const type = findTypeSavingById(savingBook.typesavingid);
+    const type = findTypeSavingById(savingBook.typeid);
     
     // Map to old format
     const account = {
@@ -71,8 +71,8 @@ export const mockSavingBookAdapter = {
       customer: customer?.fullname || 'Unknown',
       type: type?.typename || 'Unknown',
       status: savingBook.status,
-      balance: savingBook.balance,
-      openDate: savingBook.opendate,
+      balance: savingBook.currentbalance,
+      openDate: savingBook.registertime,
       interestRate: type?.interestrate || 0,
       term: type?.term || 0
     };

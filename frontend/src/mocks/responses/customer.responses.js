@@ -53,6 +53,12 @@ export const customerResponseTemplates = {
     success: false
   },
 
+  addDuplicateCitizenId: {
+    message: "Customer with this citizen ID already exists",
+    success: false
+  },
+
+  // Backward compatibility
   addDuplicateIdCard: {
     message: "Customer with this ID card already exists",
     success: false

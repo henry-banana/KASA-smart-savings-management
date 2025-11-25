@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { userApi } from '@/api/userApi';
+import { userService } from '@/services/userService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -66,7 +66,7 @@ export default function UserManagement() {
     try {
       setLoading(true);
       setError(null);
-      const data = await userApi.getAllUsers();
+      const data = await userService.getAllUsers();
       setUsers(data);
     } catch (err) {
       setError(err.message || 'Failed to fetch users');
@@ -107,7 +107,7 @@ export default function UserManagement() {
   const confirmDisable = async () => {
     if (selectedUser) {
       try {
-        await userApi.toggleUserStatus(selectedUser.username);
+        await userService.toggleUserStatus(selectedUser.username);
         await fetchUsers(); // Refresh list
         setSuccessMessage(`User ${selectedUser.status === 'active' ? 'disabled' : 'enabled'} successfully`);
         setShowSuccess(true);
@@ -121,7 +121,7 @@ export default function UserManagement() {
 
   const submitAddUser = async () => {
     try {
-      await userApi.createUser(formData);
+      await userService.createUser(formData);
       await fetchUsers(); // Refresh list
       setShowAddUser(false);
       setSuccessMessage('User created successfully');
@@ -135,7 +135,7 @@ export default function UserManagement() {
   const submitEditUser = async () => {
     if (selectedUser) {
       try {
-        await userApi.updateUser(selectedUser.username, {
+        await userService.updateUser(selectedUser.username, {
           username: formData.username,
           fullName: formData.fullName,
           email: formData.email,

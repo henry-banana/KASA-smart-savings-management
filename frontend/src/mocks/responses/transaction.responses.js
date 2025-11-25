@@ -73,7 +73,7 @@ export const buildGetTransactionByIdResponse = (transaction, savingBook, custome
       customer: customer ? {
         customerid: customer.customerid,
         fullname: customer.fullname,
-        idcard: customer.idcard
+        citizenid: customer.citizenid
       } : undefined,
       typesaving: typeSaving ? {
         typename: typeSaving.typename,
