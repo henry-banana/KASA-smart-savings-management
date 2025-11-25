@@ -36,8 +36,8 @@ export default function Deposit() {
       const response = await getAccountInfo(accountId);
       const account = response.data;
       
-      if (account.type !== 'no-term') {
-        setError('Deposits are only allowed for No-Term savings accounts');
+      if (account.typeName !== 'No Term') {
+        setError('Deposits are only allowed for No Term savings accounts');
         return;
       }
       

@@ -21,7 +21,7 @@ export const mockTransactionAdapter = {
       data: {
         id: savingBook.bookId,
         customerName: savingBook.customerName,
-        type: typeSaving?.typeName,
+        typeName: typeSaving?.typeName,
         balance: savingBook.balance,
         openDate: savingBook.openDate,
         interestRate: typeSaving?.interestRate
