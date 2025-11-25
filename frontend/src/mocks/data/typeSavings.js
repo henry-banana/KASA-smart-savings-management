@@ -5,48 +5,44 @@
 
 export const mockTypeSavings = [
   {
-    typesavingid: "TS001",
-    typename: "no-term",
-    term: 0,
-    interestrate: 0.02,
-    minimumdeposit: 100000,
-    description: "Không kỳ hạn - rút tiền bất kỳ lúc nào"
+    typeSavingId: "TS01",
+    typeName: "No Term",
+    term: 0,              // 0 = không kỳ hạn
+    interestRate: 0.2,    // %/tháng
+    minimumDeposit: 1000000
   },
   {
-    typesavingid: "TS002",
-    typename: "3-months",
+    typeSavingId: "TS02",
+    typeName: "3 Months",
     term: 3,
-    interestrate: 0.045,
-    minimumdeposit: 1000000,
-    description: "Kỳ hạn 3 tháng với lãi suất 4.5%/năm"
+    interestRate: 0.5,    // %/tháng
+    minimumDeposit: 5000000
   },
   {
-    typesavingid: "TS003",
-    typename: "6-months",
+    typeSavingId: "TS03",
+    typeName: "6 Months",
     term: 6,
-    interestrate: 0.055,
-    minimumdeposit: 5000000,
-    description: "Kỳ hạn 6 tháng với lãi suất 5.5%/năm"
+    interestRate: 0.55,   // %/tháng
+    minimumDeposit: 10000000
   },
   {
-    typesavingid: "TS004",
-    typename: "12-months",
+    typeSavingId: "TS04",
+    typeName: "12 Months",
     term: 12,
-    interestrate: 0.065,
-    minimumdeposit: 10000000,
-    description: "Kỳ hạn 12 tháng với lãi suất 6.5%/năm"
+    interestRate: 0.65,   // %/tháng
+    minimumDeposit: 20000000
   }
 ];
 
 /**
  * Helper functions for typesaving data
  */
-export const findTypeSavingById = (typesavingid) => {
-  return mockTypeSavings.find(ts => ts.typesavingid === typesavingid);
+export const findTypeSavingById = (typeSavingId) => {
+  return mockTypeSavings.find(ts => ts.typeSavingId === typeSavingId);
 };
 
-export const findTypeSavingByName = (typename) => {
-  return mockTypeSavings.find(ts => ts.typename === typename);
+export const findTypeSavingByName = (typeName) => {
+  return mockTypeSavings.find(ts => ts.typeName === typeName);
 };
 
 export const addTypeSaving = (typeSaving) => {
@@ -54,8 +50,8 @@ export const addTypeSaving = (typeSaving) => {
   return typeSaving;
 };
 
-export const updateTypeSaving = (typesavingid, updates) => {
-  const index = mockTypeSavings.findIndex(ts => ts.typesavingid === typesavingid);
+export const updateTypeSaving = (typeSavingId, updates) => {
+  const index = mockTypeSavings.findIndex(ts => ts.typeSavingId === typeSavingId);
   if (index !== -1) {
     mockTypeSavings[index] = { ...mockTypeSavings[index], ...updates };
     return mockTypeSavings[index];
@@ -63,8 +59,8 @@ export const updateTypeSaving = (typesavingid, updates) => {
   return null;
 };
 
-export const deleteTypeSaving = (typesavingid) => {
-  const index = mockTypeSavings.findIndex(ts => ts.typesavingid === typesavingid);
+export const deleteTypeSaving = (typeSavingId) => {
+  const index = mockTypeSavings.findIndex(ts => ts.typeSavingId === typeSavingId);
   if (index !== -1) {
     const deleted = mockTypeSavings.splice(index, 1)[0];
     return deleted;

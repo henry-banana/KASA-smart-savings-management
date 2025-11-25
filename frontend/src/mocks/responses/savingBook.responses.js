@@ -24,11 +24,11 @@ export const buildAddSavingBookResponse = (savingBook, customer, typeSaving) => 
       citizenid: customer.citizenid
     } : undefined,
     typesaving: typeSaving ? {
-      typesavingid: typeSaving.typesavingid,
-      typename: typeSaving.typename,
+      typeSavingId: typeSaving.typeSavingId,
+      typeName: typeSaving.typeName,
       term: typeSaving.term,
-      interestrate: typeSaving.interestrate,
-      minimumdeposit: typeSaving.minimumdeposit
+      interestRate: typeSaving.interestRate,
+      minimumDeposit: typeSaving.minimumDeposit
     } : undefined
   }
 });
@@ -45,10 +45,10 @@ export const buildGetSavingBookByIdResponse = (savingBook, customer, typeSaving,
       phone: customer.phone
     } : undefined,
     typesaving: typeSaving ? {
-      typesavingid: typeSaving.typesavingid,
-      typename: typeSaving.typename,
+      typeSavingId: typeSaving.typeSavingId,
+      typeName: typeSaving.typeName,
       term: typeSaving.term,
-      interestrate: typeSaving.interestrate
+      interestRate: typeSaving.interestRate
     } : undefined,
     transactions: transactions || []
   }

@@ -8,7 +8,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00123",
     customerid: "CUST001",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-08-20",
     maturitydate: "2025-11-20",
     initialdeposit: 5000000,
@@ -19,7 +19,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00124",
     customerid: "CUST002",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-05-15",
     maturitydate: "2025-11-15",
     initialdeposit: 10000000,
@@ -30,7 +30,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00125",
     customerid: "CUST003",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-03-10",
     maturitydate: null,
     initialdeposit: 7500000,
@@ -41,7 +41,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00126",
     customerid: "CUST004",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-03-20",
     maturitydate: "2025-09-20",
     initialdeposit: 15000000,
@@ -52,7 +52,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00127",
     customerid: "CUST005",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-02-10",
     maturitydate: null,
     initialdeposit: 3500000,
@@ -63,7 +63,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00128",
     customerid: "CUST006",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2024-09-01",
     maturitydate: "2024-12-01",
     initialdeposit: 7500000,
@@ -74,7 +74,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00129",
     customerid: "CUST007",
-    typeid: "TS004",
+    typeid: "TS04",
     registertime: "2024-11-15",
     maturitydate: "2025-11-15",
     initialdeposit: 20000000,
@@ -85,7 +85,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00130",
     customerid: "CUST008",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-03-20",
     maturitydate: null,
     initialdeposit: 4200000,
@@ -97,7 +97,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00131",
     customerid: "CUST009",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-04-15",
     maturitydate: "2025-07-15",
     initialdeposit: 8000000,
@@ -108,7 +108,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00132",
     customerid: "CUST010",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-05-20",
     maturitydate: "2025-08-20",
     initialdeposit: 12000000,
@@ -119,7 +119,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00133",
     customerid: "CUST011",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-06-10",
     maturitydate: "2025-12-10",
     initialdeposit: 25000000,
@@ -130,7 +130,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00134",
     customerid: "CUST012",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-07-01",
     maturitydate: null,
     initialdeposit: 5000000,
@@ -141,7 +141,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00135",
     customerid: "CUST013",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-08-05",
     maturitydate: null,
     initialdeposit: 6500000,
@@ -152,7 +152,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00136",
     customerid: "CUST014",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-09-12",
     maturitydate: "2026-03-12",
     initialdeposit: 18000000,
@@ -163,7 +163,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00137",
     customerid: "CUST015",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-10-08",
     maturitydate: "2026-01-08",
     initialdeposit: 9500000,
@@ -174,7 +174,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00138",
     customerid: "CUST016",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-11-01",
     maturitydate: null,
     initialdeposit: 3000000,
@@ -185,7 +185,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00139",
     customerid: "CUST017",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-11-15",
     maturitydate: "2026-05-15",
     initialdeposit: 22000000,
@@ -196,7 +196,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00140",
     customerid: "CUST018",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-11-20",
     maturitydate: "2026-02-20",
     initialdeposit: 11000000,
@@ -207,7 +207,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00141",
     customerid: "CUST019",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-10-25",
     maturitydate: null,
     initialdeposit: 7200000,
@@ -218,7 +218,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00142",
     customerid: "CUST020",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-09-18",
     maturitydate: "2025-12-18",
     initialdeposit: 13500000,
@@ -230,7 +230,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00143",
     customerid: "CUST021",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2024-08-10",
     maturitydate: "2025-02-10",
     initialdeposit: 16000000,
@@ -241,7 +241,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00144",
     customerid: "CUST022",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2024-06-15",
     maturitydate: null,
     initialdeposit: 4500000,
@@ -253,7 +253,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00145",
     customerid: "CUST023",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-08-06",
     maturitydate: "2025-11-06",
     initialdeposit: 15000000,
@@ -264,7 +264,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00146",
     customerid: "CUST024",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-10-08",
     maturitydate: null,
     initialdeposit: 8500000,
@@ -275,7 +275,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00147",
     customerid: "CUST025",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-05-17",
     maturitydate: "2025-11-17",
     initialdeposit: 20000000,
@@ -286,7 +286,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00148",
     customerid: "CUST026",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-08-23",
     maturitydate: "2025-11-23",
     initialdeposit: 10000000,
@@ -297,7 +297,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00149",
     customerid: "CUST027",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-10-20",
     maturitydate: null,
     initialdeposit: 6000000,
@@ -308,7 +308,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00150",
     customerid: "CUST028",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-10-25",
     maturitydate: "2026-04-25",
     initialdeposit: 15000000,
@@ -319,7 +319,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00151",
     customerid: "CUST029",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-10-28",
     maturitydate: null,
     initialdeposit: 6000000,
@@ -331,7 +331,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00152",
     customerid: "CUST030",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-11-02",
     maturitydate: "2026-02-02",
     initialdeposit: 9000000,
@@ -342,7 +342,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00153",
     customerid: "CUST031",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-11-05",
     maturitydate: null,
     initialdeposit: 4500000,
@@ -353,7 +353,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00154",
     customerid: "CUST032",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-11-08",
     maturitydate: "2026-05-08",
     initialdeposit: 14000000,
@@ -364,7 +364,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00155",
     customerid: "CUST033",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-11-10",
     maturitydate: "2026-02-10",
     initialdeposit: 11000000,
@@ -375,7 +375,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00156",
     customerid: "CUST034",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-11-12",
     maturitydate: null,
     initialdeposit: 5500000,
@@ -386,7 +386,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00157",
     customerid: "CUST035",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-11-15",
     maturitydate: "2026-05-15",
     initialdeposit: 18000000,
@@ -398,7 +398,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00158",
     customerid: "CUST036",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-11-02",
     maturitydate: null,
     initialdeposit: 5000000,
@@ -409,7 +409,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00159",
     customerid: "CUST037",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-11-05",
     maturitydate: "2026-05-05",
     initialdeposit: 15000000,
@@ -420,7 +420,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00160",
     customerid: "CUST038",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-11-08",
     maturitydate: "2026-02-08",
     initialdeposit: 8000000,
@@ -431,7 +431,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00161",
     customerid: "CUST039",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-11-12",
     maturitydate: null,
     initialdeposit: 3500000,
@@ -442,7 +442,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00162",
     customerid: "CUST040",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-11-16",
     maturitydate: "2026-05-16",
     initialdeposit: 20000000,
@@ -453,7 +453,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00163",
     customerid: "CUST041",
-    typeid: "TS002",
+    typeid: "TS02",
     registertime: "2025-11-19",
     maturitydate: "2026-02-19",
     initialdeposit: 12000000,
@@ -464,7 +464,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00164",
     customerid: "CUST042",
-    typeid: "TS001",
+    typeid: "TS01",
     registertime: "2025-11-25",
     maturitydate: null,
     initialdeposit: 4500000,
@@ -475,7 +475,7 @@ export const mockSavingBooks = [
   {
     bookid: "SB00165",
     customerid: "CUST043",
-    typeid: "TS003",
+    typeid: "TS03",
     registertime: "2025-11-28",
     maturitydate: "2026-05-28",
     initialdeposit: 18000000,

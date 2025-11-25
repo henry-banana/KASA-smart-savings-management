@@ -465,7 +465,7 @@ export const mockTransactions = [
     transactionDate: "2025-11-12T14:10:00.000Z",
   },
   // Additional transactions to ensure all types have data in October & November
-  // TS001 (No Term) - SB00125, SB00127, SB00130, SB00134, SB00135
+  // TS01 (No Term) - SB00125, SB00127, SB00130, SB00134, SB00135
   {
     transactionId: "TXN066",
     bookId: "SB00127",
@@ -515,7 +515,7 @@ export const mockTransactions = [
     amount: 3600000,
     transactionDate: "2025-10-31T15:30:00.000Z",
   },
-  // TS002 (3 Months) - SB00131, SB00132
+  // TS02 (3 Months) - SB00131, SB00132
   {
     transactionId: "TXN073",
     bookId: "SB00131",
@@ -537,7 +537,7 @@ export const mockTransactions = [
     amount: 5500000,
     transactionDate: "2025-10-21T08:20:00.000Z",
   },
-  // TS003 (6 Months) - SB00124, SB00126, SB00133
+  // TS03 (6 Months) - SB00124, SB00126, SB00133
   {
     transactionId: "TXN076",
     bookId: "SB00126",
@@ -567,7 +567,7 @@ export const mockTransactions = [
     transactionDate: "2025-10-25T11:20:00.000Z",
   },
   // November transactions for all types
-  // TS001 (No Term)
+  // TS01 (No Term)
   {
     transactionId: "TXN080",
     bookId: "SB00127",
@@ -596,7 +596,7 @@ export const mockTransactions = [
     amount: 2300000,
     transactionDate: "2025-11-11T14:30:00.000Z",
   },
-  // TS002 (3 Months)
+  // TS02 (3 Months)
   {
     transactionId: "TXN084",
     bookId: "SB00131",
@@ -618,7 +618,7 @@ export const mockTransactions = [
     amount: 1900000,
     transactionDate: "2025-11-10T15:20:00.000Z",
   },
-  // TS003 (6 Months)
+  // TS03 (6 Months)
   {
     transactionId: "TXN087",
     bookId: "SB00126",

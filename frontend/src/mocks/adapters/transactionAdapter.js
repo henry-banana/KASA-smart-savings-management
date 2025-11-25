@@ -23,7 +23,7 @@ export const mockTransactionAdapter = {
       data: {
         id: savingBook.bookid,
         customerName: customer?.fullname,
-        type: typeSaving?.typename,
+        type: typeSaving?.typeName,
         balance: savingBook.currentbalance,
         openDate: savingBook.registertime,
         interestRate: savingBook.interestrate
@@ -41,7 +41,7 @@ export const mockTransactionAdapter = {
     }
 
     const typeSaving = findTypeSavingById(savingBook.typeid);
-    if (typeSaving && typeSaving.typename !== 'no-term') {
+    if (typeSaving && typeSaving.term !== 0) {
       throw new Error('Chỉ cho phép gửi tiền vào sổ không kỳ hạn');
     }
 
@@ -94,7 +94,7 @@ export const mockTransactionAdapter = {
 
     // Check fixed-term withdrawal rules
     const typeSaving = findTypeSavingById(savingBook.typeid);
-    if (typeSaving && typeSaving.typename !== 'no-term' && savingBook.maturitydate) {
+    if (typeSaving && typeSaving.term !== 0 && savingBook.maturitydate) {
       const today = new Date();
       const maturityDate = new Date(savingBook.maturitydate);
       

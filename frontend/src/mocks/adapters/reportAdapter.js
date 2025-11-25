@@ -40,7 +40,7 @@ export const mockReportAdapter = {
     // Calculate breakdown by type saving
     const byTypeSaving = mockTypeSavings.slice(0, 3).map(type => {
       // Get all saving books of this type
-      const booksOfType = mockSavingBooks.filter(sb => sb.typeid === type.typesavingid);
+      const booksOfType = mockSavingBooks.filter(sb => sb.typeid === type.typeSavingId);
       const bookIds = booksOfType.map(sb => sb.bookid);
       
       // Get transactions for these books on this date
@@ -54,9 +54,8 @@ export const mockReportAdapter = {
         .reduce((sum, t) => sum + t.amount, 0);
       
       return {
-        type: type.typename === 'no-term' ? 'No Term' : 
-              type.typename === '3-months' ? '3 Months' : '6 Months',
-        typeSavingId: type.typesavingid,
+        type: type.typeName,
+        typeSavingId: type.typeSavingId,
         deposits,
         withdrawals,
         difference: deposits - withdrawals
@@ -114,13 +113,12 @@ export const mockReportAdapter = {
     
     // Calculate breakdown by type saving
     const byTypeSaving = mockTypeSavings.slice(0, 3).map(type => {
-      const opened = booksOpenedThisMonth.filter(sb => sb.typeid === type.typesavingid).length;
-      const closed = booksClosedThisMonth.filter(sb => sb.typeid === type.typesavingid).length;
+      const opened = booksOpenedThisMonth.filter(sb => sb.typeid === type.typeSavingId).length;
+      const closed = booksClosedThisMonth.filter(sb => sb.typeid === type.typeSavingId).length;
       
       return {
-        type: type.typename === 'no-term' ? 'No Term' : 
-              type.typename === '3-months' ? '3 Months' : '6 Months',
-        typeSavingId: type.typesavingid,
+        type: type.typeName,
+        typeSavingId: type.typeSavingId,
         opened,
         closed,
         difference: opened - closed
@@ -145,14 +143,11 @@ export const mockReportAdapter = {
       };
       
       mockTypeSavings.slice(0, 3).forEach(type => {
-        const booksOfType = mockSavingBooks.filter(sb => sb.typeid === type.typesavingid);
+        const booksOfType = mockSavingBooks.filter(sb => sb.typeid === type.typeSavingId);
         const bookIds = booksOfType.map(sb => sb.bookid);
         const typeTransactions = dayTransactions.filter(t => bookIds.includes(t.bookId));
         
-        const typeName = type.typename === 'no-term' ? 'No Term' : 
-                        type.typename === '3-months' ? '3 Months' : '6 Months';
-        
-        dayData[typeName] = typeTransactions
+        dayData[type.typeName] = typeTransactions
           .filter(t => t.type === 'deposit')
           .reduce((sum, t) => sum + t.amount, 0);
       });

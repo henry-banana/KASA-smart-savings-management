@@ -25,11 +25,11 @@ export const mockSavingBookAdapter = {
       return {
         id: sb.bookid,
         customer: customer?.fullname || 'Unknown',
-        type: type?.typename || 'Unknown',
+        type: type?.typeName || 'Unknown',
         status: sb.status,
         balance: sb.currentbalance,
         openDate: sb.registertime,
-        interestRate: type?.interestrate || 0,
+        interestRate: type?.interestRate || 0,
         term: type?.term || 0
       };
     });
@@ -69,11 +69,11 @@ export const mockSavingBookAdapter = {
     const account = {
       id: savingBook.bookid,
       customer: customer?.fullname || 'Unknown',
-      type: type?.typename || 'Unknown',
+      type: type?.typeName || 'Unknown',
       status: savingBook.status,
       balance: savingBook.currentbalance,
       openDate: savingBook.registertime,
-      interestRate: type?.interestrate || 0,
+      interestRate: type?.interestRate || 0,
       term: type?.term || 0
     };
     

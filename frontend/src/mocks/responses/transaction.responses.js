@@ -45,7 +45,7 @@ export const buildWithdrawTransactionResponse = (transaction, savingBook, custom
         fullname: customer.fullname
       } : undefined,
       typesaving: typeSaving ? {
-        typename: typeSaving.typename,
+        typeName: typeSaving.typeName,
         maturitydate: savingBook.maturitydate
       } : undefined
     } : undefined,
@@ -76,8 +76,8 @@ export const buildGetTransactionByIdResponse = (transaction, savingBook, custome
         citizenid: customer.citizenid
       } : undefined,
       typesaving: typeSaving ? {
-        typename: typeSaving.typename,
-        interestrate: typeSaving.interestrate
+        typeName: typeSaving.typeName,
+        interestRate: typeSaving.interestRate
       } : undefined
     } : undefined,
     employee: employee ? {

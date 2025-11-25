@@ -78,9 +78,9 @@ export default function RegulationSettings() {
   }, []);
 
   const [interestRates, setInterestRates] = useState([
-    { typeSavingId: 'TS001', typeName: 'No Term', rate: '2.0', editable: true },
-    { typeSavingId: 'TS002', typeName: '3 Months', rate: '4.5', editable: true },
-    { typeSavingId: 'TS003', typeName: '6 Months', rate: '5.5', editable: true }
+    { typeSavingId: 'TS01', typeName: 'No Term', rate: '0.2', editable: true },
+    { typeSavingId: 'TS02', typeName: '3 Months', rate: '0.5', editable: true },
+    { typeSavingId: 'TS03', typeName: '6 Months', rate: '0.55', editable: true }
   ]);
 
   const [changeHistory, setChangeHistory] = useState([]);
@@ -279,9 +279,9 @@ export default function RegulationSettings() {
                   setMinDeposit('100000');
                   setMinWithdrawalDays('15');
                   setInterestRates([
-                    { typeSavingId: 'TS001', typeName: 'No Term', rate: '2.0', editable: false },
-                    { typeSavingId: 'TS002', typeName: '3 Months', rate: '4.5', editable: false },
-                    { typeSavingId: 'TS003', typeName: '6 Months', rate: '5.5', editable: false }
+                    { typeSavingId: 'TS01', typeName: 'No Term', rate: '0.2', editable: false },
+                    { typeSavingId: 'TS02', typeName: '3 Months', rate: '0.5', editable: false },
+                    { typeSavingId: 'TS03', typeName: '6 Months', rate: '0.55', editable: false }
                   ]);
                 }}
               >

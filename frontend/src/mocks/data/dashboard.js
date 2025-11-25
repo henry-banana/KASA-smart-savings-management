@@ -96,13 +96,13 @@ export const calculateAccountTypeDistribution = () => {
       // Map type IDs to readable names
       let typeName;
       switch(sb.typeid) {
-        case 'TS001':
+        case 'TS01':
           typeName = 'No Term';
           break;
-        case 'TS002':
+        case 'TS02':
           typeName = '3 Months';
           break;
-        case 'TS003':
+        case 'TS03':
           typeName = '6 Months';
           break;
         default:

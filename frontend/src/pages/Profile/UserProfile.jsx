@@ -340,22 +340,22 @@ export default function UserProfile() {
       {/* Activity Summary */}
       <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
-          <CardTitle className="text-xl">Tóm Tắt Hoạt Động</CardTitle>
-          <CardDescription>Thống kê hoạt động gần đây của bạn</CardDescription>
+          <CardTitle className="text-xl">Activity Summary</CardTitle>
+          <CardDescription>Your recent activity overview</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="p-6 text-center rounded-2xl border-2" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)', borderColor: '#3B82F640' }}>
+              <div className="p-6 text-center rounded-2xl border-2" style={{ background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)', borderColor: '#3B82F640' }}>
               <p className="mb-2 text-3xl font-bold text-blue-600">47</p>
-              <p className="text-sm font-medium text-gray-700">Giao Dịch Hôm Nay</p>
+              <p className="text-sm font-medium text-gray-700">Transactions Today</p>
             </div>
             <div className="p-6 text-center rounded-2xl border-2" style={{ background: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)', borderColor: '#10B98140' }}>
               <p className="mb-2 text-3xl font-bold text-green-600">312</p>
-              <p className="text-sm font-medium text-gray-700">Tuần Này</p>
+              <p className="text-sm font-medium text-gray-700">This Week</p>
             </div>
             <div className="p-6 text-center rounded-2xl border-2" style={{ background: 'linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%)', borderColor: '#8B5CF640' }}>
               <p className="mb-2 text-3xl font-bold text-purple-600">1,247</p>
-              <p className="text-sm font-medium text-gray-700">Tháng Này</p>
+              <p className="text-sm font-medium text-gray-700">This Month</p>
             </div>
           </div>
         </CardContent>

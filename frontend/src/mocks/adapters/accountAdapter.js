@@ -61,7 +61,7 @@ export const mockAccountAdapter = {
     const newSavingBook = {
       bookid: generateId('SB'),
       customerid: customer.customerid,
-      typeid: typeSaving?.typesavingid || 'TS001',
+      typeid: typeSaving?.typesavingid || 'TS01',
       registertime: accountData.open_date,
       maturitydate: null,
       initialdeposit: parseFloat(accountData.initial_deposit),
