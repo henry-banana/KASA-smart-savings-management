@@ -38,20 +38,20 @@ export const mockDashboardAdapter = {
       message: 'Interest rates retrieved successfully',
       data: [
         { 
-          type: 'no-term', 
-          name: 'No Term', 
+          typeSavingId: 'TS001',
+          typeName: 'No Term', 
           rate: 2.0,
           editable: true 
         },
         { 
-          type: '3-months', 
-          name: '3 Months', 
+          typeSavingId: 'TS002',
+          typeName: '3 Months', 
           rate: 4.5,
           editable: true 
         },
         { 
-          type: '6-months', 
-          name: '6 Months', 
+          typeSavingId: 'TS003',
+          typeName: '6 Months', 
           rate: 5.5,
           editable: true 
         }

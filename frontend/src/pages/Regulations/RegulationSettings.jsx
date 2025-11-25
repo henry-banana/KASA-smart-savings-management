@@ -78,9 +78,9 @@ export default function RegulationSettings() {
   }, []);
 
   const [interestRates, setInterestRates] = useState([
-    { type: 'No Term', rate: '2.0', editable: true },
-    { type: '3 Months', rate: '4.5', editable: true },
-    { type: '6 Months', rate: '5.5', editable: true }
+    { typeSavingId: 'TS001', typeName: 'No Term', rate: '2.0', editable: true },
+    { typeSavingId: 'TS002', typeName: '3 Months', rate: '4.5', editable: true },
+    { typeSavingId: 'TS003', typeName: '6 Months', rate: '5.5', editable: true }
   ]);
 
   const [changeHistory, setChangeHistory] = useState([]);
@@ -244,7 +244,7 @@ export default function RegulationSettings() {
                   <TableBody>
                     {interestRates.map((item, index) => (
                       <TableRow key={index} className="hover:bg-[#F8F9FC] transition-colors">
-                        <TableCell className="font-medium">{item.type}</TableCell>
+                        <TableCell className="font-medium">{item.typeName}</TableCell>
                         <TableCell>
                           <Input
                             type="number"
@@ -279,9 +279,9 @@ export default function RegulationSettings() {
                   setMinDeposit('100000');
                   setMinWithdrawalDays('15');
                   setInterestRates([
-                    { type: 'Không Kỳ Hạn', rate: '2.0', editable: false },
-                    { type: '3 Tháng', rate: '4.5', editable: false },
-                    { type: '6 Tháng', rate: '5.5', editable: false }
+                    { typeSavingId: 'TS001', typeName: 'No Term', rate: '2.0', editable: false },
+                    { typeSavingId: 'TS002', typeName: '3 Months', rate: '4.5', editable: false },
+                    { typeSavingId: 'TS003', typeName: '6 Months', rate: '5.5', editable: false }
                   ]);
                 }}
               >
@@ -330,7 +330,7 @@ export default function RegulationSettings() {
               <div className="space-y-3">
                 {interestRates.map((item, index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <span className="text-sm text-green-800">{item.type}:</span>
+                    <span className="text-sm text-green-800">{item.typeName}:</span>
                     <span className="text-sm font-semibold text-green-900">{item.rate}% per year</span>
                   </div>
                 ))}
@@ -457,7 +457,7 @@ export default function RegulationSettings() {
                 <li>Minimum Deposit: ₫{Number(minDeposit).toLocaleString()}</li>
                 <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
                 {interestRates.map((item, index) => (
-                  <li key={index}>Interest Rate {item.type}: {item.rate}%</li>
+                  <li key={index}>Interest Rate {item.typeName}: {item.rate}%</li>
                 ))}
               </ul>
             </div>
