@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
@@ -7,7 +8,8 @@ import { Lock, Eye, EyeOff, CheckCircle2, XCircle, Sparkles, Star, Heart, Loader
 import { authService } from '../../../services/authService';
 import { logger } from '../../../utils/logger';
 
-export default function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
+// UI Component
+function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -287,3 +289,26 @@ export default function ResetPassword({ email, otp, onSuccess, onBack, onBackToL
     </div>
   );
 }
+
+// Route wrapper with navigation and state guard
+export function ResetPasswordRoute() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
+  const otp = location.state?.otp;
+  
+  // Guard direct access
+  if (!email || !otp) return <Navigate to="/forgot-password" replace />;
+  
+  return (
+    <ResetPassword
+      email={email}
+      otp={otp}
+      onSuccess={() => navigate('/login')}
+      onBack={() => navigate('/forgot-password/otp', { state: { email } })}
+      onBackToLogin={() => navigate('/login')}
+    />
+  );
+}
+
+export default ResetPassword;

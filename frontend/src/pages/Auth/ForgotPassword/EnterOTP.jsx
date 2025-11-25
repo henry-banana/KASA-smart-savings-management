@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Shield, ArrowLeft, Sparkles, Star, Heart, Loader2 } from 'lucide-react';
@@ -6,7 +7,8 @@ import { authService } from '../../../services/authService';
 import { logger } from '../../../utils/logger';
 import { useConfig } from '@/contexts/ConfigContext';
 
-export default function EnterOTP({ email, onVerify, onBack }) {
+// UI Component
+function EnterOTP({ email, onVerify, onBack }) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -247,3 +249,22 @@ export default function EnterOTP({ email, onVerify, onBack }) {
     </div>
   );
 }
+
+// Route wrapper with navigation and state guard
+export function EnterOTPRoute() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
+  
+  if (!email) return <Navigate to="/forgot-password" replace />;
+  
+  return (
+    <EnterOTP
+      email={email}
+      onVerify={(otp) => navigate('/forgot-password/reset', { state: { email, otp } })}
+      onBack={() => navigate('/forgot-password')}
+    />
+  );
+}
+
+export default EnterOTP;

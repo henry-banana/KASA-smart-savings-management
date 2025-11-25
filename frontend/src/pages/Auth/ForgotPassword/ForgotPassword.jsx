@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
@@ -7,7 +8,8 @@ import { Mail, ArrowLeft, Sparkles, Star, Heart, Loader2 } from 'lucide-react';
 import { authService } from '../../../services/authService';
 import { logger } from '../../../utils/logger';
 
-export default function ForgotPassword({ onContinue, onBack }) {
+// UI Component
+function ForgotPassword({ onContinue, onBack }) {
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -157,3 +159,16 @@ export default function ForgotPassword({ onContinue, onBack }) {
     </div>
   );
 }
+
+// Route wrapper with navigation logic
+export function ForgotPasswordRoute() {
+  const navigate = useNavigate();
+  return (
+    <ForgotPassword
+      onContinue={(email) => navigate('/forgot-password/otp', { state: { email } })}
+      onBack={() => navigate('/login')}
+    />
+  );
+}
+
+export default ForgotPassword;
