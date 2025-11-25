@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Shield, ArrowLeft, Sparkles, Star, Heart } from 'lucide-react';
+import { Shield, ArrowLeft, Sparkles, Star, Heart, Loader2 } from 'lucide-react';
+import { authService } from '../../../services/authService';
+import { logger } from '../../../utils/logger';
 
 export default function EnterOTP({ email, onVerify, onBack }) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const inputRefs = useRef([]);
 
@@ -49,7 +52,7 @@ export default function EnterOTP({ email, onVerify, onBack }) {
     inputRefs.current[nextIndex]?.focus();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const otpString = otp.join('');
     
@@ -58,13 +61,20 @@ export default function EnterOTP({ email, onVerify, onBack }) {
       return;
     }
 
-    // Mock OTP validation - accept "123456" as valid
-    if (otpString === '123456') {
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await authService.verifyOtp({ email, otp: otpString });
+      logger.info('OTP verified', response);
       onVerify(otpString);
-    } else {
-      setError('Invalid OTP code. Please try again.');
+    } catch (err) {
+      logger.error('OTP verification failed', err);
+      setError(err.message || 'Invalid OTP code. Please try again.');
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -163,18 +173,25 @@ export default function EnterOTP({ email, onVerify, onBack }) {
 
             <Button 
               type="submit" 
-              disabled={!isComplete}
+              disabled={!isComplete || loading}
               className={`
                 w-full h-12 text-white rounded-full font-medium shadow-lg transition-all duration-300
-                ${isComplete ? 'hover:shadow-xl hover:scale-[1.02]' : 'opacity-50 cursor-not-allowed'}
+                ${isComplete && !loading ? 'hover:shadow-xl hover:scale-[1.02]' : 'opacity-50 cursor-not-allowed'}
               `}
               style={{ 
-                background: isComplete 
+                background: isComplete && !loading
                   ? 'linear-gradient(135deg, #10B981 0%, #00AEEF 100%)' 
                   : 'linear-gradient(135deg, #D1D5DB 0%, #9CA3AF 100%)'
               }}
             >
-              Accept ✓
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin inline" />
+                  Verifying...
+                </>
+              ) : (
+                'Accept ✓'
+              )}
             </Button>
           </form>
 
@@ -226,4 +243,3 @@ export default function EnterOTP({ email, onVerify, onBack }) {
     </div>
   );
 }
-// TODO: Write code here

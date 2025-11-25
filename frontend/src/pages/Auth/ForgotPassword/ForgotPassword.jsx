@@ -3,15 +3,34 @@ import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Mail, ArrowLeft, Sparkles, Star, Heart } from 'lucide-react';
+import { Mail, ArrowLeft, Sparkles, Star, Heart, Loader2 } from 'lucide-react';
+import { authService } from '../../../services/authService';
+import { logger } from '../../../utils/logger';
 
 export default function ForgotPassword({ onContinue, onBack }) {
   const [emailOrUsername, setEmailOrUsername] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (emailOrUsername.trim()) {
-      onContinue(emailOrUsername);
+    if (!emailOrUsername.trim()) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await authService.requestPasswordReset(emailOrUsername);
+      logger.info('Password reset requested', response);
+      
+      // Pass the email from response or original input
+      const email = response.email || emailOrUsername;
+      onContinue(email);
+    } catch (err) {
+      logger.error('Password reset request failed', err);
+      setError(err.message || 'Không thể gửi yêu cầu đặt lại mật khẩu');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,20 +103,34 @@ export default function ForgotPassword({ onContinue, onBack }) {
               </div>
             </div>
 
+            {error && (
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded-xl border border-red-200 flex items-center gap-2">
+                <span className="font-medium">⚠️</span>
+                {error}
+              </div>
+            )}
+
             <Button 
               type="submit" 
-              disabled={!isValid}
+              disabled={!isValid || loading}
               className={`
                 w-full h-12 text-white rounded-full font-medium shadow-lg transition-all duration-300
-                ${isValid ? 'hover:shadow-xl hover:scale-[1.02]' : 'opacity-50 cursor-not-allowed'}
+                ${isValid && !loading ? 'hover:shadow-xl hover:scale-[1.02]' : 'opacity-50 cursor-not-allowed'}
               `}
               style={{ 
-                background: isValid 
+                background: isValid && !loading
                   ? 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)' 
                   : 'linear-gradient(135deg, #D1D5DB 0%, #9CA3AF 100%)'
               }}
             >
-              Send Reset Link ✨
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin inline" />
+                  Processing...
+                </>
+              ) : (
+                'Send Reset Link ✨'
+              )}
             </Button>
           </form>
 
@@ -124,4 +157,3 @@ export default function ForgotPassword({ onContinue, onBack }) {
     </div>
   );
 }
-// TODO: Write code here

@@ -47,6 +47,60 @@ export const authService = {
       role: roleMap[userData.roleName] || userData.roleName?.toLowerCase(),
       status: userData.status || 'active',
     };
+  },
+
+  /**
+   * Request password reset - Step 1
+   * @param {string} emailOrUsername
+   * @returns {Promise<Object>}
+   */
+  async requestPasswordReset(emailOrUsername) {
+    if (!emailOrUsername?.trim()) {
+      throw new Error('Vui lòng nhập email hoặc tên đăng nhập');
+    }
+
+    const response = await authAdapter.requestPasswordReset(emailOrUsername);
+    return response;
+  },
+
+  /**
+   * Verify OTP code - Step 2
+   * @param {Object} data - { email, otp }
+   * @returns {Promise<Object>}
+   */
+  async verifyOtp(data) {
+    if (!data.email?.trim()) {
+      throw new Error('Email không hợp lệ');
+    }
+    if (!data.otp?.trim()) {
+      throw new Error('Vui lòng nhập mã OTP');
+    }
+
+    const response = await authAdapter.verifyOtp(data);
+    return response;
+  },
+
+  /**
+   * Reset password with verified OTP - Step 3
+   * @param {Object} data - { email, otp, newPassword }
+   * @returns {Promise<Object>}
+   */
+  async resetPassword(data) {
+    if (!data.email?.trim()) {
+      throw new Error('Email không hợp lệ');
+    }
+    if (!data.otp?.trim()) {
+      throw new Error('Mã OTP không hợp lệ');
+    }
+    if (!data.newPassword?.trim()) {
+      throw new Error('Vui lòng nhập mật khẩu mới');
+    }
+    if (data.newPassword.length < 8) {
+      throw new Error('Mật khẩu phải có ít nhất 8 ký tự');
+    }
+
+    const response = await authAdapter.resetPassword(data);
+    return response;
   }
 };
 

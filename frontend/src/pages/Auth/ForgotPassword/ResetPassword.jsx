@@ -3,13 +3,16 @@ import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Lock, Eye, EyeOff, CheckCircle2, XCircle, Sparkles, Star, Heart } from 'lucide-react';
+import { Lock, Eye, EyeOff, CheckCircle2, XCircle, Sparkles, Star, Heart, Loader2 } from 'lucide-react';
+import { authService } from '../../../services/authService';
+import { logger } from '../../../utils/logger';
 
-export default function ResetPassword({ onSuccess, onBack, onBackToLogin }) {
+export default function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
 
   const passwordRequirements = [
@@ -42,7 +45,7 @@ export default function ResetPassword({ onSuccess, onBack, onBackToLogin }) {
     return validationErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     const validationErrors = validatePassword();
@@ -52,14 +55,24 @@ export default function ResetPassword({ onSuccess, onBack, onBackToLogin }) {
       return;
     }
 
-    // Show success message
+    setLoading(true);
     setErrors([]);
-    
-    // Success notification (using alert for now, will be replaced with toast)
-    setTimeout(() => {
-      alert('✓ Password Changed\n\nYour password has been successfully reset!');
-      onSuccess();
-    }, 100);
+
+    try {
+      const response = await authService.resetPassword({ email, otp, newPassword });
+      logger.info('Password reset successful', response);
+      
+      // Success notification (using alert for now, will be replaced with toast)
+      setTimeout(() => {
+        alert('✓ Password Changed\n\nYour password has been successfully reset!');
+        onSuccess();
+      }, 100);
+    } catch (err) {
+      logger.error('Password reset failed', err);
+      setErrors([err.message || 'Failed to reset password. Please try again.']);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isFormValid = () => {
@@ -230,18 +243,25 @@ export default function ResetPassword({ onSuccess, onBack, onBackToLogin }) {
 
             <Button 
               type="submit" 
-              disabled={!isFormValid()}
+              disabled={!isFormValid() || loading}
               className={`
                 w-full h-12 text-white rounded-full font-medium shadow-lg transition-all duration-300
-                ${isFormValid() ? 'hover:shadow-xl hover:scale-[1.02]' : 'opacity-50 cursor-not-allowed'}
+                ${isFormValid() && !loading ? 'hover:shadow-xl hover:scale-[1.02]' : 'opacity-50 cursor-not-allowed'}
               `}
               style={{ 
-                background: isFormValid() 
+                background: isFormValid() && !loading
                   ? 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)' 
                   : 'linear-gradient(135deg, #D1D5DB 0%, #9CA3AF 100%)'
               }}
             >
-              Save Password 💾
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin inline" />
+                  Saving...
+                </>
+              ) : (
+                'Save Password 💾'
+              )}
             </Button>
           </form>
 
@@ -267,4 +287,3 @@ export default function ResetPassword({ onSuccess, onBack, onBackToLogin }) {
     </div>
   );
 }
-// TODO: Write Code here

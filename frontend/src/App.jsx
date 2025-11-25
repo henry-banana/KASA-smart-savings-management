@@ -141,10 +141,13 @@ function ResetPasswordRoute() {
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email;
+  const otp = location.state?.otp;
   // Guard direct access
-  if (!email) return <Navigate to="/forgot-password" replace />;
+  if (!email || !otp) return <Navigate to="/forgot-password" replace />;
   return (
     <ResetPassword
+      email={email}
+      otp={otp}
       onSuccess={() => navigate('/login')}
       onBack={() => navigate('/forgot-password/otp', { state: { email } })}
       onBackToLogin={() => navigate('/login')}
