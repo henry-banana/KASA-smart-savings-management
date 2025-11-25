@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import Login from './pages/Auth/Login';
-import { ForgotPasswordRoute } from './pages/Auth/ForgotPassword/ForgotPassword';
-import { EnterOTPRoute } from './pages/Auth/ForgotPassword/EnterOTP';
-import { ResetPasswordRoute } from './pages/Auth/ForgotPassword/ResetPassword';
+import { ForgotPasswordRoute as ForgotPassword } from './pages/Auth/ForgotPassword/ForgotPassword';
+import { EnterOTPRoute as EnterOTP } from './pages/Auth/ForgotPassword/EnterOTP';
+import { ResetPasswordRoute as ResetPassword } from './pages/Auth/ForgotPassword/ResetPassword';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard/Dashboard';
 import OpenAccount from './pages/Savings/OpenAccount';
@@ -60,9 +60,9 @@ export default function App() {
         {/* Public Route */}
         <Route path="/login" element={<Login />} />
         {/* Forgot Password Flow (Public) */}
-        <Route path="/forgot-password" element={<ForgotPasswordRoute />} />
-        <Route path="/forgot-password/otp" element={<EnterOTPRoute />} />
-        <Route path="/forgot-password/reset" element={<ResetPasswordRoute />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password/otp" element={<EnterOTP />} />
+        <Route path="/forgot-password/reset" element={<ResetPassword />} />
         
         {/* Protected Routes */}
         <Route
