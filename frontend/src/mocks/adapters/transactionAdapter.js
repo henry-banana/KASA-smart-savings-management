@@ -21,10 +21,13 @@ export const mockTransactionAdapter = {
       data: {
         id: savingBook.bookId,
         customerName: savingBook.customerName,
+        type: typeSaving?.typeName || 'Unknown',
         typeName: typeSaving?.typeName,
+        term: typeSaving?.term || 0,
         balance: savingBook.balance,
         openDate: savingBook.openDate,
-        interestRate: typeSaving?.interestRate
+        maturityDate: savingBook.maturityDate,
+        interestRate: typeSaving?.interestRate || 0
       }
     };
   },

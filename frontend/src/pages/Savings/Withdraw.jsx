@@ -113,7 +113,7 @@ export default function Withdraw() {
     }
 
     // Check fixed-term withdrawal rules
-    if (accountInfo.type !== 'no-term') {
+    if (accountInfo.term > 0) {
       const today = new Date();
       const maturityDate = new Date(accountInfo.maturityDate);
       
@@ -159,7 +159,7 @@ export default function Withdraw() {
   };
 
   const isFixedTermMatured = () => {
-    if (!accountInfo || accountInfo.type === 'no-term') return false;
+    if (!accountInfo || accountInfo.term === 0) return false;
     const today = new Date();
     const maturityDate = new Date(accountInfo.maturityDate);
     return today >= maturityDate;
@@ -258,7 +258,7 @@ export default function Withdraw() {
                   <div>
                     <p className="text-xs text-gray-500">Account Type</p>
                     <Badge className="bg-amber-100 text-amber-700 border-amber-200">
-                      {accountInfo.type === 'no-term' ? 'No Term' : accountInfo.type}
+                      {accountInfo.type}
                     </Badge>
                   </div>
                   <div>
@@ -275,7 +275,7 @@ export default function Withdraw() {
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Interest Rate</p>
-                    <p className="text-sm font-medium">{(accountInfo.interestRate * 100).toFixed(1)}% per year</p>
+                    <p className="text-sm font-medium">{(accountInfo.interestRate).toFixed(1)}% per month</p>
                   </div>
                   {accountInfo.maturityDate && (
                     <>
