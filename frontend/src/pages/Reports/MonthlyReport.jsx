@@ -12,36 +12,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../components/ui/select';
-import { FileDown, Printer, Search } from 'lucide-react';
+import { FileDown, Printer, Search, Loader2 } from 'lucide-react';
+import { getMonthlyOpenCloseReport } from '../../services/reportService';
 
 export default function MonthlyReport() {
   const { user } = useAuthContext();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [savingsType, setSavingsType] = useState('all');
   const [reportData, setReportData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleGenerateReport = () => {
-    const daysInMonth = new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth() + 1,
-      0
-    ).getDate();
-
-    const mockData = [];
-    for (let i = 1; i <= daysInMonth; i++) {
-      mockData.push({
-        day: i,
-        opened: Math.floor(Math.random() * 10) + 1,
-        closed: Math.floor(Math.random() * 5),
-        difference: 0,
-      });
+  const handleGenerateReport = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const month = selectedDate.getMonth() + 1;
+      const year = selectedDate.getFullYear();
+      const response = await getMonthlyOpenCloseReport(month, year, savingsType);
+      
+      if (response.success && response.data) {
+        setReportData(response.data.dailyData);
+      } else {
+        setError(response.message || 'Failed to generate report');
+        setReportData(null);
+      }
+    } catch (err) {
+      console.error('Report generation error:', err);
+      setError(err.message || 'An error occurred while generating the report');
+      setReportData(null);
+    } finally {
+      setLoading(false);
     }
-
-    mockData.forEach((item) => {
-      item.difference = item.opened - item.closed;
-    });
-
-    setReportData(mockData);
   };
 
   const totals = reportData
@@ -72,9 +74,9 @@ export default function MonthlyReport() {
       <div className="space-y-6">
         {/* Report Header - Filter Controls */}
         <Card className="border-0 shadow-xl rounded-3xl overflow-hidden print:hidden">
-          <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 pb-8">
+          <CardHeader className="bg-linear-to-r from-purple-50 to-pink-50 pb-8">
             <CardTitle className="flex items-center gap-2">
-              <span className="text-2xl">���</span>
+              <span className="text-2xl">📊</span>
               BM5.2 – Monthly Opening/Closing Report
             </CardTitle>
             <CardDescription>Generate monthly savings book opening and closing report</CardDescription>
@@ -107,17 +109,32 @@ export default function MonthlyReport() {
             </div>
             <Button
               onClick={handleGenerateReport}
-              className="w-full h-12 rounded-xl px-6 text-white shadow-lg hover:shadow-xl"
+              disabled={loading}
+              className="w-full h-12 rounded-xl px-6 text-white shadow-lg hover:shadow-xl disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
-              <Search size={18} className="mr-2" />
-              Generate Report
+              {loading ? (
+                <>
+                  <Loader2 size={18} className="mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Search size={18} className="mr-2" />
+                  Generate Report
+                </>
+              )}
             </Button>
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+                {error}
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Show results only after generate */}
-        {reportData && (
+        {reportData && !loading && (
           <>
             {/* Print Actions - Hidden on Print */}
             <div className="flex justify-end gap-3 print:hidden">
@@ -131,7 +148,7 @@ export default function MonthlyReport() {
               </Button>
               <Button
                 onClick={handleExport}
-                className="rounded-xl shadow-sm hover:shadow-md bg-gradient-to-r from-green-600 to-green-500 text-white"
+                className="rounded-xl shadow-sm hover:shadow-md bg-linear-to-r from-green-600 to-green-500 text-white"
               >
                 <FileDown size={18} className="mr-2" />
                 Export PDF
@@ -217,7 +234,7 @@ export default function MonthlyReport() {
                     ))}
 
                     {/* Total Row */}
-                    <tr className="bg-gradient-to-r from-gray-100 to-gray-50 border-t-2 border-[#1A4D8F]">
+                    <tr className="bg-linear-to-r from-gray-100 to-gray-50 border-t-2 border-[#1A4D8F]">
                       <td colSpan={2} className="py-4 px-6 text-left font-bold text-[#1A4D8F] uppercase tracking-wide">
                         Total
                       </td>
@@ -238,19 +255,19 @@ export default function MonthlyReport() {
 
               {/* Report Footer - Summary Stats */}
               <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-l-4 border-green-500">
+                <div className="bg-linear-to-br from-green-50 to-green-100 rounded-xl p-6 border-l-4 border-green-500">
                   <p className="text-sm font-medium text-green-700 mb-1">Total Opened</p>
                   <p className="text-3xl font-bold text-green-600">{totals?.opened}</p>
                   <p className="text-xs text-green-600 mt-1">accounts this month</p>
                 </div>
 
-                <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border-l-4 border-red-500">
+                <div className="bg-linear-to-br from-red-50 to-red-100 rounded-xl p-6 border-l-4 border-red-500">
                   <p className="text-sm font-medium text-red-700 mb-1">Total Closed</p>
                   <p className="text-3xl font-bold text-red-600">{totals?.closed}</p>
                   <p className="text-xs text-red-600 mt-1">accounts this month</p>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-l-4 border-blue-500">
+                <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-l-4 border-blue-500">
                   <p className="text-sm font-medium text-blue-700 mb-1">Net Difference</p>
                   <p className="text-3xl font-bold text-blue-600">{(totals?.difference || 0) >= 0 ? '+' : ''}{totals?.difference}</p>
                   <p className="text-xs text-blue-600 mt-1">net growth this month</p>

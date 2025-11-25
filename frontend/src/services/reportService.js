@@ -22,3 +22,14 @@ export const getDailyReport = async (date) => {
 export const getMonthlyReport = async (month, year) => {
   return reportAdapter.getMonthlyReport(month, year);
 };
+
+/**
+ * Lấy báo cáo mở/đóng sổ tiết kiệm theo tháng (BM5.2)
+ * @param {number} month - Tháng (1-12)
+ * @param {number} year - Năm
+ * @param {string} savingsType - Loại tiết kiệm ('all', 'no-term', '3-months', '6-months', '12-months')
+ * @returns {Promise<Object>} Monthly open/close report data
+ */
+export const getMonthlyOpenCloseReport = async (month, year, savingsType = 'all') => {
+  return reportAdapter.getMonthlyOpenCloseReport(month, year, savingsType);
+};
