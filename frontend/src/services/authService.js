@@ -14,7 +14,19 @@ export const authService = {
     }
 
     const response = await authAdapter.login(credentials);
-    return this.transformUser(response);
+    
+    // Extract user data from response with priority:
+    // 1. response.data.data (backend format)
+    // 2. response.data (axios format)
+    // 3. response (mock fallback)
+    const userData = response?.data?.data || response?.data || response;
+    
+    // Save token to localStorage if present
+    if (userData.token) {
+      localStorage.setItem('token', userData.token);
+    }
+    
+    return this.transformUser(userData);
   },
 
   async logout() {
