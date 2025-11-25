@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { getRegulations, updateRegulations } from '@/services/regulationService';
 import { getInterestRates, getChangeHistory } from '@/services/dashboardService';
-import { createTypeSaving } from '@/services/typeSavingService';
+import { createTypeSaving, deleteTypeSaving } from '@/services/typeSavingService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
+import { Checkbox } from '../../components/ui/checkbox';
 import {
   Table,
   TableBody,
@@ -33,6 +34,8 @@ export default function RegulationSettings() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showCreateTypeSaving, setShowCreateTypeSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedTypeSavings, setSelectedTypeSavings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
@@ -238,15 +241,45 @@ export default function RegulationSettings() {
 
             {/* Interest Rates */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <h4 className="font-semibold text-gray-900">Interest Rates by Account Type</h4>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <h4 className="font-semibold text-gray-900">Interest Rates by Account Type</h4>
+                </div>
+                {selectedTypeSavings.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">
+                      {selectedTypeSavings.length} selected
+                    </span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setSelectedTypeSavings([])}
+                      className="text-sm text-gray-500 hover:text-gray-700"
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                )}
               </div>
               
               <div className="overflow-hidden border rounded-2xl">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
+                      <TableHead className="w-12 font-semibold">
+                        <Checkbox
+                          checked={selectedTypeSavings.length === interestRates.length && interestRates.length > 0}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedTypeSavings(interestRates.map(item => item.typeSavingId));
+                            } else {
+                              setSelectedTypeSavings([]);
+                            }
+                          }}
+                        />
+                      </TableHead>
                       <TableHead className="font-semibold">Savings Account Type</TableHead>
                       <TableHead className="font-semibold">Interest Rate (% per month)</TableHead>
                     </TableRow>
@@ -254,6 +287,18 @@ export default function RegulationSettings() {
                   <TableBody>
                     {interestRates.map((item, index) => (
                       <TableRow key={index} className="hover:bg-[#F8F9FC] transition-colors">
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedTypeSavings.includes(item.typeSavingId)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedTypeSavings([...selectedTypeSavings, item.typeSavingId]);
+                              } else {
+                                setSelectedTypeSavings(selectedTypeSavings.filter(id => id !== item.typeSavingId));
+                              }
+                            }}
+                          />
+                        </TableCell>
                         <TableCell className="font-medium">{item.typeName}</TableCell>
                         <TableCell>
                           <Input
@@ -282,12 +327,20 @@ export default function RegulationSettings() {
                 Create Regulations
               </Button>
               <Button 
-                type="submit"
+                type="button"
+                onClick={() => {
+                  if (selectedTypeSavings.length === 0) {
+                    setError('Please select at least one savings type to delete');
+                    setTimeout(() => setError(null), 3000);
+                    return;
+                  }
+                  setShowDeleteConfirm(true);
+                }}
                 className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
                 style={{ background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)' }}
-                disabled={loading}
+                disabled={loading || selectedTypeSavings.length === 0}
               >
-                Delete Regulations
+                Delete Regulations ({selectedTypeSavings.length})
               </Button>
               <Button 
                 type="submit"
@@ -498,6 +551,100 @@ export default function RegulationSettings() {
           >
             Close
           </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent className="rounded-3xl">
+          <DialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div 
+                className="flex items-center justify-center w-12 h-12 rounded-2xl"
+                style={{ background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)' }}
+              >
+                <AlertTriangle size={24} className="text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl">Delete Savings Types</DialogTitle>
+                <DialogDescription className="text-base">
+                  Are you sure you want to delete the selected savings types? This action cannot be undone.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="p-4 border-2 border-red-200 rounded-2xl bg-red-50">
+              <p className="flex items-center gap-2 mb-3 text-sm font-semibold text-red-900">
+                <AlertTriangle size={16} />
+                You are about to delete {selectedTypeSavings.length} savings type(s):
+              </p>
+              <ul className="space-y-2 text-sm text-red-800">
+                {selectedTypeSavings.map(id => {
+                  const item = interestRates.find(rate => rate.typeSavingId === id);
+                  return item ? (
+                    <li key={id} className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      <span className="font-medium">{item.typeName}</span>
+                      <span className="text-xs text-red-600">({item.rate}% per month)</span>
+                    </li>
+                  ) : null;
+                })}
+              </ul>
+            </div>
+            <div className="p-4 border-2 border-yellow-200 rounded-2xl bg-yellow-50">
+              <p className="flex items-center gap-2 text-sm text-yellow-900">
+                <AlertTriangle size={16} />
+                Warning: Deleting savings types may affect existing accounts using these types.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <Button 
+              onClick={async () => {
+                try {
+                  setShowDeleteConfirm(false);
+                  setLoading(true);
+                  setError(null);
+                  
+                  // Delete each selected type saving
+                  const deletePromises = selectedTypeSavings.map(id => deleteTypeSaving(id));
+                  await Promise.all(deletePromises);
+                  
+                  setSuccessMessage(`Successfully deleted ${selectedTypeSavings.length} savings type(s)!`);
+                  setSelectedTypeSavings([]);
+                  setShowSuccess(true);
+                  
+                  // Refresh interest rates list
+                  try {
+                    const ratesResponse = await getInterestRates();
+                    if (ratesResponse.success && ratesResponse.data) {
+                      setInterestRates(ratesResponse.data);
+                    }
+                  } catch (err) {
+                    console.error('Failed to refresh interest rates:', err);
+                  }
+                } catch (err) {
+                  setError(err.message || 'Failed to delete savings types');
+                  console.error('Error deleting type savings:', err);
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              className="flex-1 h-12 font-medium text-white shadow-lg rounded-xl"
+              style={{ background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)' }}
+              disabled={loading}
+            >
+              {loading ? 'Deleting...' : 'Confirm Delete'}
+            </Button>
+            <Button 
+              onClick={() => setShowDeleteConfirm(false)}
+              variant="outline"
+              className="flex-1 h-12 border-gray-200 rounded-xl"
+            >
+              Cancel
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
