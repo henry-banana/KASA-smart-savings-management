@@ -25,10 +25,19 @@ export const mockReportAdapter = {
         .filter(t => t.type === 'withdraw')
         .reduce((sum, t) => sum + t.amount, 0),
       depositCount: dailyTransactions.filter(t => t.type === 'deposit').length,
-      withdrawalCount: dailyTransactions.filter(t => t.type === 'withdraw').length
+      withdrawalCount: dailyTransactions.filter(t => t.type === 'withdraw').length,
+      netCashFlow: 0,
+      newSavingBooks: 0,
+      closedSavingBooks: 0,
+      transactionCount: dailyTransactions.length
     };
     
-    return buildDailyReportResponse(reportDate, dailyTransactions, summary);
+    return buildDailyReportResponse({
+      date: reportDate,
+      summary,
+      transactions: dailyTransactions,
+      newSavingBooks: []
+    });
   },
 
   async getMonthlyReport(month, year) {
@@ -44,17 +53,31 @@ export const mockReportAdapter = {
     );
     
     // Calculate summary
+    const totalDeposits = monthlyTransactions
+      .filter(t => t.type === 'deposit')
+      .reduce((sum, t) => sum + t.amount, 0);
+    const totalWithdrawals = monthlyTransactions
+      .filter(t => t.type === 'withdraw')
+      .reduce((sum, t) => sum + t.amount, 0);
+    
     const summary = {
-      totalDeposits: monthlyTransactions
-        .filter(t => t.type === 'deposit')
-        .reduce((sum, t) => sum + t.amount, 0),
-      totalWithdrawals: monthlyTransactions
-        .filter(t => t.type === 'withdraw')
-        .reduce((sum, t) => sum + t.amount, 0),
-      totalInterest: 0, // TODO: Calculate from mockSavingBooks
-      activeSavingBooks: mockSavingBooks.filter(sb => sb.status === 'active').length
+      totalDeposits,
+      totalWithdrawals,
+      netCashFlow: totalDeposits - totalWithdrawals,
+      newSavingBooks: 0,
+      closedSavingBooks: 0,
+      transactionCount: monthlyTransactions.length,
+      averageTransactionValue: monthlyTransactions.length > 0 
+        ? (totalDeposits + totalWithdrawals) / monthlyTransactions.length 
+        : 0
     };
     
-    return buildMonthlyReportResponse(reportMonth, reportYear, monthlyTransactions, summary);
+    return buildMonthlyReportResponse({
+      month: reportMonth,
+      year: reportYear,
+      summary,
+      byTypeSaving: [],
+      dailyBreakdown: []
+    });
   }
 };
