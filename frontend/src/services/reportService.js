@@ -19,9 +19,7 @@ export const getDailyReport = async (date) => {
  * @param {number} year - Năm
  * @returns {Promise<Object>} Monthly report data
  */
-export const getMonthlyReport = async (month, year) => {
-  return reportAdapter.getMonthlyReport(month, year);
-};
+// NOTE: `getMonthlyReport` removed — use `getMonthlyOpenCloseReport` or other specific report methods
 
 /**
  * Lấy báo cáo mở/đóng sổ tiết kiệm theo tháng (BM5.2)

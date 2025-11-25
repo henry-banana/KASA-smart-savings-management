@@ -7,12 +7,6 @@ export const reportApi = {
     return response.data;
   },
 
-  async getMonthlyReport(month, year) {
-    const reportMonth = month || new Date().getMonth() + 1;
-    const reportYear = year || new Date().getFullYear();
-    const response = await apiClient.get(`/api/report/monthly?month=${reportMonth}&year=${reportYear}`);
-    return response.data;
-  },
 
   /**
    * BM5.2 - Get monthly opening/closing savings books report
