@@ -116,7 +116,7 @@ export default function MonthlyReport() {
     <div className="space-y-4 sm:space-y-6">
       {/* Report Header */}
       <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
-        <CardHeader className="pb-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-cyan-50">
+        <CardHeader className="pb-6 border-b border-gray-100 bg-linear-to-r from-blue-50 to-cyan-50">
           <div className="flex items-center gap-3 mb-2">
             <div 
               className="flex items-center justify-center w-12 h-12 shadow-lg sm:w-14 sm:h-14 rounded-2xl"
@@ -181,7 +181,7 @@ export default function MonthlyReport() {
         <>
           {/* Report Data Card */}
           <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
-            <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50">
+            <CardHeader className="bg-linear-to-r from-cyan-50 to-blue-50">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Transaction Summary</CardTitle>
@@ -214,7 +214,7 @@ export default function MonthlyReport() {
           <div className="relative flex items-start justify-between">
             <div className="flex-1">
               <p className="mb-2 text-sm text-gray-600">New Accounts Opened</p>
-              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text">
+              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text">
                 {totals.opened}
               </h3>
               <p className="text-xs text-gray-500">New accounts this month</p>
@@ -240,7 +240,7 @@ export default function MonthlyReport() {
           <div className="relative flex items-start justify-between">
             <div className="flex-1">
               <p className="mb-2 text-sm text-gray-600">Accounts Closed</p>
-              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text">
+              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-red-600 to-rose-600 bg-clip-text">
                 {totals.closed}
               </h3>
               <p className="text-xs text-gray-500">Accounts closed this month</p>
@@ -266,7 +266,7 @@ export default function MonthlyReport() {
           <div className="relative flex items-start justify-between">
             <div className="flex-1">
               <p className="mb-2 text-sm text-gray-600">Net Growth</p>
-              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text">
+              <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text">
                 +{totals.difference}
               </h3>
               <p className="text-xs text-gray-500">Account growth</p>
@@ -285,7 +285,7 @@ export default function MonthlyReport() {
 
           {/* Data Table */}
           <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-        <CardHeader className="border-b-2 bg-gradient-to-r from-cyan-50 to-blue-50 border-cyan-100">
+        <CardHeader className="border-b-2 bg-linear-to-r from-cyan-50 to-blue-50 border-cyan-100">
           <CardTitle className="text-xl text-gray-800">
             Detailed Report - {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
           </CardTitle>
@@ -294,7 +294,7 @@ export default function MonthlyReport() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gradient-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100">
+                <TableRow className="bg-linear-to-r from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100">
                   <TableHead className="font-semibold text-gray-700">Savings Type</TableHead>
                   <TableHead className="font-semibold text-right text-gray-700">Accounts Opened</TableHead>
                   <TableHead className="font-semibold text-right text-gray-700">Accounts Closed</TableHead>
@@ -316,7 +316,7 @@ export default function MonthlyReport() {
                     </TableCell>
                   </TableRow>
                 ))}
-                <TableRow className="font-bold bg-gradient-to-r from-cyan-100 to-blue-100">
+                <TableRow className="font-bold bg-linear-to-r from-cyan-100 to-blue-100">
                   <TableCell className="font-bold text-gray-800">Total</TableCell>
                   <TableCell className="font-bold text-right text-green-700">
                     {totals.opened}
@@ -338,7 +338,7 @@ export default function MonthlyReport() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Line Chart */}
         <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-          <CardHeader className="border-b-2 border-green-100 bg-gradient-to-r from-green-50 to-emerald-50">
+          <CardHeader className="border-b-2 border-green-100 bg-linear-to-r from-green-50 to-emerald-50">
             <CardTitle className="text-xl text-gray-800">Weekly Trends</CardTitle>
             <CardDescription className="text-gray-600">
               New accounts opened by week
@@ -364,7 +364,7 @@ export default function MonthlyReport() {
 
         {/* Pie Chart */}
         <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-          <CardHeader className="border-b-2 border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
+          <CardHeader className="border-b-2 border-purple-100 bg-linear-to-r from-purple-50 to-pink-50">
             <CardTitle className="text-xl text-gray-800">Account Type Distribution</CardTitle>
             <CardDescription className="text-gray-600">
               Percentage of new accounts by type
@@ -398,7 +398,7 @@ export default function MonthlyReport() {
 
       {/* Additional Statistics */}
       <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-        <CardHeader className="border-b-2 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-100">
+        <CardHeader className="border-b-2 bg-linear-to-r from-amber-50 to-orange-50 border-amber-100">
           <CardTitle className="flex items-center gap-2 text-xl text-gray-800">
             <Award size={20} className="text-amber-600" />
             Performance Metrics
@@ -406,25 +406,25 @@ export default function MonthlyReport() {
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div className="p-4 space-y-2 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50">
+            <div className="p-4 space-y-2 rounded-xl bg-linear-to-br from-blue-50 to-cyan-50">
               <p className="text-sm font-medium text-gray-600">Growth Rate</p>
-              <p className="text-3xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text">
+              <p className="text-3xl font-bold text-transparent bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text">
                 {((totals.difference / (totals.opened - totals.difference || 1)) * 100).toFixed(1)}%
               </p>
               <p className="text-xs text-gray-500">Growth compared to last month</p>
             </div>
 
-            <div className="p-4 space-y-2 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50">
+            <div className="p-4 space-y-2 rounded-xl bg-linear-to-br from-green-50 to-emerald-50">
               <p className="text-sm font-medium text-gray-600">Retention Rate</p>
-              <p className="text-3xl font-bold text-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text">
+              <p className="text-3xl font-bold text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text">
                 {(((totals.opened - totals.closed) / totals.opened * 100) || 0).toFixed(1)}%
               </p>
               <p className="text-xs text-gray-500">Accounts retained</p>
             </div>
 
-            <div className="p-4 space-y-2 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50">
+            <div className="p-4 space-y-2 rounded-xl bg-linear-to-br from-purple-50 to-pink-50">
               <p className="text-sm font-medium text-gray-600">Avg New Accounts/Day</p>
-              <p className="text-3xl font-bold text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text">
+              <p className="text-3xl font-bold text-transparent bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text">
                 {(totals.opened / 30).toFixed(1)}
               </p>
               <p className="text-xs text-gray-500">Average per day</p>

@@ -105,7 +105,7 @@ export default function DailyReport() {
     <div className="space-y-4 sm:space-y-6">
       {/* Report Header */}
       <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
-        <CardHeader className="pb-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
+        <CardHeader className="pb-6 border-b border-gray-100 bg-linear-to-r from-purple-50 to-pink-50">
           <div className="flex items-center gap-3 mb-2">
             <div 
               className="flex items-center justify-center w-12 h-12 shadow-lg sm:w-14 sm:h-14 rounded-2xl"
@@ -186,7 +186,7 @@ export default function DailyReport() {
               <div className="relative flex items-start justify-between">
                 <div className="flex-1">
                   <p className="mb-2 text-sm text-gray-600">Total Deposits</p>
-                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text">
+                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text">
                     ₫{totals.deposits.toLocaleString()}
                   </h3>
                   <div className="flex items-center gap-1">
@@ -215,7 +215,7 @@ export default function DailyReport() {
               <div className="relative flex items-start justify-between">
                 <div className="flex-1">
                   <p className="mb-2 text-sm text-gray-600">Total Withdrawals</p>
-                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-red-600 to-rose-600 bg-clip-text">
+                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-red-600 to-rose-600 bg-clip-text">
                     ₫{totals.withdrawals.toLocaleString()}
                   </h3>
                   <div className="flex items-center gap-1">
@@ -244,7 +244,7 @@ export default function DailyReport() {
               <div className="relative flex items-start justify-between">
                 <div className="flex-1">
                   <p className="mb-2 text-sm text-gray-600">Net Difference</p>
-                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text">
+                  <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text">
                     ₫{totals.difference.toLocaleString()}
                   </h3>
                   <div className="flex items-center gap-1">
@@ -264,7 +264,7 @@ export default function DailyReport() {
 
           {/* Data Table */}
           <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-        <CardHeader className="border-b-2 border-purple-100 bg-gradient-to-r from-blue-50 to-purple-50">
+        <CardHeader className="border-b-2 border-purple-100 bg-linear-to-r from-blue-50 to-purple-50">
           <CardTitle className="text-xl text-gray-800">
             Detailed Report - {format(selectedDate, 'dd/MM/yyyy')}
           </CardTitle>
@@ -273,7 +273,7 @@ export default function DailyReport() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100">
+                <TableRow className="bg-linear-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100">
                   <TableHead className="font-semibold text-gray-700">Savings Type</TableHead>
                   <TableHead className="font-semibold text-right text-gray-700">Total Deposits</TableHead>
                   <TableHead className="font-semibold text-right text-gray-700">Total Withdrawals</TableHead>
@@ -295,7 +295,7 @@ export default function DailyReport() {
                     </TableCell>
                   </TableRow>
                 ))}
-                <TableRow className="font-bold bg-gradient-to-r from-purple-100 to-pink-100">
+                <TableRow className="font-bold bg-linear-to-r from-purple-100 to-pink-100">
                   <TableCell className="font-bold text-gray-800">Total</TableCell>
                   <TableCell className="font-bold text-right text-green-700">
                     ₫{totals.deposits.toLocaleString()}
@@ -315,7 +315,7 @@ export default function DailyReport() {
 
       {/* Chart Visualization */}
       <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-        <CardHeader className="border-b-2 border-blue-100 bg-gradient-to-r from-cyan-50 to-blue-50">
+        <CardHeader className="border-b-2 border-blue-100 bg-linear-to-r from-cyan-50 to-blue-50">
           <CardTitle className="text-xl text-gray-800">Visual Comparison</CardTitle>
           <CardDescription className="text-gray-600">
             Deposit/Withdrawal Chart by Account Type (million VND)
@@ -354,12 +354,12 @@ export default function DailyReport() {
 
       {/* Transaction Statistics */}
       <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
-        <CardHeader className="border-b-2 border-green-100 bg-gradient-to-r from-green-50 to-emerald-50">
+        <CardHeader className="border-b-2 border-green-100 bg-linear-to-r from-green-50 to-emerald-50">
           <CardTitle className="text-xl text-gray-800">Transaction Statistics</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="p-4 space-y-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50">
+            <div className="p-4 space-y-4 rounded-xl bg-linear-to-br from-green-50 to-emerald-50">
               <h4 className="flex items-center gap-2 text-sm font-semibold text-green-700">
                 <TrendingUp size={16} />
                 Deposit Transactions
@@ -384,7 +384,7 @@ export default function DailyReport() {
               </div>
             </div>
 
-            <div className="p-4 space-y-4 rounded-xl bg-gradient-to-br from-red-50 to-rose-50">
+            <div className="p-4 space-y-4 rounded-xl bg-linear-to-br from-red-50 to-rose-50">
               <h4 className="flex items-center gap-2 text-sm font-semibold text-red-700">
                 <TrendingDown size={16} />
                 Withdrawal Transactions

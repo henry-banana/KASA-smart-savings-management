@@ -153,14 +153,14 @@ export default function Withdraw() {
     <div className="max-w-4xl mx-auto">
       <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
         {/* Cute Header */}
-        <CardHeader className="bg-gradient-to-r from-[#FFF7D6] to-[#FFE8F0] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
+        <CardHeader className="bg-linear-to-r from-[#FFF7D6] to-[#FFE8F0] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
           <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
           <StarDecor className="top-4 right-8 sm:right-12" />
           <Sparkles className="absolute opacity-50 top-6 right-20 sm:right-32 text-amber-400" size={20} />
           
           <div className="relative z-10 flex items-start gap-3 sm:gap-4">
             <div 
-              className="flex items-center justify-center flex-shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+              className="flex items-center justify-center shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}
             >
               <ArrowUpCircle size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
@@ -168,7 +168,7 @@ export default function Withdraw() {
             <div className="flex-1 min-w-0">
               <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
                 <span className="truncate">Make Withdrawal (BM3)</span>
-                <span className="flex-shrink-0 text-xl sm:text-2xl">💵</span>
+                <span className="shrink-0 text-xl sm:text-2xl">💵</span>
               </CardTitle>
               <CardDescription className="text-sm sm:text-base">
                 Withdraw money from a savings account
@@ -212,7 +212,7 @@ export default function Withdraw() {
 
             {error && !accountInfo && (
               <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-2xl">
-                <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
+                <AlertCircle size={20} className="text-red-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-medium text-red-700">Error</p>
                   <p className="text-sm text-red-600">{error}</p>
