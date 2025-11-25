@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { getRegulations, updateRegulations } from '@/services/regulationService';
 import { getInterestRates, getChangeHistory, updateInterestRates } from '@/services/dashboardService';
-import { createTypeSaving, deleteTypeSaving, resetTypeSavingDefaults } from '@/services/typeSavingService';
+import { createTypeSaving, deleteTypeSaving, resetTypeSavingDefaults, getAllTypeSavings } from '@/services/typeSavingService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -59,14 +59,43 @@ export default function RegulationSettings() {
           setMinWithdrawalDays(String(response.data.minimumTermDays));
         }
         
-        // Fetch interest rates
+        // Fetch interest rates - now using getInterestRates instead of getAllTypeSavings
         try {
           const ratesResponse = await getInterestRates();
           if (ratesResponse.success && ratesResponse.data) {
             setInterestRates(ratesResponse.data);
+          } else {
+            // Fallback: if getInterestRates fails, try getAllTypeSavings
+            const typesResponse = await getAllTypeSavings();
+            if (typesResponse.success && typesResponse.data) {
+              const formattedRates = typesResponse.data.map(ts => ({
+                typeSavingId: ts.typeSavingId,
+                typeName: ts.typeName,
+                rate: ts.interestRate,
+                term: ts.term,
+                editable: true
+              }));
+              setInterestRates(formattedRates);
+            }
           }
         } catch (err) {
           console.error('Failed to fetch interest rates:', err);
+          // Try fallback to getAllTypeSavings
+          try {
+            const typesResponse = await getAllTypeSavings();
+            if (typesResponse.success && typesResponse.data) {
+              const formattedRates = typesResponse.data.map(ts => ({
+                typeSavingId: ts.typeSavingId,
+                typeName: ts.typeName,
+                rate: ts.interestRate,
+                term: ts.term,
+                editable: true
+              }));
+              setInterestRates(formattedRates);
+            }
+          } catch (fallbackErr) {
+            console.error('Failed to fetch type savings as fallback:', fallbackErr);
+          }
         }
         
         // Fetch change history
@@ -89,11 +118,7 @@ export default function RegulationSettings() {
     fetchRegulations();
   }, []);
 
-  const [interestRates, setInterestRates] = useState([
-    { typeSavingId: 'TS01', typeName: 'No Term', rate: '0.2', editable: true },
-    { typeSavingId: 'TS02', typeName: '3 Months', rate: '0.5', editable: true },
-    { typeSavingId: 'TS03', typeName: '6 Months', rate: '0.55', editable: true }
-  ]);
+  const [interestRates, setInterestRates] = useState([]);
 
   const [changeHistory, setChangeHistory] = useState([]);
 

@@ -14,6 +14,7 @@ import {
 } from '../../components/ui/select';
 import { FileDown, Printer, Search, Loader2 } from 'lucide-react';
 import { getMonthlyOpenCloseReport } from '../../services/reportService';
+import { getAllTypeSavings } from '../../services/typeSavingService';
 
 export default function MonthlyReport() {
   const { user } = useAuthContext();
@@ -57,17 +58,35 @@ export default function MonthlyReport() {
       )
     : null;
 
+  const [savingsTypes, setSavingsTypes] = React.useState([
+    { value: 'all', label: 'All Types' }
+  ]);
+
+  // Fetch savings types on mount
+  React.useEffect(() => {
+    const fetchSavingsTypes = async () => {
+      try {
+        const response = await getAllTypeSavings();
+        if (response.success && response.data) {
+          const types = [
+            { value: 'all', label: 'All Types' },
+            ...response.data.map(ts => ({
+              value: `${ts.term}-months`,
+              label: ts.typeName
+            }))
+          ];
+          setSavingsTypes(types);
+        }
+      } catch (err) {
+        console.error('Failed to fetch savings types:', err);
+      }
+    };
+    fetchSavingsTypes();
+  }, []);
+
   const handleExport = () => {
     window.print();
   };
-
-  const savingsTypes = [
-    { value: 'all', label: 'All Types' },
-    { value: 'no-term', label: 'No Term' },
-    { value: '3-months', label: '3 Months' },
-    { value: '6-months', label: '6 Months' },
-    { value: '12-months', label: '12 Months' },
-  ];
 
   return (
     <RoleGuard allow={['accountant']}>
