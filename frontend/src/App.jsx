@@ -147,6 +147,7 @@ function ResetPasswordRoute() {
     <ResetPassword
       onSuccess={() => navigate('/login')}
       onBack={() => navigate('/forgot-password/otp', { state: { email } })}
+      onBackToLogin={() => navigate('/login')}
     />
   );
 }

@@ -5,7 +5,7 @@ import { Label } from '../../../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Lock, Eye, EyeOff, CheckCircle2, XCircle, Sparkles, Star, Heart } from 'lucide-react';
 
-export default function ResetPassword({ onSuccess, onBack }) {
+export default function ResetPassword({ onSuccess, onBack, onBackToLogin }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -247,7 +247,7 @@ export default function ResetPassword({ onSuccess, onBack }) {
 
           {/* Back to Login - for users who remember password */}
           <button
-            onClick={onBack}
+            onClick={onBackToLogin || onBack}
             className="text-sm text-gray-600 hover:text-indigo-600 w-full text-center transition-colors underline"
           >
             I remember my password - Back to Login
