@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { getProfile, updateProfile, changePassword } from '@/services/profileService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -21,12 +22,46 @@ export default function UserProfile() {
   const [showEditContact, setShowEditContact] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Profile data from API
+  const [profileData, setProfileData] = useState(null);
 
   const [contactInfo, setContactInfo] = useState({
     email: `${user.username}@kasa.com`,
     phone: '+84 123 456 789',
-    address: '123 Main Street, District 1, Ho Chi Minh City'
+    address: '123 Main Street, District 1, Ho Chi Minh City',
+    dateOfBirth: '2004-01-01',
+    avatarUrl: ''
   });
+
+  // Fetch profile on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setLoading(true);
+        const response = await getProfile();
+        if (response.success && response.data) {
+          setProfileData(response.data);
+          setContactInfo({
+            email: response.data.email || '',
+            phone: response.data.phone || '',
+            address: response.data.address || '',
+            dateOfBirth: response.data.dateOfBirth || '2004-01-01',
+            avatarUrl: response.data.avatarUrl || ''
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile:', err);
+        setError('Failed to load profile');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -34,7 +69,7 @@ export default function UserProfile() {
     confirmPassword: ''
   });
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
       alert('Please fill in all password fields');
       return;
@@ -50,21 +85,66 @@ export default function UserProfile() {
       return;
     }
 
-    setShowChangePassword(false);
-    setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    setSuccessMessage('Password changed successfully');
-    setShowSuccess(true);
+    try {
+      setLoading(true);
+      const response = await changePassword({
+        oldPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword
+      });
+      
+      if (response.success) {
+        setShowChangePassword(false);
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setSuccessMessage('Password changed successfully');
+        setShowSuccess(true);
+      } else {
+        alert(response.message || 'Failed to change password');
+      }
+    } catch (err) {
+      console.error('Failed to change password:', err);
+      alert('Failed to change password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUpdateContact = () => {
+  const handleUpdateContact = async () => {
     if (!contactInfo.email || !contactInfo.phone) {
       alert('Email and phone are required');
       return;
     }
 
-    setShowEditContact(false);
-    setSuccessMessage('Contact information updated successfully');
-    setShowSuccess(true);
+    try {
+      setLoading(true);
+      const response = await updateProfile({
+        fullName: profileData?.fullName,
+        phone: contactInfo.phone,
+        address: contactInfo.address,
+        dateOfBirth: contactInfo.dateOfBirth,
+        avatarUrl: contactInfo.avatarUrl
+      });
+      
+      if (response.success && response.data) {
+        setProfileData(response.data);
+        setContactInfo({
+          email: response.data.email,
+          phone: response.data.phone,
+          address: response.data.address,
+          dateOfBirth: response.data.dateOfBirth,
+          avatarUrl: response.data.avatarUrl
+        });
+        setShowEditContact(false);
+        setSuccessMessage('Contact information updated successfully');
+        setShowSuccess(true);
+      } else {
+        alert(response.message || 'Failed to update profile');
+      }
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+      alert('Failed to update profile. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getRoleBadgeColor = (role) => {
@@ -80,8 +160,27 @@ export default function UserProfile() {
     }
   };
 
+  // Show loading state
+  if (loading && !profileData) {
+    return (
+      <div className="max-w-4xl mx-auto flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-4 border-4 border-purple-200 rounded-full border-t-purple-600 animate-spin"></div>
+          <p className="text-gray-600">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+      {/* Error Message */}
+      {error && (
+        <div className="p-4 mb-4 border-2 border-red-200 rounded-2xl bg-red-50">
+          <p className="text-sm text-red-900">{error}</p>
+        </div>
+      )}
+
       {/* Profile Header */}
       <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
         <CardContent className="p-4 sm:p-6 lg:p-8 bg-linear-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
@@ -90,13 +189,17 @@ export default function UserProfile() {
           
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 relative z-10">
             <div 
-              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-xl border-4 border-white shrink-0"
+              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-xl border-4 border-white shrink-0 overflow-hidden"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
+              {profileData?.avatarUrl ? (
+                <img src={profileData.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
+              )}
             </div>
             <div className="flex-1 text-center sm:text-left min-w-0">
-              <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-gray-900 truncate">{user.fullName}</h2>
+              <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-gray-900 truncate">{profileData?.fullName || user.fullName}</h2>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
                 <Badge className={`${getRoleBadgeColor(user.role)} border font-medium`}>
                   {user.role === 'admin' ? '🔑 Administrator' : 
@@ -316,10 +419,11 @@ export default function UserProfile() {
           <div className="flex gap-4">
             <Button 
               onClick={handleChangePassword}
+              disabled={loading}
               className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Change Password
+              {loading ? 'Changing...' : 'Change Password'}
             </Button>
             <Button 
               onClick={() => {
@@ -328,6 +432,7 @@ export default function UserProfile() {
               }}
               variant="outline"
               className="flex-1 h-12 rounded-xl border-gray-200"
+              disabled={loading}
             >
               Cancel
             </Button>
@@ -384,19 +489,44 @@ export default function UserProfile() {
                 className="h-11 rounded-xl border-gray-200"
               />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="dateOfBirth" className="text-gray-700">Date of Birth</Label>
+              <Input
+                id="dateOfBirth"
+                type="date"
+                value={contactInfo.dateOfBirth}
+                onChange={(e) => setContactInfo({ ...contactInfo, dateOfBirth: e.target.value })}
+                className="h-11 rounded-xl border-gray-200"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="avatarUrl" className="text-gray-700">Avatar URL</Label>
+              <Input
+                id="avatarUrl"
+                type="url"
+                value={contactInfo.avatarUrl}
+                onChange={(e) => setContactInfo({ ...contactInfo, avatarUrl: e.target.value })}
+                className="h-11 rounded-xl border-gray-200"
+                placeholder="https://example.com/avatar.png"
+              />
+            </div>
           </div>
           <div className="flex gap-4">
             <Button 
               onClick={handleUpdateContact}
+              disabled={loading}
               className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
               style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
             >
-              Update Information
+              {loading ? 'Updating...' : 'Update Information'}
             </Button>
             <Button 
               onClick={() => setShowEditContact(false)}
               variant="outline"
               className="flex-1 h-12 rounded-xl border-gray-200"
+              disabled={loading}
             >
               Cancel
             </Button>

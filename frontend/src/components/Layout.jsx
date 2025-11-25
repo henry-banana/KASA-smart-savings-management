@@ -62,7 +62,8 @@ export default function Layout() {
     { path: '/profile', label: 'Profile', icon: UserCircle, roles: ['teller', 'accountant', 'admin'] },
   ];
 
-  const visibleMenuItems = menuItems.filter(item => item.roles.includes(user?.role));
+  // Support both 'role' and 'roleName' for consistency
+  const visibleMenuItems = menuItems.filter(item => item.roles.includes(user?.role || user?.roleName));
 
   const handleLogout = () => {
     logout();
@@ -90,7 +91,8 @@ export default function Layout() {
     admin: { bg: '#FFE8F0', text: '#BE185D', border: '#FBCFE8' }
   };
 
-  const currentRole = roleColors[user?.role] || roleColors.teller;
+  // Support both 'role' and 'roleName' for consistency
+  const currentRole = roleColors[user?.role || user?.roleName] || roleColors.teller;
 
   return (
     <div className="min-h-screen bg-[#F5F6FA] cute-bg-pattern relative">
@@ -298,7 +300,7 @@ export default function Layout() {
                       border: `1px solid ${currentRole.border}`
                     }}
                   >
-                    {user?.role?.toUpperCase() || 'USER'}
+                    {(user?.role || user?.roleName)?.toUpperCase() || 'USER'}
                   </span>
                 </div>
               </div>

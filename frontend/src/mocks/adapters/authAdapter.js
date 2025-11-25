@@ -1,4 +1,5 @@
 import { findUserByCredentials } from '../data/users';
+import { setCurrentUser } from '../data/profile';
 import { randomDelay } from '../utils';
 import { logger } from '@/utils/logger';
 
@@ -17,6 +18,10 @@ export const mockAuthAdapter = {
     if (user.status !== 'active') {
       throw new Error('Tài khoản đã bị vô hiệu hoá');
     }
+
+    // Ensure profile is synced with mockUserAccounts
+    // Sync the profile data when user logs in
+    setCurrentUser(user);
 
     return {
       userId: user.userid,

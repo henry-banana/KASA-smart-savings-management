@@ -44,8 +44,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
-  const hasRole = (role) => user?.role === role;
-  const hasAnyRole = (roles) => roles.includes(user?.role);
+  // Support both 'role' and 'roleName' for backward compatibility
+  const hasRole = (role) => (user?.role === role) || (user?.roleName === role);
+  const hasAnyRole = (roles) => roles.includes(user?.role) || roles.includes(user?.roleName);
 
   const value = {
     user,
