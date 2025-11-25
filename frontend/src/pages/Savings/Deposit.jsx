@@ -26,6 +26,8 @@ export default function Deposit() {
   const [newBalance, setNewBalance] = useState(0);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Snapshot data for success modal (persist after reset)
+  const [receiptData, setReceiptData] = useState(null);
 
   const handleAccountLookup = async () => {
     setError('');
@@ -75,16 +77,23 @@ export default function Deposit() {
     
     try {
       const response = await depositMoney(accountId, amount);
-      setNewBalance(response.data.balanceAfter);
-      setShowSuccess(true);
-      
-      // Reset form
-      setTimeout(() => {
-        setAccountId('');
-        setDepositAmount('');
-        setAccountInfo(null);
-        setError('');
-      }, 500);
+        const balanceAfter = response.data.balanceAfter;
+        setNewBalance(balanceAfter);
+        setReceiptData({
+          accountId,
+          customerName: accountInfo.customerName,
+          depositAmount: amount,
+          newBalance: balanceAfter
+        });
+        setShowSuccess(true);
+
+        // Reset form (keep receipt snapshot)
+        setTimeout(() => {
+          setAccountId('');
+          setDepositAmount('');
+          setAccountInfo(null);
+          setError('');
+        }, 500);
     } catch (err) {
       console.error('Deposit error:', err);
       setError(err.message);
@@ -319,25 +328,25 @@ export default function Deposit() {
             >
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Account ID:</span>
-                <span className="font-semibold text-[#1A4D8F]">{accountInfo?.id}</span>
+                <span className="font-semibold text-[#1A4D8F]">{receiptData?.accountId}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Customer:</span>
-                <span className="font-medium">{accountInfo?.customerName}</span>
+                <span className="font-medium">{receiptData?.customerName}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Deposit Amount:</span>
-                <span className="font-semibold text-green-600">+₫{Number(depositAmount).toLocaleString()}</span>
+                <span className="font-semibold text-green-600">+₫{Number(receiptData?.depositAmount || 0).toLocaleString()}</span>
               </div>
               <div className="flex justify-between pt-3 border-t border-gray-200">
                 <span className="text-sm text-gray-600">New Balance:</span>
-                <span className="text-lg font-bold text-green-600">₫{(newBalance ?? 0).toLocaleString()}</span>
+                <span className="text-lg font-bold text-green-600">₫{Number(receiptData?.newBalance || 0).toLocaleString()}</span>
               </div>
             </div>
           </div>
           
           <Button 
-            onClick={() => setShowSuccess(false)}
+            onClick={() => { setShowSuccess(false); setReceiptData(null); }}
             className="w-full h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             style={{ background: 'linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)' }}
           >
