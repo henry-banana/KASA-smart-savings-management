@@ -66,9 +66,9 @@ export default function DailyReport() {
 
   const chartData = typeBreakdown.map(item => ({
     name: item.type || item.name,
-    Deposits: item.deposits || item.totalDeposits || 0,
-    Withdrawals: item.withdrawals || item.totalWithdrawals || 0,
-    Difference: item.difference || item.netCashFlow || 0
+    Deposits: (item.deposits || item.totalDeposits || 0) / 1000000,
+    Withdrawals: (item.withdrawals || item.totalWithdrawals || 0) / 1000000,
+    Difference: (item.difference || item.netCashFlow || 0) / 1000000
   }));
 
   const totals = reportData?.summary ? {
