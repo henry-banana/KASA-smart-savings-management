@@ -103,7 +103,9 @@ export const setCurrentUser = (userData) => {
     email: fullUserData.email,
     roleName: fullUserData.role || fullUserData.roleName,
     status: fullUserData.status || "active",
+    employeeid: fullUserData.employeeid || fullUserData.id,
     createdDate: fullUserData.createdDate || new Date().toISOString().split('T')[0],
+    lastlogin: fullUserData.lastlogin || new Date().toISOString(),
     // Extended profile fields (can be overridden)
     phone: fullUserData.phone || userData.phone || "0901234567",
     address: fullUserData.address || userData.address || "123 Main Street, District 1, Ho Chi Minh City",

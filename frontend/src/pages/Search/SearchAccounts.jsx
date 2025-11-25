@@ -24,6 +24,7 @@ import { Search, FileDown, Eye, Sparkles, Filter, PiggyBank } from 'lucide-react
 import { StarDecor, CuteEmptyState } from '../../components/CuteComponents';
 import { TableSkeleton } from '../../components/ui/loading-skeleton';
 import { searchSavingBooks } from '../../services/savingBookService';
+import { getAllTypeSavings } from '../../services/typeSavingService';
 import { RoleGuard } from '../../components/RoleGuard';
 
 export default function SearchAccounts() {
@@ -34,6 +35,35 @@ export default function SearchAccounts() {
   const [showDetails, setShowDetails] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [accountTypeOptions, setAccountTypeOptions] = useState([
+    { value: 'all', label: 'All' }
+  ]);
+
+  // Fetch account type options on mount
+  useEffect(() => {
+    const fetchAccountTypes = async () => {
+      try {
+        const response = await getAllTypeSavings();
+        if (response.success && response.data) {
+          const options = [
+            { value: 'all', label: 'All' },
+            ...response.data.map(ts => {
+              // Convert term to filter value format
+              const filterValue = ts.term === 0 ? 'no-term' : `${ts.term}-months`;
+              return {
+                value: filterValue,
+                label: ts.typeName
+              };
+            })
+          ];
+          setAccountTypeOptions(options);
+        }
+      } catch (err) {
+        console.error('Failed to fetch account types:', err);
+      }
+    };
+    fetchAccountTypes();
+  }, []);
 
   // Fetch accounts when filters change
   useEffect(() => {
@@ -167,10 +197,11 @@ export default function SearchAccounts() {
                     <SelectValue placeholder="All" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="no-term">No Term</SelectItem>
-                    <SelectItem value="3-months">3 Months</SelectItem>
-                    <SelectItem value="6-months">6 Months</SelectItem>
+                    {accountTypeOptions.map(option => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

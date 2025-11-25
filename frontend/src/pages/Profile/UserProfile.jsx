@@ -310,16 +310,35 @@ export default function UserProfile() {
               <p className="text-sm font-semibold text-gray-900">{user.username}</p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">User ID</p>
-              <p className="text-sm font-semibold text-gray-900">U{Math.floor(1000 + Math.random() * 9000)}</p>
+              <p className="mb-1 text-sm font-medium text-gray-600">Employee ID</p>
+              <p className="text-sm font-semibold text-gray-900">{user.employeeid || profileData?.employeeid || 'N/A'}</p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Account Created</p>
-              <p className="text-sm font-semibold text-gray-900">January 15, 2025</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {profileData?.createdDate 
+                  ? new Date(profileData.createdDate).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })
+                  : 'N/A'
+                }
+              </p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Last Login</p>
-              <p className="text-sm font-semibold text-gray-900">Today at 09:30 AM</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {profileData?.lastlogin 
+                  ? new Date(profileData.lastlogin).toLocaleString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                  : 'N/A'
+                }
+              </p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Department</p>
