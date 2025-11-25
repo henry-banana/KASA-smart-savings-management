@@ -32,24 +32,24 @@ export const userApi = {
   /**
    * Update user
    */
-  async updateUser(username, updates) {
-    const response = await apiClient.put(`/api/users/${username}`, updates);
+  async updateUser(id, updates) {
+    const response = await apiClient.put(`/api/users/${id}`, updates);
     return response.data;
   },
 
   /**
-   * Toggle user status (enable/disable)
+   * Update user status (enable/disable)
    */
-  async toggleUserStatus(username) {
-    const response = await apiClient.patch(`/api/users/${username}/toggle-status`);
+  async updateUserStatus(id, status) {
+    const response = await apiClient.patch(`/api/users/${id}/status`, { status });
     return response.data;
   },
 
   /**
    * Delete user
    */
-  async deleteUser(username) {
-    const response = await apiClient.delete(`/api/users/${username}`);
+  async deleteUser(id) {
+    const response = await apiClient.delete(`/api/users/${id}`);
     return response.data;
   }
 };

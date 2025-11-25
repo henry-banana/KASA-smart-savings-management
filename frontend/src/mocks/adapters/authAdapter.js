@@ -23,18 +23,26 @@ export const mockAuthAdapter = {
     // Sync the profile data when user logs in
     setCurrentUser(user);
 
+    // Return OpenAPI format: { message, success, data }
     return {
-      userId: user.userid,
-      username: user.userid, // username: user.username,
-      roleName: user.role,
-      fullName: user.fullName,
-      status: user.status,
-      token: `mock_token_${user.userid}_${Date.now()}`
+      message: 'Login successful',
+      success: true,
+      data: {
+        userId: user.userid,
+        username: user.userid,
+        roleName: user.role,
+        fullName: user.fullName,
+        status: user.status,
+        token: `mock_token_${user.userid}_${Date.now()}`
+      }
     };
   },
 
   async logout() {
     await randomDelay();
-    return { success: true };
+    return { 
+      message: 'Logout successful',
+      success: true 
+    };
   }
 };

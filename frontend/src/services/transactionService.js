@@ -2,8 +2,6 @@ import { USE_MOCK } from '@/config/app.config';
 import { accountApi } from '@/api/accountApi';
 import { mockTransactionAdapter } from '@/mocks/adapters/transactionAdapter';
 
-const transactionAdapter = USE_MOCK ? mockTransactionAdapter : accountApi;
-
 /**
  * Lấy thông tin tài khoản
  * @param {string} accountCode - Mã sổ tiết kiệm
@@ -14,7 +12,12 @@ export const getAccountInfo = async (accountCode) => {
     throw new Error('Vui lòng nhập mã sổ');
   }
 
-  return transactionAdapter.getAccountInfo(accountCode);
+  if (USE_MOCK) {
+    return mockTransactionAdapter.getAccountInfo(accountCode);
+  } else {
+    // Real API uses getAccount method
+    return accountApi.getAccount(accountCode);
+  }
 };
 
 /**
@@ -32,7 +35,12 @@ export const depositMoney = async (accountCode, amount) => {
     throw new Error('Số tiền gửi tối thiểu là 100,000 VND');
   }
 
-  return transactionAdapter.depositMoney(accountCode, amount);
+  if (USE_MOCK) {
+    return mockTransactionAdapter.depositMoney(accountCode, amount);
+  } else {
+    // Real API uses deposit method
+    return accountApi.deposit(accountCode, amount);
+  }
 };
 
 /**
@@ -46,5 +54,10 @@ export const withdrawMoney = async (accountCode, amount) => {
     throw new Error('Thông tin giao dịch không hợp lệ');
   }
 
-  return transactionAdapter.withdrawMoney(accountCode, amount);
+  if (USE_MOCK) {
+    return mockTransactionAdapter.withdrawMoney(accountCode, amount);
+  } else {
+    // Real API uses withdraw method
+    return accountApi.withdraw(accountCode, amount);
+  }
 };

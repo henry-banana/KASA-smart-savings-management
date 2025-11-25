@@ -107,7 +107,8 @@ export default function UserManagement() {
   const confirmDisable = async () => {
     if (selectedUser) {
       try {
-        await userService.toggleUserStatus(selectedUser.username);
+        const newStatus = selectedUser.status === 'active' ? 'disabled' : 'active';
+        await userService.updateUserStatus(selectedUser.id, newStatus);
         await fetchUsers(); // Refresh list
         setSuccessMessage(`User ${selectedUser.status === 'active' ? 'disabled' : 'enabled'} successfully`);
         setShowSuccess(true);
@@ -135,11 +136,11 @@ export default function UserManagement() {
   const submitEditUser = async () => {
     if (selectedUser) {
       try {
-        await userService.updateUser(selectedUser.username, {
+        await userService.updateUser(selectedUser.id, {
           username: formData.username,
           fullName: formData.fullName,
           email: formData.email,
-          role: formData.role
+          roleName: formData.role
         });
         await fetchUsers(); // Refresh list
         setShowEditUser(false);

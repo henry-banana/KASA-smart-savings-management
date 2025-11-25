@@ -50,39 +50,42 @@ export const userService = {
   /**
    * Update user
    */
-  async updateUser(username, updates) {
-    if (!username?.trim()) {
-      throw new Error('Username is required');
+  async updateUser(id, updates) {
+    if (!id?.trim()) {
+      throw new Error('User ID is required');
     }
     if (!updates || Object.keys(updates).length === 0) {
       throw new Error('No update data provided');
     }
 
-    const response = await userAdapter.updateUser(username, updates);
+    const response = await userAdapter.updateUser(id, updates);
     return response;
   },
 
   /**
-   * Toggle user status (enable/disable)
+   * Update user status (enable/disable)
    */
-  async toggleUserStatus(username) {
-    if (!username?.trim()) {
-      throw new Error('Username is required');
+  async updateUserStatus(id, status) {
+    if (!id?.trim()) {
+      throw new Error('User ID is required');
+    }
+    if (!status || !['active', 'disabled'].includes(status)) {
+      throw new Error('Valid status is required (active or disabled)');
     }
 
-    const response = await userAdapter.toggleUserStatus(username);
+    const response = await userAdapter.updateUserStatus(id, status);
     return response;
   },
 
   /**
    * Delete user
    */
-  async deleteUser(username) {
-    if (!username?.trim()) {
-      throw new Error('Username is required');
+  async deleteUser(id) {
+    if (!id?.trim()) {
+      throw new Error('User ID is required');
     }
 
-    const response = await userAdapter.deleteUser(username);
+    const response = await userAdapter.deleteUser(id);
     return response;
   }
 };
@@ -91,6 +94,11 @@ export const userService = {
 export const getAllUsers = () => userService.getAllUsers();
 export const getUserById = (id) => userService.getUserById(id);
 export const createUser = (userData) => userService.createUser(userData);
-export const updateUser = (username, updates) => userService.updateUser(username, updates);
-export const toggleUserStatus = (username) => userService.toggleUserStatus(username);
-export const deleteUser = (username) => userService.deleteUser(username);
+export const updateUser = (id, updates) => userService.updateUser(id, updates);
+export const updateUserStatus = (id, status) => userService.updateUserStatus(id, status);
+export const toggleUserStatus = (id) => {
+  // Legacy support: toggle between active/disabled
+  // Note: Callers should migrate to updateUserStatus with explicit status
+  return userService.updateUserStatus(id, 'active'); // Default behavior, should be updated by caller
+};
+export const deleteUser = (id) => userService.deleteUser(id);

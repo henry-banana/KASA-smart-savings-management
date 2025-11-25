@@ -93,23 +93,23 @@ export const mockUserAdapter = {
   },
 
   /**
-   * Update user
+   * Update user by ID
    */
-  async updateUser(username, updates) {
+  async updateUser(id, updates) {
     await randomDelay();
-    logger.info('🎭 Mock Update User', { username, updates });
+    logger.info('🎭 Mock Update User', { id, updates });
     
-    const user = findUserByUsername(username);
+    const user = mockUserAccounts.find(u => u.employeeid === id);
     if (!user) {
       throw new Error('User not found');
     }
     
     // Update user data
-    const updatedUser = updateUserAccount(username, {
+    const updatedUser = updateUserAccount(user.userid, {
       userid: updates.username || user.userid,
       fullName: updates.fullName || user.fullName,
       email: updates.email || user.email,
-      role: updates.role || user.role
+      role: updates.roleName || updates.role || user.role
     });
     
     // Return in frontend format
@@ -118,48 +118,52 @@ export const mockUserAdapter = {
       username: updatedUser.userid,
       fullName: updatedUser.fullName,
       email: updatedUser.email,
-      role: updatedUser.role,
+      roleName: updatedUser.role,
       status: updatedUser.status,
-      createdDate: updatedUser.createdDate
+      createdAt: updatedUser.createdDate
     };
   },
 
   /**
-   * Toggle user status (enable/disable)
+   * Update user status by ID
    */
-  async toggleUserStatus(username) {
+  async updateUserStatus(id, status) {
     await randomDelay();
-    logger.info('🎭 Mock Toggle User Status', { username });
+    logger.info('🎭 Mock Update User Status', { id, status });
     
-    const user = findUserByUsername(username);
+    const user = mockUserAccounts.find(u => u.employeeid === id);
     if (!user) {
       throw new Error('User not found');
     }
     
-    const newStatus = user.status === 'active' ? 'disabled' : 'active';
-    const updatedUser = updateUserAccount(username, { status: newStatus });
+    const updatedUser = updateUserAccount(user.userid, { status });
     
     return {
       id: updatedUser.employeeid,
       username: updatedUser.userid,
       fullName: updatedUser.fullName,
       email: updatedUser.email,
-      role: updatedUser.role,
+      roleName: updatedUser.role,
       status: updatedUser.status,
-      createdDate: updatedUser.createdDate
+      createdAt: updatedUser.createdDate
     };
   },
 
   /**
-   * Delete user
+   * Delete user by ID
    */
-  async deleteUser(username) {
+  async deleteUser(id) {
     await randomDelay();
-    logger.info('🎭 Mock Delete User', { username });
+    logger.info('🎭 Mock Delete User', { id });
     
-    const deleted = deleteUserAccount(username);
-    if (!deleted) {
+    const user = mockUserAccounts.find(u => u.employeeid === id);
+    if (!user) {
       throw new Error('User not found');
+    }
+    
+    const deleted = deleteUserAccount(user.userid);
+    if (!deleted) {
+      throw new Error('Failed to delete user');
     }
     
     return {
