@@ -2,6 +2,7 @@ import {
   getCurrentProfile,
   updateCurrentProfile
 } from '../data/profile.js';
+import { updateUserPassword } from '../data/users.js';
 import { 
   buildGetProfileResponse,
   buildUpdateProfileResponse,
@@ -92,6 +93,8 @@ export const mockProfileAdapter = {
     
     // Update password in mock storage
     mockPasswords[currentUsername] = newPassword;
+    // Persist password to the underlying mock user record so login uses the new password
+    updateUserPassword(currentUsername, newPassword);
     logger.info('Password changed successfully');
     
     return buildChangePasswordSuccessResponse();

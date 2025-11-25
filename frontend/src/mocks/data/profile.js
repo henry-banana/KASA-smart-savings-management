@@ -6,7 +6,7 @@
  * Do not hard-code a default user here - it will be set via setCurrentUser().
  */
 
-import { findUserByUsername } from './users.js';
+import { findUserByUsername, updateUserAccount } from './users.js';
 
 // Ensure profile is synced with mockUserAccounts
 // This will be set dynamically based on who is logged in
@@ -55,6 +55,21 @@ export const updateCurrentProfile = (updates) => {
     ...currentUserProfile,
     ...filteredUpdates
   };
+
+  // Persist changes back to the underlying mock user account so that
+  // after logout/login (which re-syncs from mockUserAccounts) the updates remain.
+  if (currentUserProfile?.username) {
+    updateUserAccount(currentUserProfile.username, filteredUpdates);
+    // Keep localStorage in sync if available
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const updatedStored = { ...parsed, ...filteredUpdates };
+        localStorage.setItem('user', JSON.stringify(updatedStored));
+      }
+    }
+  }
   
   return { ...currentUserProfile };
 };
