@@ -60,9 +60,45 @@ class TransactionService {
 
   // Lấy toàn bộ giao dịch
   async getAllTransactions() {
-    const transactions = await transactionRepository.findAll();
-    return transactions;
+      const data = await transactionRepository.findAll();
+
+    // Map dữ liệu về đúng format
+    const result = (data || []).map((item) => ({
+      transactionId: item.transactionid,
+      bookId: item.bookid,
+      type: item.transactiontype,
+      amount: item.amount,
+      transactionDate: item.transactiondate,
+      savingBook: item.savingbook
+        ? {
+            bookId: item.savingbook.bookid,
+            customer: item.savingbook.customer
+              ? {
+                  customerId: item.savingbook.customer.customerid,
+                  fullName: item.savingbook.customer.fullname,
+                  idCard: item.savingbook.customer.citizenid,
+                }
+              : null,
+            typeSaving: item.savingbook.typesaving
+              ? {
+                  typeName: item.savingbook.typesaving.typename,
+                  interestRate: item.savingbook.typesaving.interest,
+                }
+              : null,
+          }
+        : null,
+      employee: item.employee
+        ? {
+            employeeId: item.employee.employeeid,
+            fullName: item.employee.fullname,
+            role: "teller", //Do ở đây là teller mới được tạo giao dịch nên code cứng, nếu muốn đổi thì kết bảng bên model
+           }
+        : null,
+    }));
+
+      return result;
   }
+
 
   // Lấy giao dịch theo ID
   async getTransactionById(id) {
