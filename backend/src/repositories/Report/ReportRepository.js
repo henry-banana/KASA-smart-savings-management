@@ -47,10 +47,10 @@ class ReportRepository {
     // 2. Lấy danh sách Sổ Mở Mới trong tháng (dựa trên opendate)
     const { data: newBooks, error: errNew } = await supabase
       .from("savingbook")
-      .select("bookid, opendate")
+      .select("bookid, registertime")
       .eq("typeid", typeSavingId)
-      .gte("opendate", `${startDate}T00:00:00`)
-      .lte("opendate", `${endDate}T23:59:59`);
+      .gte("registertime", `${startDate}T00:00:00`)
+      .lte("registertime", `${endDate}T23:59:59`);
 
     if (errNew) throw new Error(`Error fetching new books: ${errNew.message}`);
 
@@ -58,10 +58,10 @@ class ReportRepository {
     // Giả sử sổ đóng thì closeddate sẽ khác null
     const { data: closedBooks, error: errClosed } = await supabase
       .from("savingbook")
-      .select("bookid, closeddate")
+      .select("bookid, maturitydate")
       .eq("typeid", typeSavingId)
-      .gte("closeddate", `${startDate}T00:00:00`)
-      .lte("closeddate", `${endDate}T23:59:59`);
+      .gte("maturitydate", `${startDate}T00:00:00`)
+      .lte("maturitydate", `${endDate}T23:59:59`);
 
     if (errClosed) throw new Error(`Error fetching closed books: ${errClosed.message}`);
 

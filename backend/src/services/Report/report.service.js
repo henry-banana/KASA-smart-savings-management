@@ -58,7 +58,7 @@ class ReportService {
       for (let d = 1; d <= daysInMonth; d++) {
         // Lọc ra các sổ mở trong ngày d
         const countNew = newBooks.filter(book => {
-          const date = new Date(book.opendate); // Giả sử cột ngày mở là opendate
+          const date = new Date(book.registertime); // Giả sử cột ngày mở là opendate
           return date.getDate() === d;
         }).length;
 
