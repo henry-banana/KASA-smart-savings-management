@@ -11,12 +11,30 @@ export async function getDailyReport(req, res) {
       });
     }
 
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid date format. Expected YYYY-MM-DD",
+      });
+    }
+
+    const parsed = new Date(date);
+    if (isNaN(parsed.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid date value",
+      });
+    }
+
     const report = await reportService.getDailyReport(date);
 
-    res.status(200).json({
+    return res.status(200).json({
+      message: "Daily report generated successfully",
       success: true,
       data: report,
     });
+
   } catch (err) {
     console.error("❌ Error generating daily report:", err);
     res.status(500).json({
@@ -28,21 +46,36 @@ export async function getDailyReport(req, res) {
 
 export async function getMonthlyReport(req, res) {
   try {
-    const { month, year } = req.query;
+    const { typeSavingId, month, year } = req.query;
 
-    if (!month || !year) {
+    // 1. Validate Input
+    if (!typeSavingId || !month || !year) {
       return res.status(400).json({
         success: false,
-        message: "Missing query parameters: month and year",
+        message: "Missing required query parameters: typeSavingId, month, year",
       });
     }
 
-    const report = await reportService.getMonthlyReport(month, year);
+    const m = parseInt(month);
+    const y = parseInt(year);
 
-    res.status(200).json({
+    if (isNaN(m) || m < 1 || m > 12 || isNaN(y) || y < 2000) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid month or year",
+      });
+    }
+
+    // 2. Gọi Service xử lý logic
+    const reportData = await reportService.getMonthlyReport(typeSavingId, m, y);
+
+    // 3. Trả về kết quả
+    return res.status(200).json({
+      message: "Get monthly report successfully",
       success: true,
-      data: report,
+      data: reportData,
     });
+
   } catch (err) {
     console.error("❌ Error generating monthly report:", err);
     res.status(500).json({
@@ -52,71 +85,3 @@ export async function getMonthlyReport(req, res) {
   }
 }
 
-export async function getInterestReport(req, res) {
-  try {
-    const { startDate, endDate } = req.query;
-
-    if (!startDate || !endDate) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing query parameters: startDate and endDate (YYYY-MM-DD)",
-      });
-    }
-
-    const report = await reportService.getInterestReport(startDate, endDate);
-
-    res.status(200).json({
-      success: true,
-      data: report,
-    });
-  } catch (err) {
-    console.error("❌ Error generating interest report:", err);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-}
-
-export async function getTransactionsReport(req, res) {
-  try {
-    const { startDate, endDate, type } = req.query;
-
-    if (!startDate || !endDate) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing query parameters: startDate and endDate (YYYY-MM-DD)",
-      });
-    }
-
-    const report = await reportService.getTransactionsReport(startDate, endDate, type);
-
-    res.status(200).json({
-      success: true,
-      data: report,
-    });
-  } catch (err) {
-    console.error("❌ Error generating transactions report:", err);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-}
-
-export async function getSavingBookSummary(req, res) {
-  try {
-    const summary = await reportService.getSavingBookSummary();
-
-    res.status(200).json({
-      success: true,
-      data: summary,
-    });
-  } catch (err) {
-    console.error("❌ Error generating saving book summary:", err);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-}

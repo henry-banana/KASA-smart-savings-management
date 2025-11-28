@@ -46,6 +46,39 @@ class TransactionModel extends BaseModel {
 
     return data;
   }
+
+  async getTransactionsByDate(date) {
+    if (!date) throw new Error("Missing date parameter");
+
+    const { data, error } = await supabase
+      .from("transaction")
+      .select(
+        `
+        transactionid,
+        bookid,
+        transactiontype,
+        amount,
+        transactiondate,
+        tellerid,
+        savingbook:bookid (
+          typeid,
+          typesaving:typeid (
+            typeid,
+            typename
+          )
+        )
+      `
+      )
+      .gte("transactiondate", `${date}T00:00:00`)
+      .lt("transactiondate", `${date}T23:59:59`);
+
+
+
+    if (error)
+      throw new Error(`GetTransactionsByDate failed: ${error.message}`);
+
+    return data || [];
+  }
 }
 
 export const Transaction = new TransactionModel();

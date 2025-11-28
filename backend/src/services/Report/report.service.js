@@ -1,104 +1,104 @@
-import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
-import { transactionRepository } from "../../repositories/Transaction/TransactionRepository.js";
+
+import { reportRepository } from "../../repositories/Report/ReportRepository.js";
 
 class ReportService {
-  /**
-   * Báo cáo hoạt động theo ngày
-   * Thống kê số lượng sổ mở, sổ đóng và chênh lệch theo từng loại sổ trong một ngày cụ thể.
-   */
-  async getDailyReport(date) {
-    // Giả định savingBookRepository có một phương thức để lấy dữ liệu báo cáo ngày
-    // Phương thức này cần được triển khai trong Model/Repository để truy vấn DB hiệu quả
-    // SELECT t.typename,
-    //        COUNT(CASE WHEN sb.registertime::date = $1 THEN 1 END) as opened_count,
-    //        SUM(CASE WHEN sb.registertime::date = $1 THEN sb.currentbalance ELSE 0 END) as total_opened,
-    //        COUNT(CASE WHEN sb.closetime::date = $1 THEN 1 END) as closed_count,
-    //        SUM(CASE WHEN sb.closetime::date = $1 THEN (SELECT amount FROM transaction WHERE bookid = sb.bookid AND type = 'Tất toán') ELSE 0 END) as total_closed
-    // FROM savingbook sb
-    // JOIN typesaving t ON sb.typeid = t.typeid
-    // WHERE sb.registertime::date = $1 OR sb.closetime::date = $1
-    // GROUP BY t.typename;
-    const reportData = await savingBookRepository.generateDailyReport(date);
-    if (!reportData) {
-      throw new Error("Could not generate daily report.");
-    }
-    return reportData;
-  }
 
-  /**
-   * Báo cáo hoạt động theo tháng
-   * Thống kê số lượng sổ mở, sổ đóng và chênh lệch cho mỗi ngày trong tháng.
-   */
-  async getMonthlyReport(month, year) {
-    // Giả định savingBookRepository có một phương thức để lấy dữ liệu báo cáo tháng
-    // SELECT to_char(d.day, 'YYYY-MM-DD') as date,
-    //        COUNT(DISTINCT CASE WHEN sb_open.registertime::date = d.day THEN sb_open.bookid END) as opened_count,
-    //        COUNT(DISTINCT CASE WHEN sb_close.closetime::date = d.day THEN sb_close.bookid END) as closed_count,
-    //        COALESCE(SUM(CASE WHEN sb_open.registertime::date = d.day THEN sb_open.currentbalance ELSE 0 END), 0) -
-    //        COALESCE(SUM(CASE WHEN sb_close.closetime::date = d.day THEN (SELECT amount FROM transaction WHERE bookid = sb_close.bookid AND type = 'Tất toán') ELSE 0 END), 0) as difference
-    // FROM generate_series(make_date($1, $2, 1), make_date($1, $2, 1) + '1 month'::interval - '1 day'::interval, '1 day'::interval) d(day)
-    // LEFT JOIN savingbook sb_open ON sb_open.registertime::date = d.day
-    // LEFT JOIN savingbook sb_close ON sb_close.closetime::date = d.day
-    // GROUP BY d.day
-    // ORDER BY d.day;
-    const reportData = await savingBookRepository.generateMonthlyReport(month, year);
-    if (!reportData) {
-      throw new Error("Could not generate monthly report.");
-    }
-    return reportData;
-  }
+    async getDailyReport(date) {
+      const { types, transactions } = await reportRepository.getDailyData(date);
 
-  /**
-   * Báo cáo chênh lệch lãi suất
-   * Thống kê tổng lãi đã trả cho khách hàng trong một khoảng thời gian.
-   */
-  async getInterestReport(startDate, endDate) {
-    // Giả định transactionRepository có phương thức tính tổng lãi
-    // SELECT SUM(amount - (SELECT currentbalance FROM savingbook WHERE bookid = t.bookid)) as total_interest
-    // FROM transaction t
-    // WHERE t.type = 'Tất toán' AND t.transactiontime BETWEEN $1 AND $2;
-    const reportData = await transactionRepository.calculateTotalInterest(startDate, endDate);
-    if (!reportData) {
-      throw new Error("Could not generate interest report.");
-    }
-    return reportData;
-  }
 
-  /**
-   * Báo cáo giao dịch
-   * Liệt kê các giao dịch trong một khoảng thời gian, có thể lọc theo loại.
-   */
-  async getTransactionsReport(startDate, endDate, type) {
-    // Giả định transactionRepository có phương thức lấy giao dịch theo khoảng thời gian và loại
-    const reportData = await transactionRepository.findTransactionsByDateRange({
-      startDate,
-      endDate,
-      type,
-    });
-    if (!reportData) {
-      throw new Error("Could not generate transactions report.");
-    }
-    return reportData;
-  }
+      // Gom theo loại tiết kiệm
+      const byTypeSaving = types.map(type => {
 
-  /**
-   * Báo cáo tổng quan sổ tiết kiệm
-   * Thống kê số lượng sổ đang hoạt động, đã đóng và tổng số dư hiện tại.
-   */
-  async getSavingBookSummary() {
-    // Giả định savingBookRepository có phương thức thống kê
-    // SELECT
-    //   COUNT(*) as total_books,
-    //   COUNT(CASE WHEN status = 'Active' THEN 1 END) as active_books,
-    //   COUNT(CASE WHEN status = 'Close' THEN 1 END) as closed_books,
-    //   SUM(CASE WHEN status = 'Active' THEN currentbalance ELSE 0 END) as total_balance
-    // FROM savingbook;
-    const summary = await savingBookRepository.getSummary();
-    if (!summary) {
-      throw new Error("Could not generate saving book summary.");
+        const deposits = transactions
+          .filter(t => t.savingbook?.typeid === type.typeid && t.transactiontype === "Deposit")
+          .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+        const withdrawals = transactions
+          .filter(t => t.savingbook?.typeid === type.typeid && t.transactiontype === "WithDraw")
+          .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+        return {
+          typeSavingId: type.typeid,
+          typeName: type.typename,
+          totalDeposits: deposits, 
+          totalWithdrawals: withdrawals,
+          difference: Math.abs(deposits - withdrawals)
+        };
+      });
+
+
+      // Summary
+      const summary = {
+        totalDeposits: byTypeSaving.reduce((s, t) => s + t.totalDeposits, 0),
+        totalWithdrawals: byTypeSaving.reduce((s, t) => s + t.totalWithdrawals, 0),
+        difference: byTypeSaving.reduce((s, t) => s + t.difference, 0),
+      };
+
+      return {
+        date,
+        byTypeSaving,
+        summary,
+      };
     }
-    return summary;
-  }
+
+    async getMonthlyReport(typeSavingId, month, year) {
+      // 1. Lấy dữ liệu từ Repo (Thông tin loại sổ, List sổ mở, List sổ đóng)
+      const { typeInfo, newBooks, closedBooks } = await reportRepository.getMonthlyData(typeSavingId, month, year);
+
+      // 2. Tính số ngày trong tháng (ví dụ tháng 2 năm 2025 có 28 ngày)
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const byDay = [];
+
+      // Biến để tính tổng summary
+      let totalNew = 0;
+      let totalClosed = 0;
+
+      // 3. Loop từng ngày để gom dữ liệu
+      for (let d = 1; d <= daysInMonth; d++) {
+        // Lọc ra các sổ mở trong ngày d
+        const countNew = newBooks.filter(book => {
+          const date = new Date(book.registertime); // Giả sử cột ngày mở là opendate
+          return date.getDate() === d;
+        }).length;
+
+        // Lọc ra các sổ đóng trong ngày d
+        const countClosed = closedBooks.filter(book => {
+          if(!book.closeddate) return false; // Check null
+          const date = new Date(book.closeddate); // Giả sử cột ngày đóng là closeddate
+          return date.getDate() === d;
+        }).length;
+
+        // Push vào mảng
+        byDay.push({
+          day: d,
+          newSavingBooks: countNew,
+          closedSavingBooks: countClosed,
+          difference: Math.abs(countNew - countClosed)
+        });
+
+        // Cộng dồn summary
+        totalNew += countNew;
+        totalClosed += countClosed;
+      }
+
+      // 4. Trả về cấu trúc đúng format yêu cầu
+      return {
+        month: month,
+        year: year,
+        typeSavingId: typeSavingId,
+        typeName: typeInfo ? typeInfo.typename : "Unknown",
+        byDay: byDay,
+        summary: {
+          newSavingBooks: totalNew,
+          closedSavingBooks: totalClosed,
+          difference: Math.abs(totalNew - totalClosed)
+        }
+      };
+    }
 }
+
+
+
 
 export const reportService = new ReportService();
