@@ -1,5 +1,6 @@
 import { userAccountRepository } from "../../repositories/UserAccount/UserAccountRepository.js";
-import { hashPassword, comparePassword } from "../../middleware/hashing.middleware.js";
+import { hashPassword } from "../../middleware/hashing.middleware.js";
+import { comparePassword } from "../../middleware/comparePass.middleware.js";
 
 class UserAccountService {
   // Lấy toàn bộ tài khoản
