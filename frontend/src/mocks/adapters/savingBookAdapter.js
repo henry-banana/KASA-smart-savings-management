@@ -33,18 +33,16 @@ export const mockSavingBookAdapter = {
       const type = findTypeSavingById(sb.typeSavingId);
       return {
         bookId: sb.bookId,
-        accountCode: sb.bookId, // same as bookId per contract
+        accountCode: sb.bookId, // alias per contract
         citizenId: sb.citizenId,
         customerName: sb.customerName,
         accountTypeName: type?.typeName || 'Unknown',
         openDate: sb.openDate,
         balance: sb.balance,
         status: sb.status,
-        // mock-extension (legacy aliases for existing UI components)
-        id: sb.bookId,
+        // mock-extension: legacy UI fields
         customer: sb.customerName,
         type: type?.typeName || 'Unknown'
-        // Removed term / interestRate from list (not in contract)
       };
     });
 
@@ -89,16 +87,16 @@ export const mockSavingBookAdapter = {
       customerName: savingBook.customerName,
       typeSavingId: savingBook.typeSavingId,
       openDate: savingBook.openDate,
-      maturityDate: savingBook.maturityDate, // may be null for no-term
+      maturityDate: savingBook.maturityDate,
       balance: savingBook.balance,
       status: savingBook.status,
-      typeSaving: type ? { // nested object per contract
+      typeSaving: type ? {
         typeSavingId: type.typeSavingId,
         typeName: type.typeName,
         term: type.term,
         interestRate: type.interestRate
-      } : {},
-      transactions: [] // empty array when no transactions
+      } : undefined,
+      transactions: [] // mock-extension: fill with canonical Transaction objects if available
     };
 
     return {

@@ -264,8 +264,8 @@ export default function SearchAccounts() {
                 </TableHeader>
                 <TableBody>
                   {filteredAccounts.map((account) => (
-                    <TableRow key={account.id} className="hover:bg-[#F8F9FC] transition-colors">
-                      <TableCell className="font-medium text-[#8B5CF6]">{account.id}</TableCell>
+                    <TableRow key={account.bookId} className="hover:bg-[#F8F9FC] transition-colors">
+                      <TableCell className="font-medium text-[#8B5CF6]">{account.accountCode}</TableCell>
                       <TableCell>{account.customer}</TableCell>
                       <TableCell>
                         <Badge className={`${getTypeBadgeColor(account.type)} border`}>
@@ -336,7 +336,7 @@ export default function SearchAccounts() {
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Account Code:</span>
-                  <span className="font-semibold text-lg text-[#8B5CF6]">{selectedAccount.id}</span>
+                  <span className="font-semibold text-lg text-[#8B5CF6]">{selectedAccount.accountCode}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Customer:</span>

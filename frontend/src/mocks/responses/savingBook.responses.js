@@ -13,27 +13,45 @@
 /**
  * Builder functions - inject data here
  */
+
+// Canonical builder for Add SavingBook response
 export const buildAddSavingBookResponse = (savingBook, typeSaving) => ({
-  message: "Saving book created successfully",
+  message: "Create savingbook successfully",
   success: true,
   data: {
-    ...savingBook,
-    typesaving: typeSaving ? {
+    bookId: savingBook.bookId,
+    citizenId: savingBook.citizenId,
+    customerName: savingBook.customerName,
+    typeSavingId: savingBook.typeSavingId,
+    openDate: savingBook.openDate,
+    maturityDate: savingBook.maturityDate,
+    balance: savingBook.balance,
+    status: savingBook.status,
+    typeSaving: typeSaving ? {
       typeSavingId: typeSaving.typeSavingId,
       typeName: typeSaving.typeName,
       term: typeSaving.term,
-      interestRate: typeSaving.interestRate,
-      minimumDeposit: typeSaving.minimumDeposit
-    } : undefined
+      interestRate: typeSaving.interestRate
+    } : undefined,
+    transactions: [] // mock-extension: empty on create
   }
 });
 
+
+// Canonical builder for Get SavingBook by ID response
 export const buildGetSavingBookByIdResponse = (savingBook, typeSaving, transactions) => ({
-  message: "Saving book retrieved successfully",
+  message: "Get savingbook successfully",
   success: true,
   data: {
-    ...savingBook,
-    typesaving: typeSaving ? {
+    bookId: savingBook.bookId,
+    citizenId: savingBook.citizenId,
+    customerName: savingBook.customerName,
+    typeSavingId: savingBook.typeSavingId,
+    openDate: savingBook.openDate,
+    maturityDate: savingBook.maturityDate,
+    balance: savingBook.balance,
+    status: savingBook.status,
+    typeSaving: typeSaving ? {
       typeSavingId: typeSaving.typeSavingId,
       typeName: typeSaving.typeName,
       term: typeSaving.term,
@@ -43,19 +61,37 @@ export const buildGetSavingBookByIdResponse = (savingBook, typeSaving, transacti
   }
 });
 
-export const buildUpdateSavingBookResponse = (savingBook) => ({
-  message: "Saving book updated successfully",
+
+export const buildUpdateSavingBookResponse = (savingBook, typeSaving) => ({
+  message: "Update savingbook successfully",
   success: true,
-  data: savingBook
+  data: {
+    bookId: savingBook.bookId,
+    citizenId: savingBook.citizenId,
+    customerName: savingBook.customerName,
+    typeSavingId: savingBook.typeSavingId,
+    openDate: savingBook.openDate,
+    maturityDate: savingBook.maturityDate,
+    balance: savingBook.balance,
+    status: savingBook.status,
+    typeSaving: typeSaving ? {
+      typeSavingId: typeSaving.typeSavingId,
+      typeName: typeSaving.typeName,
+      term: typeSaving.term,
+      interestRate: typeSaving.interestRate
+    } : undefined
+  }
 });
 
+
 export const buildDeleteSavingBookResponse = () => ({
-  message: "Saving book deleted successfully",
+  message: "Delete savingbook successfully",
   success: true
 });
 
+
 export const buildCloseSavingBookResponse = (bookId, finalBalance, interest) => ({
-  message: "Saving book closed successfully",
+  message: "Close savingbook successfully",
   success: true,
   data: {
     bookId,
