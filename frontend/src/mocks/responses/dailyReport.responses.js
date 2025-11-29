@@ -16,7 +16,7 @@
  * @returns {Object} Daily report response
  */
 export const buildDailyReportResponse = ({ date, summary, byTypeSaving, transactions, newSavingBooks }) => ({
-  message: "Daily report retrieved successfully",
+  message: "Get daily report successfully",
   success: true,
   data: {
     date,
@@ -24,12 +24,15 @@ export const buildDailyReportResponse = ({ date, summary, byTypeSaving, transact
       totalDeposits: summary.totalDeposits || 0,
       totalWithdrawals: summary.totalWithdrawals || 0,
       netCashFlow: summary.netCashFlow || 0,
+      // mock-extension: counts for UI display
       newSavingBooks: summary.newSavingBooks || 0,
       closedSavingBooks: summary.closedSavingBooks || 0,
       transactionCount: summary.transactionCount || 0
     },
     byTypeSaving: byTypeSaving || [],
+    // mock-extension: detailed transaction list for UI visualization
     transactions: transactions || [],
+    // mock-extension: new saving books opened today
     newSavingBooks: newSavingBooks || []
   }
 });

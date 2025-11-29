@@ -46,19 +46,19 @@ export const mockReportAdapter = {
       // Get transactions for these books on this date
       const typeTransactions = dailyTransactions.filter(t => bookIds.includes(t.bookId));
       
-      const deposits = typeTransactions
+      const totalDeposits = typeTransactions
         .filter(t => t.type === 'deposit')
         .reduce((sum, t) => sum + t.amount, 0);
-      const withdrawals = typeTransactions
+      const totalWithdrawals = typeTransactions
         .filter(t => t.type === 'withdraw')
         .reduce((sum, t) => sum + t.amount, 0);
       
       return {
-        type: type.typeName,
         typeSavingId: type.typeSavingId,
-        deposits,
-        withdrawals,
-        difference: deposits - withdrawals
+        typeName: type.typeName,
+        totalDeposits,
+        totalWithdrawals,
+        difference: totalDeposits - totalWithdrawals
       };
     });
     
@@ -66,6 +66,7 @@ export const mockReportAdapter = {
       date: reportDate,
       summary,
       byTypeSaving,
+      // mock-extension: transaction details and new books list for UI visualization
       transactions: dailyTransactions,
       newSavingBooks: []
     });
@@ -107,7 +108,7 @@ export const mockReportAdapter = {
     }
 
     // Generate daily breakdown
-    const dailyData = [];
+    const byDay = [];
     let totalOpened = 0;
     let totalClosed = 0;
 
@@ -134,7 +135,7 @@ export const mockReportAdapter = {
       const opened = openedOnDay || Math.floor(Math.random() * 10) + 1;
       const closed = closedOnDay || Math.floor(Math.random() * 5);
 
-      dailyData.push({
+      byDay.push({
         day,
         opened,
         closed,
@@ -146,14 +147,15 @@ export const mockReportAdapter = {
     }
 
     return {
-      message: "Monthly open/close report retrieved successfully",
+      message: "Get monthly report successfully",
       success: true,
       data: {
         month: reportMonth,
         year: reportYear,
+        // mock-extension: savingsType filter not in OpenAPI
         savingsType,
-        dailyData,
-        totals: {
+        byDay,
+        summary: {
           opened: totalOpened,
           closed: totalClosed,
           difference: totalOpened - totalClosed

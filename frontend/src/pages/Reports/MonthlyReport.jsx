@@ -33,7 +33,7 @@ export default function MonthlyReport() {
       const response = await getMonthlyOpenCloseReport(month, year, savingsType);
       
       if (response.success && response.data) {
-        setReportData(response.data.dailyData);
+        setReportData(response.data.byDay);
       } else {
         setError(response.message || 'Failed to generate report');
         setReportData(null);

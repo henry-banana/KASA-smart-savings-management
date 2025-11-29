@@ -15,7 +15,7 @@ import {
 import { CheckCircle2, PiggyBank, User as UserIcon, CreditCard, MapPin, Calendar, Coins, Sparkles, Heart } from 'lucide-react';
 import { StarDecor, PiggyBankIllustration } from '../../components/CuteComponents';
 import { createSavingBook } from '../../services/savingBookService';
-import { getInterestRates } from '@/services/dashboardService';
+import { getInterestRates } from '@/services/regulationService';
 import { RoleGuard } from '../../components/RoleGuard';
 
 export default function OpenAccount() {

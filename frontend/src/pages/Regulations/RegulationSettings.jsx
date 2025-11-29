@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { getRegulations, updateRegulations } from '@/services/regulationService';
-import { getInterestRates, getChangeHistory, updateInterestRates } from '@/services/dashboardService';
+import { getInterestRates, getChangeHistory, updateInterestRates } from '@/services/regulationService';
 import { createTypeSaving, deleteTypeSaving, resetTypeSavingDefaults, getAllTypeSavings } from '@/services/typeSavingService';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';

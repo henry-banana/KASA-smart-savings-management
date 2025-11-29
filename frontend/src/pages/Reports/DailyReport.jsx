@@ -65,20 +65,20 @@ export default function DailyReport() {
   const typeBreakdown = reportData?.byTypeSaving || [];
 
   const chartData = typeBreakdown.map(item => ({
-    name: item.type || item.name,
-    Deposits: (item.deposits || item.totalDeposits || 0) / 1000000,
-    Withdrawals: (item.withdrawals || item.totalWithdrawals || 0) / 1000000,
-    Difference: (item.difference || item.netCashFlow || 0) / 1000000
+    name: item.typeName,
+    Deposits: item.totalDeposits / 1000000,
+    Withdrawals: item.totalWithdrawals / 1000000,
+    Difference: item.difference / 1000000
   }));
 
   const totals = reportData?.summary ? {
-    deposits: reportData.summary.totalDeposits || 0,
-    withdrawals: reportData.summary.totalWithdrawals || 0,
-    difference: reportData.summary.netCashFlow || 0
+    deposits: reportData.summary.totalDeposits,
+    withdrawals: reportData.summary.totalWithdrawals,
+    difference: reportData.summary.netCashFlow
   } : {
-    deposits: typeBreakdown.reduce((sum, item) => sum + (item.deposits || item.totalDeposits || 0), 0),
-    withdrawals: typeBreakdown.reduce((sum, item) => sum + (item.withdrawals || item.totalWithdrawals || 0), 0),
-    difference: typeBreakdown.reduce((sum, item) => sum + (item.difference || item.netCashFlow || 0), 0)
+    deposits: typeBreakdown.reduce((sum, item) => sum + item.totalDeposits, 0),
+    withdrawals: typeBreakdown.reduce((sum, item) => sum + item.totalWithdrawals, 0),
+    difference: typeBreakdown.reduce((sum, item) => sum + item.difference, 0)
   };
 
   const _handleExport = () => {
@@ -269,12 +269,12 @@ export default function DailyReport() {
               <TableBody>
                 {typeBreakdown.map((row, index) => (
                   <TableRow key={index} className="transition-colors hover:bg-purple-50">
-                    <TableCell className="font-medium text-gray-700">{row.type}</TableCell>
+                    <TableCell className="font-medium text-gray-700">{row.typeName}</TableCell>
                     <TableCell className="font-semibold text-right text-green-600">
-                      ₫{row.deposits.toLocaleString()}
+                      ₫{row.totalDeposits.toLocaleString()}
                     </TableCell>
                     <TableCell className="font-semibold text-right text-red-600">
-                      ₫{row.withdrawals.toLocaleString()}
+                      ₫{row.totalWithdrawals.toLocaleString()}
                     </TableCell>
                     <TableCell className="font-semibold text-right text-blue-600">
                       ₫{row.difference.toLocaleString()}
