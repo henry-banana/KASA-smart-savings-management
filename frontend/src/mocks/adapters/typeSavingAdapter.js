@@ -18,7 +18,7 @@ export const mockTypeSavingAdapter = {
     logger.info('🎭 Mock Get All Type Savings');
     
     return {
-      message: 'Get typesaving successfully',
+      message: 'Get type saving successfully',
       success: true,
       data: mockTypeSavings,
       total: mockTypeSavings.length
@@ -39,7 +39,7 @@ export const mockTypeSavingAdapter = {
     
     // TODO: Add statistics (totalActiveSavingBooks, totalDeposits)
     return {
-      message: 'Get typesaving successfully',
+      message: 'Get type saving successfully',
       success: true,
       data: {
         ...typeSaving,
@@ -87,7 +87,7 @@ export const mockTypeSavingAdapter = {
     addTypeSaving(newTypeSaving);
     
     return {
-      message: 'Create typesaving successfully',
+      message: 'Create type saving successfully',
       success: true,
       data: newTypeSaving
     };
@@ -121,7 +121,7 @@ export const mockTypeSavingAdapter = {
     const updatedTypeSaving = updateTypeSavingData(typeSavingId, updates);
     
     return {
-      message: 'Update typesaving successfully',
+      message: 'Update type saving successfully',
       success: true,
       data: updatedTypeSaving
     };
@@ -148,7 +148,7 @@ export const mockTypeSavingAdapter = {
     }
     
     return {
-      message: 'Delete typesaving successfully',
+      message: 'Delete type saving successfully',
       success: true
     };
   }

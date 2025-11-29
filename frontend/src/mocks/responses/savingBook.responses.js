@@ -16,7 +16,7 @@
 
 // Canonical builder for Add SavingBook response
 export const buildAddSavingBookResponse = (savingBook, typeSaving) => ({
-  message: "Create savingbook successfully",
+  message: "Create saving book successfully",
   success: true,
   data: {
     bookId: savingBook.bookId,
@@ -40,7 +40,7 @@ export const buildAddSavingBookResponse = (savingBook, typeSaving) => ({
 
 // Canonical builder for Get SavingBook by ID response
 export const buildGetSavingBookByIdResponse = (savingBook, typeSaving, transactions) => ({
-  message: "Get savingbook successfully",
+  message: "Get saving book successfully",
   success: true,
   data: {
     bookId: savingBook.bookId,
@@ -63,7 +63,7 @@ export const buildGetSavingBookByIdResponse = (savingBook, typeSaving, transacti
 
 
 export const buildUpdateSavingBookResponse = (savingBook, typeSaving) => ({
-  message: "Update savingbook successfully",
+  message: "Update saving book successfully",
   success: true,
   data: {
     bookId: savingBook.bookId,
@@ -85,13 +85,13 @@ export const buildUpdateSavingBookResponse = (savingBook, typeSaving) => ({
 
 
 export const buildDeleteSavingBookResponse = () => ({
-  message: "Delete savingbook successfully",
+  message: "Delete saving book successfully",
   success: true
 });
 
 
 export const buildCloseSavingBookResponse = (bookId, finalBalance, interest) => ({
-  message: "Close savingbook successfully",
+  message: "Close saving book successfully",
   success: true,
   data: {
     bookId,

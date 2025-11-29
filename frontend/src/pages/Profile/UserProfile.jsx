@@ -314,7 +314,7 @@ export default function UserProfile() {
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Employee ID</p>
-              <p className="text-sm font-semibold text-gray-900">{profileData?.id || user?.id || user?.employeeid || 'N/A'}</p>
+              <p className="text-sm font-semibold text-gray-900">{profileData?.id || user?.id || 'N/A'}</p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Account Created</p>

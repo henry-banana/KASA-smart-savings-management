@@ -17,7 +17,7 @@ export const mockReportAdapter = {
       t.transactionDate?.startsWith(reportDate)
     );
     
-    // Calculate deposits and withdrawals with correct field name
+    // Calculate deposits and withdrawals
     const totalDeposits = dailyTransactions
       .filter(t => t.type === 'deposit')
       .reduce((sum, t) => sum + t.amount, 0);
@@ -25,16 +25,16 @@ export const mockReportAdapter = {
       .filter(t => t.type === 'withdraw')
       .reduce((sum, t) => sum + t.amount, 0);
     
-    // Calculate summary
+    // Calculate summary statistics
     const summary = {
       totalDeposits,
       totalWithdrawals,
+      netCashFlow: totalDeposits - totalWithdrawals,
+      transactionCount: dailyTransactions.length,
       depositCount: dailyTransactions.filter(t => t.type === 'deposit').length,
       withdrawalCount: dailyTransactions.filter(t => t.type === 'withdraw').length,
-      netCashFlow: totalDeposits - totalWithdrawals,
-      newSavingBooks: 0,
-      closedSavingBooks: 0,
-      transactionCount: dailyTransactions.length
+      newSavingBooks: mockSavingBooks.filter(sb => sb.openDate === reportDate).length,
+      closedSavingBooks: mockSavingBooks.filter(sb => sb.status === 'closed' && sb.closeDate === reportDate).length
     };
     
     // Calculate breakdown by type saving
@@ -152,13 +152,21 @@ export const mockReportAdapter = {
       data: {
         month: reportMonth,
         year: reportYear,
-        // mock-extension: savingsType filter not in OpenAPI
-        savingsType,
-        byDay,
-        summary: {
-          opened: totalOpened,
-          closed: totalClosed,
+        // Canonical fields per OpenAPI
+        items: byDay.map(item => ({
+          day: item.day,
+          newSavingBooks: item.opened,
+          closedSavingBooks: item.closed,
+          difference: item.difference
+        })),
+        total: {
+          newSavingBooks: totalOpened,
+          closedSavingBooks: totalClosed,
           difference: totalOpened - totalClosed
+        },
+        // mock-extension: savingsType filter for UI
+        meta: {
+          savingsType
         }
       }
     };

@@ -118,14 +118,14 @@ export const buildGetTransactionByIdResponse = (transaction, savingBook, employe
 
 
 export const buildUpdateTransactionResponse = (transaction) => ({
-  message: "Transaction updated successfully",
+  message: "Update transaction successfully",
   success: true,
   data: transaction
 });
 
 
 export const buildDeleteTransactionResponse = () => ({
-  message: "Transaction deleted successfully",
+  message: "Delete transaction successfully",
   success: true
 });
 

@@ -10,28 +10,37 @@
  * Build monthly report response from aggregated data
  * @param {number} month - Month (1-12)
  * @param {number} year - Year
+ * @param {string} typeSavingId - Optional type saving filter ID
+ * @param {string} typeName - Optional type saving name
  * @param {Object} summary - Summary statistics
- * @param {Array} byTypeSaving - Breakdown by saving type
- * @param {Array} dailyBreakdown - Daily statistics (optional)
- * @returns {Object} Monthly report response
+ * @param {Array} byTypeSaving - Breakdown by saving type (mock-extension)
+ * @param {Array} dailyBreakdown - Daily statistics (canonical items)
+ * @returns {Object} Monthly report response matching OpenAPI contract
  */
-export const buildMonthlyReportResponse = ({ month, year, summary, byTypeSaving, dailyBreakdown }) => ({
-  message: "Monthly report retrieved successfully",
+export const buildMonthlyReportResponse = ({ month, year, typeSavingId, typeName, summary, byTypeSaving, dailyBreakdown }) => ({
+  message: "Get monthly report successfully",
   success: true,
   data: {
     month,
     year,
-    summary: {
-      totalDeposits: summary.totalDeposits || 0,
-      totalWithdrawals: summary.totalWithdrawals || 0,
-      netCashFlow: summary.netCashFlow || 0,
+    // Include type filter if provided
+    ...(typeSavingId && { typeSavingId }),
+    ...(typeName && { typeName }),
+    // Canonical fields per OpenAPI
+    items: dailyBreakdown || [],
+    total: {
       newSavingBooks: summary.newSavingBooks || 0,
       closedSavingBooks: summary.closedSavingBooks || 0,
+      difference: (summary.newSavingBooks || 0) - (summary.closedSavingBooks || 0)
+    },
+    // mock-extension: extra aggregates for UI
+    meta: {
+      byTypeSaving: byTypeSaving || [],
+      totalDeposits: summary.totalDeposits || 0,
+      totalWithdrawals: summary.totalWithdrawals || 0,
       transactionCount: summary.transactionCount || 0,
       averageTransactionValue: summary.averageTransactionValue || 0
-    },
-    byTypeSaving: byTypeSaving || [],
-    dailyBreakdown: dailyBreakdown || []
+    }
   }
 });
 
@@ -60,7 +69,7 @@ export const monthlyReportTemplates = {
   },
 
   serverError: {
-    message: "Internal server error",
+    message: "Failed to generate monthly report",
     success: false
   }
 };

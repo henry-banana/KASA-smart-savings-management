@@ -33,7 +33,8 @@ export default function MonthlyReport() {
       const response = await getMonthlyOpenCloseReport(month, year, savingsType);
       
       if (response.success && response.data) {
-        setReportData(response.data.byDay);
+        // Use canonical 'items' field from response
+        setReportData(response.data.items || response.data.byDay);
       } else {
         setError(response.message || 'Failed to generate report');
         setReportData(null);
@@ -50,9 +51,9 @@ export default function MonthlyReport() {
   const totals = reportData
     ? reportData.reduce(
         (acc, item) => ({
-          opened: acc.opened + item.opened,
-          closed: acc.closed + item.closed,
-          difference: acc.difference + item.difference,
+          opened: acc.opened + (item.newSavingBooks || item.opened || 0),
+          closed: acc.closed + (item.closedSavingBooks || item.closed || 0),
+          difference: acc.difference + (item.difference || 0),
         }),
         { opened: 0, closed: 0, difference: 0 }
       )
@@ -240,10 +241,10 @@ export default function MonthlyReport() {
                           ).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                         </td>
                         <td className="py-3 px-6 text-right text-green-600 font-semibold border-r border-gray-200">
-                          {row.opened}
+                          {row.newSavingBooks ?? row.opened ?? 0}
                         </td>
                         <td className="py-3 px-6 text-right text-red-600 font-semibold border-r border-gray-200">
-                          {row.closed}
+                          {row.closedSavingBooks ?? row.closed ?? 0}
                         </td>
                         <td className={`py-3 px-6 text-right font-semibold ${row.difference >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
                           {row.difference >= 0 ? '+' : ''}

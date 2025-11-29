@@ -59,7 +59,7 @@ export const mockSavingBookAdapter = {
     });
 
     return {
-      message: 'Search savingbooks successfully',
+      message: 'Search saving books successfully',
       success: true,
       data: items,
       total: items.length
@@ -100,7 +100,7 @@ export const mockSavingBookAdapter = {
     };
 
     return {
-      message: 'Get savingbook successfully',
+      message: 'Get saving book successfully',
       success: true,
       data: detail
     };
@@ -141,7 +141,7 @@ export const mockSavingBookAdapter = {
     addSavingBook(newSavingBook);
 
     return {
-      message: 'Create savingbook successfully',
+      message: 'Create saving book successfully',
       success: true,
       data: {
         ...newSavingBook,

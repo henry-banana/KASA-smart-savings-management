@@ -61,8 +61,8 @@ export default function DailyReport() {
     }
   };
 
-  // Calculate breakdown by type from reportData
-  const typeBreakdown = reportData?.byTypeSaving || [];
+  // Calculate breakdown by type from reportData (canonical 'items' field)
+  const typeBreakdown = reportData?.items || [];
 
   const chartData = typeBreakdown.map(item => ({
     name: item.typeName,
@@ -71,10 +71,10 @@ export default function DailyReport() {
     Difference: item.difference / 1000000
   }));
 
-  const totals = reportData?.summary ? {
-    deposits: reportData.summary.totalDeposits,
-    withdrawals: reportData.summary.totalWithdrawals,
-    difference: reportData.summary.netCashFlow
+  const totals = reportData?.total ? {
+    deposits: reportData.total.totalDeposits,
+    withdrawals: reportData.total.totalWithdrawals,
+    difference: reportData.total.difference
   } : {
     deposits: typeBreakdown.reduce((sum, item) => sum + item.totalDeposits, 0),
     withdrawals: typeBreakdown.reduce((sum, item) => sum + item.totalWithdrawals, 0),

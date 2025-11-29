@@ -15,32 +15,32 @@
  * Builder functions - inject actual data here
  */
 export const buildAddCustomerResponse = (customer) => ({
-  message: "Customer added successfully",
+  message: "Create customer successfully",
   success: true,
   data: customer
 });
 
 export const buildGetAllCustomersResponse = (customers) => ({
-  message: "Customers retrieved successfully",
+  message: "Get customers successfully",
   success: true,
   data: customers,
   total: customers.length
 });
 
 export const buildGetCustomerByIdResponse = (customer) => ({
-  message: "Customer retrieved successfully",
+  message: "Get customer successfully",
   success: true,
   data: customer
 });
 
 export const buildUpdateCustomerResponse = (customer) => ({
-  message: "Customer updated successfully",
+  message: "Update customer successfully",
   success: true,
   data: customer
 });
 
 export const buildDeleteCustomerResponse = () => ({
-  message: "Customer deleted successfully",
+  message: "Delete customer successfully",
   success: true
 });
 

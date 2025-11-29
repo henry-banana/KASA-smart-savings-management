@@ -21,14 +21,14 @@ export const buildCreateTypeSavingResponse = (typeSaving) => ({
 });
 
 export const buildGetAllTypeSavingsResponse = (typeSavings) => ({
-  message: "Type savings retrieved successfully",
+  message: "Get type savings successfully",
   success: true,
   data: typeSavings,
   total: typeSavings.length
 });
 
 export const buildGetTypeSavingByIdResponse = (typeSaving, statistics) => ({
-  message: "Type saving retrieved successfully",
+  message: "Get type saving successfully",
   success: true,
   data: {
     ...typeSaving,
@@ -41,13 +41,13 @@ export const buildGetTypeSavingByIdResponse = (typeSaving, statistics) => ({
 });
 
 export const buildUpdateTypeSavingResponse = (typeSaving) => ({
-  message: "Updated successfully",
+  message: "Update type saving successfully",
   success: true,
   data: typeSaving
 });
 
 export const buildDeleteTypeSavingResponse = () => ({
-  message: "Deleted successfully",
+  message: "Delete type saving successfully",
   success: true
 });
 
@@ -71,12 +71,12 @@ export const typeSavingResponseTemplates = {
   },
 
   getByIdNotFound: {
-    message: "TypeSaving not found",
+    message: "Type saving not found",
     success: false
   },
 
   updateNotFound: {
-    message: "TypeSaving not found",
+    message: "Type saving not found",
     success: false
   },
 
@@ -86,7 +86,7 @@ export const typeSavingResponseTemplates = {
   },
 
   deleteNotFound: {
-    message: "TypeSaving not found",
+    message: "Type saving not found",
     success: false
   },
 

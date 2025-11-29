@@ -25,10 +25,10 @@ export const mockAuthAdapter = {
     setCurrentUser(user);
 
     return {
-      message: 'Login successful',
+      message: 'Login successfully',
       success: true,
       data: {
-        userId: user.userid,
+        id: user.userid, // canonical field name
         username: username, // reflect the real login identifier
         roleName: user.role,
         fullName: user.fullName,
