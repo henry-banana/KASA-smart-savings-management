@@ -16,16 +16,13 @@ export const mockUserAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Get All Users');
     
-    // Transform to match frontend format
-    return mockUserAccounts.map(user => ({
-      id: user.employeeid,
-      username: user.userid,
-      fullName: user.fullName,
-      email: user.email,
-      role: user.role,
-      status: user.status,
-      createdDate: user.createdDate
-    }));
+    const data = mockUserAccounts.map(mapUserToContract);
+    return {
+      message: 'Get users successfully',
+      success: true,
+      total: data.length,
+      data
+    };
   },
 
   /**
@@ -41,13 +38,9 @@ export const mockUserAdapter = {
     }
     
     return {
-      id: user.employeeid,
-      username: user.userid,
-      fullName: user.fullName,
-      email: user.email,
-      role: user.role,
-      status: user.status,
-      createdDate: user.createdDate
+      message: 'Get user successfully',
+      success: true,
+      data: mapUserToContract(user)
     };
   },
 
@@ -80,15 +73,10 @@ export const mockUserAdapter = {
     
     addUserAccount(newUser);
     
-    // Return in frontend format
     return {
-      id: newUser.employeeid,
-      username: newUser.userid,
-      fullName: newUser.fullName,
-      email: newUser.email,
-      role: newUser.role,
-      status: newUser.status,
-      createdDate: newUser.createdDate
+      message: 'Create user successfully',
+      success: true,
+      data: mapUserToContract(newUser)
     };
   },
 
@@ -112,15 +100,10 @@ export const mockUserAdapter = {
       role: updates.roleName || updates.role || user.role
     });
     
-    // Return in frontend format
     return {
-      id: updatedUser.employeeid,
-      username: updatedUser.userid,
-      fullName: updatedUser.fullName,
-      email: updatedUser.email,
-      roleName: updatedUser.role,
-      status: updatedUser.status,
-      createdAt: updatedUser.createdDate
+      message: 'Update user successfully',
+      success: true,
+      data: mapUserToContract(updatedUser)
     };
   },
 
@@ -137,20 +120,16 @@ export const mockUserAdapter = {
     }
     
     const updatedUser = updateUserAccount(user.userid, { status });
-    
     return {
-      id: updatedUser.employeeid,
-      username: updatedUser.userid,
-      fullName: updatedUser.fullName,
-      email: updatedUser.email,
-      roleName: updatedUser.role,
-      status: updatedUser.status,
-      createdAt: updatedUser.createdDate
+      message: 'Update user status successfully',
+      success: true,
+      data: mapUserToContract(updatedUser)
     };
   },
 
   /**
-   * Delete user by ID
+    * Delete user by ID
+    * Note: mock-only. DELETE is not implemented in OpenAPI; kept for testing.
    */
   async deleteUser(id) {
     await randomDelay();
@@ -168,7 +147,20 @@ export const mockUserAdapter = {
     
     return {
       success: true,
-      message: 'User deleted successfully'
+      message: 'Delete user successfully'
     };
   }
 };
+
+function mapUserToContract(user) {
+  // Only contract fields; anything else should be marked as mock-extension if ever added
+  return {
+    id: user.employeeid,
+    username: user.userid,
+    fullName: user.fullName,
+    email: user.email,
+    roleName: user.role,
+    status: user.status,
+    createdAt: user.createdDate
+  };
+}

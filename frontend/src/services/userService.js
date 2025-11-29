@@ -11,7 +11,8 @@ export const userService = {
    */
   async getAllUsers() {
     const response = await userAdapter.getAllUsers();
-    return response;
+    const list = response?.data?.data || response?.data || response;
+    return Array.isArray(list) ? list : (Array.isArray(list?.data) ? list.data : []);
   },
 
   /**
@@ -22,7 +23,7 @@ export const userService = {
       throw new Error('User ID is required');
     }
     const response = await userAdapter.getUserById(id);
-    return response;
+    return response?.data?.data || response?.data || response;
   },
 
   /**
@@ -44,7 +45,7 @@ export const userService = {
     }
 
     const response = await userAdapter.createUser(userData);
-    return response;
+    return response?.data?.data || response?.data || response;
   },
 
   /**
@@ -59,7 +60,7 @@ export const userService = {
     }
 
     const response = await userAdapter.updateUser(id, updates);
-    return response;
+    return response?.data?.data || response?.data || response;
   },
 
   /**
@@ -74,7 +75,7 @@ export const userService = {
     }
 
     const response = await userAdapter.updateUserStatus(id, status);
-    return response;
+    return response?.data?.data || response?.data || response;
   },
 
   /**
