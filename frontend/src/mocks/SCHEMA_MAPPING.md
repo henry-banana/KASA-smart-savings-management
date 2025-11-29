@@ -54,8 +54,8 @@ Notes:
 ## Regulations
 
   - Base `data`: `{ minInitialDeposit: number, minTermMonths: number }`
-  - Interest rates `data.items`: `[{ typeSavingId: string, term: number, interestRate: number }]`
-  - Legacy: `rate` → `interestRate`, `typeid` → `typeSavingId`
+  - Interest rates `data.items`: `[{ typeSavingId: string, term: number, rate: number }]`
+  - Legacy: `interestRate` in TypeSaving seed → `rate` in Regulations interest-rates responses; `typeid` → `typeSavingId`
 
 
 ## Reports — Daily & Monthly
