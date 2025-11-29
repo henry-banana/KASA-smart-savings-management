@@ -2,6 +2,7 @@ import { apiClient } from './apiClient';
 
 export const authApi = {
   async login(credentials) {
+    // Chỉ đổi để giống với API phía BE. Đợi sau khi BE fix lại thì đổi lại.
     // const response = await apiClient.post('/api/auth', credentials);
     const response = await apiClient.post('/api/login', credentials);
     return response.data;
