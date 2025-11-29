@@ -29,5 +29,9 @@ export const getDailyReport = async (date) => {
  * @returns {Promise<Object>} Monthly open/close report data
  */
 export const getMonthlyOpenCloseReport = async (month, year, savingsType = 'all') => {
-  return reportAdapter.getMonthlyOpenCloseReport(month, year, savingsType);
+  // Map UI's savingsType (e.g., 'all' or human labels) to optional typeSavingId param when available
+  const normalized = (savingsType || '').toString().trim();
+  const isTypeId = /^TS\d+/i.test(normalized);
+  const typeSavingId = isTypeId ? normalized : undefined;
+  return reportAdapter.getMonthlyOpenCloseReport(month, year, typeSavingId);
 };

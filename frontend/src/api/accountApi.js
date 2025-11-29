@@ -11,18 +11,21 @@ export const accountApi = {
     return response.data;
   },
 
-  async deposit(id, amount) {
-    const response = await apiClient.post('/api/transactions/deposit', { 
-      bookId: id, 
-      amount 
+  async deposit(id, amount, employeeId) {
+    const response = await apiClient.post('/api/transactions/deposit', {
+      bookId: id,
+      amount,
+      employeeId
     });
     return response.data;
   },
 
-  async withdraw(id, amount) {
-    const response = await apiClient.post('/api/transactions/withdraw', { 
-      bookId: id, 
-      amount 
+  async withdraw(id, amount, shouldCloseAccount, employeeId) {
+    const response = await apiClient.post('/api/transactions/withdraw', {
+      bookId: id,
+      amount,
+      employeeId,
+      shouldCloseAccount
     });
     return response.data;
   },
@@ -30,5 +33,15 @@ export const accountApi = {
   async searchAccounts(params) {
     const response = await apiClient.get('/api/savingbook/search', { params });
     return response.data;
+  },
+
+  // Aliases for service compatibility
+  async getSavingBookById(id) {
+    return this.getAccount(id);
+  },
+
+  async searchSavingBooks(keyword = '', typeFilter = 'all', statusFilter = 'all') {
+    const params = { keyword, type: typeFilter, status: statusFilter };
+    return this.searchAccounts(params);
   }
 };

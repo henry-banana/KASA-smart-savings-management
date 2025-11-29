@@ -2,7 +2,7 @@ import { apiClient } from './apiClient';
 
 export const authApi = {
   async login(credentials) {
-    const response = await apiClient.post('/api/login', credentials);
+    const response = await apiClient.post('/api/auth', credentials);
     return response.data;
   },
 

@@ -2,8 +2,6 @@ import { USE_MOCK } from '@/config/app.config';
 import { accountApi } from '@/api/accountApi';
 import { mockSavingBookAdapter } from '@/mocks/adapters/savingBookAdapter';
 
-const savingBookAdapter = USE_MOCK ? mockSavingBookAdapter : accountApi;
-
 /**
  * Tạo sổ tiết kiệm mới (BM1)
  * @param {Object} data - Thông tin sổ tiết kiệm
@@ -53,7 +51,10 @@ export const createSavingBook = async (data) => {
  * @returns {Promise<Object>} Search results
  */
 export const searchSavingBooks = async (keyword = '', typeFilter = 'all', statusFilter = 'all') => {
-  return savingBookAdapter.searchSavingBooks(keyword, typeFilter, statusFilter);
+  if (USE_MOCK) {
+    return mockSavingBookAdapter.searchSavingBooks(keyword, typeFilter, statusFilter);
+  }
+  return accountApi.searchSavingBooks(keyword, typeFilter, statusFilter);
 };
 
 /**
@@ -65,6 +66,8 @@ export const getSavingBookById = async (id) => {
   if (!id) {
     throw new Error('Vui lòng nhập mã sổ');
   }
-
-  return savingBookAdapter.getSavingBookById(id);
+  if (USE_MOCK) {
+    return mockSavingBookAdapter.getSavingBookById(id);
+  }
+  return accountApi.getSavingBookById(id);
 };

@@ -38,8 +38,9 @@ export const depositMoney = async (accountCode, amount) => {
   if (USE_MOCK) {
     return mockTransactionAdapter.depositMoney({ bookId: accountCode, amount });
   } else {
-    // Real API uses deposit method
-    return accountApi.deposit(accountCode, amount);
+    // Real API requires employeeId
+    const employeeId = getCurrentUserId();
+    return accountApi.deposit(accountCode, amount, employeeId);
   }
 };
 
@@ -58,7 +59,33 @@ export const withdrawMoney = async (accountCode, amount, shouldCloseAccount) => 
   if (USE_MOCK) {
     return mockTransactionAdapter.withdrawMoney({ bookId: accountCode, amount, shouldCloseAccount });
   } else {
-    // Real API uses withdraw method
-    return accountApi.withdraw(accountCode, amount, shouldCloseAccount);
+    // Real API requires employeeId and optional shouldCloseAccount
+    const employeeId = getCurrentUserId();
+    return accountApi.withdraw(accountCode, amount, shouldCloseAccount, employeeId);
   }
 };
+
+// Attempt to derive current user/employee ID from localStorage
+function getCurrentUserId() {
+  try {
+    // Common storage keys that may hold the user object
+    const candidates = ['user', 'authUser', 'currentUser'];
+    for (const key of candidates) {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const obj = JSON.parse(raw);
+        if (obj?.id || obj?.userId || obj?.employeeId) {
+          return obj.id || obj.userId || obj.employeeId;
+        }
+      }
+    }
+    // Direct id keys
+    return (
+      localStorage.getItem('userId') ||
+      localStorage.getItem('employeeId') ||
+      undefined
+    );
+  } catch (_) {
+    return undefined;
+  }
+}
