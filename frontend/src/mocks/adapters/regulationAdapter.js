@@ -61,7 +61,9 @@ export const mockRegulationAdapter = {
     const data = mockTypeSavings.map(ts => ({
       typeSavingId: ts.typeSavingId,
       typeName: ts.typeName,
-      interestRate: ts.interestRate, // Canonical field name
+      rate: ts.interestRate,
+      // Deprecated: keep for transition only; use `rate` for regulations APIs
+      interestRate: ts.interestRate,
       term: ts.term, // Term in months (0 = no term)
       editable: true
     }));
@@ -109,7 +111,9 @@ export const mockRegulationAdapter = {
     const updated = mockTypeSavings.map(ts => ({
       typeSavingId: ts.typeSavingId,
       typeName: ts.typeName,
-      interestRate: ts.interestRate, // Canonical field name
+      rate: ts.interestRate,
+      // Deprecated: keep for transition only; use `rate` for regulations APIs
+      interestRate: ts.interestRate,
       term: ts.term, // Term in months (0 = no term)
       editable: true
     }));

@@ -28,7 +28,7 @@ export const mockAuthAdapter = {
       message: 'Login successfully',
       success: true,
       data: {
-        id: user.userid, // canonical field name
+        userId: user.userid, // canonical field name per OpenAPI
         username: username, // reflect the real login identifier
         roleName: user.role,
         fullName: user.fullName,
