@@ -94,8 +94,8 @@ export const setCurrentUser = (userData) => {
     }
   }
   
-  // Map mockUserAccounts fields to profile fields
-  // Ensure all field names match what the Profile UI expects
+  // Map mockUserAccounts fields to canonical profile fields (OpenAPI contract)
+  // Never expose password in profile
   currentUserProfile = {
     id: fullUserData.employeeid || fullUserData.id,
     username: fullUserData.userid || fullUserData.username,
@@ -103,14 +103,15 @@ export const setCurrentUser = (userData) => {
     email: fullUserData.email,
     roleName: fullUserData.role || fullUserData.roleName,
     status: fullUserData.status || "active",
-    employeeid: fullUserData.employeeid || fullUserData.id,
+    createdAt: fullUserData.createdDate || new Date().toISOString().split('T')[0],
+    // Legacy field for internal compatibility
     createdDate: fullUserData.createdDate || new Date().toISOString().split('T')[0],
-    lastlogin: fullUserData.lastlogin || new Date().toISOString(),
     // Extended profile fields (can be overridden)
     phone: fullUserData.phone || userData.phone || "0901234567",
     address: fullUserData.address || userData.address || "123 Main Street, District 1, Ho Chi Minh City",
     dateOfBirth: fullUserData.dateOfBirth || userData.dateOfBirth || "2004-01-01",
     avatarUrl: fullUserData.avatarUrl || userData.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${fullUserData.userid || fullUserData.username}`
+    // Note: password is NEVER included in profile
   };
   
   return currentUserProfile;

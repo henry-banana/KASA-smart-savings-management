@@ -97,6 +97,6 @@ export const mockProfileAdapter = {
     updateUserPassword(currentUsername, newPassword);
     logger.info('Password changed successfully');
     
-    return buildChangePasswordSuccessResponse();
+    return buildChangePasswordSuccessResponse(currentProfile.id);
   }
 };
