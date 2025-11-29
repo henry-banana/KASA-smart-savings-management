@@ -1100,32 +1100,39 @@ export const mockTransactions = [
 /**
  * Helper functions for transaction data
  */
-export const findTransactionById = (transactionid) => {
-  return mockTransactions.find(t => t.transactionid === transactionid);
+
+// Canonical helper: find by transactionId
+export const findTransactionById = (transactionId) => {
+  return mockTransactions.find(t => t.transactionId === transactionId);
 };
 
-export const findTransactionsByBookId = (bookid) => {
-  return mockTransactions.filter(t => t.bookId === bookid);
+
+export const findTransactionsByBookId = (bookId) => {
+  return mockTransactions.filter(t => t.bookId === bookId);
 };
 
-export const findTransactionsByType = (transactiontype) => {
-  return mockTransactions.filter(t => t.transactiontype === transactiontype);
+
+export const findTransactionsByType = (type) => {
+  return mockTransactions.filter(t => t.type === type);
 };
+
 
 export const findTransactionsByDateRange = (startDate, endDate) => {
   return mockTransactions.filter(t => {
-    const transDate = new Date(t.transactiondate);
+    const transDate = new Date(t.transactionDate);
     return transDate >= new Date(startDate) && transDate <= new Date(endDate);
   });
 };
+
 
 export const addTransaction = (transaction) => {
   mockTransactions.push(transaction);
   return transaction;
 };
 
-export const updateTransaction = (transactionid, updates) => {
-  const index = mockTransactions.findIndex(t => t.transactionid === transactionid);
+
+export const updateTransaction = (transactionId, updates) => {
+  const index = mockTransactions.findIndex(t => t.transactionId === transactionId);
   if (index !== -1) {
     mockTransactions[index] = { ...mockTransactions[index], ...updates };
     return mockTransactions[index];
@@ -1133,8 +1140,9 @@ export const updateTransaction = (transactionid, updates) => {
   return null;
 };
 
-export const deleteTransaction = (transactionid) => {
-  const index = mockTransactions.findIndex(t => t.transactionid === transactionid);
+
+export const deleteTransaction = (transactionId) => {
+  const index = mockTransactions.findIndex(t => t.transactionId === transactionId);
   if (index !== -1) {
     const deleted = mockTransactions.splice(index, 1)[0];
     return deleted;
@@ -1145,8 +1153,9 @@ export const deleteTransaction = (transactionid) => {
 /**
  * Generate next transaction ID
  */
+
 export const generateTransactionId = () => {
-  const lastId = mockTransactions[mockTransactions.length - 1]?.transactionid || "TXN000";
+  const lastId = mockTransactions[mockTransactions.length - 1]?.transactionId || "TXN000";
   const num = parseInt(lastId.substring(3)) + 1;
   return `TXN${String(num).padStart(3, '0')}`;
 };

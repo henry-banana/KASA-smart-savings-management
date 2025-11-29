@@ -6,28 +6,21 @@ import { findEmployeeById, findRoleById } from '../data/employees.js';
 import { BUSINESS_RULES, TRANSACTION_TYPES } from '@/constants/business.js';
 import { logger } from '@/utils/logger';
 
-// Helper: build contract savingBook object
-const buildSavingBookPayload = (sb, type) => ({
+// Helper: build contract savingBook object (OpenAPI shape)
+const buildSavingBookPayload = (sb) => ({
   bookId: sb.bookId,
   citizenId: sb.citizenId,
   customerName: sb.customerName,
   typeSavingId: sb.typeSavingId,
   openDate: sb.openDate,
-  maturityDate: sb.maturityDate, // may be null (no term)
+  maturityDate: sb.maturityDate,
   balance: sb.balance,
-  status: sb.status,
-  typeSaving: type ? {
-    typeSavingId: type.typeSavingId,
-    typeName: type.typeName,
-    term: type.term,
-    interestRate: type.interestRate
-  } : {},
-  transactions: [] // mock-extension: omitted actual transaction list for brevity
+  status: sb.status
 });
 
-// Helper: build employee payload (minimal contract shape)
+// Helper: build employee payload (OpenAPI shape)
 const buildEmployeePayload = (employee) => {
-  if (!employee) return {};
+  if (!employee) return undefined;
   const role = findRoleById(employee.roleid);
   return {
     employeeId: employee.employeeid,
@@ -90,12 +83,13 @@ export const mockTransactionAdapter = {
     const result = updateSavingBookBalance(bookId, amount);
     if (!result) throw new Error('Failed to update balance');
 
-    // Build transaction record (contract-like fields)
+    // Build transaction record (OpenAPI contract fields)
     const transactionId = generateId('TXN');
     const transactionDate = new Date().toISOString();
-    const employee = buildEmployeePayload(findEmployeeById(employeeId) || findEmployeeById('EMP001'));
+    const employeeObj = findEmployeeById(employeeId) || findEmployeeById('EMP001');
+    const employee = buildEmployeePayload(employeeObj);
 
-    const type = TRANSACTION_TYPES.DEPOSIT;
+    const type = 'Deposit';
     addTransaction({
       transactionId,
       bookId,
@@ -104,12 +98,12 @@ export const mockTransactionAdapter = {
       transactionDate,
       balanceBefore: result.balanceBefore,
       balanceAfter: result.balanceAfter,
-      employeeId: employee.employeeId
+      employeeId: employee?.employeeId
     });
 
     // Update savingBook object with new balance
     const updatedSavingBook = { ...savingBook, balance: result.balanceAfter };
-    const savingBookPayload = buildSavingBookPayload(updatedSavingBook, typeSaving);
+    const savingBookPayload = buildSavingBookPayload(updatedSavingBook);
 
     return {
       message: 'Deposit successfully',
@@ -117,7 +111,7 @@ export const mockTransactionAdapter = {
       data: {
         transactionId,
         bookId,
-        type: 'Deposit',
+        type,
         amount,
         balanceBefore: result.balanceBefore,
         balanceAfter: result.balanceAfter,
@@ -171,9 +165,10 @@ export const mockTransactionAdapter = {
 
     const transactionId = generateId('TXN');
     const transactionDate = new Date().toISOString();
-    const employee = buildEmployeePayload(findEmployeeById(employeeId) || findEmployeeById('EMP001'));
+    const employeeObj = findEmployeeById(employeeId) || findEmployeeById('EMP001');
+    const employee = buildEmployeePayload(employeeObj);
 
-    const type = TRANSACTION_TYPES.WITHDRAW;
+    const type = 'Withdraw';
     addTransaction({
       transactionId,
       bookId,
@@ -182,11 +177,11 @@ export const mockTransactionAdapter = {
       transactionDate,
       balanceBefore: result.balanceBefore,
       balanceAfter: result.balanceAfter,
-      employeeId: employee.employeeId
+      employeeId: employee?.employeeId
     });
 
     const updatedSavingBook = { ...savingBook, balance: result.balanceAfter };
-    const savingBookPayload = buildSavingBookPayload(updatedSavingBook, typeSaving);
+    const savingBookPayload = buildSavingBookPayload(updatedSavingBook);
 
     return {
       message: 'Withdraw successfully',
@@ -194,7 +189,7 @@ export const mockTransactionAdapter = {
       data: {
         transactionId,
         bookId,
-        type: 'Withdraw',
+        type,
         amount,
         balanceBefore: result.balanceBefore,
         balanceAfter: result.balanceAfter,
