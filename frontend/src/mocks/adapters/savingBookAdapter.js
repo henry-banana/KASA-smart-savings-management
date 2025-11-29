@@ -28,7 +28,7 @@ export const mockSavingBookAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Search SavingBooks', { keyword, typeFilter, statusFilter });
 
-    // Map to contract list item
+    // Map to contract list item (canonical fields only)
     let items = mockSavingBooks.map(sb => {
       const type = findTypeSavingById(sb.typeSavingId);
       return {
@@ -39,10 +39,7 @@ export const mockSavingBookAdapter = {
         accountTypeName: type?.typeName || 'Unknown',
         openDate: sb.openDate,
         balance: sb.balance,
-        status: sb.status,
-        // mock-extension: legacy UI fields
-        customer: sb.customerName,
-        type: type?.typeName || 'Unknown'
+        status: sb.status
       };
     });
 
