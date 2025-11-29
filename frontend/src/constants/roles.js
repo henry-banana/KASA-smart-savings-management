@@ -25,13 +25,6 @@ export const ROLE_PERMISSIONS = {
     'monthly_report'
   ],
   [ROLES.ADMIN]: [
-    'view_dashboard',
-    'open_account',
-    'deposit',
-    'withdraw',
-    'search_accounts',
-    'daily_report',
-    'monthly_report',
     'regulations',
     'user_management'
   ]
