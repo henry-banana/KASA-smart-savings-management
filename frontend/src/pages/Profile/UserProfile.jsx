@@ -329,7 +329,8 @@ export default function UserProfile() {
                 }
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            {/* TODO: Delete if database not add lastLogin */}
+            {/* <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Last Login</p>
               <p className="text-sm font-semibold text-gray-900">
                 {(profileData?.lastLogin || profileData?.lastlogin) 
@@ -342,7 +343,7 @@ export default function UserProfile() {
                   : 'N/A'
                 }
               </p>
-            </div>
+            </div> */}
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Department</p>
               <p className="text-sm font-semibold text-gray-900 capitalize">
