@@ -77,7 +77,7 @@ export default function Withdraw() {
       });
 
       // Auto-fill withdrawal amount for fixed-term accounts
-      if (account.term > 0) {
+      if (account.accountTypeName !== 'No Term') {
         setWithdrawAmount(account.balance.toString());
         const interest = account.balance * account.interestRate * (daysSinceOpen / 365);
         setCalculatedInterest(Math.round(interest));
@@ -125,7 +125,7 @@ export default function Withdraw() {
     }
 
     // Check fixed-term withdrawal rules
-    if (accountInfo.term > 0) {
+    if (accountInfo.accountTypeName !== 'No Term' && accountInfo.maturityDate) {
       const today = new Date();
       const maturityDate = new Date(accountInfo.maturityDate);
       
@@ -188,7 +188,7 @@ export default function Withdraw() {
   };
 
   const isFixedTermAccount = () => {
-    return accountInfo && accountInfo.type !== "No Term";
+    return accountInfo && accountInfo.accountTypeName !== "No Term";
   };
 
 
@@ -285,7 +285,7 @@ export default function Withdraw() {
                   <div>
                     <p className="text-xs text-gray-500">Account Type</p>
                     <Badge className="bg-amber-100 text-amber-700 border-amber-200">
-                      {accountInfo.type}
+                      {accountInfo.accountTypeName}
                     </Badge>
                   </div>
                   <div>

@@ -36,7 +36,7 @@ export const depositMoney = async (accountCode, amount) => {
   }
 
   if (USE_MOCK) {
-    return mockTransactionAdapter.depositMoney(accountCode, amount);
+    return mockTransactionAdapter.depositMoney({ bookId: accountCode, amount });
   } else {
     // Real API uses deposit method
     return accountApi.deposit(accountCode, amount);
@@ -56,7 +56,7 @@ export const withdrawMoney = async (accountCode, amount, shouldCloseAccount) => 
   }
 
   if (USE_MOCK) {
-    return mockTransactionAdapter.withdrawMoney(accountCode, amount, shouldCloseAccount);
+    return mockTransactionAdapter.withdrawMoney({ bookId: accountCode, amount, shouldCloseAccount });
   } else {
     // Real API uses withdraw method
     return accountApi.withdraw(accountCode, amount, shouldCloseAccount);

@@ -38,7 +38,7 @@ export default function Deposit() {
       const response = await getAccountInfo(accountId);
       const account = response.data;
       
-      if (account.typeName !== 'No Term') {
+      if (account.accountTypeName !== 'No Term') {
         setError('Deposits are only allowed for No Term savings accounts');
         return;
       }
@@ -189,7 +189,7 @@ export default function Deposit() {
                 <StarDecor className="top-2 right-2" />
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Account ID:</span>
-                  <span className="font-semibold text-[#1A4D8F]">{accountInfo.id}</span>
+                  <span className="font-semibold text-[#1A4D8F]">{accountInfo.bookId}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Customer Name:</span>
