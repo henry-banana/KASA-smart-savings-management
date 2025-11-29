@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { getDashboardStats, getRecentTransactions } from '@/services/dashboardService';
+import { mockSavingBooks } from '@/mocks/data/savingBooks';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { 
@@ -432,35 +433,60 @@ export default function Dashboard() {
             </div>
           ) : (
           <div className="space-y-3">
-            {recentTransactions.map((transaction, index) => (
-              <div 
-                key={index} 
-                className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:shadow-md"
-              >
-                <div className="flex items-center gap-4">
-                  <div 
-                    className="flex items-center justify-center w-12 h-12 text-2xl shadow-sm rounded-2xl"
-                    style={{ backgroundColor: `${transaction.color}15` }}
-                  >
-                    {transaction.emoji}
+            {recentTransactions.map((transaction, index) => {
+              // Format raw data for display
+              const isDeposit = transaction.type === 'deposit';
+
+              // Detect if this is an opening deposit by checking if transaction date matches saving book open date
+              const savingBook = mockSavingBooks.find(sb => sb.bookId === transaction.accountCode);
+              const isOpenAccount = Boolean(
+                savingBook && 
+                transaction.type === 'deposit' && 
+                savingBook.openDate === transaction.date
+              );
+
+              let emoji = isDeposit ? '💰' : '💵';
+              let color = isDeposit ? '#00AEEF' : '#F59E0B';
+              let typeLabel = isDeposit ? 'Deposit' : 'Withdrawal';
+
+              if (isOpenAccount) {
+                emoji = '🏦';
+                color = '#1A4D8F';
+                typeLabel = 'Open Account';
+              }
+
+              const amountDisplay = isDeposit 
+                ? `+₫${transaction.amount.toLocaleString()}`
+                : `-₫${transaction.amount.toLocaleString()}`;
+
+              return (
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:shadow-md"
+                >
+                  <div className="flex items-center gap-4">
+                    <div 
+                      className="flex items-center justify-center w-12 h-12 text-2xl shadow-sm rounded-2xl"
+                      style={{ backgroundColor: `${color}15` }}
+                    >
+                      {emoji}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{transaction.customerName}</p>
+                      <p className="text-sm text-gray-500">{transaction.accountCode} • {typeLabel}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-gray-900">{transaction.customer}</p>
-                    <p className="text-sm text-gray-500">{transaction.id} • {transaction.type}</p>
+                  <div className="text-right">
+                    <p className={`font-semibold ${
+                      isDeposit ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {amountDisplay}
+                    </p>
+                    <p className="text-sm text-gray-500">{transaction.time}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className={`font-semibold ${
-                    transaction.type === 'Deposit' ? 'text-green-600' : 
-                    transaction.type === 'Withdrawal' ? 'text-red-600' : 
-                    'text-gray-900'
-                  }`}>
-                    {transaction.amount}
-                  </p>
-                  <p className="text-sm text-gray-500">{transaction.time}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           )}
         </CardContent>
