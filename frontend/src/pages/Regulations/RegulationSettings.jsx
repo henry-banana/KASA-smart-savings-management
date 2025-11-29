@@ -71,7 +71,7 @@ export default function RegulationSettings() {
               const formattedRates = typesResponse.data.map(ts => ({
                 typeSavingId: ts.typeSavingId,
                 typeName: ts.typeName,
-                rate: ts.interestRate,
+                interestRate: ts.interestRate,
                 term: ts.term,
                 editable: true
               }));
@@ -87,7 +87,7 @@ export default function RegulationSettings() {
               const formattedRates = typesResponse.data.map(ts => ({
                 typeSavingId: ts.typeSavingId,
                 typeName: ts.typeName,
-                rate: ts.interestRate,
+                interestRate: ts.interestRate,
                 term: ts.term,
                 editable: true
               }));
@@ -124,7 +124,7 @@ export default function RegulationSettings() {
 
   const handleUpdateRate = (index, newRate) => {
     const updated = [...interestRates];
-    updated[index].rate = newRate;
+    updated[index].interestRate = newRate;
     setInterestRates(updated);
   };
 
@@ -154,7 +154,7 @@ export default function RegulationSettings() {
           const ratesToUpdate = interestRates.map(r => ({
             typeSavingId: r.typeSavingId,
             typeName: r.typeName,
-            rate: Number(r.rate),
+            interestRate: Number(r.interestRate),
             term: Number(r.term ?? 0),
             editable: r.editable
           }));
@@ -360,7 +360,7 @@ export default function RegulationSettings() {
                           <Input
                             type="number"
                             step="0.1"
-                            value={item.rate}
+                            value={item.interestRate}
                             onChange={(e) => handleUpdateRate(index, e.target.value)}
                             className="w-32 h-10 border-gray-200 rounded-xl"
                           />
@@ -475,7 +475,7 @@ export default function RegulationSettings() {
                 {interestRates.map((item, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <span className="text-sm text-green-800">{item.typeName}:</span>
-                    <span className="text-sm font-semibold text-green-900">{item.rate}% per month</span>
+                    <span className="text-sm font-semibold text-green-900">{item.interestRate}% per month</span>
                   </div>
                 ))}
               </div>
@@ -603,7 +603,7 @@ export default function RegulationSettings() {
                 <li>Minimum Deposit: ₫{Number(minDeposit).toLocaleString()}</li>
                 <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
                 {interestRates.map((item, index) => (
-                  <li key={index}>Interest Rate {item.typeName}: {item.rate}%</li>
+                  <li key={index}>Interest Rate {item.typeName}: {item.interestRate}%</li>
                 ))}
               </ul>
             </div>
@@ -650,7 +650,7 @@ export default function RegulationSettings() {
                     <li key={id} className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-red-500 rounded-full"></span>
                       <span className="font-medium">{item.typeName}</span>
-                      <span className="text-xs text-red-600">({item.rate}% per month)</span>
+                      <span className="text-xs text-red-600">({item.interestRate}% per month)</span>
                     </li>
                   ) : null;
                 })}

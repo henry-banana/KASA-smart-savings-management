@@ -19,8 +19,8 @@ export const mockDashboardAdapter = {
     const data = getDashboardData();
     
     return {
+      message: 'Get dashboard statistics successfully',
       success: true,
-      message: 'Dashboard statistics retrieved successfully',
       data
     };
   },
@@ -39,7 +39,7 @@ export const mockDashboardAdapter = {
     const transactions = getRecentTransactions();
     
     return {
-      message: 'Recent transactions retrieved successfully',
+      message: 'Get recent transactions successfully',
       success: true,
       data: transactions,
       total: transactions.length

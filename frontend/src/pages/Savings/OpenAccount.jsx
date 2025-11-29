@@ -97,7 +97,7 @@ export default function OpenAccount() {
             id: ts.typeSavingId,
             name: ts.typeName,
             description: ts.term === 0 ? 'Flexible withdrawal' : `Fixed term ${ts.term} month${ts.term > 1 ? 's' : ''}`,
-            interestRate: ts.rate,
+            interestRate: ts.interestRate,
             term: ts.term,
             emoji: ts.term === 0 ? '🔄' : (ts.term === 3 ? '📅' : (ts.term === 6 ? '⭐' : '🔥')),
             color: ts.term === 0

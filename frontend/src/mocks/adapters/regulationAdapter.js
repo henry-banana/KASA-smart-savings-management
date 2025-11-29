@@ -57,17 +57,17 @@ export const mockRegulationAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Get Interest Rates');
     
-    // Derive from current mockTypeSavings with contract field names
+    // Derive from current mockTypeSavings with canonical field names
     const data = mockTypeSavings.map(ts => ({
       typeSavingId: ts.typeSavingId,
       typeName: ts.typeName,
-      rate: ts.interestRate, // Contract uses 'rate' not 'interestRate'
+      interestRate: ts.interestRate, // Canonical field name
       term: ts.term, // Term in months (0 = no term)
       editable: true
     }));
     
     return {
-      message: 'Interest rates retrieved successfully',
+      message: 'Get interest rates successfully',
       success: true,
       data
     };
@@ -93,9 +93,10 @@ export const mockRegulationAdapter = {
       const ts = mockTypeSavings.find(t => t.typeSavingId === r.typeSavingId);
       if (!ts) return;
       
-      // Update interest rate if valid
-      if (typeof r.rate === 'number' && r.rate > 0) {
-        ts.interestRate = r.rate;
+      // Update interest rate if valid (accept both interestRate and rate for backward compatibility)
+      const newRate = r.interestRate ?? r.rate;
+      if (typeof newRate === 'number' && newRate > 0) {
+        ts.interestRate = newRate;
       }
       
       // Update term if provided
@@ -104,17 +105,17 @@ export const mockRegulationAdapter = {
       }
     });
     
-    // Return updated rates with contract field names
+    // Return updated rates with canonical field names
     const updated = mockTypeSavings.map(ts => ({
       typeSavingId: ts.typeSavingId,
       typeName: ts.typeName,
-      rate: ts.interestRate,
+      interestRate: ts.interestRate, // Canonical field name
       term: ts.term, // Term in months (0 = no term)
       editable: true
     }));
     
     return {
-      message: 'Interest rates updated successfully',
+      message: 'Update interest rates successfully',
       success: true,
       data: updated
     };
@@ -153,7 +154,7 @@ export const mockRegulationAdapter = {
     ];
     
     return {
-      message: 'Change history retrieved successfully',
+      message: 'Get change history successfully',
       success: true,
       data: history
     };
