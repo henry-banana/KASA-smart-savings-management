@@ -1,3 +1,4 @@
+// DEPRECATED: This adapter is no longer used. Use savingBookAdapter/transactionAdapter instead.
 import { 
   mockSavingBooks,
   findSavingBookById, 

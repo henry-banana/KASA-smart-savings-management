@@ -1,9 +1,7 @@
 import { USE_MOCK } from '@/config/app.config';
 import { accountApi } from '@/api/accountApi';
-import { mockAccountAdapter } from '@/mocks/adapters/accountAdapter';
 import { mockSavingBookAdapter } from '@/mocks/adapters/savingBookAdapter';
 
-const accountAdapter = USE_MOCK ? mockAccountAdapter : accountApi;
 const savingBookAdapter = USE_MOCK ? mockSavingBookAdapter : accountApi;
 
 /**
@@ -21,7 +19,23 @@ export const createSavingBook = async (data) => {
     throw new Error('Số tiền tối thiểu là 100,000 VND');
   }
 
-  return accountAdapter.createAccount({
+  if (USE_MOCK) {
+    // Use canonical mock adapter directly and alias accountCode for UI compatibility
+    const resp = await mockSavingBookAdapter.createSavingBook({
+      citizenId: data.idCard,
+      customerName: data.customerName,
+      typeSavingId: data.savingsType,
+      openDate: data.openDate,
+      balance: parseFloat(data.initialDeposit)
+    });
+    return {
+      ...resp,
+      data: { ...resp.data, accountCode: resp.data.bookId }
+    };
+  }
+
+  // Backend API expects backend payload; keep existing mapping here
+  return accountApi.createAccount({
     customer_name: data.customerName,
     id_card: data.idCard,
     address: data.address,
