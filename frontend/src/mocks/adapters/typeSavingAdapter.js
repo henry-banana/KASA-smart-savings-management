@@ -43,7 +43,9 @@ export const mockTypeSavingAdapter = {
       success: true,
       data: {
         ...typeSaving,
+        // mock-extension: not in OpenAPI
         totalActiveSavingBooks: 0,
+        // mock-extension: not in OpenAPI
         totalDeposits: 0
       }
     };
