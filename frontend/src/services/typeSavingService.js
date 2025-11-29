@@ -46,7 +46,16 @@ export const createTypeSaving = async (data) => {
     throw new Error('Interest rate must be greater than 0');
   }
 
-  return typeSavingAdapter.createTypeSaving(data);
+  if (USE_MOCK) {
+    return typeSavingAdapter.createTypeSaving(data);
+  }
+  // Transform to backend payload
+  const payload = {
+    typeName: data.typename.trim(),
+    term: Number(data.term),
+    interestRate: Number(data.interestRate)
+  };
+  return typeSavingAdapter.createTypeSaving(payload);
 };
 
 /**
@@ -63,7 +72,14 @@ export const updateTypeSaving = async (typeSavingId, data) => {
     throw new Error('No update data provided');
   }
   
-  return typeSavingAdapter.updateTypeSaving(typeSavingId, data);
+  if (USE_MOCK) {
+    return typeSavingAdapter.updateTypeSaving(typeSavingId, data);
+  }
+  const payload = {};
+  if (data.typename) payload.typeName = data.typename.trim();
+  if (data.term !== undefined) payload.term = Number(data.term);
+  if (data.interestRate !== undefined) payload.interestRate = Number(data.interestRate);
+  return typeSavingAdapter.updateTypeSaving(typeSavingId, payload);
 };
 
 /**

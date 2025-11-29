@@ -11,6 +11,10 @@ export const accountApi = {
     return response.data;
   },
 
+  /**
+   * Deposit transaction per OpenAPI: POST /api/transactions/deposit
+   * Body: { bookId, amount, employeeId }
+   */
   async deposit(id, amount, employeeId) {
     const response = await apiClient.post('/api/transactions/deposit', {
       bookId: id,
@@ -20,6 +24,10 @@ export const accountApi = {
     return response.data;
   },
 
+  /**
+   * Withdraw transaction per OpenAPI: POST /api/transactions/withdraw
+   * Body: { bookId, amount, employeeId, shouldCloseAccount? }
+   */
   async withdraw(id, amount, shouldCloseAccount, employeeId) {
     const response = await apiClient.post('/api/transactions/withdraw', {
       bookId: id,

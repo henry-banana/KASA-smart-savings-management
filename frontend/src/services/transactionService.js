@@ -26,7 +26,7 @@ export const getAccountInfo = async (accountCode) => {
  * @param {number} amount - Số tiền gửi
  * @returns {Promise<Object>} Transaction result
  */
-export const depositMoney = async (accountCode, amount) => {
+export const depositMoney = async (accountCode, amount, employeeIdOverride) => {
   if (!accountCode || !amount || amount <= 0) {
     throw new Error('Thông tin giao dịch không hợp lệ');
   }
@@ -37,11 +37,10 @@ export const depositMoney = async (accountCode, amount) => {
 
   if (USE_MOCK) {
     return mockTransactionAdapter.depositMoney({ bookId: accountCode, amount });
-  } else {
-    // Real API requires employeeId
-    const employeeId = getCurrentUserId();
-    return accountApi.deposit(accountCode, amount, employeeId);
   }
+  // Real API requires employeeId; allow override
+  const employeeId = employeeIdOverride || getCurrentUserId();
+  return accountApi.deposit(accountCode, amount, employeeId);
 };
 
 /**
@@ -51,18 +50,17 @@ export const depositMoney = async (accountCode, amount) => {
  * @param {boolean} shouldCloseAccount - Có đóng tài khoản không (cho sổ có kỳ hạn)
  * @returns {Promise<Object>} Transaction result
  */
-export const withdrawMoney = async (accountCode, amount, shouldCloseAccount) => {
+export const withdrawMoney = async (accountCode, amount, shouldCloseAccount, employeeIdOverride) => {
   if (!accountCode || !amount || amount <= 0) {
     throw new Error('Thông tin giao dịch không hợp lệ');
   }
 
   if (USE_MOCK) {
     return mockTransactionAdapter.withdrawMoney({ bookId: accountCode, amount, shouldCloseAccount });
-  } else {
-    // Real API requires employeeId and optional shouldCloseAccount
-    const employeeId = getCurrentUserId();
-    return accountApi.withdraw(accountCode, amount, shouldCloseAccount, employeeId);
   }
+  // Real API requires employeeId and optional shouldCloseAccount; allow override
+  const employeeId = employeeIdOverride || getCurrentUserId();
+  return accountApi.withdraw(accountCode, amount, shouldCloseAccount, employeeId);
 };
 
 // Attempt to derive current user/employee ID from localStorage
