@@ -119,10 +119,10 @@ export default function MonthlyReport() {
               <div className="space-y-2">
                 <Label>Savings Type</Label>
                 <Select value={savingsType} onValueChange={setSavingsType}>
-                  <SelectTrigger className="h-12 rounded-xl border-2">
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select savings type" />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent>
                     {savingsTypes.map((type) => (
                       <SelectItem key={type.value} value={type.value}>
                         {type.label}

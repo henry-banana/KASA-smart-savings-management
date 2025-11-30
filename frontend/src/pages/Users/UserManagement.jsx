@@ -499,10 +499,10 @@ export default function UserManagement() {
                     setFormData({ ...formData, role: value })
                   }
                 >
-                  <SelectTrigger className="border-gray-200 h-11 rounded-xl">
+                  <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent>
                     <SelectItem value="teller">Teller</SelectItem>
                     <SelectItem value="accountant">Accountant</SelectItem>
                     <SelectItem value="admin">Administrator</SelectItem>
@@ -622,10 +622,10 @@ export default function UserManagement() {
                     setFormData({ ...formData, role: value })
                   }
                 >
-                  <SelectTrigger className="border-gray-200 h-11 rounded-xl">
+                  <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent>
                     <SelectItem value="teller">Teller</SelectItem>
                     <SelectItem value="accountant">Accountant</SelectItem>
                     <SelectItem value="admin">Administrator</SelectItem>

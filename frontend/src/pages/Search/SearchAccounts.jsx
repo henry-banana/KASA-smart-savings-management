@@ -237,10 +237,10 @@ export default function SearchAccounts() {
                     Account Type
                   </Label>
                   <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger className="text-sm border-gray-200 h-11 sm:h-12 rounded-xl sm:text-base">
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="All" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl">
+                    <SelectContent>
                       {accountTypeOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
@@ -251,12 +251,14 @@ export default function SearchAccounts() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-gray-700">Status</Label>
+                  <Label className="text-sm text-gray-700 sm:text-base">
+                    Status
+                  </Label>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="h-12 border-gray-200 rounded-xl">
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="All" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl">
+                    <SelectContent>
                       <SelectItem value="all">All</SelectItem>
                       <SelectItem value="active">Active</SelectItem>
                       <SelectItem value="closed">Closed</SelectItem>
