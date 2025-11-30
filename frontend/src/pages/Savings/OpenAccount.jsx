@@ -40,7 +40,7 @@ import {
   PiggyBankIllustration,
 } from "../../components/CuteComponents";
 import { createSavingBook } from "../../services/savingBookService";
-import { getInterestRates } from "@/services/regulationService";
+import { getInterestRates, getRegulations } from "@/services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
 
 export default function OpenAccount() {
@@ -61,6 +61,11 @@ export default function OpenAccount() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Minimum deposit from regulations (dynamic)
+  const [minDeposit, setMinDeposit] = useState(null);
+  const [regulationsError, setRegulationsError] = useState("");
+  const [loadingRegulations, setLoadingRegulations] = useState(true);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -74,8 +79,10 @@ export default function OpenAccount() {
       newErrors.savingsType = "Please select savings type";
     if (!formData.initialDeposit) {
       newErrors.initialDeposit = "Please enter amount";
-    } else if (Number(formData.initialDeposit) < 100000) {
-      newErrors.initialDeposit = "Minimum amount is 100,000 VND";
+    } else if (!minDeposit || Number(formData.initialDeposit) < minDeposit) {
+      newErrors.initialDeposit = `Minimum amount is ₫${
+        minDeposit ? minDeposit.toLocaleString() : "..."
+      }`;
     }
 
     setErrors(newErrors);
@@ -113,6 +120,28 @@ export default function OpenAccount() {
 
   const [savingTypes, setSavingTypes] = useState([]);
   const [loadingTypes, setLoadingTypes] = useState(true);
+
+  // Fetch regulations (minDeposit) on mount
+  useEffect(() => {
+    const fetchRegulations = async () => {
+      setLoadingRegulations(true);
+      setRegulationsError("");
+      try {
+        const resp = await getRegulations();
+        if (resp.success && resp.data?.minimumDepositAmount) {
+          setMinDeposit(resp.data.minimumDepositAmount);
+        } else {
+          setRegulationsError("Cannot load minimum deposit rule");
+        }
+      } catch (err) {
+        console.error("Fetch regulations error:", err);
+        setRegulationsError(err.message || "Cannot load minimum deposit rule");
+      } finally {
+        setLoadingRegulations(false);
+      }
+    };
+    fetchRegulations();
+  }, []);
 
   useEffect(() => {
     const fetchTypes = async () => {
@@ -405,7 +434,12 @@ export default function OpenAccount() {
                             initialDeposit: e.target.value,
                           })
                         }
-                        placeholder="Minimum: 100,000"
+                        placeholder={
+                          minDeposit
+                            ? `Minimum: ${minDeposit.toLocaleString()}`
+                            : "Enter amount"
+                        }
+                        disabled={!!regulationsError || loadingRegulations}
                         className="pl-7 sm:pl-8 h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
                     </div>
@@ -416,7 +450,14 @@ export default function OpenAccount() {
                       </p>
                     )}
                     <p className="flex items-center gap-1 text-xs text-gray-500">
-                      <span>💡</span> Minimum amount: ₫100,000
+                      <span>💡</span>{" "}
+                      {loadingRegulations
+                        ? "Loading minimum amount..."
+                        : regulationsError
+                        ? regulationsError
+                        : `Minimum amount: ₫${
+                            minDeposit?.toLocaleString() ?? "..."
+                          }`}
                     </p>
                   </div>
 
@@ -451,7 +492,7 @@ export default function OpenAccount() {
               <div className="flex flex-col gap-3 pt-4 border-t border-gray-100 sm:flex-row sm:gap-4 sm:pt-6">
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !minDeposit || !!regulationsError}
                   className="flex-1 h-11 sm:h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
                   style={{
                     background:

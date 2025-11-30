@@ -308,7 +308,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("teller")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)",
@@ -325,7 +325,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("accountant")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #DFF9F4 0%, #FFF7D6 100%)",
@@ -342,7 +342,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("admin")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #FFE8F0 0%, #F3E8FF 100%)",
