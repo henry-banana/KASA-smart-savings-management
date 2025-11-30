@@ -36,7 +36,7 @@ function ForgotPassword({ onContinue, onBack }) {
       onContinue(email);
     } catch (err) {
       logger.error("Password reset request failed", err);
-      setError(err.message || "Không thể gửi yêu cầu đặt lại mật khẩu");
+      setError(err.message || "Unable to send password reset request");
     } finally {
       setLoading(false);
     }

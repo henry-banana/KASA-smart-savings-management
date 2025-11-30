@@ -1,31 +1,31 @@
-import { USE_MOCK } from '@/config/app.config';
-import { authApi } from '@/api/authApi';
-import { mockAuthAdapter } from '@/mocks/adapters/authAdapter';
+import { USE_MOCK } from "@/config/app.config";
+import { authApi } from "@/api/authApi";
+import { mockAuthAdapter } from "@/mocks/adapters/authAdapter";
 
 const authAdapter = USE_MOCK ? mockAuthAdapter : authApi;
 
 export const authService = {
   async login(credentials) {
     if (!credentials.username?.trim()) {
-      throw new Error('Vui lòng nhập tên đăng nhập');
+      throw new Error("Please enter username");
     }
     if (!credentials.password?.trim()) {
-      throw new Error('Vui lòng nhập mật khẩu');
+      throw new Error("Please enter password");
     }
 
     const response = await authAdapter.login(credentials);
-    
+
     // Extract user data from response with priority:
     // 1. response.data.data (backend format)
     // 2. response.data (axios format)
     // 3. response (mock fallback)
     const userData = response?.data?.data || response?.data || response;
-    
+
     // Save token to localStorage if present
     if (userData.token) {
-      localStorage.setItem('token', userData.token);
+      localStorage.setItem("token", userData.token);
     }
-    
+
     return this.transformUser(userData);
   },
 
@@ -35,9 +35,9 @@ export const authService = {
 
   transformUser(userData) {
     const roleMap = {
-      'Teller': 'teller',
-      'Auditor': 'accountant',
-      'Administrator': 'admin'
+      Teller: "teller",
+      Auditor: "accountant",
+      Administrator: "admin",
     };
 
     return {
@@ -45,7 +45,7 @@ export const authService = {
       username: userData.username,
       fullName: userData.fullName,
       role: roleMap[userData.roleName] || userData.roleName?.toLowerCase(),
-      status: userData.status || 'active',
+      status: userData.status || "active",
     };
   },
 
@@ -56,7 +56,7 @@ export const authService = {
    */
   async requestPasswordReset(emailOrUsername) {
     if (!emailOrUsername?.trim()) {
-      throw new Error('Vui lòng nhập email hoặc tên đăng nhập');
+      throw new Error("Please enter email or username");
     }
 
     const response = await authAdapter.requestPasswordReset(emailOrUsername);
@@ -70,10 +70,10 @@ export const authService = {
    */
   async verifyOtp(data) {
     if (!data.email?.trim()) {
-      throw new Error('Email không hợp lệ');
+      throw new Error("Invalid email");
     }
     if (!data.otp?.trim()) {
-      throw new Error('Vui lòng nhập mã OTP');
+      throw new Error("Please enter OTP code");
     }
 
     const response = await authAdapter.verifyOtp(data);
@@ -87,21 +87,21 @@ export const authService = {
    */
   async resetPassword(data) {
     if (!data.email?.trim()) {
-      throw new Error('Email không hợp lệ');
+      throw new Error("Invalid email");
     }
     if (!data.otp?.trim()) {
-      throw new Error('Mã OTP không hợp lệ');
+      throw new Error("Invalid OTP code");
     }
     if (!data.newPassword?.trim()) {
-      throw new Error('Vui lòng nhập mật khẩu mới');
+      throw new Error("Please enter new password");
     }
     if (data.newPassword.length < 8) {
-      throw new Error('Mật khẩu phải có ít nhất 8 ký tự');
+      throw new Error("Password must be at least 8 characters");
     }
 
     const response = await authAdapter.resetPassword(data);
     return response;
-  }
+  },
 };
 
 // Legacy exports for backward compatibility
@@ -112,4 +112,3 @@ export const loginUser = async (username, password) => {
 export const logoutUser = async () => {
   return authService.logout();
 };
-

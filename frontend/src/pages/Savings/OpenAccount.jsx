@@ -503,7 +503,7 @@ export default function OpenAccount() {
                     size={16}
                     className="sm:w-[18px] sm:h-[18px] mr-2"
                   />
-                  {isSubmitting ? "Đang xử lý..." : "Xác Nhận Mở Sổ"}
+                  {isSubmitting ? "Processing..." : "Confirm Open Account"}
                 </Button>
                 <Button
                   type="button"
@@ -521,7 +521,7 @@ export default function OpenAccount() {
                     setErrors({});
                   }}
                 >
-                  Làm Mới
+                  Reset
                 </Button>
               </div>
             </form>

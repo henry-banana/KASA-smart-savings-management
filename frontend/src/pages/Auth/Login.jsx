@@ -88,7 +88,7 @@ export default function Login() {
       }
     } catch (err) {
       console.error("Quick role login error:", err);
-      setError(err.message || "Đăng nhập nhanh thất bại");
+      setError(err.message || "Quick login failed");
     } finally {
       setLoading(false);
     }
@@ -198,7 +198,7 @@ export default function Login() {
           >
             <div className="space-y-2">
               <Label htmlFor="username" className="text-gray-700">
-                Tên đăng nhập
+                Username
               </Label>
               <div className="relative">
                 <User
@@ -208,7 +208,7 @@ export default function Login() {
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Nhập tên đăng nhập"
+                  placeholder="Enter username"
                   value={username}
                   onChange={(e) => {
                     setUsername(e.target.value);
@@ -222,7 +222,7 @@ export default function Login() {
 
             <div className="space-y-2">
               <Label htmlFor="password" className="text-gray-700">
-                Mật khẩu
+                Password
               </Label>
               <div className="relative">
                 <Lock
@@ -232,7 +232,7 @@ export default function Login() {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Nhập mật khẩu"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
@@ -272,7 +272,7 @@ export default function Login() {
               }}
             >
               {loading && <Spinner size={16} light />}
-              {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
+              {loading ? "Logging in..." : "Log In"}
             </Button>
 
             <div className="w-full text-center">
@@ -298,7 +298,7 @@ export default function Login() {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="px-3 font-medium text-gray-500 bg-white rounded-full">
-                    hoặc chọn vai trò (dev mode) ⚙️
+                    or select a role (dev mode) ⚙️
                   </span>
                 </div>
               </div>
@@ -362,7 +362,7 @@ export default function Login() {
                 <div className="inline-flex items-center gap-2 px-4 py-2 border border-purple-100 rounded-full bg-linear-to-r from-purple-50 to-pink-50">
                   <Sparkles size={14} className="text-purple-400" />
                   <p className="text-xs font-medium text-purple-600">
-                    Dev Mode — Nút vai trò để test
+                    Dev Mode — Role buttons for testing
                   </p>
                 </div>
               </div>
@@ -375,7 +375,7 @@ export default function Login() {
           <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-white/20 backdrop-blur-[1px] animate-fade-in">
             <span className="spinner inline-block animate-spin rounded-full border-4 border-[#1A4D8F] border-t-transparent" />
             <p className="mt-3 text-[#1A4D8F] font-medium text-sm animate-wave">
-              Đang tải...
+              Loading...
             </p>
           </div>
         )}
