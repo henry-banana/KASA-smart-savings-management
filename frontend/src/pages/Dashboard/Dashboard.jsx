@@ -284,15 +284,15 @@ export default function Dashboard() {
                   {Array.from({ length: 6 }).map((_, index) => (
                     <div
                       key={index}
-                      className="relative p-6 overflow-hidden rounded-2xl bg-linear-to-br from-gray-200 to-gray-300 animate-pulse"
+                      className="relative p-6 overflow-hidden rounded-2xl bg-white border border-gray-100 animate-pulse"
                     >
                       <div className="space-y-3">
                         <div className="flex items-start justify-between">
-                          <Skeleton className="w-14 h-14 rounded-2xl bg-white/40" />
-                          <Skeleton className="w-8 h-8 rounded-full bg-white/40" />
+                          <Skeleton className="w-14 h-14 rounded-2xl bg-gray-200" />
+                          <Skeleton className="w-8 h-8 rounded-full bg-gray-200" />
                         </div>
-                        <Skeleton className="h-5 w-32 bg-white/40" />
-                        <Skeleton className="h-4 w-24 bg-white/40" />
+                        <Skeleton className="h-5 w-32 bg-gray-200" />
+                        <Skeleton className="h-4 w-24 bg-gray-200" />
                       </div>
                     </div>
                   ))}

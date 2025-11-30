@@ -1,25 +1,32 @@
-import React, { useState } from 'react';
-import { RoleGuard } from '../../components/RoleGuard';
-import { useAuthContext } from '@/contexts/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Label } from '../../components/ui/label';
-import { MonthPicker } from '../../components/ui/month-picker';
+import React, { useState } from "react";
+import { RoleGuard } from "../../components/RoleGuard";
+import { useAuthContext } from "@/contexts/AuthContext";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Label } from "../../components/ui/label";
+import { MonthPicker } from "../../components/ui/month-picker";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../components/ui/select';
-import { FileDown, Printer, Search, Loader2 } from 'lucide-react';
-import { getMonthlyOpenCloseReport } from '../../services/reportService';
-import { getAllTypeSavings } from '../../services/typeSavingService';
+} from "../../components/ui/select";
+import { FileDown, Printer, Search, Loader2 } from "lucide-react";
+import { getMonthlyOpenCloseReport } from "../../services/reportService";
+import { getAllTypeSavings } from "../../services/typeSavingService";
+import { Skeleton } from "../../components/ui/skeleton";
 
 export default function MonthlyReport() {
   const { user } = useAuthContext();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [savingsType, setSavingsType] = useState('all');
+  const [savingsType, setSavingsType] = useState("all");
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,18 +37,22 @@ export default function MonthlyReport() {
     try {
       const month = selectedDate.getMonth() + 1;
       const year = selectedDate.getFullYear();
-      const response = await getMonthlyOpenCloseReport(month, year, savingsType);
-      
+      const response = await getMonthlyOpenCloseReport(
+        month,
+        year,
+        savingsType
+      );
+
       if (response.success && response.data) {
         // Use canonical 'items' field from response
         setReportData(response.data.items || response.data.byDay);
       } else {
-        setError(response.message || 'Failed to generate report');
+        setError(response.message || "Failed to generate report");
         setReportData(null);
       }
     } catch (err) {
-      console.error('Report generation error:', err);
-      setError(err.message || 'An error occurred while generating the report');
+      console.error("Report generation error:", err);
+      setError(err.message || "An error occurred while generating the report");
       setReportData(null);
     } finally {
       setLoading(false);
@@ -60,7 +71,7 @@ export default function MonthlyReport() {
     : null;
 
   const [savingsTypes, setSavingsTypes] = React.useState([
-    { value: 'all', label: 'All Types' }
+    { value: "all", label: "All Types" },
   ]);
 
   // Fetch savings types on mount
@@ -70,16 +81,16 @@ export default function MonthlyReport() {
         const response = await getAllTypeSavings();
         if (response.success && response.data) {
           const types = [
-            { value: 'all', label: 'All Types' },
-            ...response.data.map(ts => ({
+            { value: "all", label: "All Types" },
+            ...response.data.map((ts) => ({
               value: `${ts.term}-months`,
-              label: ts.typeName
-            }))
+              label: ts.typeName,
+            })),
           ];
           setSavingsTypes(types);
         }
       } catch (err) {
-        console.error('Failed to fetch savings types:', err);
+        console.error("Failed to fetch savings types:", err);
       }
     };
     fetchSavingsTypes();
@@ -90,7 +101,7 @@ export default function MonthlyReport() {
   };
 
   return (
-    <RoleGuard allow={['accountant']}>
+    <RoleGuard allow={["accountant"]}>
       <div className="space-y-6">
         {/* Report Header - Filter Controls */}
         <Card className="border border-gray-200 rounded-3xl overflow-hidden print:hidden">
@@ -99,7 +110,9 @@ export default function MonthlyReport() {
               <span className="text-2xl">📊</span>
               BM5.2 – Monthly Opening/Closing Report
             </CardTitle>
-            <CardDescription>Generate monthly savings book opening and closing report</CardDescription>
+            <CardDescription>
+              Generate monthly savings book opening and closing report
+            </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -131,7 +144,9 @@ export default function MonthlyReport() {
               onClick={handleGenerateReport}
               disabled={loading}
               className="w-full h-12 rounded-xl px-6 text-white border border-gray-200 hover:border border-gray-200 disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
+              style={{
+                background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
+              }}
             >
               {loading ? (
                 <>
@@ -152,6 +167,101 @@ export default function MonthlyReport() {
             )}
           </CardContent>
         </Card>
+
+        {/* Loading Skeleton */}
+        {loading && (
+          <>
+            {/* Skeleton for Print Actions */}
+            <div className="flex justify-end gap-3 print:hidden">
+              <Skeleton className="h-10 w-36 rounded-xl bg-gray-200" />
+              <Skeleton className="h-10 w-32 rounded-xl bg-gray-200" />
+            </div>
+
+            {/* Skeleton for Main Report */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-8">
+              {/* Skeleton for Report Header */}
+              <div className="mb-8 space-y-4">
+                <div className="flex justify-center">
+                  <Skeleton className="h-8 w-[500px] bg-gray-200" />
+                </div>
+                <div className="flex justify-center gap-8">
+                  <Skeleton className="h-5 w-48 bg-gray-200" />
+                  <Skeleton className="h-5 w-48 bg-gray-200" />
+                </div>
+              </div>
+
+              {/* Skeleton for Table */}
+              <div className="overflow-hidden rounded-xl border border-gray-200">
+                <div className="bg-gray-100 p-4">
+                  <div className="flex gap-4">
+                    <Skeleton className="h-5 w-12 bg-gray-200" />
+                    <Skeleton className="h-5 flex-1 bg-gray-200" />
+                    <Skeleton className="h-5 w-24 bg-gray-200" />
+                    <Skeleton className="h-5 w-24 bg-gray-200" />
+                    <Skeleton className="h-5 w-28 bg-gray-200" />
+                  </div>
+                </div>
+                <div className="p-4 space-y-3">
+                  {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-4 p-3 animate-pulse"
+                    >
+                      <Skeleton className="h-4 w-10 bg-gray-200" />
+                      <Skeleton className="h-4 flex-1 bg-gray-200" />
+                      <Skeleton className="h-4 w-20 bg-gray-200" />
+                      <Skeleton className="h-4 w-20 bg-gray-200" />
+                      <Skeleton className="h-4 w-24 bg-gray-200" />
+                    </div>
+                  ))}
+                  {/* Total Row Skeleton */}
+                  <div className="flex items-center gap-4 p-3 border-t-2 border-gray-200 bg-gray-50">
+                    <Skeleton className="h-5 w-24 bg-gray-300" />
+                    <div className="flex-1" />
+                    <Skeleton className="h-5 w-20 bg-gray-300" />
+                    <Skeleton className="h-5 w-20 bg-gray-300" />
+                    <Skeleton className="h-5 w-24 bg-gray-300" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Skeleton for Summary Stats */}
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="rounded-xl p-6 border-l-4 border-gray-300 bg-gray-50 animate-pulse"
+                  >
+                    <Skeleton className="h-4 w-28 bg-gray-200 mb-2" />
+                    <Skeleton className="h-10 w-20 bg-gray-200 mb-1" />
+                    <Skeleton className="h-3 w-36 bg-gray-200" />
+                  </div>
+                ))}
+              </div>
+
+              {/* Skeleton for Signature Section */}
+              <div className="mt-12 pt-8 border-t-2 border-gray-200">
+                <div className="grid grid-cols-2 gap-12">
+                  {[1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="text-center space-y-8 animate-pulse"
+                    >
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-24 bg-gray-200 mx-auto" />
+                        <Skeleton className="h-5 w-40 bg-gray-200 mx-auto" />
+                        <Skeleton className="h-3 w-20 bg-gray-200 mx-auto" />
+                      </div>
+                      <div className="pt-12 border-t border-gray-300">
+                        <Skeleton className="h-3 w-28 bg-gray-200 mx-auto" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Show results only after generate */}
         {reportData && !loading && (
@@ -185,15 +295,21 @@ export default function MonthlyReport() {
                 {/* Report Metadata */}
                 <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-sm">
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-600 font-medium">Savings Type:</span>
+                    <span className="text-gray-600 font-medium">
+                      Savings Type:
+                    </span>
                     <span className="font-semibold text-[#1A4D8F] border-b-2 border-dotted border-gray-300 px-2 min-w-[120px]">
-                      {savingsTypes.find((t) => t.value === savingsType)?.label || 'All Types'}
+                      {savingsTypes.find((t) => t.value === savingsType)
+                        ?.label || "All Types"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-600 font-medium">Month:</span>
                     <span className="font-semibold text-[#1A4D8F] border-b-2 border-dotted border-gray-300 px-2 min-w-[120px]">
-                      {selectedDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                      {selectedDate.toLocaleDateString("en-US", {
+                        month: "long",
+                        year: "numeric",
+                      })}
                     </span>
                   </div>
                 </div>
@@ -205,19 +321,34 @@ export default function MonthlyReport() {
                   {/* Table Header */}
                   <thead>
                     <tr className="bg-[#1A4D8F] text-white">
-                      <th className="py-4 px-4 text-center font-semibold border-r border-[#2563a8]" style={{ width: '10%' }}>
+                      <th
+                        className="py-4 px-4 text-center font-semibold border-r border-[#2563a8]"
+                        style={{ width: "10%" }}
+                      >
                         No.
                       </th>
-                      <th className="py-4 px-6 text-left font-semibold border-r border-[#2563a8]" style={{ width: '25%' }}>
+                      <th
+                        className="py-4 px-6 text-left font-semibold border-r border-[#2563a8]"
+                        style={{ width: "25%" }}
+                      >
                         Date
                       </th>
-                      <th className="py-4 px-6 text-right font-semibold border-r border-[#2563a8]" style={{ width: '20%' }}>
+                      <th
+                        className="py-4 px-6 text-right font-semibold border-r border-[#2563a8]"
+                        style={{ width: "20%" }}
+                      >
                         Opened
                       </th>
-                      <th className="py-4 px-6 text-right font-semibold border-r border-[#2563a8]" style={{ width: '20%' }}>
+                      <th
+                        className="py-4 px-6 text-right font-semibold border-r border-[#2563a8]"
+                        style={{ width: "20%" }}
+                      >
                         Closed
                       </th>
-                      <th className="py-4 px-6 text-right font-semibold" style={{ width: '25%' }}>
+                      <th
+                        className="py-4 px-6 text-right font-semibold"
+                        style={{ width: "25%" }}
+                      >
                         Difference
                       </th>
                     </tr>
@@ -228,7 +359,9 @@ export default function MonthlyReport() {
                     {reportData.map((row, index) => (
                       <tr
                         key={index}
-                        className={`${index % 2 === 0 ? 'bg-white' : 'bg-[#F5F7FA]'} hover:bg-blue-50 transition-colors`}
+                        className={`${
+                          index % 2 === 0 ? "bg-white" : "bg-[#F5F7FA]"
+                        } hover:bg-blue-50 transition-colors`}
                       >
                         <td className="py-3 px-4 text-center text-gray-700 border-r border-gray-200">
                           {index + 1}
@@ -238,7 +371,11 @@ export default function MonthlyReport() {
                             selectedDate.getFullYear(),
                             selectedDate.getMonth(),
                             row.day
-                          ).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                          ).toLocaleDateString("en-US", {
+                            weekday: "short",
+                            month: "short",
+                            day: "numeric",
+                          })}
                         </td>
                         <td className="py-3 px-6 text-right text-green-600 font-semibold border-r border-gray-200">
                           {row.newSavingBooks ?? row.opened ?? 0}
@@ -246,8 +383,14 @@ export default function MonthlyReport() {
                         <td className="py-3 px-6 text-right text-red-600 font-semibold border-r border-gray-200">
                           {row.closedSavingBooks ?? row.closed ?? 0}
                         </td>
-                        <td className={`py-3 px-6 text-right font-semibold ${row.difference >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-                          {row.difference >= 0 ? '+' : ''}
+                        <td
+                          className={`py-3 px-6 text-right font-semibold ${
+                            row.difference >= 0
+                              ? "text-blue-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {row.difference >= 0 ? "+" : ""}
                           {row.difference}
                         </td>
                       </tr>
@@ -255,7 +398,10 @@ export default function MonthlyReport() {
 
                     {/* Total Row */}
                     <tr className="bg-linear-to-r from-gray-100 to-gray-50 border-t-2 border-[#1A4D8F]">
-                      <td colSpan={2} className="py-4 px-6 text-left font-bold text-[#1A4D8F] uppercase tracking-wide">
+                      <td
+                        colSpan={2}
+                        className="py-4 px-6 text-left font-bold text-[#1A4D8F] uppercase tracking-wide"
+                      >
                         Total
                       </td>
                       <td className="py-4 px-6 text-right font-bold text-green-600 text-lg border-r border-gray-300">
@@ -264,8 +410,14 @@ export default function MonthlyReport() {
                       <td className="py-4 px-6 text-right font-bold text-red-600 text-lg border-r border-gray-300">
                         {totals?.closed}
                       </td>
-                      <td className={`py-4 px-6 text-right font-bold text-lg ${(totals?.difference || 0) >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-                        {(totals?.difference || 0) >= 0 ? '+' : ''}
+                      <td
+                        className={`py-4 px-6 text-right font-bold text-lg ${
+                          (totals?.difference || 0) >= 0
+                            ? "text-blue-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {(totals?.difference || 0) >= 0 ? "+" : ""}
                         {totals?.difference}
                       </td>
                     </tr>
@@ -276,21 +428,40 @@ export default function MonthlyReport() {
               {/* Report Footer - Summary Stats */}
               <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-linear-to-br from-green-50 to-green-100 rounded-xl p-6 border-l-4 border-green-500">
-                  <p className="text-sm font-medium text-green-700 mb-1">Total Opened</p>
-                  <p className="text-3xl font-bold text-green-600">{totals?.opened}</p>
-                  <p className="text-xs text-green-600 mt-1">accounts this month</p>
+                  <p className="text-sm font-medium text-green-700 mb-1">
+                    Total Opened
+                  </p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {totals?.opened}
+                  </p>
+                  <p className="text-xs text-green-600 mt-1">
+                    accounts this month
+                  </p>
                 </div>
 
                 <div className="bg-linear-to-br from-red-50 to-red-100 rounded-xl p-6 border-l-4 border-red-500">
-                  <p className="text-sm font-medium text-red-700 mb-1">Total Closed</p>
-                  <p className="text-3xl font-bold text-red-600">{totals?.closed}</p>
-                  <p className="text-xs text-red-600 mt-1">accounts this month</p>
+                  <p className="text-sm font-medium text-red-700 mb-1">
+                    Total Closed
+                  </p>
+                  <p className="text-3xl font-bold text-red-600">
+                    {totals?.closed}
+                  </p>
+                  <p className="text-xs text-red-600 mt-1">
+                    accounts this month
+                  </p>
                 </div>
 
                 <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-l-4 border-blue-500">
-                  <p className="text-sm font-medium text-blue-700 mb-1">Net Difference</p>
-                  <p className="text-3xl font-bold text-blue-600">{(totals?.difference || 0) >= 0 ? '+' : ''}{totals?.difference}</p>
-                  <p className="text-xs text-blue-600 mt-1">net growth this month</p>
+                  <p className="text-sm font-medium text-blue-700 mb-1">
+                    Net Difference
+                  </p>
+                  <p className="text-3xl font-bold text-blue-600">
+                    {(totals?.difference || 0) >= 0 ? "+" : ""}
+                    {totals?.difference}
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    net growth this month
+                  </p>
                 </div>
               </div>
 
@@ -299,9 +470,15 @@ export default function MonthlyReport() {
                 <div className="grid grid-cols-2 gap-12">
                   <div className="text-center space-y-16">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 mb-2">Prepared By</p>
-                      <p className="font-semibold text-[#1A4D8F]">{user?.fullName}</p>
-                      <p className="text-xs text-gray-500 uppercase">{user?.role || user?.roleName}</p>
+                      <p className="text-sm font-medium text-gray-600 mb-2">
+                        Prepared By
+                      </p>
+                      <p className="font-semibold text-[#1A4D8F]">
+                        {user?.fullName}
+                      </p>
+                      <p className="text-xs text-gray-500 uppercase">
+                        {user?.role || user?.roleName}
+                      </p>
                     </div>
                     <div className="pt-2 border-t border-gray-300">
                       <p className="text-xs text-gray-500">Signature & Date</p>
@@ -310,8 +487,12 @@ export default function MonthlyReport() {
 
                   <div className="text-center space-y-16">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 mb-2">Approved By</p>
-                      <p className="font-semibold text-[#1A4D8F]">____________________</p>
+                      <p className="text-sm font-medium text-gray-600 mb-2">
+                        Approved By
+                      </p>
+                      <p className="font-semibold text-[#1A4D8F]">
+                        ____________________
+                      </p>
                       <p className="text-xs text-gray-500 uppercase">Manager</p>
                     </div>
                     <div className="pt-2 border-t border-gray-300">
@@ -324,12 +505,13 @@ export default function MonthlyReport() {
               {/* Report Generation Info */}
               <div className="mt-8 text-center text-xs text-gray-400 print:block">
                 <p>
-                  Generated on {new Date().toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
+                  Generated on{" "}
+                  {new Date().toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </p>
                 <p className="mt-1">KASA Savings Management System © 2025</p>
