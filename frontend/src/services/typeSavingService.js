@@ -1,18 +1,15 @@
 import { USE_MOCK } from '@/config/app.config';
-// import { typeSavingApi } from '@/api/typeSavingApi'; // TODO: Create when backend is ready
+import { typeSavingApi } from '@/api/typeSavingApi';
 import { mockTypeSavingAdapter } from '@/mocks/adapters/typeSavingAdapter';
 import { resetTypeSavings } from '@/mocks/data/typeSavings';
 
-const typeSavingAdapter = USE_MOCK ? mockTypeSavingAdapter : null; // TODO: Replace with typeSavingApi
+const typeSavingAdapter = USE_MOCK ? mockTypeSavingAdapter : typeSavingApi;
 
 /**
  * Get all type savings
  * @returns {Promise<Object>} List of type savings
  */
 export const getAllTypeSavings = async () => {
-  if (!typeSavingAdapter) {
-    throw new Error('Type saving service not configured');
-  }
   return typeSavingAdapter.getAllTypeSavings();
 };
 
@@ -22,9 +19,6 @@ export const getAllTypeSavings = async () => {
  * @returns {Promise<Object>} Type saving data
  */
 export const getTypeSavingById = async (typeSavingId) => {
-  if (!typeSavingAdapter) {
-    throw new Error('Type saving service not configured');
-  }
   if (!typeSavingId?.trim()) {
     throw new Error('Type saving ID is required');
   }
@@ -40,9 +34,6 @@ export const getTypeSavingById = async (typeSavingId) => {
  * @returns {Promise<Object>} Created type saving
  */
 export const createTypeSaving = async (data) => {
-  if (!typeSavingAdapter) {
-    throw new Error('Type saving service not configured');
-  }
   
   // Validation
   if (!data.typename?.trim()) {
@@ -55,7 +46,16 @@ export const createTypeSaving = async (data) => {
     throw new Error('Interest rate must be greater than 0');
   }
 
-  return typeSavingAdapter.createTypeSaving(data);
+  if (USE_MOCK) {
+    return typeSavingAdapter.createTypeSaving(data);
+  }
+  // Transform to backend payload
+  const payload = {
+    typeName: data.typename.trim(),
+    term: Number(data.term),
+    interestRate: Number(data.interestRate)
+  };
+  return typeSavingAdapter.createTypeSaving(payload);
 };
 
 /**
@@ -65,9 +65,6 @@ export const createTypeSaving = async (data) => {
  * @returns {Promise<Object>} Updated type saving
  */
 export const updateTypeSaving = async (typeSavingId, data) => {
-  if (!typeSavingAdapter) {
-    throw new Error('Type saving service not configured');
-  }
   if (!typeSavingId?.trim()) {
     throw new Error('Type saving ID is required');
   }
@@ -75,7 +72,14 @@ export const updateTypeSaving = async (typeSavingId, data) => {
     throw new Error('No update data provided');
   }
   
-  return typeSavingAdapter.updateTypeSaving(typeSavingId, data);
+  if (USE_MOCK) {
+    return typeSavingAdapter.updateTypeSaving(typeSavingId, data);
+  }
+  const payload = {};
+  if (data.typename) payload.typeName = data.typename.trim();
+  if (data.term !== undefined) payload.term = Number(data.term);
+  if (data.interestRate !== undefined) payload.interestRate = Number(data.interestRate);
+  return typeSavingAdapter.updateTypeSaving(typeSavingId, payload);
 };
 
 /**
@@ -84,9 +88,6 @@ export const updateTypeSaving = async (typeSavingId, data) => {
  * @returns {Promise<Object>} Deletion result
  */
 export const deleteTypeSaving = async (typeSavingId) => {
-  if (!typeSavingAdapter) {
-    throw new Error('Type saving service not configured');
-  }
   if (!typeSavingId?.trim()) {
     throw new Error('Type saving ID is required');
   }
@@ -100,9 +101,6 @@ export const deleteTypeSaving = async (typeSavingId) => {
  */
 export const resetTypeSavingDefaults = async () => {
   // Only available in mock mode
-  if (!typeSavingAdapter) {
-    throw new Error('Type saving service not configured');
-  }
   const data = resetTypeSavings();
   return data;
 };

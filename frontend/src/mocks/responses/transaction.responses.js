@@ -14,86 +14,124 @@
 /**
  * Builder functions - inject data here
  */
+
+// Canonical builder for Deposit response (OpenAPI contract)
 export const buildDepositTransactionResponse = (transaction, savingBook, employee) => ({
-  message: "Deposit transaction completed successfully",
+  message: "Deposit successfully",
   success: true,
   data: {
-    ...transaction,
-    savingbook: savingBook ? {
+    transactionId: transaction.transactionId,
+    bookId: transaction.bookId,
+    type: "Deposit",
+    amount: transaction.amount,
+    balanceBefore: transaction.balanceBefore,
+    balanceAfter: transaction.balanceAfter,
+    transactionDate: transaction.transactionDate,
+    savingBook: savingBook ? {
       bookId: savingBook.bookId,
-      customerName: savingBook.customerName,
-      citizenId: savingBook.citizenId
-    } : undefined,
-    employee: employee ? {
-      employeeid: employee.employeeid,
-      fullname: employee.fullname
-    } : undefined
-  }
-});
-
-export const buildWithdrawTransactionResponse = (transaction, savingBook, typeSaving, employee) => ({
-  message: "Withdrawal transaction completed successfully",
-  success: true,
-  data: {
-    ...transaction,
-    savingbook: savingBook ? {
-      bookId: savingBook.bookId,
-      customerName: savingBook.customerName,
       citizenId: savingBook.citizenId,
-      typesaving: typeSaving ? {
-        typeName: typeSaving.typeName,
-        maturityDate: savingBook.maturityDate
-      } : undefined
+      customerName: savingBook.customerName,
+      typeSavingId: savingBook.typeSavingId,
+      openDate: savingBook.openDate,
+      maturityDate: savingBook.maturityDate,
+      balance: savingBook.balance,
+      status: savingBook.status
     } : undefined,
     employee: employee ? {
-      employeeid: employee.employeeid,
-      fullname: employee.fullname
+      employeeId: employee.employeeId,
+      fullName: employee.fullName,
+      roleName: employee.roleName
     } : undefined
   }
 });
 
+
+// Canonical builder for Withdraw response (OpenAPI contract)
+export const buildWithdrawTransactionResponse = (transaction, savingBook, employee) => ({
+  message: "Withdraw successfully",
+  success: true,
+  data: {
+    transactionId: transaction.transactionId,
+    bookId: transaction.bookId,
+    type: "Withdraw",
+    amount: transaction.amount,
+    balanceBefore: transaction.balanceBefore,
+    balanceAfter: transaction.balanceAfter,
+    transactionDate: transaction.transactionDate,
+    savingBook: savingBook ? {
+      bookId: savingBook.bookId,
+      citizenId: savingBook.citizenId,
+      customerName: savingBook.customerName,
+      typeSavingId: savingBook.typeSavingId,
+      openDate: savingBook.openDate,
+      maturityDate: savingBook.maturityDate,
+      balance: savingBook.balance,
+      status: savingBook.status
+    } : undefined,
+    employee: employee ? {
+      employeeId: employee.employeeId,
+      fullName: employee.fullName,
+      roleName: employee.roleName
+    } : undefined
+  }
+});
+
+
+// Canonical builder for GET all transactions
 export const buildGetAllTransactionsResponse = (transactions) => ({
-  message: "Transactions retrieved successfully",
+  message: "Get transaction successfully",
   success: true,
   data: transactions,
   total: transactions.length
 });
 
-export const buildGetTransactionByIdResponse = (transaction, savingBook, typeSaving, employee, role) => ({
-  message: "Transaction retrieved successfully",
+
+// Canonical builder for GET transaction by ID
+export const buildGetTransactionByIdResponse = (transaction, savingBook, employee) => ({
+  message: "Get transaction successfully",
   success: true,
   data: {
-    ...transaction,
-    savingbook: savingBook ? {
+    transactionId: transaction.transactionId,
+    bookId: transaction.bookId,
+    type: transaction.type,
+    amount: transaction.amount,
+    balanceBefore: transaction.balanceBefore,
+    balanceAfter: transaction.balanceAfter,
+    transactionDate: transaction.transactionDate,
+    savingBook: savingBook ? {
       bookId: savingBook.bookId,
-      customerName: savingBook.customerName,
       citizenId: savingBook.citizenId,
-      typesaving: typeSaving ? {
-        typeName: typeSaving.typeName,
-        interestRate: typeSaving.interestRate
-      } : undefined
+      customerName: savingBook.customerName,
+      typeSavingId: savingBook.typeSavingId,
+      openDate: savingBook.openDate,
+      maturityDate: savingBook.maturityDate,
+      balance: savingBook.balance,
+      status: savingBook.status
     } : undefined,
     employee: employee ? {
-      employeeid: employee.employeeid,
-      fullname: employee.fullname,
-      role: role?.rolename
+      employeeId: employee.employeeId,
+      fullName: employee.fullName,
+      roleName: employee.roleName
     } : undefined
   }
 });
 
+
 export const buildUpdateTransactionResponse = (transaction) => ({
-  message: "Transaction updated successfully",
+  message: "Update transaction successfully",
   success: true,
   data: transaction
 });
 
+
 export const buildDeleteTransactionResponse = () => ({
-  message: "Transaction deleted successfully",
+  message: "Delete transaction successfully",
   success: true
 });
 
+
 export const buildGetTransactionsByBookIdResponse = (transactions) => ({
-  message: "Transactions retrieved successfully",
+  message: "Get transaction successfully",
   success: true,
   data: transactions,
   total: transactions.length

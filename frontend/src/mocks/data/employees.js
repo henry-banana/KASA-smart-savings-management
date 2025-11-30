@@ -109,5 +109,4 @@ export const findRoleByName = (rolename) => {
   return mockRoles.find(r => r.rolename === rolename);
 };
 
-export { mockEmployees, mockRoles };
 export default mockEmployees;

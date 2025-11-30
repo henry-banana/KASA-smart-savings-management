@@ -160,6 +160,9 @@ export default function UserProfile() {
     }
   };
 
+  // Canonical roleName derived from profile or auth user
+  const roleName = (profileData?.roleName || user?.roleName || user?.role || '').toLowerCase();
+
   // Show loading state
   if (loading && !profileData) {
     return (
@@ -201,9 +204,9 @@ export default function UserProfile() {
             <div className="flex-1 text-center sm:text-left min-w-0">
               <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-gray-900 truncate">{profileData?.fullName || user.fullName}</h2>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
-                <Badge className={`${getRoleBadgeColor(user.role)} border font-medium`}>
-                  {user.role === 'admin' ? '🔑 Administrator' : 
-                   user.role === 'accountant' ? '💼 Accountant' : 
+                <Badge className={`${getRoleBadgeColor(roleName)} border font-medium`}>
+                  {roleName === 'admin' ? '🔑 Administrator' : 
+                   roleName === 'accountant' ? '💼 Accountant' : 
                    '💰 Teller'}
                 </Badge>
                 <Badge className="text-green-700 bg-green-100 border-green-200 border font-medium">
@@ -311,13 +314,13 @@ export default function UserProfile() {
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Employee ID</p>
-              <p className="text-sm font-semibold text-gray-900">{user.employeeid || profileData?.employeeid || 'N/A'}</p>
+              <p className="text-sm font-semibold text-gray-900">{profileData?.id || user?.id || 'N/A'}</p>
             </div>
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Account Created</p>
               <p className="text-sm font-semibold text-gray-900">
-                {profileData?.createdDate 
-                  ? new Date(profileData.createdDate).toLocaleDateString('en-US', { 
+                {profileData?.createdAt 
+                  ? new Date(profileData.createdAt).toLocaleDateString('en-US', { 
                       year: 'numeric', 
                       month: 'long', 
                       day: 'numeric' 
@@ -326,11 +329,12 @@ export default function UserProfile() {
                 }
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            {/* TODO: Delete if database not add lastLogin */}
+            {/* <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Last Login</p>
               <p className="text-sm font-semibold text-gray-900">
-                {profileData?.lastlogin 
-                  ? new Date(profileData.lastlogin).toLocaleString('en-US', {
+                {(profileData?.lastLogin || profileData?.lastlogin) 
+                  ? new Date(profileData?.lastLogin || profileData?.lastlogin).toLocaleString('en-US', {
                       month: 'short',
                       day: 'numeric',
                       hour: '2-digit',
@@ -339,12 +343,12 @@ export default function UserProfile() {
                   : 'N/A'
                 }
               </p>
-            </div>
+            </div> */}
             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Department</p>
               <p className="text-sm font-semibold text-gray-900 capitalize">
-                {user.role === 'admin' ? 'Administration' : 
-                 user.role === 'accountant' ? 'Accounting' : 
+                {roleName === 'admin' ? 'Administration' : 
+                 roleName === 'accountant' ? 'Accounting' : 
                  'Teller'}
               </p>
             </div>

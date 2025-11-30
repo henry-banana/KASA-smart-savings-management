@@ -26,7 +26,7 @@ export const getAccountInfo = async (accountCode) => {
  * @param {number} amount - Số tiền gửi
  * @returns {Promise<Object>} Transaction result
  */
-export const depositMoney = async (accountCode, amount) => {
+export const depositMoney = async (accountCode, amount, employeeIdOverride) => {
   if (!accountCode || !amount || amount <= 0) {
     throw new Error('Thông tin giao dịch không hợp lệ');
   }
@@ -36,11 +36,11 @@ export const depositMoney = async (accountCode, amount) => {
   }
 
   if (USE_MOCK) {
-    return mockTransactionAdapter.depositMoney(accountCode, amount);
-  } else {
-    // Real API uses deposit method
-    return accountApi.deposit(accountCode, amount);
+    return mockTransactionAdapter.depositMoney({ bookId: accountCode, amount });
   }
+  // Real API requires employeeId; allow override
+  const employeeId = employeeIdOverride || getCurrentUserId();
+  return accountApi.deposit(accountCode, amount, employeeId);
 };
 
 /**
@@ -50,15 +50,40 @@ export const depositMoney = async (accountCode, amount) => {
  * @param {boolean} shouldCloseAccount - Có đóng tài khoản không (cho sổ có kỳ hạn)
  * @returns {Promise<Object>} Transaction result
  */
-export const withdrawMoney = async (accountCode, amount, shouldCloseAccount) => {
+export const withdrawMoney = async (accountCode, amount, shouldCloseAccount, employeeIdOverride) => {
   if (!accountCode || !amount || amount <= 0) {
     throw new Error('Thông tin giao dịch không hợp lệ');
   }
 
   if (USE_MOCK) {
-    return mockTransactionAdapter.withdrawMoney(accountCode, amount, shouldCloseAccount);
-  } else {
-    // Real API uses withdraw method
-    return accountApi.withdraw(accountCode, amount, shouldCloseAccount);
+    return mockTransactionAdapter.withdrawMoney({ bookId: accountCode, amount, shouldCloseAccount });
   }
+  // Real API requires employeeId and optional shouldCloseAccount; allow override
+  const employeeId = employeeIdOverride || getCurrentUserId();
+  return accountApi.withdraw(accountCode, amount, shouldCloseAccount, employeeId);
 };
+
+// Attempt to derive current user/employee ID from localStorage
+function getCurrentUserId() {
+  try {
+    // Common storage keys that may hold the user object
+    const candidates = ['user', 'authUser', 'currentUser'];
+    for (const key of candidates) {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        const obj = JSON.parse(raw);
+        if (obj?.id || obj?.userId || obj?.employeeId) {
+          return obj.id || obj.userId || obj.employeeId;
+        }
+      }
+    }
+    // Direct id keys
+    return (
+      localStorage.getItem('userId') ||
+      localStorage.getItem('employeeId') ||
+      undefined
+    );
+  } catch (_) {
+    return undefined;
+  }
+}

@@ -1,3 +1,4 @@
+// DEPRECATED: This adapter is no longer used. Use savingBookAdapter/transactionAdapter instead.
 import { 
   mockSavingBooks,
   findSavingBookById, 
@@ -22,17 +23,22 @@ export const mockAccountAdapter = {
     const customer = findCustomerById(savingBook.customerid);
     const typeSaving = findTypeSavingById(savingBook.typeid);
     
-    // Map to old format for compatibility
+    // Return with standard envelope and canonical field names
     return {
-      id: savingBook.bookid,
-      customerId: savingBook.customerid,
-      customerName: customer?.fullname,
-      idCard: customer?.citizenid,
-      address: customer?.address,
-      type: typeSaving?.typename,
-      balance: savingBook.currentbalance,
-      openDate: savingBook.registertime,
-      status: savingBook.status
+      message: 'Get account successfully',
+      success: true,
+      data: {
+        bookId: savingBook.bookId,
+        citizenId: customer?.citizenId || savingBook.citizenId,
+        customerName: customer?.fullName || savingBook.customerName,
+        address: customer?.address,
+        typeSavingId: savingBook.typeSavingId,
+        accountTypeName: typeSaving?.typeName,
+        balance: savingBook.balance,
+        openDate: savingBook.openDate,
+        maturityDate: savingBook.maturityDate,
+        status: savingBook.status
+      }
     };
   },
 
@@ -75,23 +81,21 @@ export const mockAccountAdapter = {
     
     addSavingBook(newSavingBook);
     
-    // Return in proper format with accountCode
+    // Return with standard envelope and canonical field names
     return {
+      message: 'Create account successfully',
       success: true,
       data: {
-        accountCode: bookId,
-        id: bookId,
-        customerId: customer.customerid,
-        customer_name: customer.fullname,
+        bookId: bookId,
+        accountCode: bookId, // alias for UI
+        citizenId: customer.citizenid,
         customerName: customer.fullname,
-        id_card: customer.citizenid,
-        idCard: customer.citizenid,
         address: customer.address,
-        savings_type: typeSaving?.typeName,
-        type: typeSaving?.typeName,
-        balance: newSavingBook.currentbalance,
-        open_date: newSavingBook.registertime,
-        openDate: newSavingBook.registertime,
+        typeSavingId: typeSaving?.typeSavingId || 'TS01',
+        accountTypeName: typeSaving?.typeName,
+        balance: newSavingBook.balance,
+        openDate: newSavingBook.openDate,
+        maturityDate: newSavingBook.maturityDate,
         status: 'active'
       }
     };
@@ -109,15 +113,19 @@ export const mockAccountAdapter = {
     }
     
     return {
-      account: result.savingBook,
-      transaction: {
-        id: generateId('TXN'),
-        accountId,
-        type: 'deposit',
-        amount,
-        balanceBefore: result.balanceBefore,
-        balanceAfter: result.balanceAfter,
-        timestamp: new Date().toISOString()
+      message: 'Deposit successfully',
+      success: true,
+      data: {
+        savingBook: result.savingBook,
+        transaction: {
+          transactionId: generateId('TXN'),
+          bookId: accountId,
+          type: 'deposit',
+          amount,
+          balanceBefore: result.balanceBefore,
+          balanceAfter: result.balanceAfter,
+          transactionDate: new Date().toISOString()
+        }
       }
     };
   },
@@ -138,15 +146,19 @@ export const mockAccountAdapter = {
     const result = updateSavingBookBalance(accountId, -amount);
     
     return {
-      account: result.savingBook,
-      transaction: {
-        id: generateId('TXN'),
-        accountId,
-        type: 'withdraw',
-        amount,
-        balanceBefore: result.balanceBefore,
-        balanceAfter: result.balanceAfter,
-        timestamp: new Date().toISOString()
+      message: 'Withdraw successfully',
+      success: true,
+      data: {
+        savingBook: result.savingBook,
+        transaction: {
+          transactionId: generateId('TXN'),
+          bookId: accountId,
+          type: 'withdraw',
+          amount,
+          balanceBefore: result.balanceBefore,
+          balanceAfter: result.balanceAfter,
+          transactionDate: new Date().toISOString()
+        }
       }
     };
   },
@@ -186,6 +198,11 @@ export const mockAccountAdapter = {
       results = results.filter(acc => acc.type === params.type);
     }
     
-    return { data: results, total: results.length };
+    return { 
+      message: 'Search accounts successfully',
+      success: true,
+      data: results, 
+      total: results.length 
+    };
   }
 };

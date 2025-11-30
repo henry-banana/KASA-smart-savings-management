@@ -132,6 +132,7 @@ export const mockChanges = {
 
 /**
  * Get recent transactions (last 5 transactions)
+ * Returns raw data per OpenAPI contract (no UI formatting)
  */
 export const getRecentTransactions = () => {
   // Get last 5 transactions sorted by date desc
@@ -144,44 +145,27 @@ export const getRecentTransactions = () => {
     .slice(0, 5);
   
   return recentTxns.map(txn => {
-    // Find saving book for customer name
+    // Find saving book for customer name and account code
     const savingBook = mockSavingBooks.find(sb => sb.bookId === txn.bookId);
     const customerName = savingBook?.customerName || 'Unknown Customer';
-    const accountId = savingBook?.bookId || txn.bookId;
+    const accountCode = savingBook?.bookId || txn.bookId;
     
-    // Format transaction data for display
-    let type, emoji, color, amountDisplay;
-    if (txn.type === 'deposit') {
-      type = 'Deposit';
-      emoji = '💰';
-      color = '#00AEEF';
-      amountDisplay = `+₫${txn.amount.toLocaleString()}`;
-    } else if (txn.type === 'withdraw') {
-      type = 'Withdrawal';
-      emoji = '💵';
-      color = '#F59E0B';
-      amountDisplay = `-₫${txn.amount.toLocaleString()}`;
-    } else {
-      type = 'Open Account';
-      emoji = '🏦';
-      color = '#1A4D8F';
-      amountDisplay = `₫${txn.amount.toLocaleString()}`;
-    }
-    
-    // Format time
+    // Parse date and time from transactionDate
     const txnDate = new Date(txn.transactionDate || Date.now());
+    const date = txnDate.toISOString().split('T')[0]; // YYYY-MM-DD
     const hours = txnDate.getHours().toString().padStart(2, '0');
     const minutes = txnDate.getMinutes().toString().padStart(2, '0');
-    const time = `${hours}:${minutes}`;
+    const time = `${hours}:${minutes}`; // HH:mm
     
+    // Return raw contract-compliant data per OpenAPI (no emoji, color, or formatted strings)
     return {
-      id: accountId,
-      customer: customerName,
-      type,
-      amount: amountDisplay,
+      id: txn.transactionId,
+      date,
       time,
-      emoji,
-      color
+      customerName,
+      type: txn.type, // "deposit" or "withdraw" (raw value)
+      amount: txn.amount, // Raw number (not formatted string)
+      accountCode,
     };
   });
 };

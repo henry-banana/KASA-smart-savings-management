@@ -25,5 +25,33 @@ export const regulationApi = {
   async updateRegulations(payload) {
     const response = await apiClient.put('/api/regulations', payload);
     return response.data;
+  },
+
+  /**
+   * Get interest rates for all saving types
+   * @returns {Promise<Object>} Interest rates data
+   */
+  async getInterestRates() {
+    const response = await apiClient.get('/api/regulations/interest-rates');
+    return response.data;
+  },
+
+  /**
+   * Update interest rates
+   * @param {Array} rates - Array of { typeSavingId, term, rate }
+   * @returns {Promise<Object>} Updated interest rates data
+   */
+  async updateInterestRates(rates) {
+    const response = await apiClient.put('/api/regulations/interest-rates', { items: rates });
+    return response.data;
+  },
+
+  /**
+   * Get regulation change history
+   * @returns {Promise<Object>} History data
+   */
+  async getChangeHistory() {
+    const response = await apiClient.get('/api/regulations/history');
+    return response.data;
   }
 };

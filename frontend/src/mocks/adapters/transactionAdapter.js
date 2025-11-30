@@ -1,151 +1,201 @@
 import { findSavingBookById, updateSavingBookBalance } from '../data/savingBooks.js';
 import { findTypeSavingById } from '../data/typeSavings.js';
-import { addTransaction, generateTransactionId } from '../data/transactions.js';
-import { randomDelay } from '../utils';
+import { addTransaction } from '../data/transactions.js';
+import { randomDelay, generateId } from '../utils';
+import { findEmployeeById, findRoleById } from '../data/employees.js';
+import { BUSINESS_RULES, TRANSACTION_TYPES } from '@/constants/business.js';
 import { logger } from '@/utils/logger';
 
+// Helper: build contract savingBook object (OpenAPI shape)
+const buildSavingBookPayload = (sb) => ({
+  bookId: sb.bookId,
+  citizenId: sb.citizenId,
+  customerName: sb.customerName,
+  typeSavingId: sb.typeSavingId,
+  openDate: sb.openDate,
+  maturityDate: sb.maturityDate,
+  balance: sb.balance,
+  status: sb.status
+});
+
+// Helper: build employee payload (OpenAPI shape)
+const buildEmployeePayload = (employee) => {
+  if (!employee) return undefined;
+  const role = findRoleById(employee.roleid);
+  return {
+    employeeId: employee.employeeid,
+    fullName: employee.fullname,
+    roleName: role?.rolename || 'Unknown'
+  };
+};
+
 export const mockTransactionAdapter = {
-  async getAccountInfo(accountCode) {
+  /**
+   * Get account info (contract fields only)
+   */
+  async getAccountInfo(bookId) {
     await randomDelay();
-    logger.info('🎭 Mock Get Account Info', { accountCode });
-    
-    const savingBook = findSavingBookById(accountCode);
+    logger.info('🎭 Mock Get Account Info', { bookId });
+
+    const savingBook = findSavingBookById(bookId);
     if (!savingBook) {
-      throw new Error('Không tìm thấy tài khoản');
+      throw new Error('Account not found');
     }
-    
+
     const typeSaving = findTypeSavingById(savingBook.typeSavingId);
-    
-    return { 
-      success: true, 
+
+    return {
+      message: 'Get account info successfully',
+      success: true,
       data: {
-        id: savingBook.bookId,
+        bookId: savingBook.bookId,
         customerName: savingBook.customerName,
-        type: typeSaving?.typeName || 'Unknown',
-        typeName: typeSaving?.typeName,
-        term: typeSaving?.term || 0,
+        accountTypeName: typeSaving?.typeName || 'Unknown',
         balance: savingBook.balance,
         openDate: savingBook.openDate,
-        maturityDate: savingBook.maturityDate,
-        interestRate: typeSaving?.interestRate || 0
+        interestRate: typeSaving?.interestRate || 0,
+        // mock-extension: needed by withdraw page for maturity check
+        maturityDate: savingBook.maturityDate
       }
     };
   },
 
-  async depositMoney(accountCode, amount) {
+  /**
+   * Deposit money (non-term only, min amount rule)
+   */
+  async depositMoney({ bookId, amount, employeeId }) {
     await randomDelay();
-    logger.info('🎭 Mock Deposit', { accountCode, amount });
-    
-    const savingBook = findSavingBookById(accountCode);
-    if (!savingBook) {
-      throw new Error('Không tìm thấy tài khoản');
-    }
+    logger.info('🎭 Mock Deposit', { bookId, amount, employeeId });
+
+    if (!bookId) throw new Error('Book ID is required');
+    if (typeof amount !== 'number' || isNaN(amount)) throw new Error('Amount must be a number');
+    if (amount < BUSINESS_RULES.MIN_DEPOSIT) throw new Error(`Minimum deposit is ${BUSINESS_RULES.MIN_DEPOSIT}`);
+
+    const savingBook = findSavingBookById(bookId);
+    if (!savingBook) throw new Error('Account not found');
+    if (savingBook.status !== 'active') throw new Error('Cannot deposit to a closed account');
 
     const typeSaving = findTypeSavingById(savingBook.typeSavingId);
-    if (typeSaving && typeSaving.term !== 0) {
-      throw new Error('Chỉ cho phép gửi tiền vào sổ không kỳ hạn');
+    if (typeSaving && typeSaving.term > 0) {
+      throw new Error('Cannot deposit into fixed-term account');
     }
 
-    const result = updateSavingBookBalance(accountCode, amount);
-    if (!result) {
-      throw new Error('Không thể cập nhật số dư');
-    }
+    const result = updateSavingBookBalance(bookId, amount);
+    if (!result) throw new Error('Failed to update balance');
 
-    // Create transaction record
-    const transaction = {
-      transactionId: generateTransactionId(),
-      bookId: accountCode,
-      transactiontype: 'deposit',
+    // Build transaction record (OpenAPI contract fields)
+    const transactionId = generateId('TXN');
+    const transactionDate = new Date().toISOString();
+    const employeeObj = findEmployeeById(employeeId) || findEmployeeById('EMP001');
+    const employee = buildEmployeePayload(employeeObj);
+
+    const type = 'Deposit';
+    addTransaction({
+      transactionId,
+      bookId,
+      type,
       amount,
-      transactiondate: new Date().toISOString(),
-      balancebefore: result.balanceBefore,
-      balanceafter: result.balanceAfter,
-      employeeid: 'EMP001',
-      note: 'Gửi tiền'
-    };
-    addTransaction(transaction);
-    
+      transactionDate,
+      balanceBefore: result.balanceBefore,
+      balanceAfter: result.balanceAfter,
+      employeeId: employee?.employeeId
+    });
+
+    // Update savingBook object with new balance
+    const updatedSavingBook = { ...savingBook, balance: result.balanceAfter };
+    const savingBookPayload = buildSavingBookPayload(updatedSavingBook);
+
     return {
+      message: 'Deposit successfully',
       success: true,
-      message: 'Gửi tiền thành công',
       data: {
-        transactionId: transaction.transactionid,
-        accountCode,
-        type: 'deposit',
+        transactionId,
+        bookId,
+        type,
         amount,
-        balanceAfter: result.balanceAfter,
         balanceBefore: result.balanceBefore,
-        transactionDate: transaction.transactiondate
+        balanceAfter: result.balanceAfter,
+        transactionDate,
+        savingBook: savingBookPayload,
+        employee
       }
     };
   },
 
-  async withdrawMoney(accountCode, amount, shouldCloseAccount) {
+  /**
+   * Withdraw money with early withdrawal rules
+   */
+  async withdrawMoney({ bookId, amount, shouldCloseAccount = false, employeeId }) {
     await randomDelay();
-    logger.info('🎭 Mock Withdraw', { accountCode, amount, shouldCloseAccount });
-    
-    const savingBook = findSavingBookById(accountCode);
-    if (!savingBook) {
-      throw new Error('Không tìm thấy tài khoản');
-    }
+    logger.info('🎭 Mock Withdraw', { bookId, amount, shouldCloseAccount, employeeId });
 
-    if (amount > savingBook.balance) {
-      throw new Error('Số dư không đủ');
-    }
+    if (!bookId) throw new Error('Book ID is required');
+    if (typeof amount !== 'number' || isNaN(amount)) throw new Error('Amount must be a number');
+    if (amount <= 0) throw new Error('Amount must be greater than 0');
 
-    // Check fixed-term withdrawal rules
+    const savingBook = findSavingBookById(bookId);
+    if (!savingBook) throw new Error('Account not found');
+    if (savingBook.status !== 'active') throw new Error('Cannot withdraw from a closed account');
+    if (amount > savingBook.balance) throw new Error('Insufficient balance');
+
     const typeSaving = findTypeSavingById(savingBook.typeSavingId);
-    if (typeSaving && typeSaving.term !== 0 && savingBook.maturityDate) {
-      const today = new Date();
-      const maturityDate = new Date(savingBook.maturityDate);
-      
-      if (today < maturityDate) {
-        throw new Error('Sổ có kỳ hạn chỉ được rút khi đến hạn');
-      }
+    const isFixedTerm = typeSaving && typeSaving.term > 0 && savingBook.maturityDate;
+    const today = new Date();
+    const maturityDate = savingBook.maturityDate ? new Date(savingBook.maturityDate) : null;
 
+    if (isFixedTerm && maturityDate && today < maturityDate) {
+      // Early withdrawal before maturity requires closing the account & full balance
+      if (!shouldCloseAccount) {
+        throw new Error('Early withdrawal requires shouldCloseAccount=true');
+      }
       if (amount !== savingBook.balance) {
-        throw new Error('Sổ có kỳ hạn phải rút toàn bộ số dư khi đến hạn');
+        throw new Error('Must withdraw full balance to close before maturity');
       }
     }
 
-    const result = updateSavingBookBalance(accountCode, -amount);
-    if (!result) {
-      throw new Error('Không thể cập nhật số dư');
+    // Perform balance update
+    const result = updateSavingBookBalance(bookId, -amount);
+    if (!result) throw new Error('Failed to update balance');
+
+    // Close account if early withdrawal closing or balance reaches zero
+    if ((isFixedTerm && today < maturityDate && shouldCloseAccount) || result.balanceAfter === 0) {
+      const sb = findSavingBookById(bookId);
+      if (sb) sb.status = 'closed';
     }
 
-    // Close account if fixed-term closure requested OR balance reaches zero
-    if (shouldCloseAccount || result.balanceAfter === 0) {
-      const savingBookToClose = findSavingBookById(accountCode);
-      if (savingBookToClose) {
-        savingBookToClose.status = 'closed'; // Standard closed status string
-      }
-    }
+    const transactionId = generateId('TXN');
+    const transactionDate = new Date().toISOString();
+    const employeeObj = findEmployeeById(employeeId) || findEmployeeById('EMP001');
+    const employee = buildEmployeePayload(employeeObj);
 
-    // Create transaction record
-    const transaction = {
-      transactionId: generateTransactionId(),
-      bookId: accountCode,
-      transactiontype: 'withdraw',
+    const type = 'Withdraw';
+    addTransaction({
+      transactionId,
+      bookId,
+      type,
       amount,
-      transactiondate: new Date().toISOString(),
-      balancebefore: result.balanceBefore,
-      balanceafter: result.balanceAfter,
-      employeeid: 'EMP001',
-      note: 'Rút tiền'
-    };
-    addTransaction(transaction);
-    
+      transactionDate,
+      balanceBefore: result.balanceBefore,
+      balanceAfter: result.balanceAfter,
+      employeeId: employee?.employeeId
+    });
+
+    const updatedSavingBook = { ...savingBook, balance: result.balanceAfter };
+    const savingBookPayload = buildSavingBookPayload(updatedSavingBook);
+
     return {
+      message: 'Withdraw successfully',
       success: true,
-      message: 'Rút tiền thành công',
       data: {
-        transactionId: transaction.transactionid,
-        accountCode,
-        type: 'withdraw',
+        transactionId,
+        bookId,
+        type,
         amount,
-        balanceAfter: result.balanceAfter,
         balanceBefore: result.balanceBefore,
-        transactionDate: transaction.transactiondate
+        balanceAfter: result.balanceAfter,
+        transactionDate,
+        savingBook: savingBookPayload,
+        employee
       }
     };
   }

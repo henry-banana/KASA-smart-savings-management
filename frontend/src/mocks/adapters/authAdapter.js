@@ -1,4 +1,4 @@
-import { findUserByCredentials, findUserByUsername, updateUserPassword } from '../data/users';
+import { findUserByCredentials, findUserByUsername, updateUserPassword, mockUserAccounts } from '../data/users';
 import { setCurrentUser } from '../data/profile';
 import { randomDelay } from '../utils';
 import { logger } from '@/utils/logger';
@@ -12,11 +12,12 @@ export const mockAuthAdapter = {
     const user = findUserByCredentials(username, password);
     
     if (!user) {
-      throw new Error('Tên đăng nhập hoặc mật khẩu không đúng');
+      // Align with OpenAPI: English error messages
+      throw new Error('Incorrect username or password');
     }
     
     if (user.status !== 'active') {
-      throw new Error('Tài khoản đã bị vô hiệu hoá');
+      throw new Error('Account disabled. Contact administrator.');
     }
 
     // Ensure profile is synced with mockUserAccounts
@@ -24,18 +25,22 @@ export const mockAuthAdapter = {
     setCurrentUser(user);
 
     return {
-      userId: user.userid,
-      username: user.userid, // username: user.username,
-      roleName: user.role,
-      fullName: user.fullName,
-      status: user.status,
-      token: `mock_token_${user.userid}_${Date.now()}`
+      message: 'Login successfully',
+      success: true,
+      data: {
+        userId: user.userid, // canonical field name per OpenAPI
+        username: username, // reflect the real login identifier
+        roleName: user.role,
+        fullName: user.fullName,
+        status: user.status,
+        token: `mock_token_${user.userid}_${Date.now()}`
+      }
     };
   },
 
   async logout() {
     await randomDelay();
-    return { success: true };
+    return { message: 'Logout successful', success: true };
   },
 
   /**
@@ -45,16 +50,23 @@ export const mockAuthAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Request Password Reset', { emailOrUsername });
     
-    // Simulate checking if user exists by username or email
-    const user = findUserByUsername(emailOrUsername);
+    if (!emailOrUsername || !String(emailOrUsername).trim()) {
+      throw new Error('Email or username is required');
+    }
+
+    // Find by username or email
+    const user = String(emailOrUsername).includes('@')
+      ? mockUserAccounts.find(u => u.email === emailOrUsername)
+      : findUserByUsername(emailOrUsername);
+
     if (!user) {
-      throw new Error('Không tìm thấy tài khoản với email/username này');
+      throw new Error('User not found');
     }
 
     return {
+      message: 'OTP sent to your email',
       success: true,
-      message: 'OTP đã được gửi đến email của bạn',
-      email: user.email || `${emailOrUsername}@example.com`
+      data: { email: user.email }
     };
   },
 
@@ -65,14 +77,16 @@ export const mockAuthAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Verify OTP', { email, otp });
     
+    if (!email || !String(email).trim() || !otp || !String(otp).trim()) {
+      throw new Error('Email and OTP are required');
+    }
     if (otp !== '123456') {
-      throw new Error('Mã OTP không chính xác');
+      throw new Error('Invalid OTP');
     }
 
     return {
-      success: true,
-      message: 'OTP xác thực thành công',
-      resetToken: `mock_reset_token_${Date.now()}`
+      message: 'OTP verified successfully',
+      success: true
     };
   },
 
@@ -83,20 +97,27 @@ export const mockAuthAdapter = {
     await randomDelay();
     logger.info('🎭 Mock Reset Password', { email, otp });
     
-    if (!newPassword || newPassword.length < 8) {
-      throw new Error('Mật khẩu phải có ít nhất 8 ký tự');
+    if (!email || !String(email).trim() || !otp || !String(otp).trim() || !newPassword || !String(newPassword).trim()) {
+      throw new Error('Email, OTP and new password are required');
+    }
+    if (otp !== '123456') {
+      throw new Error('Invalid or expired OTP');
+    }
+    if (newPassword.length < 6) {
+      throw new Error('Password must be at least 6 characters');
     }
 
     // Find user by email and update password
-    const user = findUserByUsername(email.split('@')[0]); // Extract username from email
+    const user = mockUserAccounts.find(u => u.email === email) || findUserByUsername(email.split('@')[0]);
     if (user) {
       updateUserPassword(user.userid, newPassword);
       logger.info('🎭 Password updated for user:', user.userid);
     }
 
     return {
+      message: 'Password reset successfully',
       success: true,
-      message: 'Mật khẩu đã được đặt lại thành công'
+      data: { email }
     };
   }
 };

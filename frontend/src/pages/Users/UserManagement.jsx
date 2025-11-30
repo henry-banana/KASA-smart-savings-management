@@ -93,7 +93,7 @@ export default function UserManagement() {
       username: userData.username,
       fullName: userData.fullName,
       email: userData.email,
-      role: userData.role,
+      role: userData.roleName,
       password: ''
     });
     setShowEditUser(true);
@@ -272,10 +272,10 @@ export default function UserManagement() {
                       <TableCell className="text-gray-600">{userData.email}</TableCell>
                       <TableCell>
                         <Badge 
-                          className={`${getRoleBadgeColor(userData.role)} border capitalize`}
+                          className={`${getRoleBadgeColor(userData.roleName)} border capitalize`}
                         >
-                          {userData.role === 'admin' ? 'Administrator' : 
-                          userData.role === 'accountant' ? 'Accountant' : 
+                          {userData.roleName === 'admin' ? 'Administrator' : 
+                          userData.roleName === 'accountant' ? 'Accountant' : 
                           'Teller'}
                         </Badge>
                       </TableCell>
@@ -288,7 +288,7 @@ export default function UserManagement() {
                           {userData.status === 'active' ? 'Active' : 'Disabled'}
                         </Badge>
                       </TableCell>
-                      <TableCell>{userData.createdDate}</TableCell>
+                      <TableCell>{userData.createdAt}</TableCell>
                       <TableCell>
                         <div className="flex justify-center gap-2">
                           <Button 

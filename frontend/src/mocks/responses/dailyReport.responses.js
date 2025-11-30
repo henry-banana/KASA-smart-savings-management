@@ -11,26 +11,31 @@
  * @param {string} date - Report date (YYYY-MM-DD)
  * @param {Object} summary - Summary statistics
  * @param {Array} byTypeSaving - Breakdown by saving type
- * @param {Array} transactions - List of transactions for the day
- * @param {Array} newSavingBooks - List of new saving books opened
- * @returns {Object} Daily report response
+ * @param {Array} transactions - List of transactions for the day (mock-extension)
+ * @param {Array} newSavingBooks - List of new saving books opened (mock-extension)
+ * @returns {Object} Daily report response matching OpenAPI contract
  */
 export const buildDailyReportResponse = ({ date, summary, byTypeSaving, transactions, newSavingBooks }) => ({
-  message: "Daily report retrieved successfully",
+  message: "Get daily report successfully",
   success: true,
   data: {
     date,
-    summary: {
+    // Canonical fields per OpenAPI
+    items: byTypeSaving || [],
+    total: {
       totalDeposits: summary.totalDeposits || 0,
       totalWithdrawals: summary.totalWithdrawals || 0,
-      netCashFlow: summary.netCashFlow || 0,
-      newSavingBooks: summary.newSavingBooks || 0,
-      closedSavingBooks: summary.closedSavingBooks || 0,
-      transactionCount: summary.transactionCount || 0
+      difference: summary.netCashFlow || 0
     },
-    byTypeSaving: byTypeSaving || [],
-    transactions: transactions || [],
-    newSavingBooks: newSavingBooks || []
+    // mock-extension: extra fields for UI enhancements
+    meta: {
+      transactionCount: summary.transactionCount || 0,
+      newSavingBooksCount: summary.newSavingBooks || 0,
+      closedSavingBooksCount: summary.closedSavingBooks || 0,
+      // Detailed lists for UI visualization
+      transactions: transactions || [],
+      newSavingBooks: newSavingBooks || []
+    }
   }
 });
 
@@ -54,7 +59,7 @@ export const dailyReportTemplates = {
   },
 
   serverError: {
-    message: "Internal server error",
+    message: "Failed to generate daily report",
     success: false
   }
 };

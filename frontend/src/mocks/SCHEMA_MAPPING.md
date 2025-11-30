@@ -1,153 +1,75 @@
-# Schema Mapping - Backend vs Frontend Mock
+# Mock Schema Mapping — Final (Post P1 & P2)
 
-## Vấn đề hiện tại
-Có sự không đồng nhất về tên fields giữa Backend (Database) và Frontend (Mock data), gây khó khăn trong việc maintain và testing.
+Status: Updated after completing all P1 and P2 refactors. In sync with `docs/OPENAPI.docx.md` and current mock code (seeds, adapters, responses).
 
-## So sánh Schema
+Notes:
 
-### 1. UserAccount / User
 
-| Frontend Mock | Backend DB | Chuẩn hóa | Ghi chú |
-|---------------|-----------|-----------|---------|
-| `userid` | `userid` | ✅ `userid` | OK |
-| `password` | `password` | ✅ `password` | OK |
-| `employeeid` | `employeeid` | ✅ `employeeid` | OK |
-| `role` | `roleid` | ⚠️ | Mock dùng string, BE dùng ID |
-| `fullName` | N/A | ⚠️ | Mock có, BE không (lấy từ Employee) |
-| `email` | `email` | ✅ `email` | OK |
-| `status` | `status` | ✅ `status` | OK |
-| `createdDate` | `createdat` | ⚠️ | Tên khác nhau |
-| `lastlogin` | `lastlogin` | ✅ `lastlogin` | OK |
+## Auth (Login)
 
-**Quyết định**: Backend đúng chuẩn database. Mock nên thêm mapping layer.
+  - `data`: `{ userId: string, username: string, roleName: string, lastLogin?: string }`
+  - Envelope: `{ message: "Login successfully", success: true, data }`
+  - Legacy: `employeeid` → `userId`, `role` → `roleName`, `lastlogin` → `lastLogin`, `createdDate` → `createdAt` (not returned in login)
 
----
 
-### 2. Customer
+## User — List & Detail
 
-| Frontend Mock | Backend DB | Chuẩn hóa | Ghi chú |
-|---------------|-----------|-----------|---------|
-| `customerid` | `customerid` | ✅ `customerid` | OK |
-| `fullname` | `fullname` | ✅ `fullname` | OK |
-| **`idcard`** | **`citizenid`** | ❌ **KHÁC BIỆT** | **Cần đổi mock** |
-| `address` | `address` | ✅ `address` | OK |
-| `phone` | `phone` | ✅ `phone` | OK |
-| `email` | `email` | ✅ `email` | OK |
-| `dateofbirth` | `dateofbirth` | ✅ `dateofbirth` | OK |
+  - List `data.items`: `[{ id: string, username: string, fullName: string, roleName: string, email?: string, status?: string, createdAt?: string, lastLogin?: string }]`
+  - Detail `data`: `{ id: string, username: string, fullName: string, roleName: string, email?: string, status?: string, createdAt?: string, lastLogin?: string }`
+  - Legacy: `userid` → `username`, `employeeid` → `id`, `fullname` → `fullName`, `role` → `roleName`, `createdDate` → `createdAt`, `lastlogin` → `lastLogin`
 
-**❗ Action Required**: Đổi `idcard` → `citizenid` trong mock data
 
----
+## Profile
 
-### 3. SavingBook
+  - `data`: `{ id: string, username: string, fullName: string, roleName: string, email?: string, createdAt?: string, lastLogin?: string }`
+  - Legacy mapping as in User section
 
-| Frontend Mock | Backend DB | Chuẩn hóa | Ghi chú |
-|---------------|-----------|-----------|---------|
-| `bookid` | `bookid` | ✅ `bookid` | OK |
-| `customerid` | `customerid` | ✅ `customerid` | OK |
-| `typesavingid` | `typeid` | ⚠️ | Tên khác nhau |
-| `opendate` | `registertime` | ⚠️ | Tên khác nhau |
-| `maturitydate` | `maturitydate` | ✅ `maturitydate` | OK |
-| `initialdeposit` | `initialdeposit` | ✅ `initialdeposit` | OK |
-| `balance` | `currentbalance` | ⚠️ | Tên khác nhau |
-| `interestrate` | `interestrate` | ✅ `interestrate` | OK |
-| `status` | `status` | ✅ `status` | OK |
 
-**❗ Action Required**: 
-- `typesavingid` → `typeid`
-- `opendate` → `registertime` 
-- `balance` → `currentbalance`
+## TypeSaving
 
----
+  - List `data.items`: `[{ typeSavingId: string, typeName: string, term: number, interestRate: number }]`
+  - Detail `data`: `{ typeSavingId: string, typeName: string, term: number, interestRate: number }`
+  - Legacy: `typesavingid`/`typeid` → `typeSavingId`, `name`/`typename` → `typeName`, `rate` → `interestRate`
 
-### 4. Transaction
 
-| Frontend Mock | Backend DB | Chuẩn hóa | Ghi chú |
-|---------------|-----------|-----------|---------|
-| `transactionid` | `transactionid` | ✅ `transactionid` | OK |
-| `bookid` | `bookid` | ✅ `bookid` | OK |
-| `transactiontype` | `transactiontype` | ✅ `transactiontype` | OK |
-| `amount` | `amount` | ✅ `amount` | OK |
-| `transactiondate` | `transactiondate` | ✅ `transactiondate` | OK |
-| `employeeid` | `employeeid` | ✅ `employeeid` | OK |
+## SavingBook — Search & Detail
 
-**Status**: ✅ Đã đồng bộ
+  - Search `data.items`: `[{ accountCode: string, bookId: string, citizenId: string, customerName: string, accountTypeName: string, balance: number, openDate: string, maturityDate?: string, status: string }]`
+  - Detail `data`: `{ bookId: string, citizenId: string, customerName: string, typeSavingId: string, balance: number, openDate: string, maturityDate?: string, status: string, typeSaving?: { typeSavingId: string, typeName: string, term: number, interestRate: number } }`
+  - Legacy: `bookid` → `bookId`, `customerid` → `citizenId` (via customer join), `typesavingid`/`typeid` → `typeSavingId`, `opendate` → `openDate`, `registertime` → `openDate`, `maturitydate` → `maturityDate`, `balance`/`currentbalance` → `balance`, `fullname` → `customerName`
 
----
 
-## Giải pháp đề xuất
+## Transaction
 
-### Option 1: Đồng bộ Mock với Backend (KHUYẾN NGHỊ) ✅
+  - Create/Update `data`: `{ transactionId: string, bookId: string, type: 'deposit'|'withdraw', amount: number, balanceBefore: number, balanceAfter: number, transactionDate: string, savingBook: { bookId: string, citizenId: string, customerName: string, typeSavingId: string, balance: number, openDate: string, maturityDate?: string, status: string }, employee: { employeeId: string, fullName: string, roleName: string } }`
+  - Legacy: `transactionid` → `transactionId`, `bookid` → `bookId`, `transactiondate` → `transactionDate`, `employeeid` → `employeeId`, `fullname` → `fullName`
 
-**Ưu điểm:**
-- Mock data giống y hệt DB schema
-- Dễ test integration
-- Frontend và Backend dùng chung model
 
-**Nhược điểm:**
-- Phải sửa nhiều file mock
-- Breaking change cho code hiện tại
+## Dashboard — Recent Transactions
 
-### Option 2: Tạo Adapter Layer
+  - `data.items`: `[{ id: string, date: string, time: string, customerName: string, type: 'deposit'|'withdraw', amount: number, accountCode: string }]`
+  - Legacy: `transactionid`/`id` normalized to `id` (adapter may alias to transactionId internally), `accountcode` → `accountCode`
 
-**Ưu điểm:**
-- Không phá vỡ code cũ
-- Linh hoạt transform data
 
-**Nhược điểm:**
-- Thêm layer complexity
-- Phải maintain 2 schemas
+## Regulations
 
----
+  - Base `data`: `{ minInitialDeposit: number, minTermMonths: number }`
+  - Interest rates `data.items`: `[{ typeSavingId: string, term: number, rate: number }]`
+  - Legacy: `interestRate` in TypeSaving seed → `rate` in Regulations interest-rates responses; `typeid` → `typeSavingId`
 
-## Action Plan
 
-### Phase 1: Critical Fields (NGAY)
-```javascript
-// customers.js
-- idcard → citizenid ❌ CRITICAL
+## Reports — Daily & Monthly
 
-// savingBooks.js  
-- typesavingid → typeid
-- opendate → registertime
-- balance → currentbalance
-```
+  - Daily `data.items`: `[{ date: string, totalDeposits: number, totalWithdrawals: number, newSavingBooks: number, closedSavingBooks: number }]`
+  - Daily `data.total`: `{ transactions: number, deposits: number, withdrawals: number, newSavingBooks: number, closedSavingBooks: number }`
+  - Daily `data.meta?`: `{ byTypeSaving?: [{ typeSavingId: string, typeName: string, count: number }], ui?: object }`
+  - Monthly `data.items`: `[{ day: number, deposits: number, withdrawals: number, newSavingBooks: number, closedSavingBooks: number }]`
+  - Monthly `data.total`: `{ days: number, deposits: number, withdrawals: number, newSavingBooks: number, closedSavingBooks: number }`
+  - Monthly `data.meta?`: `{ ui?: object }`
+  - Legacy: `dailyBreakdown`/`byTypeSaving` → `items`, `summary` → `total`
 
-### Phase 2: Adapter Updates
-```javascript
-// Update all adapters to handle field mapping
-mockCustomerAdapter: {
-  // Transform từ mock → API format
-  toApiFormat(mockData) {
-    return {
-      ...mockData,
-      citizenid: mockData.idcard  // Backward compat
-    }
-  }
-}
-```
 
-### Phase 3: Response Builders
-```javascript
-// Đồng nhất response format với Backend
-buildCustomerResponse(customer) {
-  return {
-    customerid: customer.customerid,
-    fullname: customer.fullname,
-    citizenid: customer.citizenid,  // Chuẩn Backend
-    ...
-  }
-}
-```
+## Envelope & Messaging Consistency
 
----
-
-## Checklist
-
-- [ ] Update `customers.js`: `idcard` → `citizenid`
-- [ ] Update `savingBooks.js`: 3 fields
-- [ ] Update `mockCustomerAdapter.js`
-- [ ] Update `mockAccountAdapter.js`
-- [ ] Update response builders
-- [ ] Test tất cả mock endpoints
-- [ ] Verify không break existing code
+  - "Get/Create/Update/Delete [resource] successfully"
+  - Auth uses: "Login successfully"

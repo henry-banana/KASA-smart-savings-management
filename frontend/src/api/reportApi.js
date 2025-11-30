@@ -1,26 +1,25 @@
 import { apiClient } from './apiClient';
 
 export const reportApi = {
+  /**
+   * Daily report per OpenAPI: GET /api/report/daily?date=YYYY-MM-DD
+   */
   async getDailyReport(date) {
     const reportDate = date || new Date().toISOString().split('T')[0];
     const response = await apiClient.get(`/api/report/daily?date=${reportDate}`);
     return response.data;
   },
 
-
   /**
-   * BM5.2 - Get monthly opening/closing savings books report
-   * @param {number} month - Month (1-12)
-   * @param {number} year - Year
-   * @param {string} savingsType - Savings type filter ('all', 'no-term', '3-months', etc.)
-   * @returns {Promise<Object>} Monthly open/close report data
+   * Monthly report per OpenAPI: GET /api/report/monthly?typeSavingId=TS01&month=MM&year=YYYY
+   * typeSavingId is optional.
    */
-  async getMonthlyOpenCloseReport(month, year, savingsType = 'all') {
+  async getMonthlyReport(month, year, typeSavingId) {
     const reportMonth = month || new Date().getMonth() + 1;
     const reportYear = year || new Date().getFullYear();
-    const response = await apiClient.get(
-      `/api/report/monthly-open-close?month=${reportMonth}&year=${reportYear}&savingsType=${savingsType}`
-    );
+    const params = new URLSearchParams({ month: String(reportMonth), year: String(reportYear) });
+    if (typeSavingId) params.append('typeSavingId', typeSavingId);
+    const response = await apiClient.get(`/api/report/monthly?${params.toString()}`);
     return response.data;
   }
 };

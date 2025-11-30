@@ -1,10 +1,6 @@
 import { USE_MOCK } from '@/config/app.config';
 import { accountApi } from '@/api/accountApi';
-import { mockAccountAdapter } from '@/mocks/adapters/accountAdapter';
 import { mockSavingBookAdapter } from '@/mocks/adapters/savingBookAdapter';
-
-const accountAdapter = USE_MOCK ? mockAccountAdapter : accountApi;
-const savingBookAdapter = USE_MOCK ? mockSavingBookAdapter : accountApi;
 
 /**
  * Tạo sổ tiết kiệm mới (BM1)
@@ -21,7 +17,23 @@ export const createSavingBook = async (data) => {
     throw new Error('Số tiền tối thiểu là 100,000 VND');
   }
 
-  return accountAdapter.createAccount({
+  if (USE_MOCK) {
+    // Use canonical mock adapter directly and alias accountCode for UI compatibility
+    const resp = await mockSavingBookAdapter.createSavingBook({
+      citizenId: data.idCard,
+      customerName: data.customerName,
+      typeSavingId: data.savingsType,
+      openDate: data.openDate,
+      balance: parseFloat(data.initialDeposit)
+    });
+    return {
+      ...resp,
+      data: { ...resp.data, accountCode: resp.data.bookId }
+    };
+  }
+
+  // Backend API expects backend payload; keep existing mapping here
+  return accountApi.createAccount({
     customer_name: data.customerName,
     id_card: data.idCard,
     address: data.address,
@@ -39,7 +51,10 @@ export const createSavingBook = async (data) => {
  * @returns {Promise<Object>} Search results
  */
 export const searchSavingBooks = async (keyword = '', typeFilter = 'all', statusFilter = 'all') => {
-  return savingBookAdapter.searchSavingBooks(keyword, typeFilter, statusFilter);
+  if (USE_MOCK) {
+    return mockSavingBookAdapter.searchSavingBooks(keyword, typeFilter, statusFilter);
+  }
+  return accountApi.searchSavingBooks(keyword, typeFilter, statusFilter);
 };
 
 /**
@@ -51,6 +66,8 @@ export const getSavingBookById = async (id) => {
   if (!id) {
     throw new Error('Vui lòng nhập mã sổ');
   }
-
-  return savingBookAdapter.getSavingBookById(id);
+  if (USE_MOCK) {
+    return mockSavingBookAdapter.getSavingBookById(id);
+  }
+  return accountApi.getSavingBookById(id);
 };
