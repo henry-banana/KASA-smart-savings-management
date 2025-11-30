@@ -1,12 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { userService } from '@/services/userService';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Badge } from '../../components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { userService } from "@/services/userService";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Badge } from "../../components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import {
   Table,
   TableBody,
@@ -32,9 +44,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../../components/ui/alert-dialog";
-import { UserPlus, Edit, UserX, AlertTriangle, CheckCircle2, Users2, Sparkles } from 'lucide-react';
-import { StarDecor } from '../../components/CuteComponents';
-import { RoleGuard } from '../../components/RoleGuard';
+import {
+  UserPlus,
+  Edit,
+  UserX,
+  AlertTriangle,
+  CheckCircle2,
+  Users2,
+  Sparkles,
+} from "lucide-react";
+import { StarDecor } from "../../components/CuteComponents";
+import { RoleGuard } from "../../components/RoleGuard";
+import { Skeleton } from "../../components/ui/skeleton";
 
 export default function UserManagement() {
   const { user } = useAuth();
@@ -47,14 +68,14 @@ export default function UserManagement() {
   const [showDisableConfirm, setShowDisableConfirm] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [formData, setFormData] = useState({
-    username: '',
-    fullName: '',
-    email: '',
-    role: 'teller',
-    password: ''
+    username: "",
+    fullName: "",
+    email: "",
+    role: "teller",
+    password: "",
   });
 
   // Fetch users on mount
@@ -69,8 +90,8 @@ export default function UserManagement() {
       const data = await userService.getAllUsers();
       setUsers(data);
     } catch (err) {
-      setError(err.message || 'Failed to fetch users');
-      console.error('Error fetching users:', err);
+      setError(err.message || "Failed to fetch users");
+      console.error("Error fetching users:", err);
     } finally {
       setLoading(false);
     }
@@ -78,11 +99,11 @@ export default function UserManagement() {
 
   const handleAddUser = () => {
     setFormData({
-      username: '',
-      fullName: '',
-      email: '',
-      role: 'teller',
-      password: ''
+      username: "",
+      fullName: "",
+      email: "",
+      role: "teller",
+      password: "",
     });
     setShowAddUser(true);
   };
@@ -94,7 +115,7 @@ export default function UserManagement() {
       fullName: userData.fullName,
       email: userData.email,
       role: userData.roleName,
-      password: ''
+      password: "",
     });
     setShowEditUser(true);
   };
@@ -107,14 +128,19 @@ export default function UserManagement() {
   const confirmDisable = async () => {
     if (selectedUser) {
       try {
-        const newStatus = selectedUser.status === 'active' ? 'disabled' : 'active';
+        const newStatus =
+          selectedUser.status === "active" ? "disabled" : "active";
         await userService.updateUserStatus(selectedUser.id, newStatus);
         await fetchUsers(); // Refresh list
-        setSuccessMessage(`User ${selectedUser.status === 'active' ? 'disabled' : 'enabled'} successfully`);
+        setSuccessMessage(
+          `User ${
+            selectedUser.status === "active" ? "disabled" : "enabled"
+          } successfully`
+        );
         setShowSuccess(true);
       } catch (err) {
-        setError(err.message || 'Failed to update user status');
-        console.error('Error toggling user status:', err);
+        setError(err.message || "Failed to update user status");
+        console.error("Error toggling user status:", err);
       }
     }
     setShowDisableConfirm(false);
@@ -125,11 +151,11 @@ export default function UserManagement() {
       await userService.createUser(formData);
       await fetchUsers(); // Refresh list
       setShowAddUser(false);
-      setSuccessMessage('User created successfully');
+      setSuccessMessage("User created successfully");
       setShowSuccess(true);
     } catch (err) {
-      setError(err.message || 'Failed to create user');
-      console.error('Error creating user:', err);
+      setError(err.message || "Failed to create user");
+      console.error("Error creating user:", err);
     }
   };
 
@@ -140,29 +166,29 @@ export default function UserManagement() {
           username: formData.username,
           fullName: formData.fullName,
           email: formData.email,
-          roleName: formData.role
+          roleName: formData.role,
         });
         await fetchUsers(); // Refresh list
         setShowEditUser(false);
-        setSuccessMessage('User updated successfully');
+        setSuccessMessage("User updated successfully");
         setShowSuccess(true);
       } catch (err) {
-        setError(err.message || 'Failed to update user');
-        console.error('Error updating user:', err);
+        setError(err.message || "Failed to update user");
+        console.error("Error updating user:", err);
       }
     }
   };
 
   const getRoleBadgeColor = (role) => {
     switch (role) {
-      case 'admin':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'accountant':
-        return 'bg-cyan-100 text-cyan-700 border-cyan-200';
-      case 'teller':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+      case "admin":
+        return "bg-purple-100 text-purple-700 border-purple-200";
+      case "accountant":
+        return "bg-cyan-100 text-cyan-700 border-cyan-200";
+      case "teller":
+        return "bg-blue-100 text-blue-700 border-blue-200";
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
@@ -179,7 +205,7 @@ export default function UserManagement() {
   // }
 
   return (
-    <RoleGuard allow={['admin']}>
+    <RoleGuard allow={["admin"]}>
       <div className="space-y-4 sm:space-y-6">
         {/* Error Alert */}
         {error && (
@@ -198,15 +224,24 @@ export default function UserManagement() {
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
-            <Sparkles className="absolute text-purple-400 opacity-50 top-6 right-20 sm:right-32" size={20} />
-            
+            <Sparkles
+              className="absolute text-purple-400 opacity-50 top-6 right-20 sm:right-32"
+              size={20}
+            />
+
             <div className="relative z-10 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
               <div className="flex items-start flex-1 min-w-0 gap-3 sm:gap-4">
-                <div 
+                <div
                   className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
-                  style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                  }}
                 >
-                  <Users2 size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
+                  <Users2
+                    size={24}
+                    className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
@@ -218,10 +253,13 @@ export default function UserManagement() {
                   </CardDescription>
                 </div>
               </div>
-              <Button 
+              <Button
                 onClick={handleAddUser}
                 className="shrink-0 w-full h-10 px-4 text-sm font-medium text-white border border-gray-200 sm:w-auto sm:h-11 lg:h-12 sm:px-6 rounded-xl sm:text-base"
-                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+                style={{
+                  background:
+                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                }}
               >
                 <UserPlus size={16} className="sm:w-[18px] sm:h-[18px] mr-2" />
                 <span className="hidden sm:inline">Add User</span>
@@ -242,9 +280,35 @@ export default function UserManagement() {
             <div className="overflow-hidden border rounded-xl lg:rounded-2xl">
               <div className="overflow-x-auto">
                 {loading ? (
-                  <div className="py-12 text-center">
-                    <div className="inline-block w-8 h-8 border-4 border-purple-200 rounded-full animate-spin border-t-purple-600"></div>
-                    <p className="mt-4 text-gray-600">Loading users...</p>
+                  <div className="p-4 space-y-3">
+                    {/* Table Header Skeleton */}
+                    <div className="flex gap-4 p-3 bg-gray-50 rounded-xl">
+                      <Skeleton className="h-5 w-24 bg-gray-200" />
+                      <Skeleton className="h-5 w-32 bg-gray-200 hidden md:block" />
+                      <Skeleton className="h-5 w-40 bg-gray-200 hidden lg:block" />
+                      <Skeleton className="h-5 w-20 bg-gray-200" />
+                      <Skeleton className="h-5 w-20 bg-gray-200" />
+                      <Skeleton className="h-5 w-28 bg-gray-200 hidden sm:block" />
+                      <Skeleton className="h-5 w-24 bg-gray-200" />
+                    </div>
+                    {/* Table Rows Skeleton */}
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-4 p-4 border border-gray-100 rounded-xl animate-pulse"
+                      >
+                        <Skeleton className="h-4 w-24 bg-gray-200" />
+                        <Skeleton className="h-4 w-32 bg-gray-200 hidden md:block" />
+                        <Skeleton className="h-4 w-40 bg-gray-200 hidden lg:block" />
+                        <Skeleton className="h-6 w-24 bg-gray-200 rounded-full" />
+                        <Skeleton className="h-6 w-16 bg-gray-200 rounded-full" />
+                        <Skeleton className="h-4 w-28 bg-gray-200 hidden sm:block" />
+                        <div className="flex gap-2">
+                          <Skeleton className="h-8 w-16 bg-gray-200 rounded-xl" />
+                          <Skeleton className="h-8 w-20 bg-gray-200 rounded-xl" />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ) : users.length === 0 ? (
                   <div className="py-12 text-center text-gray-500">
@@ -253,71 +317,104 @@ export default function UserManagement() {
                   </div>
                 ) : (
                   <Table>
-                  <TableHeader>
-                    <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
-                      <TableHead className="text-xs font-semibold sm:text-sm">Username</TableHead>
-                      <TableHead className="hidden text-xs font-semibold sm:text-sm md:table-cell">Full Name</TableHead>
-                      <TableHead className="hidden text-xs font-semibold sm:text-sm lg:table-cell">Email</TableHead>
-                      <TableHead className="text-xs font-semibold sm:text-sm">Role</TableHead>
-                      <TableHead className="text-xs font-semibold sm:text-sm">Status</TableHead>
-                      <TableHead className="hidden text-xs font-semibold sm:text-sm sm:table-cell">Created Date</TableHead>
-                      <TableHead className="text-xs font-semibold text-center sm:text-sm">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.map((userData) => (
-                      <TableRow key={userData.id} className="hover:bg-[#F8F9FC] transition-colors">
-                      <TableCell className="font-medium">{userData.username}</TableCell>
-                      <TableCell>{userData.fullName}</TableCell>
-                      <TableCell className="text-gray-600">{userData.email}</TableCell>
-                      <TableCell>
-                        <Badge 
-                          className={`${getRoleBadgeColor(userData.roleName)} border capitalize`}
+                    <TableHeader>
+                      <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
+                        <TableHead className="text-xs font-semibold sm:text-sm">
+                          Username
+                        </TableHead>
+                        <TableHead className="hidden text-xs font-semibold sm:text-sm md:table-cell">
+                          Full Name
+                        </TableHead>
+                        <TableHead className="hidden text-xs font-semibold sm:text-sm lg:table-cell">
+                          Email
+                        </TableHead>
+                        <TableHead className="text-xs font-semibold sm:text-sm">
+                          Role
+                        </TableHead>
+                        <TableHead className="text-xs font-semibold sm:text-sm">
+                          Status
+                        </TableHead>
+                        <TableHead className="hidden text-xs font-semibold sm:text-sm sm:table-cell">
+                          Created Date
+                        </TableHead>
+                        <TableHead className="text-xs font-semibold text-center sm:text-sm">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((userData) => (
+                        <TableRow
+                          key={userData.id}
+                          className="hover:bg-[#F8F9FC] transition-colors"
                         >
-                          {userData.roleName === 'admin' ? 'Administrator' : 
-                          userData.roleName === 'accountant' ? 'Accountant' : 
-                          'Teller'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge 
-                          className={userData.status === 'active' ? 
-                            'bg-green-100 text-green-700 border-green-200 border' : 
-                            'bg-gray-100 text-gray-700 border-gray-200 border'}
-                        >
-                          {userData.status === 'active' ? 'Active' : 'Disabled'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{userData.createdAt}</TableCell>
-                      <TableCell>
-                        <div className="flex justify-center gap-2">
-                          <Button 
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleEditUser(userData)}
-                            className="rounded-xl hover:bg-[#F3E8FF]"
-                          >
-                            <Edit size={14} className="mr-1" />
-                            Edit
-                          </Button>
-                          <Button 
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDisableUser(userData)}
-                            className={`rounded-xl ${userData.status === 'active' ? 
-                              'text-red-600 hover:bg-red-50' : 
-                              'text-green-600 hover:bg-green-50'}`}
-                          >
-                            <UserX size={14} className="mr-1" />
-                            {userData.status === 'active' ? 'Disable' : 'Enable'}
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              )}
+                          <TableCell className="font-medium">
+                            {userData.username}
+                          </TableCell>
+                          <TableCell>{userData.fullName}</TableCell>
+                          <TableCell className="text-gray-600">
+                            {userData.email}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={`${getRoleBadgeColor(
+                                userData.roleName
+                              )} border capitalize`}
+                            >
+                              {userData.roleName === "admin"
+                                ? "Administrator"
+                                : userData.roleName === "accountant"
+                                ? "Accountant"
+                                : "Teller"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={
+                                userData.status === "active"
+                                  ? "bg-green-100 text-green-700 border-green-200 border"
+                                  : "bg-gray-100 text-gray-700 border-gray-200 border"
+                              }
+                            >
+                              {userData.status === "active"
+                                ? "Active"
+                                : "Disabled"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{userData.createdAt}</TableCell>
+                          <TableCell>
+                            <div className="flex justify-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleEditUser(userData)}
+                                className="rounded-xl hover:bg-[#F3E8FF]"
+                              >
+                                <Edit size={14} className="mr-1" />
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleDisableUser(userData)}
+                                className={`rounded-xl ${
+                                  userData.status === "active"
+                                    ? "text-red-600 hover:bg-red-50"
+                                    : "text-green-600 hover:bg-green-50"
+                                }`}
+                              >
+                                <UserX size={14} className="mr-1" />
+                                {userData.status === "active"
+                                  ? "Disable"
+                                  : "Enable"}
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </div>
             </div>
           </CardContent>
@@ -328,56 +425,80 @@ export default function UserManagement() {
           <DialogContent className="rounded-3xl">
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
-                <div 
+                <div
                   className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-2xl"
-                  style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                  }}
                 >
                   <UserPlus size={24} className="text-white" />
                 </div>
                 <div>
                   <DialogTitle className="text-xl">Add New User</DialogTitle>
-                  <DialogDescription>Create a new user account in the system</DialogDescription>
+                  <DialogDescription>
+                    Create a new user account in the system
+                  </DialogDescription>
                 </div>
               </div>
             </DialogHeader>
             <div className="py-4 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-gray-700">Username</Label>
+                <Label htmlFor="username" className="text-gray-700">
+                  Username
+                </Label>
                 <Input
                   id="username"
                   value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
                   placeholder="Enter username"
                   className="border-gray-200 h-11 rounded-xl"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-gray-700">Full Name</Label>
+                <Label htmlFor="fullName" className="text-gray-700">
+                  Full Name
+                </Label>
                 <Input
                   id="fullName"
                   value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
                   placeholder="Enter full name"
                   className="border-gray-200 h-11 rounded-xl"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700">Email</Label>
+                <Label htmlFor="email" className="text-gray-700">
+                  Email
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   placeholder="Enter email address"
                   className="border-gray-200 h-11 rounded-xl"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="role" className="text-gray-700">Role</Label>
-                <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+                <Label htmlFor="role" className="text-gray-700">
+                  Role
+                </Label>
+                <Select
+                  value={formData.role}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, role: value })
+                  }
+                >
                   <SelectTrigger className="border-gray-200 h-11 rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
@@ -390,26 +511,33 @@ export default function UserManagement() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700">Password</Label>
+                <Label htmlFor="password" className="text-gray-700">
+                  Password
+                </Label>
                 <Input
                   id="password"
                   type="password"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   placeholder="Enter password"
                   className="border-gray-200 h-11 rounded-xl"
                 />
               </div>
             </div>
             <div className="flex gap-4">
-              <Button 
+              <Button
                 onClick={submitAddUser}
                 className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
-                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+                style={{
+                  background:
+                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                }}
               >
                 Create User
               </Button>
-              <Button 
+              <Button
                 onClick={() => setShowAddUser(false)}
                 variant="outline"
                 className="flex-1 h-12 border-gray-200 rounded-xl"
@@ -425,9 +553,12 @@ export default function UserManagement() {
           <DialogContent className="rounded-3xl">
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
-                <div 
+                <div
                   className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-2xl"
-                  style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                  }}
                 >
                   <Edit size={24} className="text-white" />
                 </div>
@@ -439,39 +570,58 @@ export default function UserManagement() {
             </DialogHeader>
             <div className="py-4 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="editUsername" className="text-gray-700">Username</Label>
+                <Label htmlFor="editUsername" className="text-gray-700">
+                  Username
+                </Label>
                 <Input
                   id="editUsername"
                   value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
                   className="border-gray-200 h-11 rounded-xl"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="editFullName" className="text-gray-700">Full Name</Label>
+                <Label htmlFor="editFullName" className="text-gray-700">
+                  Full Name
+                </Label>
                 <Input
                   id="editFullName"
                   value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
                   className="border-gray-200 h-11 rounded-xl"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="editEmail" className="text-gray-700">Email</Label>
+                <Label htmlFor="editEmail" className="text-gray-700">
+                  Email
+                </Label>
                 <Input
                   id="editEmail"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="border-gray-200 h-11 rounded-xl"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="editRole" className="text-gray-700">Role</Label>
-                <Select value={formData.role} onValueChange={(value) => setFormData({ ...formData, role: value })}>
+                <Label htmlFor="editRole" className="text-gray-700">
+                  Role
+                </Label>
+                <Select
+                  value={formData.role}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, role: value })
+                  }
+                >
                   <SelectTrigger className="border-gray-200 h-11 rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
@@ -484,14 +634,17 @@ export default function UserManagement() {
               </div>
             </div>
             <div className="flex gap-4">
-              <Button 
+              <Button
                 onClick={submitEditUser}
                 className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
-                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+                style={{
+                  background:
+                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                }}
               >
                 Update
               </Button>
-              <Button 
+              <Button
                 onClick={() => setShowEditUser(false)}
                 variant="outline"
                 className="flex-1 h-12 border-gray-200 rounded-xl"
@@ -503,23 +656,34 @@ export default function UserManagement() {
         </Dialog>
 
         {/* Disable Confirmation */}
-        <AlertDialog open={showDisableConfirm} onOpenChange={setShowDisableConfirm}>
+        <AlertDialog
+          open={showDisableConfirm}
+          onOpenChange={setShowDisableConfirm}
+        >
           <AlertDialogContent className="rounded-3xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-xl">
-                {selectedUser?.status === 'active' ? 'Disable' : 'Enable'} User?
+                {selectedUser?.status === "active" ? "Disable" : "Enable"} User?
               </AlertDialogTitle>
               <AlertDialogDescription className="text-base">
-                Are you sure you want to {selectedUser?.status === 'active' ? 'disable' : 'enable'} {selectedUser?.fullName}? 
-                {selectedUser?.status === 'active' && ' This user will not be able to access the system.'}
+                Are you sure you want to{" "}
+                {selectedUser?.status === "active" ? "disable" : "enable"}{" "}
+                {selectedUser?.fullName}?
+                {selectedUser?.status === "active" &&
+                  " This user will not be able to access the system."}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="border-gray-200 rounded-xl">Cancel</AlertDialogCancel>
-              <AlertDialogAction 
+              <AlertDialogCancel className="border-gray-200 rounded-xl">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
                 onClick={confirmDisable}
                 className="text-white border border-gray-200 rounded-xl"
-                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+                style={{
+                  background:
+                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                }}
               >
                 Confirm
               </AlertDialogAction>
@@ -532,22 +696,29 @@ export default function UserManagement() {
           <DialogContent className="rounded-3xl">
             <DialogHeader>
               <div className="flex justify-center mb-4">
-                <div 
+                <div
                   className="flex items-center justify-center w-20 h-20 rounded-full"
-                  style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
+                  }}
                 >
                   <CheckCircle2 size={48} className="text-white" />
                 </div>
               </div>
-              <DialogTitle className="text-2xl text-center">Success!</DialogTitle>
+              <DialogTitle className="text-2xl text-center">
+                Success!
+              </DialogTitle>
               <DialogDescription className="text-base text-center">
                 {successMessage}
               </DialogDescription>
             </DialogHeader>
-            <Button 
+            <Button
               onClick={() => setShowSuccess(false)}
               className="w-full h-12 font-medium text-white border border-gray-200 rounded-xl"
-              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              style={{
+                background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+              }}
             >
               Close
             </Button>

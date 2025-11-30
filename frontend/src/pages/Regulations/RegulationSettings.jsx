@@ -50,6 +50,7 @@ import {
 } from "lucide-react";
 import { StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
+import { Skeleton } from "../../components/ui/skeleton";
 
 export default function RegulationSettings() {
   const { user } = useAuth();
@@ -278,10 +279,61 @@ export default function RegulationSettings() {
 
             {/* Loading State */}
             {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 border-4 border-purple-200 rounded-full border-t-purple-600 animate-spin"></div>
-                  <p className="text-gray-600">Loading regulations...</p>
+              <div className="space-y-6">
+                {/* Basic Regulations Skeleton */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Skeleton className="w-2 h-2 rounded-full bg-gray-300" />
+                    <Skeleton className="h-5 w-36 bg-gray-200" />
+                  </div>
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {[1, 2].map((i) => (
+                      <div key={i} className="space-y-2">
+                        <Skeleton className="h-4 w-40 bg-gray-200" />
+                        <Skeleton className="h-11 w-full bg-gray-200 rounded-xl" />
+                        <Skeleton className="h-3 w-56 bg-gray-200" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Interest Rates Table Skeleton */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Skeleton className="w-2 h-2 rounded-full bg-gray-300" />
+                    <Skeleton className="h-5 w-56 bg-gray-200" />
+                  </div>
+                  <div className="overflow-hidden border rounded-2xl">
+                    <div className="bg-gray-50 p-4">
+                      <div className="flex gap-4">
+                        <Skeleton className="h-5 w-8 bg-gray-200" />
+                        <Skeleton className="h-5 flex-1 bg-gray-200" />
+                        <Skeleton className="h-5 w-28 bg-gray-200" />
+                        <Skeleton className="h-5 w-36 bg-gray-200" />
+                      </div>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="flex items-center gap-4 p-3 animate-pulse"
+                        >
+                          <Skeleton className="h-5 w-5 bg-gray-200 rounded" />
+                          <Skeleton className="h-4 flex-1 bg-gray-200" />
+                          <Skeleton className="h-10 w-28 bg-gray-200 rounded-xl" />
+                          <Skeleton className="h-10 w-32 bg-gray-200 rounded-xl" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buttons Skeleton */}
+                <div className="flex gap-4 pt-4">
+                  <Skeleton className="h-12 w-40 bg-gray-200 rounded-xl" />
+                  <Skeleton className="h-12 w-44 bg-gray-200 rounded-xl" />
+                  <Skeleton className="h-12 w-40 bg-gray-200 rounded-xl" />
+                  <Skeleton className="h-12 w-36 bg-gray-200 rounded-xl" />
                 </div>
               </div>
             ) : (
@@ -534,18 +586,6 @@ export default function RegulationSettings() {
             )}
           </CardContent>
         </Card>
-
-        {/* Current Regulations Summary */}
-        {!loading && (
-          <Card className="overflow-hidden border border-gray-200 rounded-3xl">
-            <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
-              <CardTitle className="text-xl">
-                Current Regulations Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6"></CardContent>
-          </Card>
-        )}
 
         {/* Current Regulations Summary */}
         {!loading && (
