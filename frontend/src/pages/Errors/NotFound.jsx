@@ -44,7 +44,7 @@ export default function NotFound() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
+      <Card className="overflow-hidden border border-gray-200 rounded-3xl">
         {/* Header với gradient + sparkle giống style KASA */}
         <CardHeader className="relative bg-linear-to-r from-[#E8F6FF] via-[#DFF9F4] to-[#FFF7D6] border-b border-gray-100">
           <div className="absolute top-0 right-0 w-40 h-40 -mt-16 -mr-16 rounded-full bg-white/50 opacity-60" />
@@ -60,7 +60,7 @@ export default function NotFound() {
               </CardDescription>
             </div>
             <div className="hidden sm:block">
-              <CuteBadge variant="info" className="shadow-sm">
+              <CuteBadge variant="info" className="border border-gray-100">
                 404 • Lost in Savings
               </CuteBadge>
             </div>
@@ -76,7 +76,7 @@ export default function NotFound() {
               <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <Button
                   onClick={handleGoHome}
-                  className="h-11 px-6 rounded-full text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                  className="h-11 px-6 rounded-full text-white border border-gray-200 hover:border border-gray-200 transition-all duration-300 hover:scale-[1.02]"
                   style={{
                     background:
                       "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",

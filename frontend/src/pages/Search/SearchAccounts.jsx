@@ -168,7 +168,7 @@ export default function SearchAccounts() {
   return (
     <RoleGuard allow={["teller", "accountant"]}>
       <div className="space-y-4 sm:space-y-6">
-        <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
           {/* Cute Header */}
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
@@ -180,7 +180,7 @@ export default function SearchAccounts() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -376,7 +376,7 @@ export default function SearchAccounts() {
             <DialogHeader>
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className="flex items-center justify-center shadow-lg w-14 h-14 rounded-2xl"
+                  className="flex items-center justify-center border border-gray-200 w-14 h-14 rounded-2xl"
                   style={{
                     background:
                       "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -457,7 +457,7 @@ export default function SearchAccounts() {
 
             <Button
               onClick={() => setShowDetails(false)}
-              className="w-full h-12 font-medium text-white rounded-full shadow-lg"
+              className="w-full h-12 font-medium text-white rounded-full border border-gray-200"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}

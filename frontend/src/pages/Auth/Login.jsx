@@ -135,7 +135,7 @@ export default function Login() {
         />
       </div>
 
-      <Card className="relative z-10 w-full max-w-md overflow-hidden border-0 shadow-2xl rounded-3xl">
+      <Card className="relative z-10 w-full max-w-md overflow-hidden border border-gray-200 rounded-3xl">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
 
@@ -143,7 +143,7 @@ export default function Login() {
           {/* Logo with cute design */}
           <div className="relative mx-auto">
             <div
-              className="relative flex items-center justify-center w-20 h-20 overflow-hidden shadow-lg rounded-3xl"
+              className="relative flex items-center justify-center w-20 h-20 overflow-hidden border border-gray-200 rounded-3xl"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}
@@ -266,7 +266,7 @@ export default function Login() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="w-full h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}

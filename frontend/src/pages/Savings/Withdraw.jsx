@@ -195,7 +195,7 @@ export default function Withdraw() {
   return (
     <RoleGuard allow={['teller']}>
     <div className="max-w-4xl mx-auto">
-      <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
+      <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
         {/* Cute Header */}
         <CardHeader className="bg-linear-to-r from-[#FFF7D6] to-[#FFE8F0] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
           <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
@@ -204,7 +204,7 @@ export default function Withdraw() {
           
           <div className="relative z-10 flex items-start gap-3 sm:gap-4">
             <div 
-              className="flex items-center justify-center shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+              className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}
             >
               <ArrowUpCircle size={24} className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8" />
@@ -380,7 +380,7 @@ export default function Withdraw() {
               <Button 
                 type="submit" 
                 disabled={!accountInfo || (isFixedTermAccount() && !isFixedTermMatured()) || isSubmitting}
-                className="flex-1 h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="flex-1 h-12 text-white rounded-full font-medium border border-gray-200 hover:border border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 style={{ 
                   background: (isFixedTermAccount() && !isFixedTermMatured()) 
                     ? 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)' 
@@ -428,7 +428,7 @@ export default function Withdraw() {
             <div className="flex flex-col items-center mb-4">
               <div className="relative duration-500 animate-in zoom-in-0">
                 <div 
-                  className="flex items-center justify-center w-24 h-24 mb-4 rounded-full shadow-lg shadow-green-500/30"
+                  className="flex items-center justify-center w-24 h-24 mb-4 rounded-full border border-gray-200 "
                   style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
                 >
                   <CheckCircle2 size={48} className="text-white duration-700 animate-in zoom-in-50" />
@@ -478,7 +478,7 @@ export default function Withdraw() {
           
           <Button 
             onClick={() => setShowSuccess(false)}
-            className="w-full h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full h-12 text-white rounded-full font-medium border border-gray-200 hover:border border-gray-200 hover: transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}
           >
             Close

@@ -8,7 +8,7 @@ export function AccessRestrictedCard({
   note,
 }) {
   return (
-    <Card className="border-0 shadow-xl rounded-3xl">
+    <Card className="border border-gray-200 rounded-3xl">
       <CardHeader className="pb-0">
         <CardTitle className="text-xl font-semibold text-center">
         <AlertTriangle size={64} className="mx-auto mb-4 text-yellow-500" />

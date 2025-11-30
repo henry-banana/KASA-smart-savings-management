@@ -152,7 +152,7 @@ export default function Deposit() {
   return (
     <RoleGuard allow={["teller"]}>
       <div className="max-w-4xl mx-auto">
-        <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
           {/* Cute Header */}
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
@@ -164,7 +164,7 @@ export default function Deposit() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)",
@@ -400,7 +400,7 @@ export default function Deposit() {
                   <Button
                     type="submit"
                     disabled={isSubmitting || !minDeposit}
-                    className="flex-1 h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                    className="flex-1 h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02]"
                     style={{
                       background:
                         "linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)",
@@ -435,7 +435,7 @@ export default function Deposit() {
               <div className="flex flex-col items-center mb-4">
                 <div className="relative duration-500 animate-in zoom-in-0">
                   <div
-                    className="flex items-center justify-center w-24 h-24 mb-4 rounded-full shadow-lg shadow-green-500/30"
+                    className="flex items-center justify-center w-24 h-24 mb-4 rounded-full border border-gray-200"
                     style={{
                       background:
                         "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -502,7 +502,7 @@ export default function Deposit() {
                 setShowSuccess(false);
                 setReceiptData(null);
               }}
-              className="w-full h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: "linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)",
               }}

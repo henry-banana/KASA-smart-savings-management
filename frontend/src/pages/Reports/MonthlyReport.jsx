@@ -93,7 +93,7 @@ export default function MonthlyReport() {
     <RoleGuard allow={['accountant']}>
       <div className="space-y-6">
         {/* Report Header - Filter Controls */}
-        <Card className="border-0 shadow-xl rounded-3xl overflow-hidden print:hidden">
+        <Card className="border border-gray-200 rounded-3xl overflow-hidden print:hidden">
           <CardHeader className="bg-linear-to-r from-purple-50 to-pink-50 pb-8">
             <CardTitle className="flex items-center gap-2">
               <span className="text-2xl">📊</span>
@@ -130,7 +130,7 @@ export default function MonthlyReport() {
             <Button
               onClick={handleGenerateReport}
               disabled={loading}
-              className="w-full h-12 rounded-xl px-6 text-white shadow-lg hover:shadow-xl disabled:opacity-50"
+              className="w-full h-12 rounded-xl px-6 text-white border border-gray-200 hover:border border-gray-200 disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)' }}
             >
               {loading ? (
@@ -161,14 +161,14 @@ export default function MonthlyReport() {
               <Button
                 onClick={handleExport}
                 variant="outline"
-                className="rounded-xl shadow-sm hover:shadow-md"
+                className="rounded-xl border border-gray-100 hover:border border-gray-200"
               >
                 <Printer size={18} className="mr-2" />
                 Print Report
               </Button>
               <Button
                 onClick={handleExport}
-                className="rounded-xl shadow-sm hover:shadow-md bg-linear-to-r from-green-600 to-green-500 text-white"
+                className="rounded-xl border border-gray-100 hover:border border-gray-200 bg-linear-to-r from-green-600 to-green-500 text-white"
               >
                 <FileDown size={18} className="mr-2" />
                 Export PDF
@@ -176,7 +176,7 @@ export default function MonthlyReport() {
             </div>
 
             {/* Main Report Container - Printable */}
-            <div className="bg-white rounded-2xl shadow-xl p-8 print:shadow-none print:rounded-none print:p-12">
+            <div className="bg-white rounded-2xl border border-gray-200 p-8 print:shadow-none print:rounded-none print:p-12">
               {/* Report Header */}
               <div className="mb-8 space-y-4">
                 <h1 className="text-2xl font-bold text-[#1A4D8F] text-center tracking-tight">
@@ -200,7 +200,7 @@ export default function MonthlyReport() {
               </div>
 
               {/* Report Table */}
-              <div className="overflow-hidden rounded-xl border-2 border-gray-200 shadow-lg">
+              <div className="overflow-hidden rounded-xl border-2 border-gray-200 border border-gray-200">
                 <table className="w-full border-collapse">
                   {/* Table Header */}
                   <thead>

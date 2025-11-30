@@ -90,11 +90,11 @@ export default function DailyReport() {
     <RoleGuard allow={['accountant']}>
     <div className="space-y-4 sm:space-y-6">
       {/* Report Header */}
-      <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
+      <Card className="overflow-hidden border border-gray-200 rounded-3xl">
         <CardHeader className="pb-6 border-b border-gray-100 bg-linear-to-r from-purple-50 to-pink-50">
           <div className="flex items-center gap-3 mb-2">
             <div 
-              className="flex items-center justify-center w-12 h-12 shadow-lg sm:w-14 sm:h-14 rounded-2xl"
+              className="flex items-center justify-center w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 rounded-2xl"
               style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
             >
               <Sparkles size={24} className="text-white" />
@@ -128,7 +128,7 @@ export default function DailyReport() {
             <Button
               onClick={handleGenerateReport}
               disabled={loading || isDateInvalid()}
-              className="w-full h-12 px-6 text-white transition-shadow shadow-lg sm:w-auto rounded-xl hover:shadow-xl"
+              className="w-full h-12 px-6 text-white  border border-gray-200 sm:w-auto rounded-xl hover:border border-gray-200"
               style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
             >
               <Search size={18} className="mr-2" />
@@ -161,7 +161,7 @@ export default function DailyReport() {
           {/* Summary Cards */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div 
-              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
+              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border border-gray-200"
             >
               <div 
                 className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
@@ -190,7 +190,7 @@ export default function DailyReport() {
             </div>
 
             <div 
-              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
+              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border border-gray-200"
             >
               <div 
                 className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
@@ -219,7 +219,7 @@ export default function DailyReport() {
             </div>
 
             <div 
-              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border-0 shadow-lg rounded-2xl hover:shadow-xl"
+              className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border border-gray-200"
             >
               <div 
                 className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
@@ -249,7 +249,7 @@ export default function DailyReport() {
           </div>
 
           {/* Data Table */}
-          <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+          <Card className="overflow-hidden border border-gray-200 rounded-2xl">
         <CardHeader className="border-b-2 border-purple-100 bg-linear-to-r from-blue-50 to-purple-50">
           <CardTitle className="text-xl text-gray-800">
             Detailed Report - {format(selectedDate, 'dd/MM/yyyy')}
@@ -300,7 +300,7 @@ export default function DailyReport() {
       </Card>
 
       {/* Chart Visualization */}
-      <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+      <Card className="overflow-hidden border border-gray-200 rounded-2xl">
         <CardHeader className="border-b-2 border-blue-100 bg-linear-to-r from-cyan-50 to-blue-50">
           <CardTitle className="text-xl text-gray-800">Visual Comparison</CardTitle>
           <CardDescription className="text-gray-600">
@@ -339,7 +339,7 @@ export default function DailyReport() {
       </Card>
 
       {/* Transaction Statistics */}
-      <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+      <Card className="overflow-hidden border border-gray-200 rounded-2xl">
         <CardHeader className="border-b-2 border-green-100 bg-linear-to-r from-green-50 to-emerald-50">
           <CardTitle className="text-xl text-gray-800">Transaction Statistics</CardTitle>
         </CardHeader>
@@ -351,15 +351,15 @@ export default function DailyReport() {
                 Deposit Transactions
               </h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
                   <span className="text-sm text-gray-700">No Term</span>
                   <span className="text-sm font-semibold text-green-600">23 transactions</span>
                 </div>
-                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
                   <span className="text-sm text-gray-700">3 Months</span>
                   <span className="text-sm font-semibold text-green-600">15 transactions</span>
                 </div>
-                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
                   <span className="text-sm text-gray-700">6 Months</span>
                   <span className="text-sm font-semibold text-green-600">12 transactions</span>
                 </div>
@@ -376,15 +376,15 @@ export default function DailyReport() {
                 Withdrawal Transactions
               </h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
                   <span className="text-sm text-gray-700">No Term</span>
                   <span className="text-sm font-semibold text-red-600">8 transactions</span>
                 </div>
-                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
                   <span className="text-sm text-gray-700">3 Months</span>
                   <span className="text-sm font-semibold text-red-600">5 transactions</span>
                 </div>
-                <div className="flex items-center justify-between p-2 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
                   <span className="text-sm text-gray-700">6 Months</span>
                   <span className="text-sm font-semibold text-red-600">2 transactions</span>
                 </div>

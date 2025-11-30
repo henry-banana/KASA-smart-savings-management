@@ -110,7 +110,7 @@ export default function Layout() {
       <aside 
         className={`
           fixed left-0 top-0 h-screen bg-linear-to-b from-[#1A4D8F] to-[#154171] 
-          flex flex-col shadow-xl z-40
+          flex flex-col border border-gray-200 z-40
           ${isMobile 
             ? 'w-64 transition-transform duration-300 ease-out' + (isSidebarOpen ? ' translate-x-0' : ' -translate-x-full')
             : 'transition-all duration-300 ease-in-out'
@@ -133,7 +133,7 @@ export default function Layout() {
               }`}
             >
               <div 
-                className="relative flex items-center justify-center w-12 h-12 overflow-hidden transition-all duration-300 shadow-lg shrink-0 rounded-2xl bg-white/10 backdrop-blur-sm hover:scale-110"
+                className="relative flex items-center justify-center w-12 h-12 overflow-hidden transition-all duration-300 border border-gray-200 shrink-0 rounded-2xl bg-white/10 backdrop-blur-sm hover:scale-110"
               >
                 <div className="absolute inset-0 bg-linear-to-br from-white/20 to-transparent" />
                 <span className="relative z-10 text-xl font-bold text-white transition-all duration-300">K</span>
@@ -174,7 +174,7 @@ export default function Layout() {
                   onClick={() => handleNavigate(item.path)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${
                     isActive 
-                      ? 'bg-white/15 text-white shadow-lg backdrop-blur-sm scale-[1.02]' 
+                      ? 'bg-white/15 text-white border border-gray-200 backdrop-blur-sm scale-[1.02]' 
                       : 'text-white/80 hover:bg-white/10 hover:text-white hover:scale-[1.01]'
                   } ${
                     !isMobile && isSidebarCollapsed ? 'justify-center' : ''
@@ -233,7 +233,7 @@ export default function Layout() {
       >
         {/* 🎨 Cute Header - Solid Gradient Background */}
         <header 
-          className="bg-linear-to-r from-[#00AEEF] to-[#33BFF3] px-4 sm:px-6 lg:px-8 py-4 sticky top-0 z-20 shadow-md"
+          className="bg-linear-to-r from-[#00AEEF] to-[#33BFF3] px-4 sm:px-6 lg:px-8 py-4 sticky top-0 z-20 border border-gray-200"
         >
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center min-w-0 gap-3">
@@ -250,7 +250,7 @@ export default function Layout() {
                 onClick={() => handleNavigate('/')}
                 className="flex items-center gap-2 transition-opacity hover:opacity-90 group"
               >
-                <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden shadow-lg rounded-xl bg-white/20 backdrop-blur-sm">
+                <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden border border-gray-200 rounded-xl bg-white/20 backdrop-blur-sm">
                   <div className="absolute inset-0 bg-linear-to-br from-white/30 to-transparent" />
                   <span className="relative z-10 text-lg font-bold text-white">K</span>
                   <Sparkles className="absolute -top-0.5 -right-0.5 text-white opacity-60" size={12} />
@@ -275,7 +275,7 @@ export default function Layout() {
               {/* Notification Bell - Enhanced with Animation */}
               <button className="relative p-2 transition-all duration-200 shrink-0 rounded-xl bg-white/10 hover:bg-white/20 active:bg-white/30 backdrop-blur-sm group">
                 <Bell size={18} className="text-white transition-transform duration-200 sm:w-5 sm:h-5 group-hover:rotate-12 group-active:scale-90" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-linear-to-br from-pink-400 to-pink-600 rounded-full text-white text-[10px] sm:text-xs flex items-center justify-center font-medium shadow-lg animate-pulse">
+                <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-linear-to-br from-pink-400 to-pink-600 rounded-full text-white text-[10px] sm:text-xs flex items-center justify-center font-medium border border-gray-200 animate-pulse">
                   3
                 </span>
               </button>
@@ -283,7 +283,7 @@ export default function Layout() {
               {/* User Info - Enhanced with hover effect */}
               <div className="items-center hidden gap-2 px-3 py-2 transition-all duration-200 border sm:flex lg:gap-3 bg-white/10 backdrop-blur-sm rounded-2xl lg:px-4 border-white/20 hover:bg-white/15 hover:border-white/30 group">
                 <div 
-                  className="flex items-center justify-center w-8 h-8 text-sm font-semibold text-white transition-transform duration-200 rounded-full shadow-lg shrink-0 lg:w-10 lg:h-10 lg:text-base group-hover:scale-110"
+                  className="flex items-center justify-center w-8 h-8 text-sm font-semibold text-white transition-transform duration-200 rounded-full border border-gray-200 shrink-0 lg:w-10 lg:h-10 lg:text-base group-hover:scale-110"
                   style={{ 
                     background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%)'
                   }}

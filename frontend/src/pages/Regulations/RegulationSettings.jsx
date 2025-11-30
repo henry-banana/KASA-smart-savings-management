@@ -231,7 +231,7 @@ export default function RegulationSettings() {
     <RoleGuard allow={["admin"]}>
       <div className="space-y-4 sm:space-y-6">
         {/* Settings Form */}
-        <Card className="overflow-hidden border-0 shadow-xl rounded-2xl lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
@@ -242,7 +242,7 @@ export default function RegulationSettings() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 shadow-lg sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -463,7 +463,7 @@ export default function RegulationSettings() {
                   <Button
                     type="button"
                     onClick={() => setShowCreateTypeSaving(true)}
-                    className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-xl"
                     style={{
                       background:
                         "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -484,7 +484,7 @@ export default function RegulationSettings() {
                       }
                       setShowDeleteConfirm(true);
                     }}
-                    className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-xl"
                     style={{
                       background:
                         "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
@@ -495,7 +495,7 @@ export default function RegulationSettings() {
                   </Button>
                   <Button
                     type="submit"
-                    className="h-12 px-8 font-medium text-white shadow-lg rounded-xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-xl"
                     style={{
                       background:
                         "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -537,7 +537,7 @@ export default function RegulationSettings() {
 
         {/* Current Regulations Summary */}
         {!loading && (
-          <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
+          <Card className="overflow-hidden border border-gray-200 rounded-3xl">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="text-xl">
                 Current Regulations Summary
@@ -549,7 +549,7 @@ export default function RegulationSettings() {
 
         {/* Current Regulations Summary */}
         {!loading && (
-          <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
+          <Card className="overflow-hidden border border-gray-200 rounded-3xl">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="text-xl">
                 Current Regulations Summary
@@ -620,7 +620,7 @@ export default function RegulationSettings() {
 
         {/* Change History */}
         {!loading && (
-          <Card className="overflow-hidden border-0 shadow-xl rounded-3xl">
+          <Card className="overflow-hidden border border-gray-200 rounded-3xl">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <div
@@ -717,7 +717,7 @@ export default function RegulationSettings() {
             <div className="flex gap-4">
               <Button
                 onClick={confirmUpdate}
-                className="flex-1 h-12 font-medium text-white shadow-lg rounded-xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -780,7 +780,7 @@ export default function RegulationSettings() {
             </div>
             <Button
               onClick={() => setShowSuccess(false)}
-              className="w-full h-12 font-medium text-white shadow-lg rounded-xl"
+              className="w-full h-12 font-medium text-white border border-gray-200 rounded-xl"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
@@ -883,7 +883,7 @@ export default function RegulationSettings() {
                     setLoading(false);
                   }
                 }}
-                className="flex-1 h-12 font-medium text-white shadow-lg rounded-xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
@@ -912,7 +912,7 @@ export default function RegulationSettings() {
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
-                  className="flex items-center justify-center w-12 h-12 shadow-lg rounded-2xl"
+                  className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-2xl"
                   style={{
                     background:
                       "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -1036,7 +1036,7 @@ export default function RegulationSettings() {
                     setLoading(false);
                   }
                 }}
-                className="flex-1 h-12 font-medium text-white shadow-lg rounded-xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #10B981 0%, #34D399 100%)",

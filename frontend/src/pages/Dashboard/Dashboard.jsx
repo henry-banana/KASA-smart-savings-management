@@ -268,7 +268,7 @@ export default function Dashboard() {
         </div>
 
         {/* 🎯 Quick Actions - Cute Menu Cards */}
-        <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-2xl">
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-full bg-white/50" />
             <StarDecor className="top-4 right-8" />
@@ -302,7 +302,7 @@ export default function Dashboard() {
                   <button
                     key={index}
                     onClick={() => navigate(action.path)}
-                    className="relative p-6 overflow-hidden text-left transition-all duration-300 border-2 border-transparent group rounded-2xl hover:scale-105 hover:shadow-xl hover:border-white"
+                    className="relative p-6 overflow-hidden text-left transition-all duration-300 border-2 border-transparent group rounded-2xl hover:scale-105 hover:border border-gray-200 hover:border-white"
                     style={{ background: action.gradient }}
                   >
                     {/* Decorative elements */}
@@ -333,7 +333,7 @@ export default function Dashboard() {
         {/* 📈 Charts Row */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Bar Chart */}
-          <Card className="overflow-hidden border-0 shadow-lg lg:col-span-2 rounded-2xl">
+          <Card className="overflow-hidden border border-gray-200 lg:col-span-2 rounded-2xl">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp size={20} className="text-[#1A4D8F]" />
@@ -368,8 +368,7 @@ export default function Dashboard() {
                       formatter={(value) => `₫${Number(value)}M`}
                       contentStyle={{
                         borderRadius: "12px",
-                        border: "none",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        border: "1px solid #E5E7EB",
                       }}
                     />
                     <Legend />
@@ -392,7 +391,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Pie Chart */}
-          <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+          <Card className="overflow-hidden border border-gray-200 rounded-2xl">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="flex items-center gap-2">
                 <PiggyBank size={20} className="text-[#00AEEF]" />
@@ -441,8 +440,7 @@ export default function Dashboard() {
                       <Tooltip
                         contentStyle={{
                           borderRadius: "12px",
-                          border: "none",
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                          border: "1px solid #E5E7EB",
                         }}
                       />
                     </PieChart>
@@ -475,7 +473,7 @@ export default function Dashboard() {
         </div>
 
         {/* 🔔 Recent Transactions */}
-        <Card className="overflow-hidden border-0 shadow-lg rounded-2xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-2xl">
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-full bg-white/50" />
             <CardTitle className="relative z-10 flex items-center gap-2">
@@ -542,11 +540,11 @@ export default function Dashboard() {
                   return (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:shadow-md"
+                      className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:border border-gray-200"
                     >
                       <div className="flex items-center gap-4">
                         <div
-                          className="flex items-center justify-center w-12 h-12 text-2xl shadow-sm rounded-2xl"
+                          className="flex items-center justify-center w-12 h-12 text-2xl border border-gray-100 rounded-2xl"
                           style={{ backgroundColor: `${color}15` }}
                         >
                           {emoji}
