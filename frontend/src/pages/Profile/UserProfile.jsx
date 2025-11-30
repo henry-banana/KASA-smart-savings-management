@@ -355,7 +355,7 @@ export default function UserProfile() {
             <Button
               onClick={() => setShowEditContact(true)}
               variant="outline"
-              className="rounded-xl border-gray-200"
+              className="rounded-2xl border-gray-200"
             >
               Edit
             </Button>
@@ -363,7 +363,7 @@ export default function UserProfile() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-blue-50 border border-blue-100">
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-blue-50 border border-blue-100">
               <div
                 className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
                 style={{
@@ -379,7 +379,7 @@ export default function UserProfile() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-green-50 border border-green-100">
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-green-50 border border-green-100">
               <div
                 className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
                 style={{
@@ -397,7 +397,7 @@ export default function UserProfile() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-purple-50 border border-purple-100">
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-purple-50 border border-purple-100">
               <div
                 className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
                 style={{
@@ -424,7 +424,7 @@ export default function UserProfile() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-linear-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-linear-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
               <div className="flex items-center gap-4">
                 <div
                   className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
@@ -442,7 +442,7 @@ export default function UserProfile() {
               </div>
               <Button
                 onClick={() => setShowChangePassword(true)}
-                className="rounded-xl bg-white border border-yellow-200 hover:bg-yellow-50"
+                className="rounded-2xl bg-white border border-yellow-200 hover:bg-yellow-50"
                 variant="outline"
               >
                 Change Password
@@ -459,13 +459,13 @@ export default function UserProfile() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Username</p>
               <p className="text-sm font-semibold text-gray-900">
                 {user.username}
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
                 Employee ID
               </p>
@@ -473,7 +473,7 @@ export default function UserProfile() {
                 {profileData?.id || user?.id || "N/A"}
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
                 Account Created
               </p>
@@ -491,7 +491,7 @@ export default function UserProfile() {
               </p>
             </div>
             {/* TODO: Delete if database not add lastLogin */}
-            {/* <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            {/* <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Last Login</p>
               <p className="text-sm font-semibold text-gray-900">
                 {(profileData?.lastLogin || profileData?.lastlogin) 
@@ -505,7 +505,7 @@ export default function UserProfile() {
                 }
               </p>
             </div> */}
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
                 Department
               </p>
@@ -517,7 +517,7 @@ export default function UserProfile() {
                   : "Teller"}
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Status</p>
               <Badge className="text-green-700 bg-green-100 border-green-200 border">
                 ✓ Active
@@ -565,7 +565,7 @@ export default function UserProfile() {
                   })
                 }
                 placeholder="Enter current password"
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
@@ -584,7 +584,7 @@ export default function UserProfile() {
                   })
                 }
                 placeholder="Enter new password"
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
               <p className="text-xs text-gray-500">
                 Must be at least 6 characters
@@ -606,7 +606,7 @@ export default function UserProfile() {
                   })
                 }
                 placeholder="Confirm new password"
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
           </div>
@@ -614,7 +614,7 @@ export default function UserProfile() {
             <Button
               onClick={handleChangePassword}
               disabled={loading}
-              className="flex-1 h-12 text-white rounded-xl border border-gray-200 font-medium"
+              className="flex-1 h-12 text-white rounded-2xl border border-gray-200 font-medium"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
@@ -631,7 +631,7 @@ export default function UserProfile() {
                 });
               }}
               variant="outline"
-              className="flex-1 h-12 rounded-xl border-gray-200"
+              className="flex-1 h-12 rounded-2xl border-gray-200"
               disabled={loading}
             >
               Cancel
@@ -676,7 +676,7 @@ export default function UserProfile() {
                 onChange={(e) =>
                   setContactInfo({ ...contactInfo, email: e.target.value })
                 }
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
@@ -691,7 +691,7 @@ export default function UserProfile() {
                 onChange={(e) =>
                   setContactInfo({ ...contactInfo, phone: e.target.value })
                 }
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
@@ -705,7 +705,7 @@ export default function UserProfile() {
                 onChange={(e) =>
                   setContactInfo({ ...contactInfo, address: e.target.value })
                 }
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
@@ -723,7 +723,7 @@ export default function UserProfile() {
                     dateOfBirth: e.target.value,
                   })
                 }
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
@@ -738,7 +738,7 @@ export default function UserProfile() {
                 onChange={(e) =>
                   setContactInfo({ ...contactInfo, avatarUrl: e.target.value })
                 }
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
                 placeholder="https://example.com/avatar.png"
               />
             </div>
@@ -747,7 +747,7 @@ export default function UserProfile() {
             <Button
               onClick={handleUpdateContact}
               disabled={loading}
-              className="flex-1 h-12 text-white rounded-xl border border-gray-200 font-medium"
+              className="flex-1 h-12 text-white rounded-2xl border border-gray-200 font-medium"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
@@ -757,7 +757,7 @@ export default function UserProfile() {
             <Button
               onClick={() => setShowEditContact(false)}
               variant="outline"
-              className="flex-1 h-12 rounded-xl border-gray-200"
+              className="flex-1 h-12 rounded-2xl border-gray-200"
               disabled={loading}
             >
               Cancel
@@ -788,7 +788,7 @@ export default function UserProfile() {
           </DialogHeader>
           <Button
             onClick={() => setShowSuccess(false)}
-            className="w-full h-12 text-white rounded-xl border border-gray-200 font-medium"
+            className="w-full h-12 text-white rounded-2xl border border-gray-200 font-medium"
             style={{
               background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
             }}

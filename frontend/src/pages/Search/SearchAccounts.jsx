@@ -227,7 +227,7 @@ export default function SearchAccounts() {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder="Account code or customer name..."
-                      className="pl-10 h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all text-sm sm:text-base"
+                      className="pl-10 h-11 sm:h-12 rounded-2xl border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all text-sm sm:text-base"
                     />
                   </div>
                 </div>
@@ -278,7 +278,7 @@ export default function SearchAccounts() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-gray-200 rounded-xl hover:bg-gray-50"
+                  className="border-gray-200 rounded-2xl hover:bg-gray-50"
                   onClick={() => handleExport("excel")}
                 >
                   <FileDown size={16} className="mr-2" />
@@ -459,7 +459,7 @@ export default function SearchAccounts() {
 
             <Button
               onClick={() => setShowDetails(false)}
-              className="w-full h-12 font-medium text-white rounded-full border border-gray-200"
+              className="w-full h-12 font-medium text-white rounded-2xl border border-gray-200"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}

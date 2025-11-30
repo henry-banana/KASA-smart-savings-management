@@ -357,7 +357,7 @@ export default function RegulationSettings() {
                         type="number"
                         value={minDeposit}
                         onChange={(e) => setMinDeposit(e.target.value)}
-                        className="border-gray-200 h-11 rounded-xl"
+                        className="border-gray-200 h-11 rounded-2xl"
                       />
                       <p className="text-xs text-gray-500">
                         Minimum amount to open account or deposit
@@ -376,7 +376,7 @@ export default function RegulationSettings() {
                         type="number"
                         value={minWithdrawalDays}
                         onChange={(e) => setMinWithdrawalDays(e.target.value)}
-                        className="border-gray-200 h-11 rounded-xl"
+                        className="border-gray-200 h-11 rounded-2xl"
                       />
                       <p className="text-xs text-gray-500">
                         Minimum days before withdrawal allowed
@@ -490,7 +490,7 @@ export default function RegulationSettings() {
                                   };
                                   setInterestRates(updated);
                                 }}
-                                className="w-28 h-10 border-gray-200 rounded-xl"
+                                className="w-28 h-10 border-gray-200 rounded-2xl"
                               />
                             </TableCell>
                             <TableCell>
@@ -501,7 +501,7 @@ export default function RegulationSettings() {
                                 onChange={(e) =>
                                   handleUpdateRate(index, e.target.value)
                                 }
-                                className="w-32 h-10 border-gray-200 rounded-xl"
+                                className="w-32 h-10 border-gray-200 rounded-2xl"
                               />
                             </TableCell>
                           </TableRow>
@@ -515,7 +515,7 @@ export default function RegulationSettings() {
                   <Button
                     type="button"
                     onClick={() => setShowCreateTypeSaving(true)}
-                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-2xl"
                     style={{
                       background:
                         "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -536,7 +536,7 @@ export default function RegulationSettings() {
                       }
                       setShowDeleteConfirm(true);
                     }}
-                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-2xl"
                     style={{
                       background:
                         "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
@@ -547,7 +547,7 @@ export default function RegulationSettings() {
                   </Button>
                   <Button
                     type="submit"
-                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-2xl"
                     style={{
                       background:
                         "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -559,7 +559,7 @@ export default function RegulationSettings() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-12 px-8 border-gray-200 rounded-xl"
+                    className="h-12 px-8 border-gray-200 rounded-2xl"
                     disabled={loading}
                     onClick={async () => {
                       try {
@@ -757,7 +757,7 @@ export default function RegulationSettings() {
             <div className="flex gap-4">
               <Button
                 onClick={confirmUpdate}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -768,7 +768,7 @@ export default function RegulationSettings() {
               <Button
                 onClick={() => setShowConfirm(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-xl"
+                className="flex-1 h-12 border-gray-200 rounded-2xl"
               >
                 Cancel
               </Button>
@@ -820,7 +820,7 @@ export default function RegulationSettings() {
             </div>
             <Button
               onClick={() => setShowSuccess(false)}
-              className="w-full h-12 font-medium text-white border border-gray-200 rounded-xl"
+              className="w-full h-12 font-medium text-white border border-gray-200 rounded-2xl"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
@@ -923,7 +923,7 @@ export default function RegulationSettings() {
                     setLoading(false);
                   }
                 }}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
@@ -935,7 +935,7 @@ export default function RegulationSettings() {
               <Button
                 onClick={() => setShowDeleteConfirm(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-xl"
+                className="flex-1 h-12 border-gray-200 rounded-2xl"
               >
                 Cancel
               </Button>
@@ -985,7 +985,7 @@ export default function RegulationSettings() {
                     })
                   }
                   placeholder="e.g., 3 Months, 6 Months"
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
 
@@ -1004,7 +1004,7 @@ export default function RegulationSettings() {
                     })
                   }
                   placeholder="0 for No Term, or number of months"
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
                 <p className="text-xs text-gray-500">
                   Enter 0 for no term (flexible)
@@ -1027,7 +1027,7 @@ export default function RegulationSettings() {
                     })
                   }
                   placeholder="e.g., 0.5 for 0.5%"
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
             </div>
@@ -1076,7 +1076,7 @@ export default function RegulationSettings() {
                     setLoading(false);
                   }
                 }}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -1095,7 +1095,7 @@ export default function RegulationSettings() {
                   });
                 }}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-xl"
+                className="flex-1 h-12 border-gray-200 rounded-2xl"
               >
                 Cancel
               </Button>

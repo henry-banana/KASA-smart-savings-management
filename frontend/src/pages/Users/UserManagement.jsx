@@ -255,7 +255,7 @@ export default function UserManagement() {
               </div>
               <Button
                 onClick={handleAddUser}
-                className="shrink-0 w-full h-10 px-4 text-sm font-medium text-white border border-gray-200 sm:w-auto sm:h-11 lg:h-12 sm:px-6 rounded-xl sm:text-base"
+                className="shrink-0 w-full h-10 px-4 text-sm font-medium text-white border border-gray-200 sm:w-auto sm:h-11 lg:h-12 sm:px-6 rounded-2xl sm:text-base"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -454,7 +454,7 @@ export default function UserManagement() {
                     setFormData({ ...formData, username: e.target.value })
                   }
                   placeholder="Enter username"
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
 
@@ -469,7 +469,7 @@ export default function UserManagement() {
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                   placeholder="Enter full name"
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
 
@@ -485,7 +485,7 @@ export default function UserManagement() {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   placeholder="Enter email address"
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
 
@@ -522,14 +522,14 @@ export default function UserManagement() {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   placeholder="Enter password"
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
             </div>
             <div className="flex gap-4">
               <Button
                 onClick={submitAddUser}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -540,7 +540,7 @@ export default function UserManagement() {
               <Button
                 onClick={() => setShowAddUser(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-xl"
+                className="flex-1 h-12 border-gray-200 rounded-2xl"
               >
                 Cancel
               </Button>
@@ -579,7 +579,7 @@ export default function UserManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, username: e.target.value })
                   }
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
 
@@ -593,7 +593,7 @@ export default function UserManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, fullName: e.target.value })
                   }
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
 
@@ -608,7 +608,7 @@ export default function UserManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="border-gray-200 h-11 rounded-xl"
+                  className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
 
@@ -636,7 +636,7 @@ export default function UserManagement() {
             <div className="flex gap-4">
               <Button
                 onClick={submitEditUser}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -647,7 +647,7 @@ export default function UserManagement() {
               <Button
                 onClick={() => setShowEditUser(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-xl"
+                className="flex-1 h-12 border-gray-200 rounded-2xl"
               >
                 Cancel
               </Button>
@@ -674,12 +674,12 @@ export default function UserManagement() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="border-gray-200 rounded-xl">
+              <AlertDialogCancel className="border-gray-200 rounded-2xl">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmDisable}
-                className="text-white border border-gray-200 rounded-xl"
+                className="text-white border border-gray-200 rounded-2xl"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -715,7 +715,7 @@ export default function UserManagement() {
             </DialogHeader>
             <Button
               onClick={() => setShowSuccess(false)}
-              className="w-full h-12 font-medium text-white border border-gray-200 rounded-xl"
+              className="w-full h-12 font-medium text-white border border-gray-200 rounded-2xl"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}

@@ -226,7 +226,7 @@ export default function Deposit() {
                       setError("");
                     }}
                     placeholder="Enter account code (e.g., SA12345)"
-                    className="h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                    className="h-11 sm:h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
                     }
@@ -242,7 +242,7 @@ export default function Deposit() {
                     !!regulationsError ||
                     loadingRegulations
                   }
-                  className="h-11 sm:h-12 px-4 sm:px-6 rounded-xl bg-[#1A4D8F] hover:bg-[#154171] text-white text-sm sm:text-base"
+                  className="h-11 sm:h-12 px-4 sm:px-6 rounded-2xl bg-[#1A4D8F] hover:bg-[#154171] text-white text-sm sm:text-base"
                 >
                   <Search
                     size={16}
@@ -344,7 +344,7 @@ export default function Deposit() {
                           setError("");
                         }}
                         placeholder="Enter deposit amount"
-                        className="pl-8 h-14 text-lg rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                        className="pl-8 h-14 text-lg rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                       />
                     </div>
                     <p className="flex items-center gap-1 text-xs text-gray-500">

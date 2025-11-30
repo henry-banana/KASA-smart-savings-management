@@ -215,7 +215,7 @@ export default function Login() {
                     setError("");
                   }}
                   disabled={loading}
-                  className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  className="pl-10 h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                 />
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function Login() {
                     setError("");
                   }}
                   disabled={loading}
-                  className="pl-10 pr-10 h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  className="pl-10 pr-10 h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                 />
                 <button
                   type="button"
@@ -258,7 +258,7 @@ export default function Login() {
             </div>
 
             {error && (
-              <div className="p-3 border border-red-200 bg-red-50 rounded-xl">
+              <div className="p-3 border border-red-200 bg-red-50 rounded-2xl">
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}

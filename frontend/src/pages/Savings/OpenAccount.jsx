@@ -261,7 +261,7 @@ export default function OpenAccount() {
                           })
                         }
                         placeholder="Enter full name"
-                        className="pl-10 h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        className="pl-10 h-11 sm:h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
                     </div>
                     {errors.customerName && (
@@ -291,7 +291,7 @@ export default function OpenAccount() {
                           setFormData({ ...formData, idCard: e.target.value })
                         }
                         placeholder="Enter ID citizen number"
-                        className="pl-10 h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        className="pl-10 h-11 sm:h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
                     </div>
                     {errors.idCard && (
@@ -322,7 +322,7 @@ export default function OpenAccount() {
                       }
                       placeholder="Enter full address"
                       rows={3}
-                      className="pl-10 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                      className="pl-10 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     />
                   </div>
                   {errors.address && (
@@ -440,7 +440,7 @@ export default function OpenAccount() {
                             : "Enter amount"
                         }
                         disabled={!!regulationsError || loadingRegulations}
-                        className="pl-7 sm:pl-8 h-11 sm:h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        className="pl-7 sm:pl-8 h-11 sm:h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
                     </div>
                     {errors.initialDeposit && (
@@ -481,7 +481,7 @@ export default function OpenAccount() {
                           setFormData({ ...formData, openDate: e.target.value })
                         }
                         disabled
-                        className="pl-10 text-sm border-gray-200 h-11 sm:h-12 rounded-xl bg-gray-50 sm:text-base"
+                        className="pl-10 text-sm border-gray-200 h-11 sm:h-12 rounded-2xl bg-gray-50 sm:text-base"
                       />
                     </div>
                   </div>

@@ -182,7 +182,7 @@ export default function DailyReport() {
               <Button
                 onClick={handleGenerateReport}
                 disabled={loading || isDateInvalid()}
-                className="w-full h-12 px-6 text-white  border border-gray-200 sm:w-auto rounded-xl hover:border border-gray-200"
+                className="w-full h-12 px-6 text-white  border border-gray-200 sm:w-auto rounded-2xl hover:border border-gray-200"
                 style={{
                   background:
                     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
