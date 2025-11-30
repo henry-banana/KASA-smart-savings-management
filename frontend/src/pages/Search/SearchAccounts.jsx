@@ -67,11 +67,9 @@ export default function SearchAccounts() {
           const options = [
             { value: "all", label: "All" },
             ...response.data.map((ts) => {
-              // Convert term to filter value format
-              const filterValue =
-                ts.term === 0 ? "no-term" : `${ts.term}-months`;
+              // Use typeName as the filter value to match against accountTypeName
               return {
-                value: filterValue,
+                value: ts.typeName,
                 label: ts.typeName,
               };
             }),
