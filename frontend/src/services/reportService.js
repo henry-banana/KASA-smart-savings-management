@@ -1,6 +1,6 @@
-import { USE_MOCK } from '@/config/app.config';
-import { reportApi } from '@/api/reportApi';
-import { mockReportAdapter } from '@/mocks/adapters/reportAdapter';
+import { USE_MOCK } from "@/config/app.config";
+import { reportApi } from "@/api/reportApi";
+import { mockReportAdapter } from "@/mocks/adapters/reportAdapter";
 
 const reportAdapter = USE_MOCK ? mockReportAdapter : reportApi;
 
@@ -29,9 +29,28 @@ export const getDailyReport = async (date) => {
  * @param {string} savingsType - Có thể là 'all' hoặc mã loại (VD: TS01)
  * @returns {Promise<Object>} Monthly report data
  */
-export const getMonthlyReport = async (month, year, savingsType = 'all') => {
-  const normalized = (savingsType || '').toString().trim();
+export const getMonthlyReport = async (month, year, savingsType = "all") => {
+  const normalized = (savingsType || "").toString().trim();
   const isTypeId = /^TS\d+/i.test(normalized);
   const typeSavingId = isTypeId ? normalized : undefined;
   return reportAdapter.getMonthlyReport(month, year, typeSavingId);
+};
+
+/**
+ * BM5.2 – Monthly opening/closing report facade
+ * Keeps backward compatibility with component import name.
+ * Falls back to getMonthlyReport when adapter doesn't expose a dedicated method.
+ * @param {number} month
+ * @param {number} year
+ * @param {string} savingsType
+ */
+export const getMonthlyOpenCloseReport = async (
+  month,
+  year,
+  savingsType = "all"
+) => {
+  if (typeof reportAdapter.getMonthlyOpenCloseReport === "function") {
+    return reportAdapter.getMonthlyOpenCloseReport(month, year, savingsType);
+  }
+  return getMonthlyReport(month, year, savingsType);
 };
