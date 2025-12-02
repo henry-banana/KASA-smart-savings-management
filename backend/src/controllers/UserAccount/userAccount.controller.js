@@ -58,7 +58,7 @@ export async function createUserAccount(req, res) {
     const result = await userAccountService.createUserAccount(req.body);
 
     return res.status(201).json({
-      message: "User account created successfully",
+      message: "Create user successfully",
       success: true,
       total: 1,
       data: result,

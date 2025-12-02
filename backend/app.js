@@ -3,12 +3,13 @@ import dotenv from "dotenv";
 import cors from "cors"; 
 import { setupSwagger } from "./src/config/swagger.js";
 import authRoutes from "./src/routers/userAccount.router.js";
-import employeeRoutes from './src/routers/employee.router.js';
 import savingBookRoutes from './src/routers/savingBook.router.js';
 import transactionRoutes from './src/routers/transaction.router.js';
 import customerRoutes from './src/routers/customer.router.js';
 import typeSavingRoutes from './src/routers/typeSaving.router.js';
 import reportRoutes from './src/routers/report.router.js';
+import userRoutes from './src/routers/userAccount.router.js';
+
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use("/api/login", authRoutes);
-app.use("/api/users", employeeRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/savingbook", savingBookRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/customer", customerRoutes);

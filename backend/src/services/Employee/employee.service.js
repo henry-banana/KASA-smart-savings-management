@@ -4,29 +4,38 @@ import { hashPassword } from "../../middleware/hashing.middleware.js";
 
 class EmployeeService {
   // Thêm nhân viên mới
-  async addEmployee({ fullName, roleID, branchID, email, password }) {
-    if (!fullName || !email || !roleID || !branchID || !password)
-      throw new Error("Missing required information.");
+  async addEmployee({ username, fullName, roleName, email }) {
+    if (!username || !fullName || !email || !roleName)
+        throw new Error("Missing required information.");
 
-    // Mã hóa mật khẩu
-    const hashedPassword = await hashPassword(password);
+    // 1. Lấy roleID từ roleName
+    const role = await roleRepository.findByName(roleName);
+    if (!role) throw new Error("Invalid role name.");
 
-    // Tạo bản ghi nhân viên mới
+    const roleID = role.roleid;
+
+    // 2. Tạo employee mới
     const newEmployee = await employeeRepository.create({
-      fullname: fullName,
-      email,
-      roleid: roleID,
-      branchid: branchID,
+        employeeid: username,      // ⚡ Dùng username làm employeeid
+        fullname: fullName,
+        email: email,
+        roleid: roleID,
     });
 
-    // Cập nhật tài khoản người dùng tương ứng
-    await userAccountRepository.update(newEmployee.employeeid, { password: hashedPassword });
+    // 3. Tạo useraccount tương ứng
+    await userAccountRepository.create({
+        userid: username,          // ⚡ userid = employeeid
+        username: username,
+        password: null,            // hoặc để random password
+        status: "active",
+    });
 
     return {
-      message: "Employee added and account created successfully.",
-      employee: newEmployee,
+        message: "Employee and user account created successfully.",
+        employee: newEmployee,
     };
   }
+
 
   // Cập nhật nhân viên
   async updateEmployee(id, updates) {
