@@ -1,6 +1,10 @@
 import { userAccountRepository } from "../../repositories/UserAccount/UserAccountRepository.js";
 import { hashPassword } from "../../middleware/hashing.middleware.js";
 import { comparePassword } from "../../middleware/comparePass.middleware.js";
+import { Role } from "../../models/Role.js";
+import { employeeRepository } from "../../repositories/Employee/EmployeeRepository.js";
+import { Branch } from "../../models/Branch.js";
+
 
 class UserAccountService {
   // Lấy toàn bộ tài khoản
@@ -17,30 +21,46 @@ class UserAccountService {
   }
 
   // Tạo tài khoản mới
-  async createUserAccount({ username, email, password, roleID }) {
-    if (!username || !email || !password || !roleID)
-      throw new Error("Missing required information.");
+  async createUserAccount({ fullName, roleName, email , branchName}) {
+    if (!fullName || !roleName || !email)
+      throw new Error("Missing required fields: fullName, roleName, email.");
 
-    // Kiểm tra trùng username hoặc email
-    const existingUser = await userAccountRepository.findByUsernameOrEmail(username, email);
-    if (existingUser) throw new Error("Username or email already exists.");
+    // 1️⃣ Tìm roleID theo roleName
+    const role = await Role.getByName(roleName);
+    if (!role) throw new Error("Role not found.");
+    const roleID = role.roleid;
 
-    // Mã hóa mật khẩu
-    const hashedPassword = await hashPassword(password);
+    const branch = await Branch.getByName(branchName);
+    if (!branch) throw new Error("Branch not found.");
 
-    const newAccount = await userAccountRepository.create({
-      username,
+
+    // 4️⃣ Mật khẩu mặc định
+    const defaultPassword = "123456";
+
+    
+    // 6️⃣ Tạo employee và đồng bộ khóa chính employeeid = userid
+    const newEmployee = await employeeRepository.create({
+      fullname: fullName,
       email,
-      password: hashedPassword,
       roleid: roleID,
-      createdat: new Date(),
+      branchid: branch.branchid,
     });
 
+    const userAccount = await userAccountRepository.findById(newEmployee.employeeid)
+
+    
     return {
-      message: "User account created successfully.",
-      account: newAccount,
+        
+        id: newEmployee.employeeid,
+        username: newEmployee.employeeid,
+        fullName: newEmployee.fullname,
+        email: email,
+        roleName: roleName,
+        status: userAccount.accountstatus
+        
     };
   }
+
 
   // Cập nhật tài khoản
   async updateUserAccount(id, updates) {

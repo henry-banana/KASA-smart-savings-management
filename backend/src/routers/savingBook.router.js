@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 // Thêm sổ tiết kiệm mới
-router.post("/add", addSavingBook);
+router.post("/", addSavingBook);
 
 // Cập nhật thông tin sổ tiết kiệm
 router.put("/:id", updateSavingBook);
