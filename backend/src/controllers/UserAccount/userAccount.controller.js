@@ -2,6 +2,7 @@ import { employeeRepository } from "../../repositories/Employee/EmployeeReposito
 import { userAccountService } from "../../services/UserAccount/userAccount.service.js";
 import { Branch } from "../../models/Branch.js";
 import { Role } from "../../models/Role.js";
+import { userAccountRepository } from "../../repositories/UserAccount/UserAccountRepository.js";
 
 // Lấy danh sách tất cả tài khoản người dùng
 export async function getAllUserAccounts(req, res) {
@@ -161,6 +162,47 @@ export async function deleteUserAccount(req, res) {
     return res.status(err.status || 500).json({
       message: "Failed to delete user account",
       success: false,
+    });
+  }
+}
+
+
+export async function updateStatusAccount(req, res) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+
+    if (!status) {
+      return res.status(400).json({
+        message: "Missing required field: status",
+        success: false
+      });
+    }
+
+    // Gọi service cập nhật trạng thái
+    const result = await userAccountRepository.update(id, { accountstatus: status })
+
+    if (!result) {
+      return res.status(404).json({
+        message: "User account not found or update failed",
+        success: false
+      });
+    }
+
+    return res.status(200).json({
+      message: "User account status updated successfully",
+      success: true,
+      total: 1,
+      data: result
+    });
+
+  } catch (err) {
+    console.error("❌ Error updating user account status:", err);
+
+    return res.status(err.status || 500).json({
+      message: "Failed to update user account status",
+      success: false
     });
   }
 }
