@@ -1,4 +1,7 @@
+import { employeeRepository } from "../../repositories/Employee/EmployeeRepository.js";
 import { userAccountService } from "../../services/UserAccount/userAccount.service.js";
+import { Branch } from "../../models/Branch.js";
+import { Role } from "../../models/Role.js";
 
 // Lấy danh sách tất cả tài khoản người dùng
 export async function getAllUserAccounts(req, res) {
@@ -78,11 +81,39 @@ export async function createUserAccount(req, res) {
 export async function updateUserAccount(req, res) {
   try {
     const { id } = req.params;
-    const result = await userAccountService.updateUserAccount(id, req.body);
+
+    let updates = {};
+    if (req.body.branchName){
+      const branch = await Branch.getByName(req.body.branchName);
+      if (!branch) throw new Error("Branch not found.");
+
+      updates.branchid = branch.branchid;
+    }
+
+    if (req.body.roleName){
+      const role = await Role.getByName(req.body.roleName);
+      if (!role) throw new Error("Role not found.");
+
+      updates.roleid = role.roleid;
+    }
+
+    if (req.body.fullName){
+      updates.fullname = req.body.fullName;
+    }
+
+    if (req.body.email){
+      updates.email = req.body.email;
+    }
+
+    let result;
+
+    if (updates !== undefined){
+        result = await employeeRepository.update(id, updates);
+    }
 
     if (!result) {
       return res.status(404).json({
-        message: "User account not found",
+        message: "User account not found or update failed",
         success: false,
       });
     }
