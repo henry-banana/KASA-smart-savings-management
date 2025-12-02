@@ -475,38 +475,6 @@ export default function UserProfile() {
             </div>
             <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
-                Account Created
-              </p>
-              <p className="text-sm font-semibold text-gray-900">
-                {profileData?.createdAt
-                  ? new Date(profileData.createdAt).toLocaleDateString(
-                      "en-US",
-                      {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }
-                    )
-                  : "N/A"}
-              </p>
-            </div>
-            {/* TODO: Delete if database not add lastLogin */}
-            {/* <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Last Login</p>
-              <p className="text-sm font-semibold text-gray-900">
-                {(profileData?.lastLogin || profileData?.lastlogin) 
-                  ? new Date(profileData?.lastLogin || profileData?.lastlogin).toLocaleString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })
-                  : 'N/A'
-                }
-              </p>
-            </div> */}
-            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">
                 Department
               </p>
               <p className="text-sm font-semibold text-gray-900 capitalize">

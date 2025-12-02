@@ -78,15 +78,7 @@ export default function Dashboard() {
       gradient: "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
       iconColor: "#ffffff",
     },
-    {
-      title: "Active Customers",
-      value: "0",
-      change: "+0%",
-      trend: "up",
-      icon: <Users size={28} />,
-      gradient: "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
-      iconColor: "#ffffff",
-    },
+    // Removed "Active Customers" card per request
   ]);
 
   const [depositWithdrawalData, _setDepositWithdrawalData] = useState([
@@ -158,17 +150,7 @@ export default function Dashboard() {
               gradient: "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
               iconColor: "#ffffff",
             },
-            {
-              title: "Active Customers",
-              value: statsData.activeCustomers.toLocaleString(),
-              change: statsData.changes.activeCustomers,
-              trend: statsData.changes.activeCustomers.startsWith("+")
-                ? "up"
-                : "down",
-              icon: <Users size={28} />,
-              gradient: "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
-              iconColor: "#ffffff",
-            },
+            // Active Customers card removed
           ]);
 
           // Update charts
@@ -254,10 +236,9 @@ export default function Dashboard() {
     <RoleGuard allow={["teller", "accountant"]}>
       <div className="space-y-8">
         {/* 📊 Stats Grid - Cute Cards */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {loading ? (
             <>
-              <StatCardSkeleton />
               <StatCardSkeleton />
               <StatCardSkeleton />
               <StatCardSkeleton />
