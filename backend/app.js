@@ -25,7 +25,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use("/api/login", authRoutes);
-app.use("/api/employee", employeeRoutes);
+app.use("/api/users", employeeRoutes);
 app.use("/api/savingbook", savingBookRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/customer", customerRoutes);
