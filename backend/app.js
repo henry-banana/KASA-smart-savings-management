@@ -27,7 +27,7 @@ app.use(express.json());
 app.use("/api/login", authRoutes);
 app.use("/api/employee", employeeRoutes);
 app.use("/api/savingbook", savingBookRoutes);
-app.use("/api/transaction", transactionRoutes);
+app.use("/api/transactions", transactionRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/typesaving", typeSavingRoutes);
 app.use("/api/report", reportRoutes);
