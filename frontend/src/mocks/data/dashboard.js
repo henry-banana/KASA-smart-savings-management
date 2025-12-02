@@ -4,6 +4,7 @@
  */
 
 import { mockSavingBooks } from "./savingBooks";
+import { mockTypeSavings } from "./typeSavings";
 import { mockTransactions } from "./transactions";
 // import { mockCustomers } from './customers'; // Not used yet, for future enhancements
 
@@ -81,35 +82,39 @@ export const calculateWeeklyTransactions = () => {
  * Calculate account type distribution
  */
 export const calculateAccountTypeDistribution = () => {
-  const typeCounts = {};
+  // Build counts keyed by typeSavingId from configured mockTypeSavings
+  const counts = mockTypeSavings.reduce((acc, ts) => {
+    acc[ts.typeSavingId] = 0;
+    return acc;
+  }, {});
 
+  // Count active saving books per typeSavingId
   mockSavingBooks
     .filter((sb) => sb.status === "active")
     .forEach((sb) => {
-      // Map type IDs to readable names
-      let typeName;
-      switch (sb.typeSavingId) {
-        case "TS01":
-          typeName = "No Term";
-          break;
-        case "TS02":
-          typeName = "3 Months";
-          break;
-        case "TS03":
-          typeName = "6 Months";
-          break;
-        default:
-          typeName = "Other";
+      if (sb.typeSavingId && counts.hasOwnProperty(sb.typeSavingId)) {
+        counts[sb.typeSavingId] += 1;
+      } else {
+        counts["OTHER"] = (counts["OTHER"] || 0) + 1;
       }
-
-      typeCounts[typeName] = (typeCounts[typeName] || 0) + 1;
     });
 
-  return [
-    { name: "No Term", value: typeCounts["No Term"] || 0, color: "#1A4D8F" },
-    { name: "3 Months", value: typeCounts["3 Months"] || 0, color: "#00AEEF" },
-    { name: "6 Months", value: typeCounts["6 Months"] || 0, color: "#60A5FA" },
-  ];
+  // Color palette for visual distinction (extends as types increase)
+  const palette = ["#1A4D8F", "#00AEEF", "#60A5FA", "#EC4899", "#F59E0B"];
+
+  // Map configured types (preserve admin order) to result array
+  const result = mockTypeSavings.map((ts, idx) => ({
+    name: ts.typeName,
+    value: counts[ts.typeSavingId] || 0,
+    color: palette[idx] || "#8884d8",
+  }));
+
+  // Append 'Other' bucket if present
+  if (counts["OTHER"]) {
+    result.push({ name: "Other", value: counts["OTHER"], color: "#9CA3AF" });
+  }
+
+  return result;
 };
 
 /**

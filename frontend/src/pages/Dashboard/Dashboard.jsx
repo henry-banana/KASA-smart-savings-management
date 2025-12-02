@@ -5,6 +5,7 @@ import {
   getDashboardStats,
   getRecentTransactions,
 } from "@/services/dashboardService";
+import { getAllTypeSavings } from "@/services/typeSavingService";
 import { mockSavingBooks } from "@/mocks/data/savingBooks";
 import {
   Card,
@@ -97,6 +98,9 @@ export default function Dashboard() {
     { name: "6 Months", value: 0, color: "#60A5FA" },
   ]);
 
+  // Number of saving types configured in Admin (used for skeleton placeholders)
+  const [typeCount, setTypeCount] = useState(accountTypeData.length);
+
   const [recentTransactions, setRecentTransactions] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -107,6 +111,20 @@ export default function Dashboard() {
       try {
         setLoading(true);
         const response = await getDashboardStats();
+
+        // Also fetch configured saving types to determine legend/skeleton length
+        try {
+          const typesResp = await getAllTypeSavings();
+          if (typesResp?.success && Array.isArray(typesResp.data)) {
+            setTypeCount((prev) => typesResp.data.length || prev);
+          }
+        } catch (err) {
+          // fallback: keep default typeCount
+          console.warn(
+            "Failed to fetch saving types for dashboard legend count",
+            err
+          );
+        }
 
         if (response.success && response.data) {
           const {
@@ -386,7 +404,7 @@ export default function Dashboard() {
                     <Skeleton className="w-48 h-48 rounded-full bg-gray-300 animate-pulse" />
                   </div>
                   <div className="space-y-2">
-                    {Array.from({ length: 3 }).map((_, i) => (
+                    {Array.from({ length: typeCount || 3 }).map((_, i) => (
                       <div
                         key={i}
                         className="flex items-center justify-between"
