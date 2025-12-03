@@ -77,6 +77,34 @@ export const withdrawMoney = async (
   );
 };
 
+/**
+ * Get deposit transaction statistics by date for Transaction Statistics section
+ * @param {string} date - Date in YYYY-MM-DD format
+ * @returns {Promise<Object>} Deposit statistics grouped by saving type
+ */
+export const getDepositTransactionStats = async (date) => {
+  if (USE_MOCK) {
+    return mockTransactionAdapter.getDepositTransactionStats(date);
+  }
+  // TODO: Replace with real API call when available
+  throw new Error("Real API for deposit transaction stats not yet implemented");
+};
+
+/**
+ * Get withdrawal transaction statistics by date for Transaction Statistics section
+ * @param {string} date - Date in YYYY-MM-DD format
+ * @returns {Promise<Object>} Withdrawal statistics grouped by saving type
+ */
+export const getWithdrawalTransactionStats = async (date) => {
+  if (USE_MOCK) {
+    return mockTransactionAdapter.getWithdrawalTransactionStats(date);
+  }
+  // TODO: Replace with real API call when available
+  throw new Error(
+    "Real API for withdrawal transaction stats not yet implemented"
+  );
+};
+
 // Attempt to derive current user/employee ID from localStorage
 function getCurrentUserId() {
   try {

@@ -44,12 +44,18 @@ import {
   SparkleDecor,
 } from "../../components/CuteComponents";
 import { getDailyReport } from "../../services/reportService";
+import {
+  getDepositTransactionStats,
+  getWithdrawalTransactionStats,
+} from "../../services/transactionService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
 
 export default function DailyReport() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [reportData, setReportData] = useState(null);
+  const [depositStats, setDepositStats] = useState(null);
+  const [withdrawalStats, setWithdrawalStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -74,23 +80,38 @@ export default function DailyReport() {
     setError(null);
     try {
       const dateString = format(selectedDate, "yyyy-MM-dd");
-      const response = await getDailyReport(dateString);
 
-      if (!response.success || !response.data) {
+      // Fetch all data in parallel
+      const [reportResponse, depositResponse, withdrawalResponse] =
+        await Promise.all([
+          getDailyReport(dateString),
+          getDepositTransactionStats(dateString),
+          getWithdrawalTransactionStats(dateString),
+        ]);
+
+      if (!reportResponse.success || !reportResponse.data) {
         setError(
           "No data found for the selected date. Please try another date."
         );
         setReportData(null);
+        setDepositStats(null);
+        setWithdrawalStats(null);
         return;
       }
 
-      setReportData(response.data);
+      setReportData(reportResponse.data);
+      setDepositStats(depositResponse.success ? depositResponse.data : null);
+      setWithdrawalStats(
+        withdrawalResponse.success ? withdrawalResponse.data : null
+      );
     } catch (err) {
       console.error("Report error:", err);
       setError(
         "Failed to generate report. Please try again or select a different date."
       );
       setReportData(null);
+      setDepositStats(null);
+      setWithdrawalStats(null);
     } finally {
       setLoading(false);
     }
@@ -595,7 +616,7 @@ export default function DailyReport() {
                       Deposit Transactions
                     </h4>
                     <div className="space-y-3">
-                      {typeBreakdown.map((item, index) => (
+                      {depositStats?.items.map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100"
@@ -604,8 +625,8 @@ export default function DailyReport() {
                             {item.typeName}
                           </span>
                           <span className="text-sm font-semibold text-green-600">
-                            {item.depositCount || 0} transaction
-                            {item.depositCount !== 1 ? "s" : ""}
+                            {item.count || 0} transaction
+                            {item.count !== 1 ? "s" : ""}
                           </span>
                         </div>
                       ))}
@@ -614,11 +635,7 @@ export default function DailyReport() {
                           Total
                         </span>
                         <span className="text-sm font-bold text-green-700">
-                          {typeBreakdown.reduce(
-                            (sum, item) => sum + (item.depositCount || 0),
-                            0
-                          )}{" "}
-                          transactions
+                          {depositStats?.total.count || 0} transactions
                         </span>
                       </div>
                     </div>
@@ -631,7 +648,7 @@ export default function DailyReport() {
                       Withdrawal Transactions
                     </h4>
                     <div className="space-y-3">
-                      {typeBreakdown.map((item, index) => (
+                      {withdrawalStats?.items.map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100"
@@ -640,8 +657,8 @@ export default function DailyReport() {
                             {item.typeName}
                           </span>
                           <span className="text-sm font-semibold text-red-600">
-                            {item.withdrawalCount || 0} transaction
-                            {item.withdrawalCount !== 1 ? "s" : ""}
+                            {item.count || 0} transaction
+                            {item.count !== 1 ? "s" : ""}
                           </span>
                         </div>
                       ))}
@@ -650,11 +667,7 @@ export default function DailyReport() {
                           Total
                         </span>
                         <span className="text-sm font-bold text-red-700">
-                          {typeBreakdown.reduce(
-                            (sum, item) => sum + (item.withdrawalCount || 0),
-                            0
-                          )}{" "}
-                          transactions
+                          {withdrawalStats?.total.count || 0} transactions
                         </span>
                       </div>
                     </div>
