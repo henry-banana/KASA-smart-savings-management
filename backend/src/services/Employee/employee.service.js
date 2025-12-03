@@ -1,5 +1,6 @@
 import { employeeRepository } from "../../repositories/Employee/EmployeeRepository.js";
 import { userAccountRepository } from "../../repositories/UserAccount/UserAccountRepository.js";
+import { roleRepository } from "../../repositories/Role/RoleRepository.js";
 import { hashPassword } from "../../middleware/hashing.middleware.js";
 
 class EmployeeService {
