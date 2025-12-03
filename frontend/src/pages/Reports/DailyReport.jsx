@@ -588,71 +588,73 @@ export default function DailyReport() {
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {/* Deposit Transactions */}
                   <div className="p-4 space-y-4 rounded-xl bg-linear-to-br from-green-50 to-emerald-50">
                     <h4 className="flex items-center gap-2 text-sm font-semibold text-green-700">
                       <TrendingUp size={16} />
                       Deposit Transactions
                     </h4>
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
-                        <span className="text-sm text-gray-700">No Term</span>
-                        <span className="text-sm font-semibold text-green-600">
-                          23 transactions
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
-                        <span className="text-sm text-gray-700">3 Months</span>
-                        <span className="text-sm font-semibold text-green-600">
-                          15 transactions
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
-                        <span className="text-sm text-gray-700">6 Months</span>
-                        <span className="text-sm font-semibold text-green-600">
-                          12 transactions
-                        </span>
-                      </div>
+                      {typeBreakdown.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100"
+                        >
+                          <span className="text-sm text-gray-700">
+                            {item.typeName}
+                          </span>
+                          <span className="text-sm font-semibold text-green-600">
+                            {item.depositCount || 0} transaction
+                            {item.depositCount !== 1 ? "s" : ""}
+                          </span>
+                        </div>
+                      ))}
                       <div className="flex items-center justify-between pt-2 border-t-2 border-green-200">
                         <span className="text-sm font-bold text-gray-800">
                           Total
                         </span>
                         <span className="text-sm font-bold text-green-700">
-                          50 transactions
+                          {typeBreakdown.reduce(
+                            (sum, item) => sum + (item.depositCount || 0),
+                            0
+                          )}{" "}
+                          transactions
                         </span>
                       </div>
                     </div>
                   </div>
 
+                  {/* Withdrawal Transactions */}
                   <div className="p-4 space-y-4 rounded-xl bg-linear-to-br from-red-50 to-rose-50">
                     <h4 className="flex items-center gap-2 text-sm font-semibold text-red-700">
                       <TrendingDown size={16} />
                       Withdrawal Transactions
                     </h4>
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
-                        <span className="text-sm text-gray-700">No Term</span>
-                        <span className="text-sm font-semibold text-red-600">
-                          8 transactions
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
-                        <span className="text-sm text-gray-700">3 Months</span>
-                        <span className="text-sm font-semibold text-red-600">
-                          5 transactions
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100">
-                        <span className="text-sm text-gray-700">6 Months</span>
-                        <span className="text-sm font-semibold text-red-600">
-                          2 transactions
-                        </span>
-                      </div>
+                      {typeBreakdown.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-white rounded-lg border border-gray-100"
+                        >
+                          <span className="text-sm text-gray-700">
+                            {item.typeName}
+                          </span>
+                          <span className="text-sm font-semibold text-red-600">
+                            {item.withdrawalCount || 0} transaction
+                            {item.withdrawalCount !== 1 ? "s" : ""}
+                          </span>
+                        </div>
+                      ))}
                       <div className="flex items-center justify-between pt-2 border-t-2 border-red-200">
                         <span className="text-sm font-bold text-gray-800">
                           Total
                         </span>
                         <span className="text-sm font-bold text-red-700">
-                          15 transactions
+                          {typeBreakdown.reduce(
+                            (sum, item) => sum + (item.withdrawalCount || 0),
+                            0
+                          )}{" "}
+                          transactions
                         </span>
                       </div>
                     </div>

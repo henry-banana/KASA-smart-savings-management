@@ -1,78 +1,96 @@
-import { buildDailyReportResponse } from '../responses/dailyReport.responses';
+import { buildDailyReportResponse } from "../responses/dailyReport.responses";
 // monthlyReport response builder removed (not used after removing legacy getMonthlyReport)
-import { mockTransactions } from '../data/transactions';
-import { mockSavingBooks } from '../data/savingBooks';
-import { mockTypeSavings } from '../data/typeSavings';
-import { randomDelay } from '../utils';
-import { logger } from '@/utils/logger';
+import { mockTransactions } from "../data/transactions";
+import { mockSavingBooks } from "../data/savingBooks";
+import { mockTypeSavings } from "../data/typeSavings";
+import { randomDelay } from "../utils";
+import { logger } from "@/utils/logger";
 
 export const mockReportAdapter = {
   async getDailyReport(date) {
     await randomDelay();
-    const reportDate = date || new Date().toISOString().split('T')[0];
-    logger.info('🎭 Mock Daily Report', { date: reportDate });
-    
+    const reportDate = date || new Date().toISOString().split("T")[0];
+    logger.info("🎭 Mock Daily Report", { date: reportDate });
+
     // Filter transactions by date
-    const dailyTransactions = mockTransactions.filter(t => 
+    const dailyTransactions = mockTransactions.filter((t) =>
       t.transactionDate?.startsWith(reportDate)
     );
-    
+
     // Calculate deposits and withdrawals
     const totalDeposits = dailyTransactions
-      .filter(t => t.type === 'deposit')
+      .filter((t) => t.type === "deposit")
       .reduce((sum, t) => sum + t.amount, 0);
     const totalWithdrawals = dailyTransactions
-      .filter(t => t.type === 'withdraw')
+      .filter((t) => t.type === "withdraw")
       .reduce((sum, t) => sum + t.amount, 0);
-    
+
     // Calculate summary statistics
     const summary = {
       totalDeposits,
       totalWithdrawals,
       netCashFlow: totalDeposits - totalWithdrawals,
       transactionCount: dailyTransactions.length,
-      depositCount: dailyTransactions.filter(t => t.type === 'deposit').length,
-      withdrawalCount: dailyTransactions.filter(t => t.type === 'withdraw').length,
-      newSavingBooks: mockSavingBooks.filter(sb => sb.openDate === reportDate).length,
-      closedSavingBooks: mockSavingBooks.filter(sb => sb.status === 'closed' && sb.closeDate === reportDate).length
+      depositCount: dailyTransactions.filter((t) => t.type === "deposit")
+        .length,
+      withdrawalCount: dailyTransactions.filter((t) => t.type === "withdraw")
+        .length,
+      newSavingBooks: mockSavingBooks.filter((sb) => sb.openDate === reportDate)
+        .length,
+      closedSavingBooks: mockSavingBooks.filter(
+        (sb) => sb.status === "closed" && sb.closeDate === reportDate
+      ).length,
     };
-    
+
     // Calculate breakdown by type saving
-    const byTypeSaving = mockTypeSavings.map(type => {
+    const byTypeSaving = mockTypeSavings.map((type) => {
       // Get all saving books of this type
-      const booksOfType = mockSavingBooks.filter(sb => sb.typeSavingId === type.typeSavingId);
-      const bookIds = booksOfType.map(sb => sb.bookId);
-      
+      const booksOfType = mockSavingBooks.filter(
+        (sb) => sb.typeSavingId === type.typeSavingId
+      );
+      const bookIds = booksOfType.map((sb) => sb.bookId);
+
       // Get transactions for these books on this date
-      const typeTransactions = dailyTransactions.filter(t => bookIds.includes(t.bookId));
-      
-      const totalDeposits = typeTransactions
-        .filter(t => t.type === 'deposit')
-        .reduce((sum, t) => sum + t.amount, 0);
-      const totalWithdrawals = typeTransactions
-        .filter(t => t.type === 'withdraw')
-        .reduce((sum, t) => sum + t.amount, 0);
-      
+      const typeTransactions = dailyTransactions.filter((t) =>
+        bookIds.includes(t.bookId)
+      );
+
+      const depositTransactions = typeTransactions.filter(
+        (t) => t.type === "deposit"
+      );
+      const withdrawalTransactions = typeTransactions.filter(
+        (t) => t.type === "withdraw"
+      );
+
+      const totalDeposits = depositTransactions.reduce(
+        (sum, t) => sum + t.amount,
+        0
+      );
+      const totalWithdrawals = withdrawalTransactions.reduce(
+        (sum, t) => sum + t.amount,
+        0
+      );
+
       return {
         typeSavingId: type.typeSavingId,
         typeName: type.typeName,
         totalDeposits,
         totalWithdrawals,
-        difference: totalDeposits - totalWithdrawals
+        difference: totalDeposits - totalWithdrawals,
+        depositCount: depositTransactions.length,
+        withdrawalCount: withdrawalTransactions.length,
       };
     });
-    
+
     return buildDailyReportResponse({
       date: reportDate,
       summary,
       byTypeSaving,
       // mock-extension: transaction details and new books list for UI visualization
       transactions: dailyTransactions,
-      newSavingBooks: []
+      newSavingBooks: [],
     });
   },
-
-
 
   /**
    * BM5.2 - Get monthly opening/closing savings books report
@@ -81,28 +99,33 @@ export const mockReportAdapter = {
    * @param {string} savingsType - Savings type filter ('all', 'no-term', '3-months', etc.)
    * @returns {Promise<Object>} Monthly open/close report data
    */
-  async getMonthlyOpenCloseReport(month, year, savingsType = 'all') {
+  async getMonthlyOpenCloseReport(month, year, savingsType = "all") {
     await randomDelay();
     const reportMonth = month || new Date().getMonth() + 1;
     const reportYear = year || new Date().getFullYear();
-    logger.info('🎭 Mock Monthly Open/Close Report', { month: reportMonth, year: reportYear, savingsType });
+    logger.info("🎭 Mock Monthly Open/Close Report", {
+      month: reportMonth,
+      year: reportYear,
+      savingsType,
+    });
 
     const daysInMonth = new Date(reportYear, reportMonth, 0).getDate();
 
     // Filter saving books based on savingsType
     let filteredTypeSavings = mockTypeSavings;
-    if (savingsType !== 'all') {
+    if (savingsType !== "all") {
       const typeMapping = {
-        'no-term': 'Không kỳ hạn',
-        '3-months': '3 Tháng',
-        '6-months': '6 Tháng',
-        '12-months': '12 Tháng'
+        "no-term": "Không kỳ hạn",
+        "3-months": "3 Tháng",
+        "6-months": "6 Tháng",
+        "12-months": "12 Tháng",
       };
       const typeName = typeMapping[savingsType];
       if (typeName) {
-        filteredTypeSavings = mockTypeSavings.filter(t => 
-          t.typeName.toLowerCase().includes(typeName.toLowerCase()) ||
-          t.typeName.toLowerCase().includes(savingsType.replace('-', ' '))
+        filteredTypeSavings = mockTypeSavings.filter(
+          (t) =>
+            t.typeName.toLowerCase().includes(typeName.toLowerCase()) ||
+            t.typeName.toLowerCase().includes(savingsType.replace("-", " "))
         );
       }
     }
@@ -113,21 +136,25 @@ export const mockReportAdapter = {
     let totalClosed = 0;
 
     for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${reportYear}-${String(reportMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      
+      const dateStr = `${reportYear}-${String(reportMonth).padStart(
+        2,
+        "0"
+      )}-${String(day).padStart(2, "0")}`;
+
       // Count books opened on this day
-      const openedOnDay = mockSavingBooks.filter(sb => {
+      const openedOnDay = mockSavingBooks.filter((sb) => {
         const matchesDate = sb.openDate === dateStr;
-        if (savingsType === 'all') return matchesDate;
-        const typeIds = filteredTypeSavings.map(t => t.typeSavingId);
+        if (savingsType === "all") return matchesDate;
+        const typeIds = filteredTypeSavings.map((t) => t.typeSavingId);
         return matchesDate && typeIds.includes(sb.typeSavingId);
       }).length;
 
       // Count books closed on this day (simulate some closures)
-      const closedOnDay = mockSavingBooks.filter(sb => {
-        const matchesClosed = sb.status === 'closed' && sb.closeDate === dateStr;
-        if (savingsType === 'all') return matchesClosed;
-        const typeIds = filteredTypeSavings.map(t => t.typeSavingId);
+      const closedOnDay = mockSavingBooks.filter((sb) => {
+        const matchesClosed =
+          sb.status === "closed" && sb.closeDate === dateStr;
+        if (savingsType === "all") return matchesClosed;
+        const typeIds = filteredTypeSavings.map((t) => t.typeSavingId);
         return matchesClosed && typeIds.includes(sb.typeSavingId);
       }).length;
 
@@ -139,7 +166,7 @@ export const mockReportAdapter = {
         day,
         opened,
         closed,
-        difference: opened - closed
+        difference: opened - closed,
       });
 
       totalOpened += opened;
@@ -153,22 +180,22 @@ export const mockReportAdapter = {
         month: reportMonth,
         year: reportYear,
         // Canonical fields per OpenAPI
-        items: byDay.map(item => ({
+        items: byDay.map((item) => ({
           day: item.day,
           newSavingBooks: item.opened,
           closedSavingBooks: item.closed,
-          difference: item.difference
+          difference: item.difference,
         })),
         total: {
           newSavingBooks: totalOpened,
           closedSavingBooks: totalClosed,
-          difference: totalOpened - totalClosed
+          difference: totalOpened - totalClosed,
         },
         // mock-extension: savingsType filter for UI
         meta: {
-          savingsType
-        }
-      }
+          savingsType,
+        },
+      },
     };
-  }
+  },
 };
