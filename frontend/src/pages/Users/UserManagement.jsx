@@ -158,7 +158,17 @@ export default function UserManagement() {
 
   const submitAddUser = async () => {
     try {
-      await userService.createUser(formData);
+      // Normalize role: capitalize first letter (teller → Teller)
+      const capitalizeRole = (role) => {
+        return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+      };
+
+      await userService.createUser({
+        fullName: formData.fullName,
+        email: formData.email,
+        roleName: capitalizeRole(formData.role),
+        branchName: formData.branchName,
+      });
       await fetchUsers(); // Refresh list
       setShowAddUser(false);
       setSuccessMessage("User created successfully");
@@ -172,10 +182,15 @@ export default function UserManagement() {
   const submitEditUser = async () => {
     if (selectedUser) {
       try {
+        // Normalize role: capitalize first letter (teller → Teller)
+        const capitalizeRole = (role) => {
+          return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+        };
+
         await userService.updateUser(selectedUser.id, {
           fullName: formData.fullName,
           email: formData.email,
-          roleName: formData.role,
+          roleName: capitalizeRole(formData.role),
           branchName: formData.branchName,
         });
         await fetchUsers(); // Refresh list
