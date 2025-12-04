@@ -30,18 +30,18 @@ class RegulationService {
   }
 
   // Cập nhật quy định
-  async updateRegulations(minimumDepositAmount, minimumTermDays) {
+  async updateRegulations(minimumBalance, minimumTermDays) {
     const allTypeSaving = await typeSavingRepository.findAll();
     for (const typeSaving of allTypeSaving) {
       if (typeSaving.typename == "No term") {
         await typeSavingRepository.update(typeSaving.typeid, {
-          minimumdeposit: minimumDepositAmount,
-          minimumdepositterm: minimumTermDays,
+          minimumbalance: minimumBalance,
+          minimumterm: minimumTermDays,
         });
       }
     }
 
-    return { minimumDepositAmount, minimumTermDays };
+    return { minimumBalance, minimumTermDays };
   }
 
   // Lấy danh sách lãi suất các loại tiết kiệm
