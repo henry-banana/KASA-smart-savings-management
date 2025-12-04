@@ -72,3 +72,26 @@ export async function getRegulationRates(req, res) {
     });
   }
 }
+
+export async function updateSomeRegulation(req, res) {
+  try {
+    const updates = req.body;
+
+    const result = await regulationService.updateRegulation(
+      updates
+    );
+
+    return res.status(200).json({
+      message: "Regulation updated successfully",
+      success: true,
+      data: updates,
+    });
+  } catch (error) {
+    console.error("❌ Error updating regulation:", error);
+
+    return res.status(500).json({
+      message: "Failed to update regulation",
+      success: false,
+    });
+  }
+}

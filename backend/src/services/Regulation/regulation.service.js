@@ -53,11 +53,27 @@ class RegulationService {
       rate: typeSaving.interest,
       minimumBalance: typeSaving.minimumbalance,
       term: typeSaving.termperiod,
-      editable: true
+      editable: true,
     }));
 
-
     return result;
+  }
+
+  // Cập nhật lãi suất cho một loại tiết kiệm
+  async updateRegulation(updates) {
+    if (updates){
+        for (const update of updates) {
+            typeSavingRepository.update(update.typeSavingId, {
+              typename: update.typeName,  
+              interest: update.rate,
+              termperiod: update.term,
+            });
+        }
+
+        return { message: "Regulations updated successfully." };
+    }else{
+        throw new Error("No updates provided.");
+    }
   }
 
   // Xóa quy định
