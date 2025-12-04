@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 import {
   getRegulations,
   updateRegulations,
 } from "@/services/regulationService";
 import {
   getInterestRates,
-  getChangeHistory,
+  // getChangeHistory,
   updateInterestRates,
 } from "@/services/regulationService";
 import {
@@ -44,7 +44,7 @@ import {
 import {
   CheckCircle2,
   AlertTriangle,
-  History,
+  // History,
   Settings,
   Sparkles,
 } from "lucide-react";
@@ -53,8 +53,8 @@ import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
 
 export default function RegulationSettings() {
-  const { user } = useAuth();
-  const [minDeposit, setMinDeposit] = useState("100000");
+  // const { user } = useAuth();
+  const [minBalance, setMinBalance] = useState("100000");
   const [minWithdrawalDays, setMinWithdrawalDays] = useState("15");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -76,12 +76,18 @@ export default function RegulationSettings() {
     const fetchRegulations = async () => {
       try {
         setLoading(true);
+        setError(null);
 
         // Fetch basic regulations
         const response = await getRegulations();
         if (response.success && response.data) {
-          setMinDeposit(String(response.data.minimumDepositAmount));
+          setMinBalance(String(response.data.minimumBalance));
           setMinWithdrawalDays(String(response.data.minimumTermDays));
+        } else {
+          setError(
+            "Failed to load regulations: " +
+              (response.message || "Unknown error")
+          );
         }
 
         // Fetch interest rates - now using getInterestRates instead of getAllTypeSavings
@@ -127,14 +133,14 @@ export default function RegulationSettings() {
         }
 
         // Fetch change history
-        try {
-          const historyResponse = await getChangeHistory();
-          if (historyResponse.success && historyResponse.data) {
-            setChangeHistory(historyResponse.data);
-          }
-        } catch (err) {
-          console.error("Failed to fetch change history:", err);
-        }
+        // try {
+        //   const historyResponse = await getChangeHistory();
+        //   if (historyResponse.success && historyResponse.data) {
+        //     setChangeHistory(historyResponse.data);
+        //   }
+        // } catch (err) {
+        //   console.error("Failed to fetch change history:", err);
+        // }
       } catch (err) {
         console.error("Failed to fetch regulations:", err);
         setError("Failed to load regulations");
@@ -148,7 +154,7 @@ export default function RegulationSettings() {
 
   const [interestRates, setInterestRates] = useState([]);
 
-  const [changeHistory, setChangeHistory] = useState([]);
+  // const [changeHistory, setChangeHistory] = useState([]);
 
   const handleUpdateRate = (index, newRate) => {
     const updated = [...interestRates];
@@ -165,58 +171,102 @@ export default function RegulationSettings() {
     try {
       setShowConfirm(false);
       setLoading(true);
+      setError(null);
+
+      // Validate inputs before sending
+      const depositAmount = Number(minBalance);
+      const termDays = Number(minWithdrawalDays);
+
+      if (isNaN(depositAmount) || depositAmount <= 0) {
+        setError("Minimum Balance must be a valid positive number");
+        setLoading(false);
+        return;
+      }
+
+      if (isNaN(termDays) || termDays < 0) {
+        setError("Minimum Term Days must be a valid non-negative number");
+        setLoading(false);
+        return;
+      }
 
       const payload = {
-        minimumDepositAmount: Number(minDeposit),
-        minimumTermDays: Number(minWithdrawalDays),
+        minimumBalance: depositAmount,
+        minimumTermDays: termDays,
       };
 
       const response = await updateRegulations(payload);
 
       if (response.success && response.data) {
         // Update local state from response
-        setMinDeposit(String(response.data.minimumDepositAmount));
+        setMinBalance(String(response.data.minimumBalance));
         setMinWithdrawalDays(String(response.data.minimumTermDays));
+
         // Persist interest rate changes
         try {
-          const ratesToUpdate = interestRates.map((r) => ({
-            typeSavingId: r.typeSavingId,
-            typeName: r.typeName,
-            rate: Number(r.rate),
-            term: Number(r.term ?? 0),
-            editable: r.editable,
-          }));
-          const rateUpdateResp = await updateInterestRates(ratesToUpdate);
-          if (rateUpdateResp.success) {
-            setInterestRates(rateUpdateResp.data);
+          if (!Array.isArray(interestRates) || interestRates.length === 0) {
+            console.warn("No interest rates to update");
+          } else {
+            const ratesToUpdate = interestRates.map((r) => ({
+              typeSavingId: r.typeSavingId,
+              typeName: r.typeName,
+              rate: Number(r.rate),
+              term: Number(r.term ?? 0),
+              editable: r.editable,
+            }));
+
+            await updateInterestRates(ratesToUpdate);
+          }
+
+          // Fetch lại interest rates để đảm bảo data đúng format
+          const refreshedRates = await getInterestRates();
+          console.log("📊 Refreshed rates response:", refreshedRates);
+
+          if (
+            refreshedRates.success &&
+            refreshedRates.data &&
+            Array.isArray(refreshedRates.data)
+          ) {
+            console.log("✅ Setting interest rates:", refreshedRates.data);
+            setInterestRates(refreshedRates.data);
+          } else {
+            console.warn(
+              "⚠️ Refreshed rates format invalid, keeping current state:",
+              refreshedRates
+            );
+            // Keep current state if refresh fails
           }
         } catch (e) {
           console.error("Failed to update interest rates:", e);
-          setError("Failed to update interest rates");
+          setError(
+            "Failed to update interest rates: " + (e.message || "Unknown error")
+          );
+          setLoading(false);
+          return;
         }
+
         setSuccessMessage("Regulations updated successfully");
         setShowSuccess(true);
 
         // Refresh change history from API
-        try {
-          const historyResponse = await getChangeHistory();
-          if (historyResponse.success && historyResponse.data) {
-            setChangeHistory(historyResponse.data);
-          }
-        } catch (err) {
-          console.error("Failed to refresh change history:", err);
-          // Fallback: add a placeholder entry
-          setChangeHistory((prev) => [
-            {
-              date: new Date().toISOString().split("T")[0],
-              user: user.username,
-              field: "Regulations",
-              oldValue: "Previous",
-              newValue: "Updated",
-            },
-            ...prev,
-          ]);
-        }
+        // try {
+        //   const historyResponse = await getChangeHistory();
+        //   if (historyResponse.success && historyResponse.data) {
+        //     setChangeHistory(historyResponse.data);
+        //   }
+        // } catch (err) {
+        //   console.error("Failed to refresh change history:", err);
+        //   // Fallback: add a placeholder entry
+        //   setChangeHistory((prev) => [
+        //     {
+        //       date: new Date().toISOString().split("T")[0],
+        //       user: user.username,
+        //       field: "Regulations",
+        //       oldValue: "Previous",
+        //       newValue: "Updated",
+        //     },
+        //     ...prev,
+        //   ]);
+        // }
       } else {
         setError(response.message || "Failed to update regulations");
       }
@@ -350,13 +400,13 @@ export default function RegulationSettings() {
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="minDeposit" className="text-gray-700">
-                        Minimum Deposit (VND)
+                        Minimum Balance (VND)
                       </Label>
                       <Input
                         id="minDeposit"
                         type="number"
-                        value={minDeposit}
-                        onChange={(e) => setMinDeposit(e.target.value)}
+                        value={minBalance}
+                        onChange={(e) => setMinBalance(e.target.value)}
                         className="border-gray-200 h-11 rounded-2xl"
                       />
                       <p className="text-xs text-gray-500">
@@ -419,12 +469,13 @@ export default function RegulationSettings() {
                           <TableHead className="w-12 font-semibold">
                             <Checkbox
                               checked={
+                                Array.isArray(interestRates) &&
                                 selectedTypeSavings.length ===
                                   interestRates.length &&
                                 interestRates.length > 0
                               }
                               onCheckedChange={(checked) => {
-                                if (checked) {
+                                if (checked && Array.isArray(interestRates)) {
                                   setSelectedTypeSavings(
                                     interestRates.map(
                                       (item) => item.typeSavingId
@@ -448,64 +499,65 @@ export default function RegulationSettings() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {interestRates.map((item, index) => (
-                          <TableRow
-                            key={index}
-                            className="hover:bg-[#F8F9FC] transition-colors"
-                          >
-                            <TableCell>
-                              <Checkbox
-                                checked={selectedTypeSavings.includes(
-                                  item.typeSavingId
-                                )}
-                                onCheckedChange={(checked) => {
-                                  if (checked) {
-                                    setSelectedTypeSavings([
-                                      ...selectedTypeSavings,
-                                      item.typeSavingId,
-                                    ]);
-                                  } else {
-                                    setSelectedTypeSavings(
-                                      selectedTypeSavings.filter(
-                                        (id) => id !== item.typeSavingId
-                                      )
-                                    );
+                        {Array.isArray(interestRates) &&
+                          interestRates.map((item, index) => (
+                            <TableRow
+                              key={index}
+                              className="hover:bg-[#F8F9FC] transition-colors"
+                            >
+                              <TableCell>
+                                <Checkbox
+                                  checked={selectedTypeSavings.includes(
+                                    item.typeSavingId
+                                  )}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedTypeSavings([
+                                        ...selectedTypeSavings,
+                                        item.typeSavingId,
+                                      ]);
+                                    } else {
+                                      setSelectedTypeSavings(
+                                        selectedTypeSavings.filter(
+                                          (id) => id !== item.typeSavingId
+                                        )
+                                      );
+                                    }
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell className="font-medium">
+                                {item.typeName}
+                              </TableCell>
+                              <TableCell className="w-36">
+                                <Input
+                                  type="number"
+                                  step="1"
+                                  value={item.term ?? 0}
+                                  onChange={(e) => {
+                                    const updated = [...interestRates];
+                                    updated[index] = {
+                                      ...updated[index],
+                                      term: Number(e.target.value),
+                                    };
+                                    setInterestRates(updated);
+                                  }}
+                                  className="w-28 h-10 border-gray-200 rounded-2xl"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  step="0.1"
+                                  value={item.rate}
+                                  onChange={(e) =>
+                                    handleUpdateRate(index, e.target.value)
                                   }
-                                }}
-                              />
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              {item.typeName}
-                            </TableCell>
-                            <TableCell className="w-36">
-                              <Input
-                                type="number"
-                                step="1"
-                                value={item.term ?? 0}
-                                onChange={(e) => {
-                                  const updated = [...interestRates];
-                                  updated[index] = {
-                                    ...updated[index],
-                                    term: Number(e.target.value),
-                                  };
-                                  setInterestRates(updated);
-                                }}
-                                className="w-28 h-10 border-gray-200 rounded-2xl"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Input
-                                type="number"
-                                step="0.1"
-                                value={item.rate}
-                                onChange={(e) =>
-                                  handleUpdateRate(index, e.target.value)
-                                }
-                                className="w-32 h-10 border-gray-200 rounded-2xl"
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                                  className="w-32 h-10 border-gray-200 rounded-2xl"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </TableBody>
                     </Table>
                   </div>
@@ -586,7 +638,6 @@ export default function RegulationSettings() {
             )}
           </CardContent>
         </Card>
-
         {/* Current Regulations Summary */}
         {!loading && (
           <Card className="overflow-hidden border border-gray-200 rounded-3xl">
@@ -610,10 +661,10 @@ export default function RegulationSettings() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-blue-800">
-                        Minimum Deposit:
+                        Minimum Balance:
                       </span>
                       <span className="text-sm font-semibold text-blue-900">
-                        ₫{Number(minDeposit).toLocaleString()}
+                        ₫{Number(minBalance).toLocaleString()}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -638,27 +689,28 @@ export default function RegulationSettings() {
                     Interest Rates
                   </h5>
                   <div className="space-y-3">
-                    {interestRates.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between"
-                      >
-                        <span className="text-sm text-green-800">
-                          {item.typeName}:
-                        </span>
-                        <span className="text-sm font-semibold text-green-900">
-                          {item.rate}% per month
-                        </span>
-                      </div>
-                    ))}
+                    {Array.isArray(interestRates) &&
+                      interestRates.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between"
+                        >
+                          <span className="text-sm text-green-800">
+                            {item.typeName}:
+                          </span>
+                          <span className="text-sm font-semibold text-green-900">
+                            {item.rate}% per month
+                          </span>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
         )}
-
         {/* Change History */}
+        {/* 
         {!loading && (
           <Card className="overflow-hidden border border-gray-200 rounded-3xl">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
@@ -719,7 +771,7 @@ export default function RegulationSettings() {
             </CardContent>
           </Card>
         )}
-
+        */}
         {/* Confirmation Dialog */}
         <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
           <DialogContent className="rounded-3xl">
@@ -775,7 +827,6 @@ export default function RegulationSettings() {
             </div>
           </DialogContent>
         </Dialog>
-
         {/* Success Modal */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
           <DialogContent className="rounded-3xl">
@@ -807,14 +858,15 @@ export default function RegulationSettings() {
                 </p>
                 <ul className="space-y-1 text-sm text-gray-600 list-disc list-inside">
                   <li>
-                    Minimum Deposit: ₫{Number(minDeposit).toLocaleString()}
+                    Minimum Balance: ₫{Number(minBalance).toLocaleString()}
                   </li>
                   <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
-                  {interestRates.map((item, index) => (
-                    <li key={index}>
-                      Interest Rate {item.typeName}: {item.rate}%
-                    </li>
-                  ))}
+                  {Array.isArray(interestRates) &&
+                    interestRates.map((item, index) => (
+                      <li key={index}>
+                        Interest Rate {item.typeName}: {item.rate}%
+                      </li>
+                    ))}
                 </ul>
               </div>
             </div>
@@ -829,7 +881,6 @@ export default function RegulationSettings() {
             </Button>
           </DialogContent>
         </Dialog>
-
         {/* Delete Confirmation Dialog */}
         <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
           <DialogContent className="rounded-3xl">
@@ -942,7 +993,6 @@ export default function RegulationSettings() {
             </div>
           </DialogContent>
         </Dialog>
-
         {/* Create Type Saving Dialog */}
         <Dialog
           open={showCreateTypeSaving}

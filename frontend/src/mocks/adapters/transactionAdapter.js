@@ -74,7 +74,7 @@ export const mockTransactionAdapter = {
     if (typeof amount !== "number" || isNaN(amount))
       throw new Error("Amount must be a number");
     if (amount < BUSINESS_RULES.MIN_DEPOSIT)
-      throw new Error(`Minimum deposit is ${BUSINESS_RULES.MIN_DEPOSIT}`);
+      throw new Error(`Minimum balance is ${BUSINESS_RULES.MIN_DEPOSIT}`);
 
     const savingBook = findSavingBookById(bookId);
     if (!savingBook) throw new Error("Account not found");

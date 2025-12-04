@@ -1,13 +1,13 @@
 // TODO: replace with real backend API for QĐ6 – Regulations
-import { USE_MOCK } from '@/config/app.config';
-import { regulationApi } from '@/api/regulationApi';
-import { mockRegulationAdapter } from '@/mocks/adapters/regulationAdapter';
+import { USE_MOCK } from "@/config/app.config";
+import { regulationApi } from "@/api/regulationApi";
+import { mockRegulationAdapter } from "@/mocks/adapters/regulationAdapter";
 
 const regulationAdapter = USE_MOCK ? mockRegulationAdapter : regulationApi;
 
 /**
  * Get current system regulations (QĐ6)
- * @returns {Promise<Object>} Regulations data including minimumDepositAmount and minimumTermDays
+ * @returns {Promise<Object>} Regulations data including minimumBalance and minimumTermDays
  */
 export const getRegulations = async () => {
   return regulationAdapter.getRegulations();
@@ -16,7 +16,7 @@ export const getRegulations = async () => {
 /**
  * Update system regulations (QĐ6)
  * @param {Object} payload - Regulation updates
- * @param {number} payload.minimumDepositAmount - Minimum deposit amount in VND
+ * @param {number} payload.minimumBalance - Minimum balance amount in VND
  * @param {number} payload.minimumTermDays - Minimum term days before withdrawal
  * @returns {Promise<Object>} Updated regulations data
  */

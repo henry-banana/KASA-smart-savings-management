@@ -11,7 +11,6 @@ export async function getAllTypeSavings(req, res) {
       total: result.length,
       data: result,
     });
-
   } catch (error) {
     console.error("❌ Error getting type savings:", error);
 
@@ -41,7 +40,6 @@ export async function getTypeSavingById(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (error) {
     console.error("❌ Error getting type saving:", error);
 
@@ -58,12 +56,11 @@ export async function createTypeSaving(req, res) {
     const result = await typeSavingService.createTypeSaving(req.body);
 
     return res.status(201).json({
-      message: "Created successfully",
+      message: "Create typesaving successfully",
       success: true,
       total: 1,
       data: result,
     });
-
   } catch (error) {
     console.error("❌ Error creating type saving:", error);
 
@@ -93,7 +90,6 @@ export async function updateTypeSaving(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (error) {
     console.error("❌ Error updating type saving:", error);
 
@@ -123,7 +119,6 @@ export async function deleteTypeSaving(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (error) {
     console.error("❌ Error deleting type saving:", error);
 

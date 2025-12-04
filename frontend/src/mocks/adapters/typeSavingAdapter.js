@@ -1,13 +1,13 @@
-import { 
+import {
   mockTypeSavings,
   findTypeSavingById,
   findTypeSavingByName,
   addTypeSaving,
   updateTypeSaving as updateTypeSavingData,
-  deleteTypeSaving as deleteTypeSavingData
-} from '../data/typeSavings';
-import { randomDelay, generateId } from '../utils';
-import { logger } from '@/utils/logger';
+  deleteTypeSaving as deleteTypeSavingData,
+} from "../data/typeSavings";
+import { randomDelay, generateId } from "../utils";
+import { logger } from "@/utils/logger";
 
 export const mockTypeSavingAdapter = {
   /**
@@ -15,13 +15,13 @@ export const mockTypeSavingAdapter = {
    */
   async getAllTypeSavings() {
     await randomDelay();
-    logger.info('🎭 Mock Get All Type Savings');
-    
+    logger.info("🎭 Mock Get All Type Savings");
+
     return {
-      message: 'Get type saving successfully',
+      message: "Get type saving successfully",
       success: true,
       data: mockTypeSavings,
-      total: mockTypeSavings.length
+      total: mockTypeSavings.length,
     };
   },
 
@@ -30,24 +30,24 @@ export const mockTypeSavingAdapter = {
    */
   async getTypeSavingById(typeSavingId) {
     await randomDelay();
-    logger.info('🎭 Mock Get Type Saving By ID', { typeSavingId });
-    
+    logger.info("🎭 Mock Get Type Saving By ID", { typeSavingId });
+
     const typeSaving = findTypeSavingById(typeSavingId);
     if (!typeSaving) {
-      throw new Error('Type saving not found');
+      throw new Error("Type saving not found");
     }
-    
+
     // TODO: Add statistics (totalActiveSavingBooks, totalDeposits)
     return {
-      message: 'Get type saving successfully',
+      message: "Get type saving successfully",
       success: true,
       data: {
         ...typeSaving,
         // mock-extension: not in OpenAPI
         totalActiveSavingBooks: 0,
         // mock-extension: not in OpenAPI
-        totalDeposits: 0
-      }
+        totalDeposits: 0,
+      },
     };
   },
 
@@ -56,40 +56,40 @@ export const mockTypeSavingAdapter = {
    */
   async createTypeSaving(data) {
     await randomDelay();
-    logger.info('🎭 Mock Create Type Saving', { data });
-    
-    // Validation
+    logger.info("🎭 Mock Create Type Saving", { data });
+
+    // Validation - expect OPENAPI field names: typename, term, interestRate
     if (!data.typename?.trim()) {
-      throw new Error('Type name is required');
+      throw new Error("Type name is required");
     }
     if (data.term === undefined || data.term === null) {
-      throw new Error('Term is required');
+      throw new Error("Term is required");
     }
     if (!data.interestRate || data.interestRate <= 0) {
-      throw new Error('Interest rate must be greater than 0');
+      throw new Error("Interest rate must be greater than 0");
     }
 
     // Check if type name already exists
     if (findTypeSavingByName(data.typename)) {
-      throw new Error('Type saving with this name already exists');
+      throw new Error("Type saving with this name already exists");
     }
 
     // Generate new ID
-    const newId = generateId('TS');
-    
+    const newId = generateId("TS");
+
     const newTypeSaving = {
       typeSavingId: newId,
       typeName: data.typename,
       term: Number(data.term),
-      interestRate: Number(data.interestRate)
+      interestRate: Number(data.interestRate),
     };
-    
+
     addTypeSaving(newTypeSaving);
-    
+
     return {
-      message: 'Create type saving successfully',
+      message: "Create type saving successfully",
       success: true,
-      data: newTypeSaving
+      data: newTypeSaving,
     };
   },
 
@@ -98,32 +98,33 @@ export const mockTypeSavingAdapter = {
    */
   async updateTypeSaving(typeSavingId, data) {
     await randomDelay();
-    logger.info('🎭 Mock Update Type Saving', { typeSavingId, data });
-    
+    logger.info("🎭 Mock Update Type Saving", { typeSavingId, data });
+
     const typeSaving = findTypeSavingById(typeSavingId);
     if (!typeSaving) {
-      throw new Error('Type saving not found');
+      throw new Error("Type saving not found");
     }
 
-    // Validation
+    // Validation - expect OPENAPI field names: typename, term, interestRate
     if (data.typename && !data.typename.trim()) {
-      throw new Error('Type name cannot be empty');
+      throw new Error("Type name cannot be empty");
     }
     if (data.interestRate !== undefined && data.interestRate <= 0) {
-      throw new Error('Interest rate must be greater than 0');
+      throw new Error("Interest rate must be greater than 0");
     }
 
     const updates = {};
     if (data.typename) updates.typeName = data.typename;
     if (data.term !== undefined) updates.term = Number(data.term);
-    if (data.interestRate !== undefined) updates.interestRate = Number(data.interestRate);
+    if (data.interestRate !== undefined)
+      updates.interestRate = Number(data.interestRate);
 
     const updatedTypeSaving = updateTypeSavingData(typeSavingId, updates);
-    
+
     return {
-      message: 'Update type saving successfully',
+      message: "Update type saving successfully",
       success: true,
-      data: updatedTypeSaving
+      data: updatedTypeSaving,
     };
   },
 
@@ -132,24 +133,24 @@ export const mockTypeSavingAdapter = {
    */
   async deleteTypeSaving(typeSavingId) {
     await randomDelay();
-    logger.info('🎭 Mock Delete Type Saving', { typeSavingId });
-    
+    logger.info("🎭 Mock Delete Type Saving", { typeSavingId });
+
     const typeSaving = findTypeSavingById(typeSavingId);
     if (!typeSaving) {
-      throw new Error('Type saving not found');
+      throw new Error("Type saving not found");
     }
 
     // TODO: Check if there are active saving books using this type
     // For now, just delete
     const deleted = deleteTypeSavingData(typeSavingId);
-    
+
     if (!deleted) {
-      throw new Error('Failed to delete type saving');
+      throw new Error("Failed to delete type saving");
     }
-    
+
     return {
-      message: 'Delete type saving successfully',
-      success: true
+      message: "Delete type saving successfully",
+      success: true,
     };
-  }
+  },
 };

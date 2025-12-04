@@ -46,7 +46,7 @@ export default function Deposit() {
   // Snapshot data for success modal (persist after reset)
   const [receiptData, setReceiptData] = useState(null);
 
-  // Minimum deposit from regulations (dynamic)
+  // Minimum balance from regulations (dynamic)
   const [minDeposit, setMinDeposit] = useState(null);
   const [regulationsError, setRegulationsError] = useState("");
   const [loadingRegulations, setLoadingRegulations] = useState(true);
@@ -58,10 +58,10 @@ export default function Deposit() {
       setRegulationsError("");
       try {
         const resp = await getRegulations();
-        if (resp.success && resp.data?.minimumDepositAmount) {
-          setMinDeposit(resp.data.minimumDepositAmount);
+        if (resp.success && resp.data?.minimumBalance) {
+          setMinDeposit(resp.data.minimumBalance);
         } else {
-          setRegulationsError("Failed to load minimum deposit regulation");
+          setRegulationsError("Failed to load minimum balance regulation");
         }
       } catch (err) {
         console.error("Fetch regulations error:", err);
@@ -113,7 +113,7 @@ export default function Deposit() {
 
     if (!minDeposit || amount < minDeposit) {
       setError(
-        `Minimum deposit amount is ₫${
+        `Minimum balance amount is ₫${
           minDeposit ? minDeposit.toLocaleString() : "..."
         }`
       );

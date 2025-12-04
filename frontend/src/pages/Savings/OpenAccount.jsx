@@ -61,8 +61,8 @@ export default function OpenAccount() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Minimum deposit from regulations (dynamic)
-  const [minDeposit, setMinDeposit] = useState(null);
+  // Minimum balance from regulations (dynamic)
+  const [minBalance, setMinBalance] = useState(null);
   const [regulationsError, setRegulationsError] = useState("");
   const [loadingRegulations, setLoadingRegulations] = useState(true);
 
@@ -79,9 +79,9 @@ export default function OpenAccount() {
       newErrors.savingsType = "Please select savings type";
     if (!formData.initialDeposit) {
       newErrors.initialDeposit = "Please enter amount";
-    } else if (!minDeposit || Number(formData.initialDeposit) < minDeposit) {
+    } else if (!minBalance || Number(formData.initialDeposit) < minBalance) {
       newErrors.initialDeposit = `Minimum amount is ₫${
-        minDeposit ? minDeposit.toLocaleString() : "..."
+        minBalance ? minBalance.toLocaleString() : "..."
       }`;
     }
 
@@ -128,14 +128,14 @@ export default function OpenAccount() {
       setRegulationsError("");
       try {
         const resp = await getRegulations();
-        if (resp.success && resp.data?.minimumDepositAmount) {
-          setMinDeposit(resp.data.minimumDepositAmount);
+        if (resp.success && resp.data?.minimumBalance) {
+          setMinBalance(resp.data.minimumBalance);
         } else {
-          setRegulationsError("Cannot load minimum deposit rule");
+          setRegulationsError("Cannot load minimum balance rule");
         }
       } catch (err) {
         console.error("Fetch regulations error:", err);
-        setRegulationsError(err.message || "Cannot load minimum deposit rule");
+        setRegulationsError(err.message || "Cannot load minimum balance rule");
       } finally {
         setLoadingRegulations(false);
       }
@@ -435,8 +435,8 @@ export default function OpenAccount() {
                           })
                         }
                         placeholder={
-                          minDeposit
-                            ? `Minimum: ${minDeposit.toLocaleString()}`
+                          minBalance
+                            ? `Minimum: ${minBalance.toLocaleString()}`
                             : "Enter amount"
                         }
                         disabled={!!regulationsError || loadingRegulations}
@@ -456,7 +456,7 @@ export default function OpenAccount() {
                         : regulationsError
                         ? regulationsError
                         : `Minimum amount: ₫${
-                            minDeposit?.toLocaleString() ?? "..."
+                            minBalance?.toLocaleString() ?? "..."
                           }`}
                     </p>
                   </div>
@@ -492,7 +492,7 @@ export default function OpenAccount() {
               <div className="flex flex-col gap-3 pt-4 border-t border-gray-100 sm:flex-row sm:gap-4 sm:pt-6">
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !minDeposit || !!regulationsError}
+                  disabled={isSubmitting || !minBalance || !!regulationsError}
                   className="flex-1 h-11 sm:h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
                   style={{
                     background:
