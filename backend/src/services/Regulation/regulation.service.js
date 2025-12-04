@@ -44,6 +44,22 @@ class RegulationService {
     return { minimumDepositAmount, minimumTermDays };
   }
 
+  // Lấy danh sách lãi suất các loại tiết kiệm
+  async getRegulationRates() {
+    const allTypeSaving = await typeSavingRepository.findAll();
+    const result = allTypeSaving.map((typeSaving) => ({
+      typeSavingId: typeSaving.typeid,
+      typeName: typeSaving.typename,
+      rate: typeSaving.interest,
+      minimumBalance: typeSaving.minimumbalance,
+      term: typeSaving.termperiod,
+      editable: true
+    }));
+
+
+    return result;
+  }
+
   // Xóa quy định
   async deleteRegulation(id) {
     const existingRegulation = await regulationRepository.findById(id);

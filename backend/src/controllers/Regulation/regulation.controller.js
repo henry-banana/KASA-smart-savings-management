@@ -10,7 +10,6 @@ export async function getAllRegulations(req, res) {
       minimumTermDays: data.minimumTermDay,
     };
 
-
     return res.status(200).json({
       message: "Regulations retrieved successfully",
       success: true,
@@ -27,12 +26,14 @@ export async function getAllRegulations(req, res) {
   }
 }
 
-
 // Cập nhật quy định
 export async function updateRegulations(req, res) {
   try {
     const { minimumDepositAmount, minimumTermDays } = req.body;
-    const updates = await regulationService.updateRegulations(minimumDepositAmount, minimumTermDays);
+    const updates = await regulationService.updateRegulations(
+      minimumDepositAmount,
+      minimumTermDays
+    );
 
     return res.status(200).json({
       message: "Regulation updated successfully",
@@ -42,12 +43,31 @@ export async function updateRegulations(req, res) {
         minimumTermDays: minimumTermDays,
       },
     });
-
   } catch (error) {
     console.error("❌ Error updating regulation:", error);
 
     return res.status(500).json({
       message: "Failed to update regulation",
+      success: false,
+    });
+  }
+}
+
+export async function getRegulationRates(req, res) {
+  try {
+    const rates = await regulationService.getRegulationRates();
+
+    return res.status(200).json({
+      message: "Regulation rates retrieved successfully",
+      success: true,
+      total: rates.length,
+      data: rates,
+    });
+  } catch (error) {
+    console.error("❌ Error getting regulation rates:", error);
+
+    return res.status(500).json({
+      message: "Failed to retrieve regulation rates",
       success: false,
     });
   }
