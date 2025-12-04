@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { setupSwagger } from "./src/config/swagger.js";
+import { requestLogger } from "./src/middleware/logger.middleware.js";
 import authRoutes from "./src/routers/userAccount.router.js";
 import savingBookRoutes from "./src/routers/savingBook.router.js";
 import transactionRoutes from "./src/routers/transaction.router.js";
@@ -27,6 +28,9 @@ app.use(
 );
 
 app.use(express.json());
+
+// Middleware log các request
+app.use(requestLogger);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
