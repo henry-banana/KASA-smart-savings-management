@@ -15,11 +15,11 @@ export const getAllTypeSavings = async () => {
 
 /**
  * Get type saving by ID
- * @param {string} typeSavingId - Type saving ID
+ * @param {string|number} typeSavingId - Type saving ID
  * @returns {Promise<Object>} Type saving data
  */
 export const getTypeSavingById = async (typeSavingId) => {
-  if (!typeSavingId?.trim()) {
+  if (!typeSavingId && typeSavingId !== 0) {
     throw new Error("Type saving ID is required");
   }
   return typeSavingAdapter.getTypeSavingById(typeSavingId);
@@ -59,12 +59,12 @@ export const createTypeSaving = async (data) => {
 
 /**
  * Update type saving
- * @param {string} typeSavingId - Type saving ID
+ * @param {string|number} typeSavingId - Type saving ID
  * @param {Object} data - Updated data
  * @returns {Promise<Object>} Updated type saving
  */
 export const updateTypeSaving = async (typeSavingId, data) => {
-  if (!typeSavingId?.trim()) {
+  if (!typeSavingId && typeSavingId !== 0) {
     throw new Error("Type saving ID is required");
   }
   if (!data || Object.keys(data).length === 0) {
@@ -85,11 +85,11 @@ export const updateTypeSaving = async (typeSavingId, data) => {
 
 /**
  * Delete type saving
- * @param {string} typeSavingId - Type saving ID
+ * @param {string|number} typeSavingId - Type saving ID
  * @returns {Promise<Object>} Deletion result
  */
 export const deleteTypeSaving = async (typeSavingId) => {
-  if (!typeSavingId?.trim()) {
+  if (!typeSavingId && typeSavingId !== 0) {
     throw new Error("Type saving ID is required");
   }
 
