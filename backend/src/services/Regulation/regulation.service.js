@@ -5,16 +5,16 @@ class RegulationService {
   async getAllRegulations() {
     const allTypeSaving = await typeSavingRepository.findAll();
     const result = {
-      minimumDeposit: 1e9,
+      minimumBalance: 1e9,
       minimumTermDay: 1e9,
     };
 
     for (const typeSaving of allTypeSaving) {
       if (
-        typeSaving.minimumdeposit !== null &&
-        typeSaving.minimumdeposit < result.minimumDeposit
+        typeSaving.minimumbalance !== null &&
+        typeSaving.minimumbalance < result.minimumBalance
       ) {
-        result.minimumDeposit = typeSaving.minimumdeposit;
+        result.minimumBalance = typeSaving.minimumbalance;
       }
 
       if (
@@ -30,18 +30,18 @@ class RegulationService {
   }
 
   // Cập nhật quy định
-  async updateRegulations(minimumDepositAmount, minimumTermDays) {
+  async updateRegulations(minimumBalance, minimumTermDays) {
     const allTypeSaving = await typeSavingRepository.findAll();
     for (const typeSaving of allTypeSaving) {
       if (typeSaving.typename == "No term") {
         await typeSavingRepository.update(typeSaving.typeid, {
-          minimumdeposit: minimumDepositAmount,
-          minimumdepositterm: minimumTermDays,
+          minimumbalance: minimumBalance,
+          minimumterm: minimumTermDays,
         });
       }
     }
 
-    return { minimumDepositAmount, minimumTermDays };
+    return { minimumBalance, minimumTermDays };
   }
 
   // Lấy danh sách lãi suất các loại tiết kiệm
@@ -83,6 +83,11 @@ class RegulationService {
 
     await regulationRepository.delete(id);
     return { message: "Regulation deleted successfully." };
+  }
+
+  async getHistoryRegulations() {
+    const history = await regulationRepository.getHistoryRegulations();
+    return history;
   }
 }
 
