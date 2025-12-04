@@ -10,6 +10,7 @@ import typeSavingRoutes from "./src/routers/typeSaving.router.js";
 import reportRoutes from "./src/routers/report.router.js";
 import userRoutes from "./src/routers/userAccount.router.js";
 import branchRoutes from "./src/routers/branch.router.js";
+import regulationRoutes from "./src/routers/regulation.router.js";
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use("/api/customer", customerRoutes);
 app.use("/api/typesaving", typeSavingRoutes);
 app.use("/api/report", reportRoutes);
 app.use("/api/branch", branchRoutes);
+app.use("/api/regulations", regulationRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
