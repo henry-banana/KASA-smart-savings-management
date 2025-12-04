@@ -28,7 +28,7 @@ app.use(
 
 app.use(express.json());
 
-app.use("/api/login", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/savingbook", savingBookRoutes);
 app.use("/api/transactions", transactionRoutes);
