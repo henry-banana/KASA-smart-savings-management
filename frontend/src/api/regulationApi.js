@@ -42,9 +42,11 @@ export const regulationApi = {
    * @returns {Promise<Object>} Updated interest rates data
    */
   async updateInterestRates(rates) {
-    const response = await apiClient.put("/api/regulations/interest-rates", {
-      items: rates,
-    });
+    // Send array directly as per OPENAPI specification
+    const response = await apiClient.put(
+      "/api/regulations/interest-rates",
+      rates
+    );
     return response.data;
   },
 

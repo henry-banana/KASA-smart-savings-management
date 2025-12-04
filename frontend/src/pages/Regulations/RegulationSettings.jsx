@@ -200,23 +200,50 @@ export default function RegulationSettings() {
         // Update local state from response
         setMinBalance(String(response.data.minimumBalance));
         setMinWithdrawalDays(String(response.data.minimumTermDays));
+
         // Persist interest rate changes
         try {
-          const ratesToUpdate = interestRates.map((r) => ({
-            typeSavingId: r.typeSavingId,
-            typeName: r.typeName,
-            rate: Number(r.rate),
-            term: Number(r.term ?? 0),
-            editable: r.editable,
-          }));
-          const rateUpdateResp = await updateInterestRates(ratesToUpdate);
-          if (rateUpdateResp.success) {
-            setInterestRates(rateUpdateResp.data);
+          if (!Array.isArray(interestRates) || interestRates.length === 0) {
+            console.warn("No interest rates to update");
+          } else {
+            const ratesToUpdate = interestRates.map((r) => ({
+              typeSavingId: r.typeSavingId,
+              typeName: r.typeName,
+              rate: Number(r.rate),
+              term: Number(r.term ?? 0),
+              editable: r.editable,
+            }));
+
+            await updateInterestRates(ratesToUpdate);
+          }
+
+          // Fetch lại interest rates để đảm bảo data đúng format
+          const refreshedRates = await getInterestRates();
+          console.log("📊 Refreshed rates response:", refreshedRates);
+
+          if (
+            refreshedRates.success &&
+            refreshedRates.data &&
+            Array.isArray(refreshedRates.data)
+          ) {
+            console.log("✅ Setting interest rates:", refreshedRates.data);
+            setInterestRates(refreshedRates.data);
+          } else {
+            console.warn(
+              "⚠️ Refreshed rates format invalid, keeping current state:",
+              refreshedRates
+            );
+            // Keep current state if refresh fails
           }
         } catch (e) {
           console.error("Failed to update interest rates:", e);
-          setError("Failed to update interest rates");
+          setError(
+            "Failed to update interest rates: " + (e.message || "Unknown error")
+          );
+          setLoading(false);
+          return;
         }
+
         setSuccessMessage("Regulations updated successfully");
         setShowSuccess(true);
 
@@ -442,12 +469,13 @@ export default function RegulationSettings() {
                           <TableHead className="w-12 font-semibold">
                             <Checkbox
                               checked={
+                                Array.isArray(interestRates) &&
                                 selectedTypeSavings.length ===
                                   interestRates.length &&
                                 interestRates.length > 0
                               }
                               onCheckedChange={(checked) => {
-                                if (checked) {
+                                if (checked && Array.isArray(interestRates)) {
                                   setSelectedTypeSavings(
                                     interestRates.map(
                                       (item) => item.typeSavingId
@@ -471,64 +499,65 @@ export default function RegulationSettings() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {interestRates.map((item, index) => (
-                          <TableRow
-                            key={index}
-                            className="hover:bg-[#F8F9FC] transition-colors"
-                          >
-                            <TableCell>
-                              <Checkbox
-                                checked={selectedTypeSavings.includes(
-                                  item.typeSavingId
-                                )}
-                                onCheckedChange={(checked) => {
-                                  if (checked) {
-                                    setSelectedTypeSavings([
-                                      ...selectedTypeSavings,
-                                      item.typeSavingId,
-                                    ]);
-                                  } else {
-                                    setSelectedTypeSavings(
-                                      selectedTypeSavings.filter(
-                                        (id) => id !== item.typeSavingId
-                                      )
-                                    );
+                        {Array.isArray(interestRates) &&
+                          interestRates.map((item, index) => (
+                            <TableRow
+                              key={index}
+                              className="hover:bg-[#F8F9FC] transition-colors"
+                            >
+                              <TableCell>
+                                <Checkbox
+                                  checked={selectedTypeSavings.includes(
+                                    item.typeSavingId
+                                  )}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedTypeSavings([
+                                        ...selectedTypeSavings,
+                                        item.typeSavingId,
+                                      ]);
+                                    } else {
+                                      setSelectedTypeSavings(
+                                        selectedTypeSavings.filter(
+                                          (id) => id !== item.typeSavingId
+                                        )
+                                      );
+                                    }
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell className="font-medium">
+                                {item.typeName}
+                              </TableCell>
+                              <TableCell className="w-36">
+                                <Input
+                                  type="number"
+                                  step="1"
+                                  value={item.term ?? 0}
+                                  onChange={(e) => {
+                                    const updated = [...interestRates];
+                                    updated[index] = {
+                                      ...updated[index],
+                                      term: Number(e.target.value),
+                                    };
+                                    setInterestRates(updated);
+                                  }}
+                                  className="w-28 h-10 border-gray-200 rounded-2xl"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  step="0.1"
+                                  value={item.rate}
+                                  onChange={(e) =>
+                                    handleUpdateRate(index, e.target.value)
                                   }
-                                }}
-                              />
-                            </TableCell>
-                            <TableCell className="font-medium">
-                              {item.typeName}
-                            </TableCell>
-                            <TableCell className="w-36">
-                              <Input
-                                type="number"
-                                step="1"
-                                value={item.term ?? 0}
-                                onChange={(e) => {
-                                  const updated = [...interestRates];
-                                  updated[index] = {
-                                    ...updated[index],
-                                    term: Number(e.target.value),
-                                  };
-                                  setInterestRates(updated);
-                                }}
-                                className="w-28 h-10 border-gray-200 rounded-2xl"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Input
-                                type="number"
-                                step="0.1"
-                                value={item.rate}
-                                onChange={(e) =>
-                                  handleUpdateRate(index, e.target.value)
-                                }
-                                className="w-32 h-10 border-gray-200 rounded-2xl"
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                                  className="w-32 h-10 border-gray-200 rounded-2xl"
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </TableBody>
                     </Table>
                   </div>
@@ -660,19 +689,20 @@ export default function RegulationSettings() {
                     Interest Rates
                   </h5>
                   <div className="space-y-3">
-                    {interestRates.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between"
-                      >
-                        <span className="text-sm text-green-800">
-                          {item.typeName}:
-                        </span>
-                        <span className="text-sm font-semibold text-green-900">
-                          {item.rate}% per month
-                        </span>
-                      </div>
-                    ))}
+                    {Array.isArray(interestRates) &&
+                      interestRates.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between"
+                        >
+                          <span className="text-sm text-green-800">
+                            {item.typeName}:
+                          </span>
+                          <span className="text-sm font-semibold text-green-900">
+                            {item.rate}% per month
+                          </span>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -831,11 +861,12 @@ export default function RegulationSettings() {
                     Minimum Balance: ₫{Number(minBalance).toLocaleString()}
                   </li>
                   <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
-                  {interestRates.map((item, index) => (
-                    <li key={index}>
-                      Interest Rate {item.typeName}: {item.rate}%
-                    </li>
-                  ))}
+                  {Array.isArray(interestRates) &&
+                    interestRates.map((item, index) => (
+                      <li key={index}>
+                        Interest Rate {item.typeName}: {item.rate}%
+                      </li>
+                    ))}
                 </ul>
               </div>
             </div>
