@@ -54,7 +54,7 @@ import { Skeleton } from "../../components/ui/skeleton";
 
 export default function RegulationSettings() {
   const { user } = useAuth();
-  const [minDeposit, setMinDeposit] = useState("100000");
+  const [minBalance, setMinBalance] = useState("100000");
   const [minWithdrawalDays, setMinWithdrawalDays] = useState("15");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -81,7 +81,7 @@ export default function RegulationSettings() {
         // Fetch basic regulations
         const response = await getRegulations();
         if (response.success && response.data) {
-          setMinDeposit(String(response.data.minimumBalance));
+          setMinBalance(String(response.data.minimumBalance));
           setMinWithdrawalDays(String(response.data.minimumTermDays));
         } else {
           setError(
@@ -174,11 +174,11 @@ export default function RegulationSettings() {
       setError(null);
 
       // Validate inputs before sending
-      const depositAmount = Number(minDeposit);
+      const depositAmount = Number(minBalance);
       const termDays = Number(minWithdrawalDays);
 
       if (isNaN(depositAmount) || depositAmount <= 0) {
-        setError("Minimum Deposit must be a valid positive number");
+        setError("Minimum Balance must be a valid positive number");
         setLoading(false);
         return;
       }
@@ -198,7 +198,7 @@ export default function RegulationSettings() {
 
       if (response.success && response.data) {
         // Update local state from response
-        setMinDeposit(String(response.data.minimumBalance));
+        setMinBalance(String(response.data.minimumBalance));
         setMinWithdrawalDays(String(response.data.minimumTermDays));
         // Persist interest rate changes
         try {
@@ -373,13 +373,13 @@ export default function RegulationSettings() {
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="minDeposit" className="text-gray-700">
-                        Minimum Deposit (VND)
+                        Minimum Balance (VND)
                       </Label>
                       <Input
                         id="minDeposit"
                         type="number"
-                        value={minDeposit}
-                        onChange={(e) => setMinDeposit(e.target.value)}
+                        value={minBalance}
+                        onChange={(e) => setMinBalance(e.target.value)}
                         className="border-gray-200 h-11 rounded-2xl"
                       />
                       <p className="text-xs text-gray-500">
@@ -632,10 +632,10 @@ export default function RegulationSettings() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-blue-800">
-                        Minimum Deposit:
+                        Minimum Balance:
                       </span>
                       <span className="text-sm font-semibold text-blue-900">
-                        ₫{Number(minDeposit).toLocaleString()}
+                        ₫{Number(minBalance).toLocaleString()}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -826,7 +826,7 @@ export default function RegulationSettings() {
                 </p>
                 <ul className="space-y-1 text-sm text-gray-600 list-disc list-inside">
                   <li>
-                    Minimum Deposit: ₫{Number(minDeposit).toLocaleString()}
+                    Minimum Balance: ₫{Number(minBalance).toLocaleString()}
                   </li>
                   <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
                   {interestRates.map((item, index) => (

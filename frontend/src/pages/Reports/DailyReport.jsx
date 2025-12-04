@@ -203,7 +203,7 @@ export default function DailyReport() {
               <Button
                 onClick={handleGenerateReport}
                 disabled={loading || isDateInvalid()}
-                className="w-full h-12 px-6 text-white  border border-gray-200 sm:w-auto rounded-2xl hover:border border-gray-200"
+                className="w-full h-12 px-6 text-white  border border-gray-200 sm:w-auto rounded-2xl hover:border"
                 style={{
                   background:
                     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -339,7 +339,7 @@ export default function DailyReport() {
           <>
             {/* Summary Cards */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border border-gray-200">
+              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border">
                 <div
                   className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
                   style={{
@@ -374,7 +374,7 @@ export default function DailyReport() {
                 </div>
               </div>
 
-              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border border-gray-200">
+              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border">
                 <div
                   className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
                   style={{
@@ -411,7 +411,7 @@ export default function DailyReport() {
                 </div>
               </div>
 
-              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border border-gray-200">
+              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border">
                 <div
                   className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
                   style={{

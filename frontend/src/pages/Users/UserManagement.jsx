@@ -209,7 +209,7 @@ export default function UserManagement() {
       <div className="space-y-4 sm:space-y-6">
         {/* Error Alert */}
         {error && (
-          <Card className="overflow-hidden border-red-200 border border-gray-200 bg-red-50 rounded-2xl">
+          <Card className="overflow-hidden border-red-200 border bg-red-50 rounded-2xl">
             <CardContent className="p-4">
               <div className="flex items-center gap-3 text-red-800">
                 <AlertTriangle size={20} />

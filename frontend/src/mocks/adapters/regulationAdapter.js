@@ -36,7 +36,7 @@ export const mockRegulationAdapter = {
     if (!payload.minimumBalance || payload.minimumBalance <= 0) {
       logger.error("Invalid minimumBalance");
       return buildRegulationErrorResponse(
-        "Minimum deposit amount must be greater than 0"
+        "Minimum balance amount must be greater than 0"
       );
     }
 
@@ -138,7 +138,7 @@ export const mockRegulationAdapter = {
       {
         date: "2025-11-01",
         user: "admin",
-        field: "Minimum Deposit Amount",
+        field: "Minimum Balance Amount",
         oldValue: "50,000 VND",
         newValue: "100,000 VND",
       },
