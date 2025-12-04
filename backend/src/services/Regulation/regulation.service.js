@@ -84,6 +84,11 @@ class RegulationService {
     await regulationRepository.delete(id);
     return { message: "Regulation deleted successfully." };
   }
+
+  async getHistoryRegulations() {
+    const history = await regulationRepository.getHistoryRegulations();
+    return history;
+  }
 }
 
 export const regulationService = new RegulationService();

@@ -95,3 +95,26 @@ export async function updateSomeRegulation(req, res) {
     });
   }
 }
+
+
+export async function getHistoryRegulations(req, res) {
+    try {
+        
+        const history = await regulationService.getHistoryRegulations();
+        return res.status(200).json({
+            message: "Regulation history retrieved successfully",
+            success: true,
+            total: history.length,
+            data: history,
+        });
+
+
+  } catch (error) {
+    console.error("❌ Error getting regulation history:", error);
+
+    return res.status(500).json({
+      message: "Failed to get regulation history",
+      success: false,
+    });
+  }
+}
