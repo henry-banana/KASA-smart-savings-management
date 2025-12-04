@@ -6,7 +6,7 @@ export async function getAllRegulations(req, res) {
     const data = await regulationService.getAllRegulations();
 
     const result = {
-      minimumDepositAmount: data.minimumDeposit,
+      minimumBalance: data.minimumBalance,
       minimumTermDays: data.minimumTermDay,
     };
 

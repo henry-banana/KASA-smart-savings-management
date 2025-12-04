@@ -5,16 +5,16 @@ class RegulationService {
   async getAllRegulations() {
     const allTypeSaving = await typeSavingRepository.findAll();
     const result = {
-      minimumDeposit: 1e9,
+      minimumBalance: 1e9,
       minimumTermDay: 1e9,
     };
 
     for (const typeSaving of allTypeSaving) {
       if (
-        typeSaving.minimumdeposit !== null &&
-        typeSaving.minimumdeposit < result.minimumDeposit
+        typeSaving.minimumbalance !== null &&
+        typeSaving.minimumbalance < result.minimumBalance
       ) {
-        result.minimumDeposit = typeSaving.minimumdeposit;
+        result.minimumBalance = typeSaving.minimumbalance;
       }
 
       if (
