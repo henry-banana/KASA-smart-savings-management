@@ -36,7 +36,7 @@ function ForgotPassword({ onContinue, onBack }) {
       onContinue(email);
     } catch (err) {
       logger.error("Password reset request failed", err);
-      setError(err.message || "Không thể gửi yêu cầu đặt lại mật khẩu");
+      setError(err.message || "Unable to send password reset request");
     } finally {
       setLoading(false);
     }
@@ -81,7 +81,7 @@ function ForgotPassword({ onContinue, onBack }) {
         />
       </div>
 
-      <Card className="w-full max-w-md shadow-2xl border-0 relative z-10 rounded-3xl overflow-hidden">
+      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-3xl overflow-hidden">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
 
@@ -89,7 +89,7 @@ function ForgotPassword({ onContinue, onBack }) {
           {/* Icon with cute design */}
           <div className="mx-auto relative">
             <div
-              className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg relative overflow-hidden"
+              className="w-20 h-20 rounded-3xl flex items-center justify-center border border-gray-200 relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
               }}
@@ -158,10 +158,10 @@ function ForgotPassword({ onContinue, onBack }) {
               type="submit"
               disabled={!isValid || loading}
               className={`
-                w-full h-12 text-white rounded-full font-medium shadow-lg transition-all duration-300
+                w-full h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300
                 ${
                   isValid && !loading
-                    ? "hover:shadow-xl hover:scale-[1.02]"
+                    ? "hover:border border-gray-200 hover:scale-[1.02]"
                     : "opacity-50 cursor-not-allowed"
                 }
               `}

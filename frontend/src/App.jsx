@@ -1,27 +1,28 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import Login from './pages/Auth/Login';
-import { ForgotPasswordRoute as ForgotPassword } from './pages/Auth/ForgotPassword/ForgotPassword';
-import { EnterOTPRoute as EnterOTP } from './pages/Auth/ForgotPassword/EnterOTP';
-import { ResetPasswordRoute as ResetPassword } from './pages/Auth/ForgotPassword/ResetPassword';
-import Layout from './components/Layout';
-import Dashboard from './pages/Dashboard/Dashboard';
-import OpenAccount from './pages/Savings/OpenAccount';
-import Deposit from './pages/Savings/Deposit';
-import Withdraw from './pages/Savings/Withdraw';
-import SearchAccounts from './pages/Search/SearchAccounts';
-import DailyReport from './pages/Reports/DailyReport';
-import MonthlyReport from './pages/Reports/MonthlyReport';
-import RegulationSettings from './pages/Regulations/RegulationSettings';
-import UserManagement from './pages/Users/UserManagement';
-import UserProfile from './pages/Profile/UserProfile';
-import NotFound from './pages/Errors/NotFound';
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import Login from "./pages/Auth/Login";
+import { ForgotPasswordRoute as ForgotPassword } from "./pages/Auth/ForgotPassword/ForgotPassword";
+import { EnterOTPRoute as EnterOTP } from "./pages/Auth/ForgotPassword/EnterOTP";
+import { ResetPasswordRoute as ResetPassword } from "./pages/Auth/ForgotPassword/ResetPassword";
+import Layout from "./components/Layout";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import OpenAccount from "./pages/Savings/OpenAccount";
+import Deposit from "./pages/Savings/Deposit";
+import Withdraw from "./pages/Savings/Withdraw";
+import SearchAccounts from "./pages/Search/SearchAccounts";
+import DailyReport from "./pages/Reports/DailyReport";
+import MonthlyReport from "./pages/Reports/MonthlyReport";
+import RegulationSettings from "./pages/Regulations/RegulationSettings";
+import UserManagement from "./pages/Users/UserManagement";
+import UserProfile from "./pages/Profile/UserProfile";
+import NotFound from "./pages/Errors/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Protected Route wrapper
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -29,11 +30,11 @@ function ProtectedRoute({ children }) {
       </div>
     );
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   return children;
 }
 
@@ -46,7 +47,7 @@ function HomeRedirect() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  if (user.role === 'admin') {
+  if (user.role === "admin") {
     return <Navigate to="/regulations" replace />;
   }
 
@@ -56,6 +57,7 @@ function HomeRedirect() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Public Route */}
         <Route path="/login" element={<Login />} />
@@ -63,7 +65,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/forgot-password/otp" element={<EnterOTP />} />
         <Route path="/forgot-password/reset" element={<ResetPassword />} />
-        
+
         {/* Protected Routes */}
         <Route
           path="/"
@@ -75,29 +77,29 @@ export default function App() {
         >
           <Route index element={<HomeRedirect />} />
           <Route path="dashboard" element={<Dashboard />} />
-          
+
           {/* Savings Routes */}
           <Route path="savings">
             <Route path="open" element={<OpenAccount />} />
             <Route path="deposit" element={<Deposit />} />
             <Route path="withdraw" element={<Withdraw />} />
           </Route>
-          
+
           {/* Search Route */}
           <Route path="search" element={<SearchAccounts />} />
-          
+
           {/* Reports Routes */}
           <Route path="reports">
             <Route path="daily" element={<DailyReport />} />
             <Route path="monthly" element={<MonthlyReport />} />
           </Route>
-          
+
           {/* Regulations Route */}
           <Route path="regulations" element={<RegulationSettings />} />
-          
+
           {/* Users Route */}
           <Route path="users" element={<UserManagement />} />
-          
+
           {/* Profile Route */}
           <Route path="profile" element={<UserProfile />} />
 

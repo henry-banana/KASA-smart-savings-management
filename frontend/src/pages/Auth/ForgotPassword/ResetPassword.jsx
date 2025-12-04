@@ -147,7 +147,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
         />
       </div>
 
-      <Card className="w-full max-w-md shadow-2xl border-0 relative z-10 rounded-3xl overflow-hidden">
+      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-3xl overflow-hidden">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#6366F1] via-[#8B5CF6] to-[#6366F1]" />
 
@@ -155,7 +155,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
           {/* Icon with cute design */}
           <div className="mx-auto relative">
             <div
-              className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg relative overflow-hidden"
+              className="w-20 h-20 rounded-3xl flex items-center justify-center border border-gray-200 relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)",
               }}
@@ -216,7 +216,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                 >
                   {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -247,7 +247,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                 >
                   {showConfirmPassword ? (
                     <EyeOff size={18} />
@@ -328,10 +328,10 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
               type="submit"
               disabled={!isFormValid() || loading}
               className={`
-                w-full h-12 text-white rounded-full font-medium shadow-lg transition-all duration-300
+                w-full h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300
                 ${
                   isFormValid() && !loading
-                    ? "hover:shadow-xl hover:scale-[1.02]"
+                    ? "hover:border border-gray-200 hover:scale-[1.02]"
                     : "opacity-50 cursor-not-allowed"
                 }
               `}

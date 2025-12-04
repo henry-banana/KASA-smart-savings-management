@@ -1,7 +1,7 @@
-import { USE_MOCK } from '@/config/app.config';
-import { accountApi } from '@/api/accountApi';
-import { mockAccountAdapter } from '@/mocks/adapters/accountAdapter';
-import { VALIDATION_MESSAGES } from '@/constants/messages';
+import { USE_MOCK } from "@/config/app.config";
+import { accountApi } from "@/api/accountApi";
+import { mockAccountAdapter } from "@/mocks/adapters/accountAdapter";
+import { VALIDATION_MESSAGES } from "@/constants/messages";
 
 // ✅ Bây giờ uncomment dòng này để dùng mock
 const accountAdapter = USE_MOCK ? mockAccountAdapter : accountApi;
@@ -22,7 +22,7 @@ export const savingsService = {
     const result = await accountAdapter.deposit(accountId, amount);
     return {
       account: this.transformAccount(result.account || result),
-      transaction: result.transaction
+      transaction: result.transaction,
     };
   },
 
@@ -34,7 +34,7 @@ export const savingsService = {
     const result = await accountAdapter.withdraw(accountId, amount);
     return {
       account: this.transformAccount(result.account || result),
-      transaction: result.transaction
+      transaction: result.transaction,
     };
   },
 
@@ -47,28 +47,28 @@ export const savingsService = {
     const results = await accountAdapter.searchAccounts(filters);
     return {
       ...results,
-      data: (results.data || results).map(acc => this.transformAccount(acc))
+      data: (results.data || results).map((acc) => this.transformAccount(acc)),
     };
   },
 
   // Validation
   validateOpenAccount(data) {
     if (!data.customerName?.trim()) {
-      throw new Error('Tên khách hàng không được để trống');
+      throw new Error("Customer name is required");
     }
     if (!data.idCard?.trim()) {
-      throw new Error('Số CMND/CCCD không được để trống');
+      throw new Error("ID card number is required");
     }
     if (!/^\d{9,12}$/.test(data.idCard)) {
       throw new Error(VALIDATION_MESSAGES.INVALID_ID_CARD);
     }
     if (!data.address?.trim()) {
-      throw new Error('Địa chỉ không được để trống');
+      throw new Error("Address is required");
     }
     if (!data.savingsType) {
-      throw new Error('Vui lòng chọn loại sổ tiết kiệm');
+      throw new Error("Please select a savings type");
     }
-    
+
     const amount = parseFloat(data.initialDeposit);
     if (isNaN(amount) || amount < 100000) {
       throw new Error(VALIDATION_MESSAGES.MIN_AMOUNT(100000));
@@ -83,7 +83,7 @@ export const savingsService = {
       address: data.address,
       savings_type: data.savingsType,
       initial_deposit: parseFloat(data.initialDeposit),
-      open_date: data.openDate || new Date().toISOString().split('T')[0]
+      open_date: data.openDate || new Date().toISOString().split("T")[0],
     };
   },
 
@@ -97,14 +97,14 @@ export const savingsService = {
       balance: account.balance,
       balanceFormatted: this.formatCurrency(account.balance),
       openDate: account.open_date || account.openDate,
-      status: account.status || 'active'
+      status: account.status || "active",
     };
   },
 
   formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(amount);
-  }
+  },
 };

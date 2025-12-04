@@ -144,7 +144,7 @@ function EnterOTP({ email, onVerify, onBack }) {
         />
       </div>
 
-      <Card className="w-full max-w-md shadow-2xl border-0 relative z-10 rounded-3xl overflow-hidden">
+      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-3xl overflow-hidden">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#10B981] via-[#00AEEF] to-[#10B981]" />
 
@@ -152,7 +152,7 @@ function EnterOTP({ email, onVerify, onBack }) {
           {/* Icon with cute design */}
           <div className="mx-auto relative">
             <div
-              className="w-20 h-20 rounded-3xl flex items-center justify-center shadow-lg relative overflow-hidden"
+              className="w-20 h-20 rounded-3xl flex items-center justify-center border border-gray-200 relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #10B981 0%, #00AEEF 100%)",
               }}
@@ -227,10 +227,10 @@ function EnterOTP({ email, onVerify, onBack }) {
               type="submit"
               disabled={!isComplete || loading}
               className={`
-                w-full h-12 text-white rounded-full font-medium shadow-lg transition-all duration-300
+                w-full h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300
                 ${
                   isComplete && !loading
-                    ? "hover:shadow-xl hover:scale-[1.02]"
+                    ? "hover:border border-gray-200 hover:scale-[1.02]"
                     : "opacity-50 cursor-not-allowed"
                 }
               `}

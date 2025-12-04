@@ -149,7 +149,7 @@ export function CuteBadge({ children, variant = 'primary', className = "" }) {
 export function CuteStatCard({ title, value, change, trend, icon, gradient, iconColor }) {
   return (
     <div 
-      className="relative overflow-hidden rounded-2xl p-6 bg-white border border-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-default"
+      className="relative overflow-hidden rounded-2xl p-6 bg-white border border-gray-100 transition-all duration-300 hover:border border-gray-200 hover:-translate-y-1 cursor-default"
     >
       {/* Decorative Background */}
       <div 

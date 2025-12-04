@@ -1,6 +1,6 @@
-import { USE_MOCK } from '@/config/app.config';
-import { accountApi } from '@/api/accountApi';
-import { mockSavingBookAdapter } from '@/mocks/adapters/savingBookAdapter';
+import { USE_MOCK } from "@/config/app.config";
+import { accountApi } from "@/api/accountApi";
+import { mockSavingBookAdapter } from "@/mocks/adapters/savingBookAdapter";
 
 /**
  * Tạo sổ tiết kiệm mới (BM1)
@@ -10,11 +10,11 @@ import { mockSavingBookAdapter } from '@/mocks/adapters/savingBookAdapter';
 export const createSavingBook = async (data) => {
   // Validation
   if (!data.customerName || !data.initialDeposit) {
-    throw new Error('Thiếu thông tin khách hàng hoặc số tiền');
+    throw new Error("Missing customer information or amount");
   }
 
   if (Number(data.initialDeposit) < 100000) {
-    throw new Error('Số tiền tối thiểu là 100,000 VND');
+    throw new Error("Minimum amount is 100,000 VND");
   }
 
   if (USE_MOCK) {
@@ -24,11 +24,11 @@ export const createSavingBook = async (data) => {
       customerName: data.customerName,
       typeSavingId: data.savingsType,
       openDate: data.openDate,
-      balance: parseFloat(data.initialDeposit)
+      balance: parseFloat(data.initialDeposit),
     });
     return {
       ...resp,
-      data: { ...resp.data, accountCode: resp.data.bookId }
+      data: { ...resp.data, accountCode: resp.data.bookId },
     };
   }
 
@@ -39,7 +39,7 @@ export const createSavingBook = async (data) => {
     address: data.address,
     savings_type: data.savingsType,
     initial_deposit: parseFloat(data.initialDeposit),
-    open_date: data.openDate || new Date().toISOString().split('T')[0]
+    open_date: data.openDate || new Date().toISOString().split("T")[0],
   });
 };
 
@@ -50,9 +50,17 @@ export const createSavingBook = async (data) => {
  * @param {string} statusFilter - Lọc theo trạng thái
  * @returns {Promise<Object>} Search results
  */
-export const searchSavingBooks = async (keyword = '', typeFilter = 'all', statusFilter = 'all') => {
+export const searchSavingBooks = async (
+  keyword = "",
+  typeFilter = "all",
+  statusFilter = "all"
+) => {
   if (USE_MOCK) {
-    return mockSavingBookAdapter.searchSavingBooks(keyword, typeFilter, statusFilter);
+    return mockSavingBookAdapter.searchSavingBooks(
+      keyword,
+      typeFilter,
+      statusFilter
+    );
   }
   return accountApi.searchSavingBooks(keyword, typeFilter, statusFilter);
 };
@@ -64,7 +72,7 @@ export const searchSavingBooks = async (keyword = '', typeFilter = 'all', status
  */
 export const getSavingBookById = async (id) => {
   if (!id) {
-    throw new Error('Vui lòng nhập mã sổ');
+    throw new Error("Please enter account code");
   }
   if (USE_MOCK) {
     return mockSavingBookAdapter.getSavingBookById(id);

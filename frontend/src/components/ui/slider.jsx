@@ -51,7 +51,7 @@ function Slider({
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
           key={index}
-          className="border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border shadow-sm transition-[color,box-shadow] hover))}
+          className="border-primary bg-background ring-ring/50 block size-4 shrink-0 rounded-full border border border-gray-100 transition-[color,box-shadow] hover))}
     </SliderPrimitive.Root>
   );
 }
