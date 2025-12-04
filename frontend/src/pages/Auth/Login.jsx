@@ -88,7 +88,7 @@ export default function Login() {
       }
     } catch (err) {
       console.error("Quick role login error:", err);
-      setError(err.message || "Đăng nhập nhanh thất bại");
+      setError(err.message || "Quick login failed");
     } finally {
       setLoading(false);
     }
@@ -135,7 +135,7 @@ export default function Login() {
         />
       </div>
 
-      <Card className="relative z-10 w-full max-w-md overflow-hidden border-0 shadow-2xl rounded-3xl">
+      <Card className="relative z-10 w-full max-w-md overflow-hidden border border-gray-200 rounded-3xl">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
 
@@ -143,7 +143,7 @@ export default function Login() {
           {/* Logo with cute design */}
           <div className="relative mx-auto">
             <div
-              className="relative flex items-center justify-center w-20 h-20 overflow-hidden shadow-lg rounded-3xl"
+              className="relative flex items-center justify-center w-20 h-20 overflow-hidden border border-gray-200 rounded-3xl"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}
@@ -198,7 +198,7 @@ export default function Login() {
           >
             <div className="space-y-2">
               <Label htmlFor="username" className="text-gray-700">
-                Tên đăng nhập
+                Username
               </Label>
               <div className="relative">
                 <User
@@ -208,21 +208,21 @@ export default function Login() {
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Nhập tên đăng nhập"
+                  placeholder="Enter username"
                   value={username}
                   onChange={(e) => {
                     setUsername(e.target.value);
                     setError("");
                   }}
                   disabled={loading}
-                  className="pl-10 h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  className="pl-10 h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="password" className="text-gray-700">
-                Mật khẩu
+                Password
               </Label>
               <div className="relative">
                 <Lock
@@ -232,14 +232,14 @@ export default function Login() {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Nhập mật khẩu"
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
                     setError("");
                   }}
                   disabled={loading}
-                  className="pl-10 pr-10 h-12 rounded-xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  className="pl-10 pr-10 h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                 />
                 <button
                   type="button"
@@ -258,7 +258,7 @@ export default function Login() {
             </div>
 
             {error && (
-              <div className="p-3 border border-red-200 bg-red-50 rounded-xl">
+              <div className="p-3 border border-red-200 bg-red-50 rounded-2xl">
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
@@ -266,13 +266,13 @@ export default function Login() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="w-full h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}
             >
               {loading && <Spinner size={16} light />}
-              {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
+              {loading ? "Logging in..." : "Log In"}
             </Button>
 
             <div className="w-full text-center">
@@ -298,7 +298,7 @@ export default function Login() {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="px-3 font-medium text-gray-500 bg-white rounded-full">
-                    hoặc chọn vai trò (dev mode) ⚙️
+                    or select a role (dev mode) ⚙️
                   </span>
                 </div>
               </div>
@@ -308,7 +308,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("teller")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)",
@@ -325,7 +325,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("accountant")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #DFF9F4 0%, #FFF7D6 100%)",
@@ -342,7 +342,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("admin")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="group relative overflow-hidden rounded-2xl p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #FFE8F0 0%, #F3E8FF 100%)",
@@ -362,7 +362,7 @@ export default function Login() {
                 <div className="inline-flex items-center gap-2 px-4 py-2 border border-purple-100 rounded-full bg-linear-to-r from-purple-50 to-pink-50">
                   <Sparkles size={14} className="text-purple-400" />
                   <p className="text-xs font-medium text-purple-600">
-                    Dev Mode — Nút vai trò để test
+                    Dev Mode — Role buttons for testing
                   </p>
                 </div>
               </div>
@@ -375,7 +375,7 @@ export default function Login() {
           <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-white/20 backdrop-blur-[1px] animate-fade-in">
             <span className="spinner inline-block animate-spin rounded-full border-4 border-[#1A4D8F] border-t-transparent" />
             <p className="mt-3 text-[#1A4D8F] font-medium text-sm animate-wave">
-              Đang tải...
+              Loading...
             </p>
           </div>
         )}
