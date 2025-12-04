@@ -11,7 +11,12 @@ export const branchService = {
    */
   async getBranchNames() {
     const response = await branchAdapter.getBranchNames();
-    return response?.data || [];
+    const list = response?.data?.data || response?.data || response;
+    return Array.isArray(list)
+      ? list
+      : Array.isArray(list?.data)
+      ? list.data
+      : [];
   },
 };
 
