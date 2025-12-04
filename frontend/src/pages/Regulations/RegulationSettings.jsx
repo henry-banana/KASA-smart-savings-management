@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 import {
   getRegulations,
   updateRegulations,
 } from "@/services/regulationService";
 import {
   getInterestRates,
-  getChangeHistory,
+  // getChangeHistory,
   updateInterestRates,
 } from "@/services/regulationService";
 import {
@@ -44,7 +44,7 @@ import {
 import {
   CheckCircle2,
   AlertTriangle,
-  History,
+  // History,
   Settings,
   Sparkles,
 } from "lucide-react";
@@ -53,7 +53,7 @@ import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
 
 export default function RegulationSettings() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [minBalance, setMinBalance] = useState("100000");
   const [minWithdrawalDays, setMinWithdrawalDays] = useState("15");
   const [showSuccess, setShowSuccess] = useState(false);
@@ -133,14 +133,14 @@ export default function RegulationSettings() {
         }
 
         // Fetch change history
-        try {
-          const historyResponse = await getChangeHistory();
-          if (historyResponse.success && historyResponse.data) {
-            setChangeHistory(historyResponse.data);
-          }
-        } catch (err) {
-          console.error("Failed to fetch change history:", err);
-        }
+        // try {
+        //   const historyResponse = await getChangeHistory();
+        //   if (historyResponse.success && historyResponse.data) {
+        //     setChangeHistory(historyResponse.data);
+        //   }
+        // } catch (err) {
+        //   console.error("Failed to fetch change history:", err);
+        // }
       } catch (err) {
         console.error("Failed to fetch regulations:", err);
         setError("Failed to load regulations");
@@ -154,7 +154,7 @@ export default function RegulationSettings() {
 
   const [interestRates, setInterestRates] = useState([]);
 
-  const [changeHistory, setChangeHistory] = useState([]);
+  // const [changeHistory, setChangeHistory] = useState([]);
 
   const handleUpdateRate = (index, newRate) => {
     const updated = [...interestRates];
@@ -221,25 +221,25 @@ export default function RegulationSettings() {
         setShowSuccess(true);
 
         // Refresh change history from API
-        try {
-          const historyResponse = await getChangeHistory();
-          if (historyResponse.success && historyResponse.data) {
-            setChangeHistory(historyResponse.data);
-          }
-        } catch (err) {
-          console.error("Failed to refresh change history:", err);
-          // Fallback: add a placeholder entry
-          setChangeHistory((prev) => [
-            {
-              date: new Date().toISOString().split("T")[0],
-              user: user.username,
-              field: "Regulations",
-              oldValue: "Previous",
-              newValue: "Updated",
-            },
-            ...prev,
-          ]);
-        }
+        // try {
+        //   const historyResponse = await getChangeHistory();
+        //   if (historyResponse.success && historyResponse.data) {
+        //     setChangeHistory(historyResponse.data);
+        //   }
+        // } catch (err) {
+        //   console.error("Failed to refresh change history:", err);
+        //   // Fallback: add a placeholder entry
+        //   setChangeHistory((prev) => [
+        //     {
+        //       date: new Date().toISOString().split("T")[0],
+        //       user: user.username,
+        //       field: "Regulations",
+        //       oldValue: "Previous",
+        //       newValue: "Updated",
+        //     },
+        //     ...prev,
+        //   ]);
+        // }
       } else {
         setError(response.message || "Failed to update regulations");
       }
@@ -679,7 +679,8 @@ export default function RegulationSettings() {
             </CardContent>
           </Card>
         )}
-        Change History
+        {/* Change History */}
+        {/* 
         {!loading && (
           <Card className="overflow-hidden border border-gray-200 rounded-3xl">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
@@ -740,6 +741,7 @@ export default function RegulationSettings() {
             </CardContent>
           </Card>
         )}
+        */}
         {/* Confirmation Dialog */}
         <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
           <DialogContent className="rounded-3xl">
