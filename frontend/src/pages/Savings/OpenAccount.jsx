@@ -128,8 +128,8 @@ export default function OpenAccount() {
       setRegulationsError("");
       try {
         const resp = await getRegulations();
-        if (resp.success && resp.data?.minimumDepositAmount) {
-          setMinDeposit(resp.data.minimumDepositAmount);
+        if (resp.success && resp.data?.minimumBalance) {
+          setMinDeposit(resp.data.minimumBalance);
         } else {
           setRegulationsError("Cannot load minimum deposit rule");
         }

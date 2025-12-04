@@ -76,12 +76,18 @@ export default function RegulationSettings() {
     const fetchRegulations = async () => {
       try {
         setLoading(true);
+        setError(null);
 
         // Fetch basic regulations
         const response = await getRegulations();
         if (response.success && response.data) {
-          setMinDeposit(String(response.data.minimumDepositAmount));
+          setMinDeposit(String(response.data.minimumBalance));
           setMinWithdrawalDays(String(response.data.minimumTermDays));
+        } else {
+          setError(
+            "Failed to load regulations: " +
+              (response.message || "Unknown error")
+          );
         }
 
         // Fetch interest rates - now using getInterestRates instead of getAllTypeSavings
@@ -165,17 +171,34 @@ export default function RegulationSettings() {
     try {
       setShowConfirm(false);
       setLoading(true);
+      setError(null);
+
+      // Validate inputs before sending
+      const depositAmount = Number(minDeposit);
+      const termDays = Number(minWithdrawalDays);
+
+      if (isNaN(depositAmount) || depositAmount <= 0) {
+        setError("Minimum Deposit must be a valid positive number");
+        setLoading(false);
+        return;
+      }
+
+      if (isNaN(termDays) || termDays < 0) {
+        setError("Minimum Term Days must be a valid non-negative number");
+        setLoading(false);
+        return;
+      }
 
       const payload = {
-        minimumDepositAmount: Number(minDeposit),
-        minimumTermDays: Number(minWithdrawalDays),
+        minimumBalance: depositAmount,
+        minimumTermDays: termDays,
       };
 
       const response = await updateRegulations(payload);
 
       if (response.success && response.data) {
         // Update local state from response
-        setMinDeposit(String(response.data.minimumDepositAmount));
+        setMinDeposit(String(response.data.minimumBalance));
         setMinWithdrawalDays(String(response.data.minimumTermDays));
         // Persist interest rate changes
         try {
@@ -586,7 +609,6 @@ export default function RegulationSettings() {
             )}
           </CardContent>
         </Card>
-
         {/* Current Regulations Summary */}
         {!loading && (
           <Card className="overflow-hidden border border-gray-200 rounded-3xl">
@@ -657,8 +679,7 @@ export default function RegulationSettings() {
             </CardContent>
           </Card>
         )}
-
-        {/* Change History */}
+        Change History
         {!loading && (
           <Card className="overflow-hidden border border-gray-200 rounded-3xl">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
@@ -719,7 +740,6 @@ export default function RegulationSettings() {
             </CardContent>
           </Card>
         )}
-
         {/* Confirmation Dialog */}
         <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
           <DialogContent className="rounded-3xl">
@@ -775,7 +795,6 @@ export default function RegulationSettings() {
             </div>
           </DialogContent>
         </Dialog>
-
         {/* Success Modal */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
           <DialogContent className="rounded-3xl">
@@ -829,7 +848,6 @@ export default function RegulationSettings() {
             </Button>
           </DialogContent>
         </Dialog>
-
         {/* Delete Confirmation Dialog */}
         <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
           <DialogContent className="rounded-3xl">
@@ -942,7 +960,6 @@ export default function RegulationSettings() {
             </div>
           </DialogContent>
         </Dialog>
-
         {/* Create Type Saving Dialog */}
         <Dialog
           open={showCreateTypeSaving}
