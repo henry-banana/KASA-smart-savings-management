@@ -14,6 +14,17 @@ export const getDailyReport = async (date) => {
 };
 
 /**
+ * Lấy thống kê giao dịch theo ngày (BM5.1)
+ * Endpoint: GET /api/report/daily/transactions?date=YYYY-MM-DD
+ * Mục đích: Lấy số lượng giao dịch gửi tiền và rút tiền theo từng loại sổ tiết kiệm trong ngày
+ * @param {string} date - Ngày báo cáo (YYYY-MM-DD)
+ * @returns {Promise<Object>} Daily transaction statistics
+ */
+export const getDailyTransactionStatistics = async (date) => {
+  return reportAdapter.getDailyTransactionStatistics(date);
+};
+
+/**
  * Lấy báo cáo tháng (BM6)
  * @param {number} month - Tháng (1-12)
  * @param {number} year - Năm
