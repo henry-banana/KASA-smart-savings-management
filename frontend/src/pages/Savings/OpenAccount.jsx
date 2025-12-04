@@ -42,8 +42,11 @@ import {
 import { createSavingBook } from "../../services/savingBookService";
 import { getInterestRates, getRegulations } from "@/services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 export default function OpenAccount() {
+  const { user } = useAuthContext();
+
   const [formData, setFormData] = useState({
     customerName: "",
     idCard: "",
@@ -90,7 +93,10 @@ export default function OpenAccount() {
     if (Object.keys(newErrors).length === 0) {
       setIsSubmitting(true);
       try {
-        const response = await createSavingBook(formData);
+        const response = await createSavingBook({
+          ...formData,
+          employeeId: user?.userId || user?.id || "NV001",
+        });
         setAccountCode(response.data.accountCode);
         // Save created data before resetting form
         setCreatedAccountData({ ...formData });

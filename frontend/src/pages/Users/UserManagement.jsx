@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { userService } from "@/services/userService";
+import { branchService } from "@/services/branchService";
 import {
   Card,
   CardContent,
@@ -60,6 +61,7 @@ import { Skeleton } from "../../components/ui/skeleton";
 export default function UserManagement() {
   const { user } = useAuth();
   const [users, setUsers] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -71,16 +73,16 @@ export default function UserManagement() {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [formData, setFormData] = useState({
-    username: "",
     fullName: "",
     email: "",
     role: "teller",
-    password: "",
+    branchName: "",
   });
 
-  // Fetch users on mount
+  // Fetch users and branches on mount
   useEffect(() => {
     fetchUsers();
+    fetchBranches();
   }, []);
 
   const fetchUsers = async () => {
@@ -97,13 +99,21 @@ export default function UserManagement() {
     }
   };
 
+  const fetchBranches = async () => {
+    try {
+      const data = await branchService.getBranchNames();
+      setBranches(data);
+    } catch (err) {
+      console.error("Error fetching branches:", err);
+    }
+  };
+
   const handleAddUser = () => {
     setFormData({
-      username: "",
       fullName: "",
       email: "",
       role: "teller",
-      password: "",
+      branchName: branches.length > 0 ? branches[0] : "Thủ Đức",
     });
     setShowAddUser(true);
   };
@@ -111,11 +121,11 @@ export default function UserManagement() {
   const handleEditUser = (userData) => {
     setSelectedUser(userData);
     setFormData({
-      username: userData.username,
       fullName: userData.fullName,
       email: userData.email,
       role: userData.roleName,
-      password: "",
+      branchName:
+        userData.branchName || (branches.length > 0 ? branches[0] : "Thủ Đức"),
     });
     setShowEditUser(true);
   };
@@ -148,7 +158,17 @@ export default function UserManagement() {
 
   const submitAddUser = async () => {
     try {
-      await userService.createUser(formData);
+      // Normalize role: capitalize first letter (teller → Teller)
+      const capitalizeRole = (role) => {
+        return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+      };
+
+      await userService.createUser({
+        fullName: formData.fullName,
+        email: formData.email,
+        roleName: capitalizeRole(formData.role),
+        branchName: formData.branchName,
+      });
       await fetchUsers(); // Refresh list
       setShowAddUser(false);
       setSuccessMessage("User created successfully");
@@ -162,11 +182,16 @@ export default function UserManagement() {
   const submitEditUser = async () => {
     if (selectedUser) {
       try {
+        // Normalize role: capitalize first letter (teller → Teller)
+        const capitalizeRole = (role) => {
+          return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+        };
+
         await userService.updateUser(selectedUser.id, {
-          username: formData.username,
           fullName: formData.fullName,
           email: formData.email,
-          roleName: formData.role,
+          roleName: capitalizeRole(formData.role),
+          branchName: formData.branchName,
         });
         await fetchUsers(); // Refresh list
         setShowEditUser(false);
@@ -335,7 +360,7 @@ export default function UserManagement() {
                           Status
                         </TableHead>
                         <TableHead className="hidden text-xs font-semibold sm:text-sm sm:table-cell">
-                          Created Date
+                          Branch
                         </TableHead>
                         <TableHead className="text-xs font-semibold text-center sm:text-sm">
                           Actions
@@ -381,7 +406,7 @@ export default function UserManagement() {
                                 : "Disabled"}
                             </Badge>
                           </TableCell>
-                          <TableCell>{userData.createdAt}</TableCell>
+                          <TableCell>{userData.branchName || "-"}</TableCell>
                           <TableCell>
                             <div className="flex justify-center gap-2">
                               <Button
@@ -444,21 +469,6 @@ export default function UserManagement() {
             </DialogHeader>
             <div className="py-4 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-gray-700">
-                  Username
-                </Label>
-                <Input
-                  id="username"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  placeholder="Enter username"
-                  className="border-gray-200 h-11 rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="fullName" className="text-gray-700">
                   Full Name
                 </Label>
@@ -469,22 +479,6 @@ export default function UserManagement() {
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                   placeholder="Enter full name"
-                  className="border-gray-200 h-11 rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  placeholder="Enter email address"
                   className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
@@ -511,17 +505,46 @@ export default function UserManagement() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700">
-                  Password
+                <Label htmlFor="branchName" className="text-gray-700">
+                  Branch
+                </Label>
+                <Select
+                  value={formData.branchName}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, branchName: value })
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select branch" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {branches.length > 0 ? (
+                      branches.map((branch) => (
+                        <SelectItem key={branch} value={branch}>
+                          {branch}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="Thủ Đức" disabled>
+                        Loading branches...
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700">
+                  Email
                 </Label>
                 <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
+                  id="email"
+                  type="email"
+                  value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
+                    setFormData({ ...formData, email: e.target.value })
                   }
-                  placeholder="Enter password"
+                  placeholder="Enter email address"
                   className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
@@ -570,20 +593,6 @@ export default function UserManagement() {
             </DialogHeader>
             <div className="py-4 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="editUsername" className="text-gray-700">
-                  Username
-                </Label>
-                <Input
-                  id="editUsername"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  className="border-gray-200 h-11 rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="editFullName" className="text-gray-700">
                   Full Name
                 </Label>
@@ -592,21 +601,6 @@ export default function UserManagement() {
                   value={formData.fullName}
                   onChange={(e) =>
                     setFormData({ ...formData, fullName: e.target.value })
-                  }
-                  className="border-gray-200 h-11 rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="editEmail" className="text-gray-700">
-                  Email
-                </Label>
-                <Input
-                  id="editEmail"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
                   }
                   className="border-gray-200 h-11 rounded-2xl"
                 />
@@ -631,6 +625,50 @@ export default function UserManagement() {
                     <SelectItem value="admin">Administrator</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="editBranchName" className="text-gray-700">
+                  Branch
+                </Label>
+                <Select
+                  value={formData.branchName}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, branchName: value })
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select branch" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {branches.length > 0 ? (
+                      branches.map((branch) => (
+                        <SelectItem key={branch} value={branch}>
+                          {branch}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="Thủ Đức" disabled>
+                        Loading branches...
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="editEmail" className="text-gray-700">
+                  Email
+                </Label>
+                <Input
+                  id="editEmail"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="border-gray-200 h-11 rounded-2xl"
+                />
               </div>
             </div>
             <div className="flex gap-4">

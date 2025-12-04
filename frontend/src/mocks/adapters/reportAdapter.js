@@ -93,6 +93,92 @@ export const mockReportAdapter = {
   },
 
   /**
+   * Get daily transaction statistics per OpenAPI: GET /api/report/daily/transactions?date=YYYY-MM-DD
+   * Mục đích: Lấy số lượng giao dịch gửi tiền và rút tiền theo từng loại sổ tiết kiệm trong ngày
+   */
+  async getDailyTransactionStatistics(date) {
+    await randomDelay();
+    const reportDate = date || new Date().toISOString().split("T")[0];
+    logger.info("🎭 Mock Daily Transaction Statistics", { date: reportDate });
+
+    // Filter transactions by date
+    const dailyTransactions = mockTransactions.filter((t) =>
+      t.transactionDate?.startsWith(reportDate)
+    );
+
+    // Group transactions by type and count by typeSaving
+    const depositsByType = {};
+    const withdrawalsByType = {};
+
+    // Initialize all types with 0
+    mockTypeSavings.forEach((type) => {
+      depositsByType[type.typeSavingId] = {
+        typeSavingId: type.typeSavingId,
+        typeName: type.typeName,
+        count: 0,
+      };
+      withdrawalsByType[type.typeSavingId] = {
+        typeSavingId: type.typeSavingId,
+        typeName: type.typeName,
+        count: 0,
+      };
+    });
+
+    // Count transactions by type and saving type
+    dailyTransactions.forEach((transaction) => {
+      const savingBook = mockSavingBooks.find(
+        (sb) => sb.bookId === transaction.bookId
+      );
+      if (!savingBook) return;
+
+      const typeSavingId = savingBook.typeSavingId;
+
+      if (transaction.type === "deposit") {
+        if (depositsByType[typeSavingId]) {
+          depositsByType[typeSavingId].count += 1;
+        }
+      } else if (transaction.type === "withdraw") {
+        if (withdrawalsByType[typeSavingId]) {
+          withdrawalsByType[typeSavingId].count += 1;
+        }
+      }
+    });
+
+    // Calculate totals
+    const totalDepositCount = Object.values(depositsByType).reduce(
+      (sum, item) => sum + item.count,
+      0
+    );
+    const totalWithdrawalCount = Object.values(withdrawalsByType).reduce(
+      (sum, item) => sum + item.count,
+      0
+    );
+
+    // Build response per OPENAPI contract
+    return {
+      message: "Get daily transaction statistics successfully",
+      success: true,
+      data: {
+        date: reportDate,
+        deposits: {
+          items: Object.values(depositsByType).filter((item) => item.count > 0),
+          total: {
+            count: totalDepositCount,
+          },
+        },
+        withdrawals: {
+          items: Object.values(withdrawalsByType).filter(
+            (item) => item.count > 0
+          ),
+          total: {
+            count: totalWithdrawalCount,
+          },
+        },
+      },
+    };
+  },
+
+  /**
    * BM5.2 - Get monthly opening/closing savings books report
    * @param {number} month - Month (1-12)
    * @param {number} year - Year

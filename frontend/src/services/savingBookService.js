@@ -23,8 +23,8 @@ export const createSavingBook = async (data) => {
       citizenId: data.idCard,
       customerName: data.customerName,
       typeSavingId: data.savingsType,
-      openDate: data.openDate,
-      balance: parseFloat(data.initialDeposit),
+      initialDeposit: parseFloat(data.initialDeposit),
+      employeeId: data.employeeId || "NV001", // TODO: Get from auth context
     });
     return {
       ...resp,
@@ -32,14 +32,13 @@ export const createSavingBook = async (data) => {
     };
   }
 
-  // Backend API expects backend payload; keep existing mapping here
+  // Backend API - OPENAPI contract: POST /api/savingbook
   return accountApi.createAccount({
-    customer_name: data.customerName,
-    id_card: data.idCard,
-    address: data.address,
-    savings_type: data.savingsType,
-    initial_deposit: parseFloat(data.initialDeposit),
-    open_date: data.openDate || new Date().toISOString().split("T")[0],
+    citizenId: data.idCard,
+    customerName: data.customerName,
+    typeSavingId: data.savingsType,
+    initialDeposit: parseFloat(data.initialDeposit),
+    employeeId: data.employeeId || "NV001", // TODO: Get from auth context
   });
 };
 
