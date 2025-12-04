@@ -3,7 +3,13 @@ import { regulationService } from "../../services/Regulation/regulation.service.
 // Lấy tất cả quy định
 export async function getAllRegulations(req, res) {
   try {
-    const result = await regulationService.getAllRegulations();
+    const data = await regulationService.getAllRegulations();
+
+    const result = {
+      minimumDepositAmount: data.minimumDeposit,
+      minimumTermDays: data.minimumTermDay,
+    };
+
 
     return res.status(200).json({
       message: "Regulations retrieved successfully",
