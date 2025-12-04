@@ -73,12 +73,10 @@ export default function UserManagement() {
   const [successMessage, setSuccessMessage] = useState("");
 
   const [formData, setFormData] = useState({
-    username: "",
     fullName: "",
     email: "",
     role: "teller",
     branchName: "",
-    password: "",
   });
 
   // Fetch users and branches on mount
@@ -112,12 +110,10 @@ export default function UserManagement() {
 
   const handleAddUser = () => {
     setFormData({
-      username: "",
       fullName: "",
       email: "",
       role: "teller",
-      branchName: branches[0] || "",
-      password: "",
+      branchName: branches.length > 0 ? branches[0] : "Thủ Đức",
     });
     setShowAddUser(true);
   };
@@ -125,12 +121,11 @@ export default function UserManagement() {
   const handleEditUser = (userData) => {
     setSelectedUser(userData);
     setFormData({
-      username: userData.username,
       fullName: userData.fullName,
       email: userData.email,
       role: userData.roleName,
-      branchName: userData.branchName || branches[0] || "",
-      password: "",
+      branchName:
+        userData.branchName || (branches.length > 0 ? branches[0] : "Thủ Đức"),
     });
     setShowEditUser(true);
   };
@@ -178,7 +173,6 @@ export default function UserManagement() {
     if (selectedUser) {
       try {
         await userService.updateUser(selectedUser.id, {
-          username: formData.username,
           fullName: formData.fullName,
           email: formData.email,
           roleName: formData.role,
@@ -460,21 +454,6 @@ export default function UserManagement() {
             </DialogHeader>
             <div className="py-4 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-gray-700">
-                  Username
-                </Label>
-                <Input
-                  id="username"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  placeholder="Enter username"
-                  className="border-gray-200 h-11 rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="fullName" className="text-gray-700">
                   Full Name
                 </Label>
@@ -485,22 +464,6 @@ export default function UserManagement() {
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                   placeholder="Enter full name"
-                  className="border-gray-200 h-11 rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  placeholder="Enter email address"
                   className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
@@ -540,27 +503,33 @@ export default function UserManagement() {
                     <SelectValue placeholder="Select branch" />
                   </SelectTrigger>
                   <SelectContent>
-                    {branches.map((branch) => (
-                      <SelectItem key={branch} value={branch}>
-                        {branch}
+                    {branches.length > 0 ? (
+                      branches.map((branch) => (
+                        <SelectItem key={branch} value={branch}>
+                          {branch}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="Thủ Đức" disabled>
+                        Loading branches...
                       </SelectItem>
-                    ))}
+                    )}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700">
-                  Password
+                <Label htmlFor="email" className="text-gray-700">
+                  Email
                 </Label>
                 <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
+                  id="email"
+                  type="email"
+                  value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
+                    setFormData({ ...formData, email: e.target.value })
                   }
-                  placeholder="Enter password"
+                  placeholder="Enter email address"
                   className="border-gray-200 h-11 rounded-2xl"
                 />
               </div>
@@ -609,20 +578,6 @@ export default function UserManagement() {
             </DialogHeader>
             <div className="py-4 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="editUsername" className="text-gray-700">
-                  Username
-                </Label>
-                <Input
-                  id="editUsername"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  className="border-gray-200 h-11 rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="editFullName" className="text-gray-700">
                   Full Name
                 </Label>
@@ -631,21 +586,6 @@ export default function UserManagement() {
                   value={formData.fullName}
                   onChange={(e) =>
                     setFormData({ ...formData, fullName: e.target.value })
-                  }
-                  className="border-gray-200 h-11 rounded-2xl"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="editEmail" className="text-gray-700">
-                  Email
-                </Label>
-                <Input
-                  id="editEmail"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
                   }
                   className="border-gray-200 h-11 rounded-2xl"
                 />
@@ -686,13 +626,34 @@ export default function UserManagement() {
                     <SelectValue placeholder="Select branch" />
                   </SelectTrigger>
                   <SelectContent>
-                    {branches.map((branch) => (
-                      <SelectItem key={branch} value={branch}>
-                        {branch}
+                    {branches.length > 0 ? (
+                      branches.map((branch) => (
+                        <SelectItem key={branch} value={branch}>
+                          {branch}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="Thủ Đức" disabled>
+                        Loading branches...
                       </SelectItem>
-                    ))}
+                    )}
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="editEmail" className="text-gray-700">
+                  Email
+                </Label>
+                <Input
+                  id="editEmail"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  className="border-gray-200 h-11 rounded-2xl"
+                />
               </div>
             </div>
             <div className="flex gap-4">
