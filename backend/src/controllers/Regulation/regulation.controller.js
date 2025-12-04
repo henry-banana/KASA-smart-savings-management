@@ -7,7 +7,7 @@ export async function getAllRegulations(req, res) {
 
     const result = {
       minimumBalance: data.minimumBalance,
-      minimumTermDays: data.minimumTermDay,
+      minimumTermDays: data.minimumTermDays,
     };
 
     return res.status(200).json({
@@ -75,7 +75,10 @@ export async function updateSomeRegulation(req, res) {
     const updates = req.body;
 
     // Xử lý trường hợp viết sai chính tả minimunBalance -> minimumBalance
-    if (updates.minimunBalance !== undefined && updates.minimumBalance === undefined) {
+    if (
+      updates.minimunBalance !== undefined &&
+      updates.minimumBalance === undefined
+    ) {
       updates.minimumBalance = updates.minimunBalance;
     }
 
