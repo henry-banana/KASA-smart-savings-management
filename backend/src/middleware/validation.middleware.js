@@ -1,15 +1,14 @@
 // Middleware kiểm tra các số phải lớn hơn 0
 export function validatePositiveNumbers(req, res, next) {
   try {
-    const { minimumDepositAmount, minimumTermDays } = req.body;
+    const { minimumBalance, minimumTermDays } = req.body;
 
-    // Kiểm tra minimumDepositAmount
-    if (minimumDepositAmount !== undefined) {
-      const depositAmount = Number(minimumDepositAmount);
-      if (isNaN(depositAmount) || depositAmount <= 0) {
+    // Kiểm tra minimumBalance
+    if (minimumBalance !== undefined) {
+      const balance = Number(minimumBalance);
+      if (isNaN(balance) || balance <= 0) {
         return res.status(400).json({
-          message:
-            "minimumDepositAmount must be a positive number greater than 0",
+          message: "minimumBalance must be a positive number greater than 0",
           success: false,
         });
       }
