@@ -1,15 +1,28 @@
 import { typeSavingRepository } from "../../repositories/TypeSaving/TypeSavingRepository.js";
 
 class TypeSavingService {
+  // Map database fields to OPENAPI camelCase format
+  _mapToApiFormat(dbRecord) {
+    if (!dbRecord) return null;
+    return {
+      typeSavingId: dbRecord.typeid,
+      typeName: dbRecord.typename,
+      term: dbRecord.termperiod,
+      interestRate: dbRecord.interest,
+    };
+  }
+
   // Lấy tất cả loại sổ tiết kiệm
   async getAllTypeSavings() {
-    return await typeSavingRepository.findAll();
+    const results = await typeSavingRepository.findAll();
+    return results.map(record => this._mapToApiFormat(record));
   }
 
   // Lấy 1 loại sổ tiết kiệm theo ID
   async getTypeSavingById(id) {
     if (!id) throw new Error("ID is required");
-    return await typeSavingRepository.findById(id);
+    const result = await typeSavingRepository.findById(id);
+    return this._mapToApiFormat(result);
   }
 
   // Thêm loại sổ tiết kiệm mới
@@ -28,11 +41,12 @@ class TypeSavingService {
     )
       throw new Error("Interest rate must be greater than 0");
 
-    return await typeSavingRepository.create({
+    const created = await typeSavingRepository.create({
       typename: typename.trim(),
       termperiod: Number(term),
       interest: Number(interestRate),
     });
+    return this._mapToApiFormat(created);
   }
 
   // Cập nhật loại sổ tiết kiệm
@@ -54,13 +68,15 @@ class TypeSavingService {
       updates.interest = Number(data.interestRate);
     }
 
-    return await typeSavingRepository.update(id, updates);
+    const updated = await typeSavingRepository.update(id, updates);
+    return this._mapToApiFormat(updated);
   }
 
   // Xóa loại sổ tiết kiệm
   async deleteTypeSaving(id) {
     if (!id) throw new Error("ID is required");
-    return await typeSavingRepository.delete(id);
+    const deleted = await typeSavingRepository.delete(id);
+    return this._mapToApiFormat(deleted);
   }
 }
 
