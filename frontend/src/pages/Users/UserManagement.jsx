@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { userService } from "@/services/userService";
+import { branchService } from "@/services/branchService";
 import {
   Card,
   CardContent,
@@ -60,6 +61,7 @@ import { Skeleton } from "../../components/ui/skeleton";
 export default function UserManagement() {
   const { user } = useAuth();
   const [users, setUsers] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -75,12 +77,14 @@ export default function UserManagement() {
     fullName: "",
     email: "",
     role: "teller",
+    branchName: "",
     password: "",
   });
 
-  // Fetch users on mount
+  // Fetch users and branches on mount
   useEffect(() => {
     fetchUsers();
+    fetchBranches();
   }, []);
 
   const fetchUsers = async () => {
@@ -97,12 +101,22 @@ export default function UserManagement() {
     }
   };
 
+  const fetchBranches = async () => {
+    try {
+      const data = await branchService.getBranchNames();
+      setBranches(data);
+    } catch (err) {
+      console.error("Error fetching branches:", err);
+    }
+  };
+
   const handleAddUser = () => {
     setFormData({
       username: "",
       fullName: "",
       email: "",
       role: "teller",
+      branchName: branches[0] || "",
       password: "",
     });
     setShowAddUser(true);
@@ -115,6 +129,7 @@ export default function UserManagement() {
       fullName: userData.fullName,
       email: userData.email,
       role: userData.roleName,
+      branchName: userData.branchName || branches[0] || "",
       password: "",
     });
     setShowEditUser(true);
@@ -167,6 +182,7 @@ export default function UserManagement() {
           fullName: formData.fullName,
           email: formData.email,
           roleName: formData.role,
+          branchName: formData.branchName,
         });
         await fetchUsers(); // Refresh list
         setShowEditUser(false);
@@ -335,7 +351,7 @@ export default function UserManagement() {
                           Status
                         </TableHead>
                         <TableHead className="hidden text-xs font-semibold sm:text-sm sm:table-cell">
-                          Created Date
+                          Branch
                         </TableHead>
                         <TableHead className="text-xs font-semibold text-center sm:text-sm">
                           Actions
@@ -381,7 +397,7 @@ export default function UserManagement() {
                                 : "Disabled"}
                             </Badge>
                           </TableCell>
-                          <TableCell>{userData.createdAt}</TableCell>
+                          <TableCell>{userData.branchName || "-"}</TableCell>
                           <TableCell>
                             <div className="flex justify-center gap-2">
                               <Button
@@ -511,6 +527,29 @@ export default function UserManagement() {
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="branchName" className="text-gray-700">
+                  Branch
+                </Label>
+                <Select
+                  value={formData.branchName}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, branchName: value })
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select branch" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {branches.map((branch) => (
+                      <SelectItem key={branch} value={branch}>
+                        {branch}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="password" className="text-gray-700">
                   Password
                 </Label>
@@ -629,6 +668,29 @@ export default function UserManagement() {
                     <SelectItem value="teller">Teller</SelectItem>
                     <SelectItem value="accountant">Accountant</SelectItem>
                     <SelectItem value="admin">Administrator</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="editBranchName" className="text-gray-700">
+                  Branch
+                </Label>
+                <Select
+                  value={formData.branchName}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, branchName: value })
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select branch" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {branches.map((branch) => (
+                      <SelectItem key={branch} value={branch}>
+                        {branch}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

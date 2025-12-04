@@ -1,12 +1,12 @@
-import { 
-  mockUserAccounts, 
+import {
+  mockUserAccounts,
   findUserByUsername,
   addUserAccount,
   updateUserAccount,
-  deleteUserAccount
-} from '../data/users';
-import { randomDelay, generateId } from '../utils';
-import { logger } from '@/utils/logger';
+  deleteUserAccount,
+} from "../data/users";
+import { randomDelay, generateId } from "../utils";
+import { logger } from "@/utils/logger";
 
 export const mockUserAdapter = {
   /**
@@ -14,14 +14,14 @@ export const mockUserAdapter = {
    */
   async getAllUsers() {
     await randomDelay();
-    logger.info('🎭 Mock Get All Users');
-    
+    logger.info("🎭 Mock Get All Users");
+
     const data = mockUserAccounts.map(mapUserToContract);
     return {
-      message: 'Get users successfully',
+      message: "Get users successfully",
       success: true,
       total: data.length,
-      data
+      data,
     };
   },
 
@@ -30,17 +30,17 @@ export const mockUserAdapter = {
    */
   async getUserById(id) {
     await randomDelay();
-    logger.info('🎭 Mock Get User By ID', { id });
-    
-    const user = mockUserAccounts.find(u => u.employeeid === id);
+    logger.info("🎭 Mock Get User By ID", { id });
+
+    const user = mockUserAccounts.find((u) => u.employeeid === id);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
-    
+
     return {
-      message: 'Get user successfully',
+      message: "Get user successfully",
       success: true,
-      data: mapUserToContract(user)
+      data: mapUserToContract(user),
     };
   },
 
@@ -49,16 +49,16 @@ export const mockUserAdapter = {
    */
   async createUser(userData) {
     await randomDelay();
-    logger.info('🎭 Mock Create User', { username: userData.username });
-    
+    logger.info("🎭 Mock Create User", { username: userData.username });
+
     // Check if username exists
     if (findUserByUsername(userData.username)) {
-      throw new Error('Username already exists');
+      throw new Error("Username already exists");
     }
-    
+
     // Generate employee ID
-    const employeeId = generateId('EMP');
-    
+    const employeeId = generateId("EMP");
+
     const newUser = {
       userid: userData.username,
       password: userData.password, // In real app, this would be hashed
@@ -66,17 +66,18 @@ export const mockUserAdapter = {
       role: userData.role,
       fullName: userData.fullName,
       email: userData.email,
-      status: 'active',
-      createdDate: new Date().toISOString().split('T')[0],
-      lastlogin: null
+      branchName: userData.branchName || "Thủ Đức",
+      status: "active",
+      createdDate: new Date().toISOString().split("T")[0],
+      lastlogin: null,
     };
-    
+
     addUserAccount(newUser);
-    
+
     return {
-      message: 'Create user successfully',
+      message: "Create user successfully",
       success: true,
-      data: mapUserToContract(newUser)
+      data: mapUserToContract(newUser),
     };
   },
 
@@ -85,25 +86,25 @@ export const mockUserAdapter = {
    */
   async updateUser(id, updates) {
     await randomDelay();
-    logger.info('🎭 Mock Update User', { id, updates });
-    
-    const user = mockUserAccounts.find(u => u.employeeid === id);
+    logger.info("🎭 Mock Update User", { id, updates });
+
+    const user = mockUserAccounts.find((u) => u.employeeid === id);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
-    
+
     // Update user data
     const updatedUser = updateUserAccount(user.userid, {
       userid: updates.username || user.userid,
       fullName: updates.fullName || user.fullName,
       email: updates.email || user.email,
-      role: updates.roleName || updates.role || user.role
+      role: updates.roleName || updates.role || user.role,
     });
-    
+
     return {
-      message: 'Update user successfully',
+      message: "Update user successfully",
       success: true,
-      data: mapUserToContract(updatedUser)
+      data: mapUserToContract(updatedUser),
     };
   },
 
@@ -112,44 +113,44 @@ export const mockUserAdapter = {
    */
   async updateUserStatus(id, status) {
     await randomDelay();
-    logger.info('🎭 Mock Update User Status', { id, status });
-    
-    const user = mockUserAccounts.find(u => u.employeeid === id);
+    logger.info("🎭 Mock Update User Status", { id, status });
+
+    const user = mockUserAccounts.find((u) => u.employeeid === id);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
-    
+
     const updatedUser = updateUserAccount(user.userid, { status });
     return {
-      message: 'Update user status successfully',
+      message: "Update user status successfully",
       success: true,
-      data: mapUserToContract(updatedUser)
+      data: mapUserToContract(updatedUser),
     };
   },
 
   /**
-    * Delete user by ID
-    * Note: mock-only. DELETE is not implemented in OpenAPI; kept for testing.
+   * Delete user by ID
+   * Note: mock-only. DELETE is not implemented in OpenAPI; kept for testing.
    */
   async deleteUser(id) {
     await randomDelay();
-    logger.info('🎭 Mock Delete User', { id });
-    
-    const user = mockUserAccounts.find(u => u.employeeid === id);
+    logger.info("🎭 Mock Delete User", { id });
+
+    const user = mockUserAccounts.find((u) => u.employeeid === id);
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
-    
+
     const deleted = deleteUserAccount(user.userid);
     if (!deleted) {
-      throw new Error('Failed to delete user');
+      throw new Error("Failed to delete user");
     }
-    
+
     return {
       success: true,
-      message: 'Delete user successfully'
+      message: "Delete user successfully",
     };
-  }
+  },
 };
 
 function mapUserToContract(user) {
@@ -160,7 +161,8 @@ function mapUserToContract(user) {
     fullName: user.fullName,
     email: user.email,
     roleName: user.role,
+    branchName: user.branchName,
     status: user.status,
-    createdAt: user.createdDate
+    createdAt: user.createdDate,
   };
 }
