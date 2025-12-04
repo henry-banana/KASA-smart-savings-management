@@ -6,7 +6,7 @@ class RegulationService {
     const allTypeSaving = await typeSavingRepository.findAll();
     const result = {
       minimumBalance: 1e9,
-      minimumTermDay: 1e9,
+      minimumTermDays: 1e9,
     };
 
     for (const typeSaving of allTypeSaving) {
@@ -19,10 +19,10 @@ class RegulationService {
 
       if (
         typeSaving.minimumdepositterm !== null &&
-        typeSaving.minimumdepositterm < result.minimumTermDay &&
+        typeSaving.minimumdepositterm < result.minimumTermDays &&
         typeSaving.typename == "No term"
       ) {
-        result.minimumTermDay = typeSaving.minimumdepositterm;
+        result.minimumTermDays = typeSaving.minimumdepositterm;
       }
     }
 
@@ -61,18 +61,18 @@ class RegulationService {
 
   // Cập nhật lãi suất cho một loại tiết kiệm
   async updateRegulation(updates) {
-    if (updates){
-        for (const update of updates) {
-            typeSavingRepository.update(update.typeSavingId, {
-              typename: update.typeName,  
-              interest: update.rate,
-              termperiod: update.term,
-            });
-        }
+    if (updates) {
+      for (const update of updates) {
+        typeSavingRepository.update(update.typeSavingId, {
+          typename: update.typeName,
+          interest: update.rate,
+          termperiod: update.term,
+        });
+      }
 
-        return { message: "Regulations updated successfully." };
-    }else{
-        throw new Error("No updates provided.");
+      return { message: "Regulations updated successfully." };
+    } else {
+      throw new Error("No updates provided.");
     }
   }
 

@@ -7,7 +7,7 @@ export async function getAllRegulations(req, res) {
 
     const result = {
       minimumBalance: data.minimumBalance,
-      minimumTermDays: data.minimumTermDay,
+      minimumTermDays: data.minimumTermDays,
     };
 
     return res.status(200).json({
