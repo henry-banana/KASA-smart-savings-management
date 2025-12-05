@@ -33,13 +33,19 @@ export const createSavingBook = async (data) => {
   }
 
   // Backend API - OPENAPI contract: POST /api/savingbook
-  return accountApi.createAccount({
+  const resp = await accountApi.createAccount({
     citizenID: data.idCard,
     customerName: data.customerName,
     typeSavingID: data.savingsType,
     initialDeposit: parseFloat(data.initialDeposit),
     employeeID: data.employeeId || "NV001", // TODO: Get from auth context
   });
+  
+  // Alias bookId as accountCode for UI compatibility
+  return {
+    ...resp,
+    data: { ...resp.data, accountCode: resp.data.bookId },
+  };
 };
 
 /**
