@@ -1,18 +1,20 @@
 import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
-import {customerRepository} from "../../repositories/Customer/CustomerRepository.js"
+import { customerRepository } from "../../repositories/Customer/CustomerRepository.js";
 import { typeSavingRepository } from "../../repositories/TypeSaving/TypeSavingRepository.js";
-import {TransactionRepository, transactionRepository} from "../../repositories/Transaction/TransactionRepository.js"
+import {
+  TransactionRepository,
+  transactionRepository,
+} from "../../repositories/Transaction/TransactionRepository.js";
 import { raw } from "express";
 
 class SavingBookService {
-  
   // Thêm sổ tiết kiệm mới
-  async addSavingBook({ typeSavingID, initialDeposit, employeeID, citizenID}) {
+  async addSavingBook({ typeSavingID, initialDeposit, employeeID, citizenID }) {
     if (!typeSavingID || !initialDeposit || !employeeID || !citizenID) {
       throw new Error("Missing required information.");
     }
 
-    const customer = await customerRepository.findByCitizenID(citizenID)
+    const customer = await customerRepository.findByCitizenID(citizenID);
 
     // 2. Lấy thông tin loại sổ tiết kiệm
     const typeSaving = await typeSavingRepository.findById(typeSavingID);
@@ -29,10 +31,10 @@ class SavingBookService {
     const newSavingBook = await savingBookRepository.create({
       typeid: typeSavingID,
       customerid: customer.customerid,
-      currentbalance: initialDeposit
+      currentbalance: initialDeposit,
     });
 
-    newSavingBook.citizenid = citizenID
+    newSavingBook.citizenid = citizenID;
 
     // 5. Trả về đúng format response bạn cần
     return {
@@ -50,13 +52,12 @@ class SavingBookService {
         term: typeSaving.termPeriod,
         interestRate: typeSaving.interest,
         minimumDeposit: typeSaving.minimumdeposit,
-      }
+      },
     };
   }
 
   // Cập nhật thông tin sổ tiết kiệm
   async updateSavingBook(bookID, updates) {
-
     // Kiểm tra sổ tiết kiệm tồn tại
     const existingBook = await savingBookRepository.findById(bookID);
     if (!existingBook) throw new Error("Saving book not found");
@@ -65,7 +66,7 @@ class SavingBookService {
     const updatedBook = await savingBookRepository.update(bookID, {
       status: updates.status,
       closetime: updates.closeTime,
-      currentbalance: updates.currentBalance
+      currentbalance: updates.currentBalance,
     });
 
     return {
@@ -104,57 +105,57 @@ class SavingBookService {
     const transactions = await transactionRepository.findById(bookID);
 
     return {
+      bookid: savingBook.bookid,
+      citizenid: customer.citizenid,
+      customerName: customer.fullname,
+      typesavingid: typeSaving.typeid,
+      opendate: savingBook.registertime,
+      maturitydate: savingBook.maturitydate,
+      balance: savingBook.currentbalance,
+      status: savingBook.status,
 
-        bookid: savingBook.bookid,
-        citizenid: customer.citizenid,
-        customerName: customer.fullname,
+      typesaving: {
         typesavingid: typeSaving.typeid,
-        opendate: savingBook.registertime,
-        maturitydate: savingBook.maturitydate,
-        balance: savingBook.currentbalance,
-        status: savingBook.status,
- 
-        typesaving: {
-          typesavingid: typeSaving.typeid,
-          typename: typeSaving.typename,
-          term: typeSaving.termperiod,
-          interestrate: typeSaving.interest,
-          minimumdeposit: typeSaving.minimumdeposit
-        },
+        typename: typeSaving.typename,
+        term: typeSaving.termperiod,
+        interestrate: typeSaving.interest,
+        minimumdeposit: typeSaving.minimumdeposit,
+      },
 
-        transactions: transactions || []
-      
+      transactions: transactions || [],
     };
   }
 
   // Tìm kiếm sổ tiết kiệm
   async searchSavingBook(keyword) {
-    const trimmedKeyword = keyword.trim();
-    if (!trimmedKeyword) {
-      return [];
+    // Nếu không có keyword hoặc keyword rỗng, lấy tất cả
+    if (!keyword || keyword.trim() === "") {
+      return await savingBookRepository.findAll();
     }
 
+    const trimmedKeyword = keyword.trim();
     let results = [];
     const isOnlyDigits = /^\d+$/.test(trimmedKeyword);
     // Regex để kiểm tra chuỗi chỉ chứa chữ cái (hỗ trợ Unicode) và khoảng trắng
     const isOnlyLettersAndSpaces = /^[\p{L}\s]+$/u.test(trimmedKeyword);
 
-    if (trimmedKeyword.startsWith('0') && isOnlyDigits) {
+    if (trimmedKeyword.startsWith("0") && isOnlyDigits) {
       // Tìm kiếm theo Citizen ID
-      results = await savingBookRepository.findByCustomerCitizenID(trimmedKeyword);
+      results = await savingBookRepository.findByCustomerCitizenID(
+        trimmedKeyword
+      );
     } else if (isOnlyDigits) {
       // Tìm kiếm theo Book ID
-      // Do cầm join bảng để in dữ liệu theo format nên sẽ tạo hàm riêng
+      // Do cần join bảng để in dữ liệu theo format nên sẽ tạo hàm riêng
       results = await savingBookRepository.findByBookID(trimmedKeyword);
-
     } else if (isOnlyLettersAndSpaces) {
       // Tìm kiếm theo tên khách hàng
       results = await savingBookRepository.findByCustomerName(trimmedKeyword);
-    }else{
+    } else {
       throw new Error("Keyword is only contain number or letter");
     }
 
-    return results || []
+    return results || [];
   }
 
   // Tất toán sổ tiết kiệm
@@ -181,7 +182,10 @@ class SavingBookService {
 
     // Giả sử lãi suất được tính theo năm (365 ngày)
     // Logic này có thể cần phức tạp hơn tùy theo quy định (rút trước hạn, đúng hạn,...)
-    const interestEarned = (savingBook.currentbalance * (typeSaving.interest / 100) * (daysHeld / 365));
+    const interestEarned =
+      savingBook.currentbalance *
+      (typeSaving.interest / 100) *
+      (daysHeld / 365);
     const finalAmount = savingBook.currentbalance + interestEarned;
 
     // 4. Tạo giao dịch tất toán
@@ -191,7 +195,9 @@ class SavingBookService {
       transactiondate: closeDate.toISOString(),
       amount: finalAmount,
       transactiontype: "WithDraw", // 'Settlement'
-      note: `Tất toán sổ tiết kiệm. Gốc: ${savingBook.currentbalance}, Lãi: ${interestEarned.toFixed(2)}`,
+      note: `Tất toán sổ tiết kiệm. Gốc: ${
+        savingBook.currentbalance
+      }, Lãi: ${interestEarned.toFixed(2)}`,
     });
 
     // 5. Cập nhật trạng thái và thời gian đóng sổ tiết kiệm

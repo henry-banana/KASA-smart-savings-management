@@ -4,14 +4,13 @@ import { savingBookService } from "../../services/SavingBook/savingBook.service.
 export async function addSavingBook(req, res) {
   try {
     const result = await savingBookService.addSavingBook(req.body);
-    
+
     return res.status(201).json({
       message: "Saving book added successfully",
       success: true,
       total: 1,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error adding saving book:", err);
 
@@ -41,7 +40,6 @@ export async function updateSavingBook(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error updating saving book:", err);
 
@@ -69,7 +67,6 @@ export async function deleteSavingBook(req, res) {
       message: "Saving book deleted successfully",
       success: true,
     });
-
   } catch (err) {
     console.error("❌ Error deleting saving book:", err);
 
@@ -99,7 +96,6 @@ export async function getSavingBookById(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error getting saving book:", err);
 
@@ -110,30 +106,22 @@ export async function getSavingBookById(req, res) {
   }
 }
 
-
 // Tìm kiếm sổ tiết kiệm theo keyword
 export async function searchSavingBook(req, res) {
   try {
     const { keyword } = req.query;
 
-    // Nếu không có keyword thì báo lỗi
-    if (!keyword || keyword.trim() === "") {
-      return res.status(400).json({
-        message: "Keyword is required",
-        success: false,
-      });
-    }
-
-    // Gọi service
+    // Gọi service - nếu không có keyword thì lấy tất cả
     const result = await savingBookService.searchSavingBook(keyword);
 
     return res.status(200).json({
-      message: "Search saving books successfully",
+      message: keyword
+        ? "Search saving books successfully"
+        : "Get all saving books successfully",
       success: true,
       total: result.length,
       data: result,
     });
-
   } catch (err) {
     return res.status(err.status || 500).json({
       message: err.message || "Failed to search saving books",
@@ -142,12 +130,11 @@ export async function searchSavingBook(req, res) {
   }
 }
 
-
 // Tất toán sổ tiết kiệm
 export async function closeSavingBook(req, res) {
   try {
     const { id } = req.params;
-    const { employeeID } = req.body; 
+    const { employeeID } = req.body;
     const result = await savingBookService.closeSavingBook(id, employeeID);
 
     if (!result) {
