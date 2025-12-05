@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { getProfile, updateProfile, changePassword } from '@/services/profileService';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Badge } from '../../components/ui/badge';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  getProfile,
+  updateProfile,
+  changePassword,
+} from "@/services/profileService";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import { Badge } from "../../components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -13,15 +23,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
-import { UserCircle, Mail, Phone, MapPin, Lock, CheckCircle2, Sparkles } from 'lucide-react';
-import { StarDecor } from '../../components/CuteComponents';
+import {
+  UserCircle,
+  Mail,
+  Phone,
+  MapPin,
+  Lock,
+  CheckCircle2,
+  Sparkles,
+} from "lucide-react";
+import { StarDecor } from "../../components/CuteComponents";
+import { Skeleton } from "../../components/ui/skeleton";
 
 export default function UserProfile() {
   const { user } = useAuth();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showEditContact, setShowEditContact] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -30,10 +49,10 @@ export default function UserProfile() {
 
   const [contactInfo, setContactInfo] = useState({
     email: `${user.username}@kasa.com`,
-    phone: '+84 123 456 789',
-    address: '123 Main Street, District 1, Ho Chi Minh City',
-    dateOfBirth: '2004-01-01',
-    avatarUrl: ''
+    phone: "+84 123 456 789",
+    address: "123 Main Street, District 1, Ho Chi Minh City",
+    dateOfBirth: "2004-01-01",
+    avatarUrl: "",
   });
 
   // Fetch profile on mount
@@ -45,16 +64,16 @@ export default function UserProfile() {
         if (response.success && response.data) {
           setProfileData(response.data);
           setContactInfo({
-            email: response.data.email || '',
-            phone: response.data.phone || '',
-            address: response.data.address || '',
-            dateOfBirth: response.data.dateOfBirth || '2004-01-01',
-            avatarUrl: response.data.avatarUrl || ''
+            email: response.data.email || "",
+            phone: response.data.phone || "",
+            address: response.data.address || "",
+            dateOfBirth: response.data.dateOfBirth || "2004-01-01",
+            avatarUrl: response.data.avatarUrl || "",
           });
         }
       } catch (err) {
-        console.error('Failed to fetch profile:', err);
-        setError('Failed to load profile');
+        console.error("Failed to fetch profile:", err);
+        setError("Failed to load profile");
       } finally {
         setLoading(false);
       }
@@ -64,24 +83,28 @@ export default function UserProfile() {
   }, []);
 
   const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   const handleChangePassword = async () => {
-    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      alert('Please fill in all password fields');
+    if (
+      !passwordData.currentPassword ||
+      !passwordData.newPassword ||
+      !passwordData.confirmPassword
+    ) {
+      alert("Please fill in all password fields");
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match');
+      alert("New passwords do not match");
       return;
     }
 
     if (passwordData.newPassword.length < 6) {
-      alert('Password must be at least 6 characters');
+      alert("Password must be at least 6 characters");
       return;
     }
 
@@ -89,20 +112,24 @@ export default function UserProfile() {
       setLoading(true);
       const response = await changePassword({
         oldPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword
+        newPassword: passwordData.newPassword,
       });
-      
+
       if (response.success) {
         setShowChangePassword(false);
-        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-        setSuccessMessage('Password changed successfully');
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        setSuccessMessage("Password changed successfully");
         setShowSuccess(true);
       } else {
-        alert(response.message || 'Failed to change password');
+        alert(response.message || "Failed to change password");
       }
     } catch (err) {
-      console.error('Failed to change password:', err);
-      alert('Failed to change password. Please try again.');
+      console.error("Failed to change password:", err);
+      alert("Failed to change password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -110,7 +137,7 @@ export default function UserProfile() {
 
   const handleUpdateContact = async () => {
     if (!contactInfo.email || !contactInfo.phone) {
-      alert('Email and phone are required');
+      alert("Email and phone are required");
       return;
     }
 
@@ -121,9 +148,9 @@ export default function UserProfile() {
         phone: contactInfo.phone,
         address: contactInfo.address,
         dateOfBirth: contactInfo.dateOfBirth,
-        avatarUrl: contactInfo.avatarUrl
+        avatarUrl: contactInfo.avatarUrl,
       });
-      
+
       if (response.success && response.data) {
         setProfileData(response.data);
         setContactInfo({
@@ -131,17 +158,17 @@ export default function UserProfile() {
           phone: response.data.phone,
           address: response.data.address,
           dateOfBirth: response.data.dateOfBirth,
-          avatarUrl: response.data.avatarUrl
+          avatarUrl: response.data.avatarUrl,
         });
         setShowEditContact(false);
-        setSuccessMessage('Contact information updated successfully');
+        setSuccessMessage("Contact information updated successfully");
         setShowSuccess(true);
       } else {
-        alert(response.message || 'Failed to update profile');
+        alert(response.message || "Failed to update profile");
       }
     } catch (err) {
-      console.error('Failed to update profile:', err);
-      alert('Failed to update profile. Please try again.');
+      console.error("Failed to update profile:", err);
+      alert("Failed to update profile. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -149,27 +176,108 @@ export default function UserProfile() {
 
   const getRoleBadgeColor = (role) => {
     switch (role) {
-      case 'admin':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'accountant':
-        return 'bg-cyan-100 text-cyan-700 border-cyan-200';
-      case 'teller':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+      case "admin":
+        return "bg-purple-100 text-purple-700 border-purple-200";
+      case "accountant":
+        return "bg-cyan-100 text-cyan-700 border-cyan-200";
+      case "teller":
+        return "bg-blue-100 text-blue-700 border-blue-200";
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
   // Canonical roleName derived from profile or auth user
-  const roleName = (profileData?.roleName || user?.roleName || user?.role || '').toLowerCase();
+  const roleName = (
+    profileData?.roleName ||
+    user?.roleName ||
+    user?.role ||
+    ""
+  ).toLowerCase();
 
   // Show loading state
   if (loading && !profileData) {
     return (
-      <div className="max-w-4xl mx-auto flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="w-12 h-12 mx-auto mb-4 border-4 border-purple-200 rounded-full border-t-purple-600 animate-spin"></div>
-          <p className="text-gray-600">Loading profile...</p>
+      <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
+        {/* Profile Header Skeleton */}
+        <div className="border border-gray-200 rounded-2xl lg:rounded-3xl overflow-hidden">
+          <div className="p-4 sm:p-6 lg:p-8 bg-linear-to-br from-[#F3E8FF] to-[#E8F6FF]">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+              <Skeleton className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200" />
+              <div className="flex-1 text-center sm:text-left space-y-3">
+                <Skeleton className="h-8 w-48 mx-auto sm:mx-0 bg-gray-200" />
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <Skeleton className="h-6 w-28 bg-gray-200 rounded-full" />
+                  <Skeleton className="h-6 w-20 bg-gray-200 rounded-full" />
+                </div>
+                <Skeleton className="h-4 w-32 mx-auto sm:mx-0 bg-gray-200" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Information Skeleton */}
+        <div className="border border-gray-200 rounded-3xl overflow-hidden">
+          <div className="bg-gray-50 border-b border-gray-100 p-4 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <Skeleton className="h-6 w-48 bg-gray-200" />
+                <Skeleton className="h-4 w-36 bg-gray-200" />
+              </div>
+              <Skeleton className="h-10 w-16 bg-gray-200 rounded-xl" />
+            </div>
+          </div>
+          <div className="p-6 space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50"
+              >
+                <Skeleton className="w-12 h-12 rounded-xl bg-gray-200" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-20 bg-gray-200" />
+                  <Skeleton className="h-4 w-48 bg-gray-200" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Security Settings Skeleton */}
+        <div className="border border-gray-200 rounded-3xl overflow-hidden">
+          <div className="bg-gray-50 border-b border-gray-100 p-4 sm:p-6 space-y-2">
+            <Skeleton className="h-6 w-40 bg-gray-200" />
+            <Skeleton className="h-4 w-48 bg-gray-200" />
+          </div>
+          <div className="p-6">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50">
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-12 h-12 rounded-xl bg-gray-200" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-24 bg-gray-200" />
+                  <Skeleton className="h-3 w-32 bg-gray-200" />
+                </div>
+              </div>
+              <Skeleton className="h-10 w-36 bg-gray-200 rounded-xl" />
+            </div>
+          </div>
+        </div>
+
+        {/* Account Details Skeleton */}
+        <div className="border border-gray-200 rounded-3xl overflow-hidden">
+          <div className="bg-gray-50 border-b border-gray-100 p-4 sm:p-6">
+            <Skeleton className="h-6 w-36 bg-gray-200" />
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="p-4 rounded-2xl bg-gray-50">
+                  <Skeleton className="h-4 w-24 bg-gray-200 mb-2" />
+                  <Skeleton className="h-5 w-36 bg-gray-200" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -185,29 +293,46 @@ export default function UserProfile() {
       )}
 
       {/* Profile Header */}
-      <Card className="border-0 shadow-xl rounded-2xl lg:rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-2xl lg:rounded-3xl overflow-hidden">
         <CardContent className="p-4 sm:p-6 lg:p-8 bg-linear-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
           <StarDecor className="top-4 right-8 sm:right-12" />
-          <Sparkles className="absolute top-6 right-20 sm:right-32 text-purple-400 opacity-50" size={20} />
-          
+          <Sparkles
+            className="absolute top-6 right-20 sm:right-32 text-purple-400 opacity-50"
+            size={20}
+          />
+
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 relative z-10">
-            <div 
-              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full shadow-xl border-4 border-white shrink-0 overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+            <div
+              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-gray-200 border-4 border-white shrink-0 overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+              }}
             >
               {profileData?.avatarUrl ? (
-                <img src={profileData.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+                <img
+                  src={profileData.avatarUrl}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
               )}
             </div>
             <div className="flex-1 text-center sm:text-left min-w-0">
-              <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-gray-900 truncate">{profileData?.fullName || user.fullName}</h2>
+              <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-gray-900 truncate">
+                {profileData?.fullName || user.fullName}
+              </h2>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 mb-2">
-                <Badge className={`${getRoleBadgeColor(roleName)} border font-medium`}>
-                  {roleName === 'admin' ? '🔑 Administrator' : 
-                   roleName === 'accountant' ? '💼 Accountant' : 
-                   '💰 Teller'}
+                <Badge
+                  className={`${getRoleBadgeColor(
+                    roleName
+                  )} border font-medium`}
+                >
+                  {roleName === "admin"
+                    ? "🔑 Administrator"
+                    : roleName === "accountant"
+                    ? "💼 Accountant"
+                    : "💰 Teller"}
                 </Badge>
                 <Badge className="text-green-700 bg-green-100 border-green-200 border font-medium">
                   ✓ Active
@@ -220,17 +345,17 @@ export default function UserProfile() {
       </Card>
 
       {/* Contact Information */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-3xl overflow-hidden">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-xl">Contact Information</CardTitle>
               <CardDescription>Your personal contact details</CardDescription>
             </div>
-            <Button 
+            <Button
               onClick={() => setShowEditContact(true)}
               variant="outline"
-              className="rounded-xl border-gray-200"
+              className="rounded-2xl border-gray-200"
             >
               Edit
             </Button>
@@ -238,8 +363,14 @@ export default function UserProfile() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-blue-50 border border-blue-100">
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)' }}>
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-blue-50 border border-blue-100">
+              <div
+                className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)",
+                }}
+              >
                 <Mail size={20} className="text-white" />
               </div>
               <div>
@@ -248,18 +379,32 @@ export default function UserProfile() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-green-50 border border-green-100">
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}>
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-green-50 border border-green-100">
+              <div
+                className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
+                }}
+              >
                 <Phone size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-700">Phone Number</p>
+                <p className="text-sm font-medium text-gray-700">
+                  Phone Number
+                </p>
                 <p className="text-sm text-gray-900">{contactInfo.phone}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-purple-50 border border-purple-100">
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}>
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-purple-50 border border-purple-100">
+              <div
+                className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                }}
+              >
                 <MapPin size={20} className="text-white" />
               </div>
               <div>
@@ -272,16 +417,22 @@ export default function UserProfile() {
       </Card>
 
       {/* Security Settings */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-3xl overflow-hidden">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Security Settings</CardTitle>
           <CardDescription>Manage your account security</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-linear-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-linear-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-12 h-12 rounded-xl shadow-sm" style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)' }}>
+                <div
+                  className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
+                  }}
+                >
                   <Lock size={20} className="text-white" />
                 </div>
                 <div>
@@ -289,9 +440,9 @@ export default function UserProfile() {
                   <p className="text-sm text-gray-600">Changed 30 days ago</p>
                 </div>
               </div>
-              <Button 
+              <Button
                 onClick={() => setShowChangePassword(true)}
-                className="rounded-xl bg-white border border-yellow-200 hover:bg-yellow-50"
+                className="rounded-2xl bg-white border border-yellow-200 hover:bg-yellow-50"
                 variant="outline"
               >
                 Change Password
@@ -302,136 +453,153 @@ export default function UserProfile() {
       </Card>
 
       {/* Account Details */}
-      <Card className="border-0 shadow-xl rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-3xl overflow-hidden">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Account Details</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Username</p>
-              <p className="text-sm font-semibold text-gray-900">{user.username}</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Employee ID</p>
-              <p className="text-sm font-semibold text-gray-900">{profileData?.id || user?.id || 'N/A'}</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Account Created</p>
               <p className="text-sm font-semibold text-gray-900">
-                {profileData?.createdAt 
-                  ? new Date(profileData.createdAt).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })
-                  : 'N/A'
-                }
+                {user.username}
               </p>
             </div>
-            {/* TODO: Delete if database not add lastLogin */}
-            {/* <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Last Login</p>
-              <p className="text-sm font-semibold text-gray-900">
-                {(profileData?.lastLogin || profileData?.lastlogin) 
-                  ? new Date(profileData?.lastLogin || profileData?.lastlogin).toLocaleString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })
-                  : 'N/A'
-                }
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">
+                Employee ID
               </p>
-            </div> */}
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Department</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {profileData?.id || user?.id || "N/A"}
+              </p>
+            </div>
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">
+                Department
+              </p>
               <p className="text-sm font-semibold text-gray-900 capitalize">
-                {roleName === 'admin' ? 'Administration' : 
-                 roleName === 'accountant' ? 'Accounting' : 
-                 'Teller'}
+                {roleName === "admin"
+                  ? "Administration"
+                  : roleName === "accountant"
+                  ? "Accounting"
+                  : "Teller"}
               </p>
             </div>
-            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Status</p>
-              <Badge className="text-green-700 bg-green-100 border-green-200 border">✓ Active</Badge>
+              <Badge className="text-green-700 bg-green-100 border-green-200 border">
+                ✓ Active
+              </Badge>
             </div>
           </div>
         </CardContent>
       </Card>
-
 
       {/* Change Password Dialog */}
       <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
         <DialogContent className="rounded-3xl">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div 
-                className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              <div
+                className="w-12 h-12 rounded-2xl flex items-center justify-center border border-gray-200"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                }}
               >
                 <Lock size={24} className="text-white" />
               </div>
               <div>
                 <DialogTitle className="text-xl">Change Password</DialogTitle>
-                <DialogDescription>Update your account password</DialogDescription>
+                <DialogDescription>
+                  Update your account password
+                </DialogDescription>
               </div>
             </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPassword" className="text-gray-700">Current Password</Label>
+              <Label htmlFor="currentPassword" className="text-gray-700">
+                Current Password
+              </Label>
               <Input
                 id="currentPassword"
                 type="password"
                 value={passwordData.currentPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    currentPassword: e.target.value,
+                  })
+                }
                 placeholder="Enter current password"
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="newPassword" className="text-gray-700">New Password</Label>
+              <Label htmlFor="newPassword" className="text-gray-700">
+                New Password
+              </Label>
               <Input
                 id="newPassword"
                 type="password"
                 value={passwordData.newPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    newPassword: e.target.value,
+                  })
+                }
                 placeholder="Enter new password"
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
-              <p className="text-xs text-gray-500">Must be at least 6 characters</p>
+              <p className="text-xs text-gray-500">
+                Must be at least 6 characters
+              </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-gray-700">Confirm New Password</Label>
+              <Label htmlFor="confirmPassword" className="text-gray-700">
+                Confirm New Password
+              </Label>
               <Input
                 id="confirmPassword"
                 type="password"
                 value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    confirmPassword: e.target.value,
+                  })
+                }
                 placeholder="Confirm new password"
-                className="h-11 rounded-xl border-gray-200"
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
           </div>
           <div className="flex gap-4">
-            <Button 
+            <Button
               onClick={handleChangePassword}
               disabled={loading}
-              className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
-              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              className="flex-1 h-12 text-white rounded-2xl border border-gray-200 font-medium"
+              style={{
+                background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+              }}
             >
-              {loading ? 'Changing...' : 'Change Password'}
+              {loading ? "Changing..." : "Change Password"}
             </Button>
-            <Button 
+            <Button
               onClick={() => {
                 setShowChangePassword(false);
-                setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                setPasswordData({
+                  currentPassword: "",
+                  newPassword: "",
+                  confirmPassword: "",
+                });
               }}
               variant="outline"
-              className="flex-1 h-12 rounded-xl border-gray-200"
+              className="flex-1 h-12 rounded-2xl border-gray-200"
               disabled={loading}
             >
               Cancel
@@ -445,87 +613,119 @@ export default function UserProfile() {
         <DialogContent className="rounded-3xl">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
-              <div 
-                className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
-                style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              <div
+                className="w-12 h-12 rounded-2xl flex items-center justify-center border border-gray-200"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                }}
               >
                 <Mail size={24} className="text-white" />
               </div>
               <div>
-                <DialogTitle className="text-xl">Edit Contact Information</DialogTitle>
-                <DialogDescription>Update your contact details</DialogDescription>
+                <DialogTitle className="text-xl">
+                  Edit Contact Information
+                </DialogTitle>
+                <DialogDescription>
+                  Update your contact details
+                </DialogDescription>
               </div>
             </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700">Email Address</Label>
+              <Label htmlFor="email" className="text-gray-700">
+                Email Address
+              </Label>
               <Input
                 id="email"
                 type="email"
                 value={contactInfo.email}
-                onChange={(e) => setContactInfo({ ...contactInfo, email: e.target.value })}
-                className="h-11 rounded-xl border-gray-200"
+                onChange={(e) =>
+                  setContactInfo({ ...contactInfo, email: e.target.value })
+                }
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-gray-700">Phone Number</Label>
+              <Label htmlFor="phone" className="text-gray-700">
+                Phone Number
+              </Label>
               <Input
                 id="phone"
                 type="tel"
                 value={contactInfo.phone}
-                onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
-                className="h-11 rounded-xl border-gray-200"
+                onChange={(e) =>
+                  setContactInfo({ ...contactInfo, phone: e.target.value })
+                }
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="address" className="text-gray-700">Address</Label>
+              <Label htmlFor="address" className="text-gray-700">
+                Address
+              </Label>
               <Input
                 id="address"
                 value={contactInfo.address}
-                onChange={(e) => setContactInfo({ ...contactInfo, address: e.target.value })}
-                className="h-11 rounded-xl border-gray-200"
+                onChange={(e) =>
+                  setContactInfo({ ...contactInfo, address: e.target.value })
+                }
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dateOfBirth" className="text-gray-700">Date of Birth</Label>
+              <Label htmlFor="dateOfBirth" className="text-gray-700">
+                Date of Birth
+              </Label>
               <Input
                 id="dateOfBirth"
                 type="date"
                 value={contactInfo.dateOfBirth}
-                onChange={(e) => setContactInfo({ ...contactInfo, dateOfBirth: e.target.value })}
-                className="h-11 rounded-xl border-gray-200"
+                onChange={(e) =>
+                  setContactInfo({
+                    ...contactInfo,
+                    dateOfBirth: e.target.value,
+                  })
+                }
+                className="h-11 rounded-2xl border-gray-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="avatarUrl" className="text-gray-700">Avatar URL</Label>
+              <Label htmlFor="avatarUrl" className="text-gray-700">
+                Avatar URL
+              </Label>
               <Input
                 id="avatarUrl"
                 type="url"
                 value={contactInfo.avatarUrl}
-                onChange={(e) => setContactInfo({ ...contactInfo, avatarUrl: e.target.value })}
-                className="h-11 rounded-xl border-gray-200"
+                onChange={(e) =>
+                  setContactInfo({ ...contactInfo, avatarUrl: e.target.value })
+                }
+                className="h-11 rounded-2xl border-gray-200"
                 placeholder="https://example.com/avatar.png"
               />
             </div>
           </div>
           <div className="flex gap-4">
-            <Button 
+            <Button
               onClick={handleUpdateContact}
               disabled={loading}
-              className="flex-1 h-12 text-white rounded-xl shadow-lg font-medium"
-              style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+              className="flex-1 h-12 text-white rounded-2xl border border-gray-200 font-medium"
+              style={{
+                background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+              }}
             >
-              {loading ? 'Updating...' : 'Update Information'}
+              {loading ? "Updating..." : "Update Information"}
             </Button>
-            <Button 
+            <Button
               onClick={() => setShowEditContact(false)}
               variant="outline"
-              className="flex-1 h-12 rounded-xl border-gray-200"
+              className="flex-1 h-12 rounded-2xl border-gray-200"
               disabled={loading}
             >
               Cancel
@@ -539,9 +739,12 @@ export default function UserProfile() {
         <DialogContent className="rounded-3xl">
           <DialogHeader>
             <div className="flex justify-center mb-4">
-              <div 
+              <div
                 className="w-20 h-20 rounded-full flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}
+                style={{
+                  background:
+                    "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
+                }}
               >
                 <CheckCircle2 size={48} className="text-white" />
               </div>
@@ -551,10 +754,12 @@ export default function UserProfile() {
               {successMessage}
             </DialogDescription>
           </DialogHeader>
-          <Button 
+          <Button
             onClick={() => setShowSuccess(false)}
-            className="w-full h-12 text-white rounded-xl shadow-lg font-medium"
-            style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)' }}
+            className="w-full h-12 text-white rounded-2xl border border-gray-200 font-medium"
+            style={{
+              background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+            }}
           >
             Close
           </Button>

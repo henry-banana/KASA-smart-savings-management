@@ -1,6 +1,6 @@
-import { USE_MOCK } from '@/config/app.config';
-import { accountApi } from '@/api/accountApi';
-import { mockSavingBookAdapter } from '@/mocks/adapters/savingBookAdapter';
+import { USE_MOCK } from "@/config/app.config";
+import { accountApi } from "@/api/accountApi";
+import { mockSavingBookAdapter } from "@/mocks/adapters/savingBookAdapter";
 
 /**
  * Tạo sổ tiết kiệm mới (BM1)
@@ -10,11 +10,11 @@ import { mockSavingBookAdapter } from '@/mocks/adapters/savingBookAdapter';
 export const createSavingBook = async (data) => {
   // Validation
   if (!data.customerName || !data.initialDeposit) {
-    throw new Error('Thiếu thông tin khách hàng hoặc số tiền');
+    throw new Error("Missing customer information or amount");
   }
 
   if (Number(data.initialDeposit) < 100000) {
-    throw new Error('Số tiền tối thiểu là 100,000 VND');
+    throw new Error("Minimum amount is 100,000 VND");
   }
 
   if (USE_MOCK) {
@@ -23,24 +23,29 @@ export const createSavingBook = async (data) => {
       citizenId: data.idCard,
       customerName: data.customerName,
       typeSavingId: data.savingsType,
-      openDate: data.openDate,
-      balance: parseFloat(data.initialDeposit)
+      initialDeposit: parseFloat(data.initialDeposit),
+      employeeId: data.employeeId || "NV001", // TODO: Get from auth context
     });
     return {
       ...resp,
-      data: { ...resp.data, accountCode: resp.data.bookId }
+      data: { ...resp.data, accountCode: resp.data.bookId },
     };
   }
 
-  // Backend API expects backend payload; keep existing mapping here
-  return accountApi.createAccount({
-    customer_name: data.customerName,
-    id_card: data.idCard,
-    address: data.address,
-    savings_type: data.savingsType,
-    initial_deposit: parseFloat(data.initialDeposit),
-    open_date: data.openDate || new Date().toISOString().split('T')[0]
+  // Backend API - OPENAPI contract: POST /api/savingbook
+  const resp = await accountApi.createAccount({
+    citizenID: data.idCard,
+    customerName: data.customerName,
+    typeSavingID: data.savingsType,
+    initialDeposit: parseFloat(data.initialDeposit),
+    employeeID: data.employeeId || "NV001", // TODO: Get from auth context
   });
+
+  // Alias bookId as accountCode for UI compatibility
+  return {
+    ...resp,
+    data: { ...resp.data, accountCode: resp.data.bookId },
+  };
 };
 
 /**
@@ -50,9 +55,17 @@ export const createSavingBook = async (data) => {
  * @param {string} statusFilter - Lọc theo trạng thái
  * @returns {Promise<Object>} Search results
  */
-export const searchSavingBooks = async (keyword = '', typeFilter = 'all', statusFilter = 'all') => {
+export const searchSavingBooks = async (
+  keyword = "",
+  typeFilter = "all",
+  statusFilter = "all"
+) => {
   if (USE_MOCK) {
-    return mockSavingBookAdapter.searchSavingBooks(keyword, typeFilter, statusFilter);
+    return mockSavingBookAdapter.searchSavingBooks(
+      keyword,
+      typeFilter,
+      statusFilter
+    );
   }
   return accountApi.searchSavingBooks(keyword, typeFilter, statusFilter);
 };
@@ -64,7 +77,7 @@ export const searchSavingBooks = async (keyword = '', typeFilter = 'all', status
  */
 export const getSavingBookById = async (id) => {
   if (!id) {
-    throw new Error('Vui lòng nhập mã sổ');
+    throw new Error("Please enter account code");
   }
   if (USE_MOCK) {
     return mockSavingBookAdapter.getSavingBookById(id);

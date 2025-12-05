@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { setupSwagger } from "./src/config/swagger.js";
+import { requestLogger } from "./src/middleware/logger.middleware.js";
 import authRoutes from "./src/routers/userAccount.router.js";
 import savingBookRoutes from "./src/routers/savingBook.router.js";
 import transactionRoutes from "./src/routers/transaction.router.js";
@@ -10,6 +11,7 @@ import typeSavingRoutes from "./src/routers/typeSaving.router.js";
 import reportRoutes from "./src/routers/report.router.js";
 import userRoutes from "./src/routers/userAccount.router.js";
 import branchRoutes from "./src/routers/branch.router.js";
+import regulationRoutes from "./src/routers/regulation.router.js";
 
 dotenv.config();
 
@@ -20,14 +22,17 @@ setupSwagger(app);
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true, // nếu cần gửi cookie
   })
 );
 
 app.use(express.json());
 
-app.use("/api/auth", authRoutes); // Báo FE là đổi cái này
+// Middleware log các request
+app.use(requestLogger);
+
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/savingbook", savingBookRoutes);
 app.use("/api/transactions", transactionRoutes);
@@ -35,6 +40,7 @@ app.use("/api/customer", customerRoutes);
 app.use("/api/typesaving", typeSavingRoutes);
 app.use("/api/report", reportRoutes);
 app.use("/api/branch", branchRoutes);
+app.use("/api/regulations", regulationRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

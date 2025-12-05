@@ -1,5 +1,5 @@
 // TODO: replace with real backend API for QĐ6 – Regulations
-import { apiClient } from './apiClient';
+import { apiClient } from "./apiClient";
 
 /**
  * Regulation API
@@ -11,19 +11,19 @@ export const regulationApi = {
    * @returns {Promise<Object>} Current regulations data
    */
   async getRegulations() {
-    const response = await apiClient.get('/api/regulations');
+    const response = await apiClient.get("/api/regulations");
     return response.data;
   },
 
   /**
    * Update regulations
    * @param {Object} payload - Regulation updates
-   * @param {number} payload.minimumDepositAmount - Minimum deposit amount in VND
+   * @param {number} payload.minimumBalance - Minimum balance amount in VND
    * @param {number} payload.minimumTermDays - Minimum term days before withdrawal
    * @returns {Promise<Object>} Updated regulations data
    */
   async updateRegulations(payload) {
-    const response = await apiClient.put('/api/regulations', payload);
+    const response = await apiClient.put("/api/regulations", payload);
     return response.data;
   },
 
@@ -32,7 +32,7 @@ export const regulationApi = {
    * @returns {Promise<Object>} Interest rates data
    */
   async getInterestRates() {
-    const response = await apiClient.get('/api/regulations/interest-rates');
+    const response = await apiClient.get("/api/regulations/interest-rates");
     return response.data;
   },
 
@@ -42,7 +42,11 @@ export const regulationApi = {
    * @returns {Promise<Object>} Updated interest rates data
    */
   async updateInterestRates(rates) {
-    const response = await apiClient.put('/api/regulations/interest-rates', { items: rates });
+    // Send array directly as per OPENAPI specification
+    const response = await apiClient.put(
+      "/api/regulations/interest-rates",
+      rates
+    );
     return response.data;
   },
 
@@ -51,7 +55,7 @@ export const regulationApi = {
    * @returns {Promise<Object>} History data
    */
   async getChangeHistory() {
-    const response = await apiClient.get('/api/regulations/history');
+    const response = await apiClient.get("/api/regulations/history");
     return response.data;
-  }
+  },
 };

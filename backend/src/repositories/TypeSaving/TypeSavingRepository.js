@@ -25,6 +25,7 @@ export class TypeSavingRepository {
   async delete(typeSavingId) {
     return await TypeSaving.delete(typeSavingId);
   }
+
 }
 
 // Export instance sẵn

@@ -1,15 +1,13 @@
-import { apiClient } from './apiClient';
+import { apiClient } from "./apiClient";
 
 export const authApi = {
   async login(credentials) {
-    // Chỉ đổi để giống với API phía BE. Đợi sau khi BE fix lại thì đổi lại.
-    // const response = await apiClient.post('/api/auth', credentials);
-    const response = await apiClient.post('/api/login', credentials);
+    const response = await apiClient.post("/api/auth/login", credentials);
     return response.data;
   },
 
   async logout() {
-    const response = await apiClient.post('/api/logout');
+    const response = await apiClient.post("/api/logout");
     return response.data;
   },
 
@@ -19,7 +17,9 @@ export const authApi = {
    * @returns {Promise<Object>}
    */
   async requestPasswordReset(emailOrUsername) {
-    const response = await apiClient.post('/api/auth/forgot-password', { emailOrUsername });
+    const response = await apiClient.post("/api/auth/forgot-password", {
+      emailOrUsername,
+    });
     return response.data;
   },
 
@@ -29,7 +29,7 @@ export const authApi = {
    * @returns {Promise<Object>}
    */
   async verifyOtp(data) {
-    const response = await apiClient.post('/api/auth/verify-otp', data);
+    const response = await apiClient.post("/api/auth/verify-otp", data);
     return response.data;
   },
 
@@ -39,7 +39,7 @@ export const authApi = {
    * @returns {Promise<Object>}
    */
   async resetPassword(data) {
-    const response = await apiClient.post('/api/auth/reset-password', data);
+    const response = await apiClient.post("/api/auth/reset-password", data);
     return response.data;
-  }
+  },
 };

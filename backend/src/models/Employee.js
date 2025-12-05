@@ -16,9 +16,12 @@ class EmployeeModel extends BaseModel {
         role:roleid (
           rolename
         ),
-        account:useraccount!userid (
+        useraccount:useraccount!userid (
           userid,
           accountstatus
+        ),
+        branch:branchid (
+          branchname
         )
       `);
 
@@ -31,7 +34,8 @@ class EmployeeModel extends BaseModel {
       fullName: emp.fullname,
       email: emp.email,
       roleName: emp.role?.rolename ?? null,
-      status: emp.account?.status ?? "inactive"
+      status: emp.useraccount?.accountstatus ?? "inactive",
+      branchName: emp.branch?.branchname ?? null
     }));
   }
 }

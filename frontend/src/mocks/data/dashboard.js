@@ -3,45 +3,40 @@
  * Aggregated data from various sources
  */
 
-import { mockSavingBooks } from './savingBooks';
-import { mockTransactions } from './transactions';
+import { mockSavingBooks } from "./savingBooks";
+import { mockTypeSavings } from "./typeSavings";
+import { mockTransactions } from "./transactions";
+import { getTypeChartColor } from "../../utils/typeColorUtils";
 // import { mockCustomers } from './customers'; // Not used yet, for future enhancements
 
 /**
  * Calculate dashboard statistics from mock data
  */
 export const calculateDashboardStats = () => {
-  const today = new Date().toISOString().split('T')[0];
-  
+  const today = new Date().toISOString().split("T")[0];
+
   // Active accounts
-  const activeAccounts = mockSavingBooks.filter(sb => sb.status === 'active').length;
-  
+  const activeAccounts = mockSavingBooks.filter(
+    (sb) => sb.status === "active"
+  ).length;
+
   // Today's transactions
-  const todayTransactions = mockTransactions.filter(t => 
+  const todayTransactions = mockTransactions.filter((t) =>
     t.transactionDate?.startsWith(today)
   );
-  
+
   const depositsToday = todayTransactions
-    .filter(t => t.type === 'deposit')
+    .filter((t) => t.type === "deposit")
     .reduce((sum, t) => sum + t.amount, 0);
-    
+
   const withdrawalsToday = todayTransactions
-    .filter(t => t.type === 'withdraw')
+    .filter((t) => t.type === "withdraw")
     .reduce((sum, t) => sum + t.amount, 0);
-  
-  // Active customers (customers with active saving books)
-  const activeCustomerIds = new Set(
-    mockSavingBooks
-      .filter(sb => sb.status === 'active')
-      .map(sb => sb.citizenId)
-  );
-  const activeCustomers = activeCustomerIds.size;
-  
+
   return {
     activeAccounts,
     depositsToday,
     withdrawalsToday,
-    activeCustomers
   };
 };
 
@@ -51,36 +46,36 @@ export const calculateDashboardStats = () => {
 export const calculateWeeklyTransactions = () => {
   const today = new Date();
   const weekData = [];
-  
+
   // Get last 7 days
   for (let i = 6; i >= 0; i--) {
     const date = new Date(today);
     date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split('T')[0];
-    
-    const dayTransactions = mockTransactions.filter(t =>
+    const dateStr = date.toISOString().split("T")[0];
+
+    const dayTransactions = mockTransactions.filter((t) =>
       t.transactionDate?.startsWith(dateStr)
     );
-    
+
     const deposits = dayTransactions
-      .filter(t => t.type === 'deposit')
+      .filter((t) => t.type === "deposit")
       .reduce((sum, t) => sum + t.amount, 0);
-      
+
     const withdrawals = dayTransactions
-      .filter(t => t.type === 'withdraw')
+      .filter((t) => t.type === "withdraw")
       .reduce((sum, t) => sum + t.amount, 0);
-    
+
     // Day names in Vietnamese
-    const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+    const dayNames = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
     const dayName = dayNames[date.getDay()];
-    
+
     weekData.push({
       name: dayName,
       deposits: Math.round(deposits / 1000000), // Convert to millions
-      withdrawals: Math.round(withdrawals / 1000000)
+      withdrawals: Math.round(withdrawals / 1000000),
     });
   }
-  
+
   return weekData;
 };
 
@@ -88,35 +83,36 @@ export const calculateWeeklyTransactions = () => {
  * Calculate account type distribution
  */
 export const calculateAccountTypeDistribution = () => {
-  const typeCounts = {};
-  
+  // Build counts keyed by typeSavingId from configured mockTypeSavings
+  const counts = mockTypeSavings.reduce((acc, ts) => {
+    acc[ts.typeSavingId] = 0;
+    return acc;
+  }, {});
+
+  // Count active saving books per typeSavingId
   mockSavingBooks
-    .filter(sb => sb.status === 'active')
-    .forEach(sb => {
-      // Map type IDs to readable names
-      let typeName;
-      switch(sb.typeSavingId) {
-        case 'TS01':
-          typeName = 'No Term';
-          break;
-        case 'TS02':
-          typeName = '3 Months';
-          break;
-        case 'TS03':
-          typeName = '6 Months';
-          break;
-        default:
-          typeName = 'Other';
+    .filter((sb) => sb.status === "active")
+    .forEach((sb) => {
+      if (sb.typeSavingId && counts.hasOwnProperty(sb.typeSavingId)) {
+        counts[sb.typeSavingId] += 1;
+      } else {
+        counts["OTHER"] = (counts["OTHER"] || 0) + 1;
       }
-      
-      typeCounts[typeName] = (typeCounts[typeName] || 0) + 1;
     });
-  
-  return [
-    { name: 'No Term', value: typeCounts['No Term'] || 0, color: '#1A4D8F' },
-    { name: '3 Months', value: typeCounts['3 Months'] || 0, color: '#00AEEF' },
-    { name: '6 Months', value: typeCounts['6 Months'] || 0, color: '#60A5FA' }
-  ];
+
+  // Map configured types to result array with consistent colors
+  const result = mockTypeSavings.map((ts) => ({
+    name: ts.typeName,
+    value: counts[ts.typeSavingId] || 0,
+    color: getTypeChartColor(ts.typeName),
+  }));
+
+  // Append 'Other' bucket if present
+  if (counts["OTHER"]) {
+    result.push({ name: "Other", value: counts["OTHER"], color: "#9CA3AF" });
+  }
+
+  return result;
 };
 
 /**
@@ -124,10 +120,9 @@ export const calculateAccountTypeDistribution = () => {
  * In real app, this would be calculated from historical data
  */
 export const mockChanges = {
-  activeAccounts: '+12.5%',
-  depositsToday: '+8.2%',
-  withdrawalsToday: '-3.1%',
-  activeCustomers: '+5.4%'
+  activeAccounts: "+12.5%",
+  depositsToday: "+8.2%",
+  withdrawalsToday: "-3.1%",
 };
 
 /**
@@ -138,25 +133,25 @@ export const getRecentTransactions = () => {
   // Get last 5 transactions sorted by date desc
   const recentTxns = [...mockTransactions]
     .sort((a, b) => {
-      const dateA = new Date(a.transactionDate || '2025-01-01');
-      const dateB = new Date(b.transactionDate || '2025-01-01');
+      const dateA = new Date(a.transactionDate || "2025-01-01");
+      const dateB = new Date(b.transactionDate || "2025-01-01");
       return dateB - dateA;
     })
     .slice(0, 5);
-  
-  return recentTxns.map(txn => {
+
+  return recentTxns.map((txn) => {
     // Find saving book for customer name and account code
-    const savingBook = mockSavingBooks.find(sb => sb.bookId === txn.bookId);
-    const customerName = savingBook?.customerName || 'Unknown Customer';
+    const savingBook = mockSavingBooks.find((sb) => sb.bookId === txn.bookId);
+    const customerName = savingBook?.customerName || "Unknown Customer";
     const accountCode = savingBook?.bookId || txn.bookId;
-    
+
     // Parse date and time from transactionDate
     const txnDate = new Date(txn.transactionDate || Date.now());
-    const date = txnDate.toISOString().split('T')[0]; // YYYY-MM-DD
-    const hours = txnDate.getHours().toString().padStart(2, '0');
-    const minutes = txnDate.getMinutes().toString().padStart(2, '0');
+    const date = txnDate.toISOString().split("T")[0]; // YYYY-MM-DD
+    const hours = txnDate.getHours().toString().padStart(2, "0");
+    const minutes = txnDate.getMinutes().toString().padStart(2, "0");
     const time = `${hours}:${minutes}`; // HH:mm
-    
+
     // Return raw contract-compliant data per OpenAPI (no emoji, color, or formatted strings)
     return {
       id: txn.transactionId,
@@ -177,13 +172,13 @@ export const getDashboardData = () => {
   const stats = calculateDashboardStats();
   const weeklyTransactions = calculateWeeklyTransactions();
   const accountTypeDistribution = calculateAccountTypeDistribution();
-  
+
   return {
     stats: {
       ...stats,
-      changes: mockChanges
+      changes: mockChanges,
     },
     weeklyTransactions,
-    accountTypeDistribution
+    accountTypeDistribution,
   };
 };

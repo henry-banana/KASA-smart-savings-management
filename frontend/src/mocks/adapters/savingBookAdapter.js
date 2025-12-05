@@ -1,21 +1,21 @@
 import {
   mockSavingBooks,
   findSavingBookById,
-  addSavingBook
-} from '../data/savingBooks';
-import { findTypeSavingById } from '../data/typeSavings';
-import { randomDelay, generateId } from '../utils';
-import { logger } from '@/utils/logger';
+  addSavingBook,
+} from "../data/savingBooks";
+import { findTypeSavingById } from "../data/typeSavings";
+import { randomDelay, generateId } from "../utils";
+import { logger } from "@/utils/logger";
 
 // Helper: add months to YYYY-MM-DD date string
 const addMonths = (dateStr, months) => {
   if (!dateStr || months <= 0) return null;
-  const [y, m, d] = dateStr.split('-').map(Number);
+  const [y, m, d] = dateStr.split("-").map(Number);
   const dt = new Date(y, m - 1, d);
   dt.setMonth(dt.getMonth() + months);
   const yyyy = dt.getFullYear();
-  const mm = String(dt.getMonth() + 1).padStart(2, '0');
-  const dd = String(dt.getDate()).padStart(2, '0');
+  const mm = String(dt.getMonth() + 1).padStart(2, "0");
+  const dd = String(dt.getDate()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd}`;
 };
 
@@ -24,42 +24,53 @@ export const mockSavingBookAdapter = {
    * Search saving books (list endpoint)
    * Returns contract list items with envelope.
    */
-  async searchSavingBooks(keyword = '', typeFilter = 'all', statusFilter = 'all') {
+  async searchSavingBooks(
+    keyword = "",
+    typeFilter = "all",
+    statusFilter = "all"
+  ) {
     await randomDelay();
-    logger.info('🎭 Mock Search SavingBooks', { keyword, typeFilter, statusFilter });
+    logger.info("🎭 Mock Search SavingBooks", {
+      keyword,
+      typeFilter,
+      statusFilter,
+    });
 
     // Map to contract list item (canonical fields only)
-    let items = mockSavingBooks.map(sb => {
+    let items = mockSavingBooks.map((sb) => {
       const type = findTypeSavingById(sb.typeSavingId);
       return {
         bookId: sb.bookId,
         accountCode: sb.bookId, // alias per contract
         citizenId: sb.citizenId,
         customerName: sb.customerName,
-        accountTypeName: type?.typeName || 'Unknown',
+        accountTypeName: type?.typeName || "Unknown",
         openDate: sb.openDate,
         balance: sb.balance,
-        status: sb.status
+        status: sb.status,
       };
     });
 
     // Filters (case-insensitive)
-    items = items.filter(item => {
+    items = items.filter((item) => {
       const q = keyword.toLowerCase();
-      const matchesSearch = !q ||
+      const matchesSearch =
+        !q ||
         item.bookId.toLowerCase().includes(q) ||
         item.customerName.toLowerCase().includes(q) ||
         item.citizenId.toLowerCase().includes(q);
-      const matchesType = typeFilter === 'all' || item.accountTypeName === typeFilter;
-      const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+      const matchesType =
+        typeFilter === "all" || item.accountTypeName === typeFilter;
+      const matchesStatus =
+        statusFilter === "all" || item.status === statusFilter;
       return matchesSearch && matchesType && matchesStatus;
     });
 
     return {
-      message: 'Search saving books successfully',
+      message: "Search saving books successfully",
       success: true,
       data: items,
-      total: items.length
+      total: items.length,
     };
   },
 
@@ -69,11 +80,11 @@ export const mockSavingBookAdapter = {
    */
   async getSavingBookById(bookId) {
     await randomDelay();
-    logger.info('🎭 Mock Get SavingBook By ID', { bookId });
+    logger.info("🎭 Mock Get SavingBook By ID", { bookId });
 
     const savingBook = findSavingBookById(bookId);
     if (!savingBook) {
-      throw new Error('Saving book not found');
+      throw new Error("Saving book not found");
     }
 
     const type = findTypeSavingById(savingBook.typeSavingId);
@@ -87,19 +98,21 @@ export const mockSavingBookAdapter = {
       maturityDate: savingBook.maturityDate,
       balance: savingBook.balance,
       status: savingBook.status,
-      typeSaving: type ? {
-        typeSavingId: type.typeSavingId,
-        typeName: type.typeName,
-        term: type.term,
-        interestRate: type.interestRate
-      } : undefined,
-      transactions: [] // mock-extension: fill with canonical Transaction objects if available
+      typeSaving: type
+        ? {
+            typeSavingId: type.typeSavingId,
+            typeName: type.typeName,
+            term: type.term,
+            interestRate: type.interestRate,
+          }
+        : undefined,
+      transactions: [], // mock-extension: fill with canonical Transaction objects if available
     };
 
     return {
-      message: 'Get saving book successfully',
+      message: "Get saving book successfully",
       success: true,
-      data: detail
+      data: detail,
     };
   },
 
@@ -109,36 +122,40 @@ export const mockSavingBookAdapter = {
    */
   async createSavingBook(data) {
     await randomDelay();
-    logger.info('🎭 Mock Create SavingBook', { data });
+    logger.info("🎭 Mock Create SavingBook", { data });
 
     // Basic validation (English messages)
-    if (!data) throw new Error('Request data is required');
-    if (!data.citizenId?.trim()) throw new Error('Citizen ID is required');
-    if (!data.customerName?.trim()) throw new Error('Customer name is required');
-    if (!data.typeSavingId?.trim()) throw new Error('Type saving ID is required');
+    if (!data) throw new Error("Request data is required");
+    if (!data.citizenId?.trim()) throw new Error("Citizen ID is required");
+    if (!data.customerName?.trim())
+      throw new Error("Customer name is required");
+    if (!data.typeSavingId?.trim())
+      throw new Error("Type saving ID is required");
+    if (!data.employeeId?.trim()) throw new Error("Employee ID is required");
     const type = findTypeSavingById(data.typeSavingId);
-    if (!type) throw new Error('Type saving not found');
+    if (!type) throw new Error("Type saving not found");
 
-    const openDate = data.openDate || new Date().toISOString().split('T')[0];
+    const openDate = new Date().toISOString().split("T")[0];
     const maturityDate = type.term > 0 ? addMonths(openDate, type.term) : null;
-    const balance = typeof data.balance === 'number' ? data.balance : (typeof data.initialDeposit === 'number' ? data.initialDeposit : 0);
+    const balance =
+      typeof data.initialDeposit === "number" ? data.initialDeposit : 0;
 
     const newSavingBook = {
-      bookId: generateId('SB'),
+      bookId: generateId("SB"),
       citizenId: data.citizenId,
       customerName: data.customerName,
       typeSavingId: type.typeSavingId,
       openDate,
       maturityDate,
       balance,
-      status: 'active'
+      status: "active",
     };
 
     // Persist in mock store
     addSavingBook(newSavingBook);
 
     return {
-      message: 'Create saving book successfully',
+      message: "Create savingbook successfully",
       success: true,
       data: {
         ...newSavingBook,
@@ -146,10 +163,9 @@ export const mockSavingBookAdapter = {
           typeSavingId: type.typeSavingId,
           typeName: type.typeName,
           term: type.term,
-          interestRate: type.interestRate
+          interestRate: type.interestRate,
         },
-        transactions: []
-      }
+      },
     };
-  }
+  },
 };
