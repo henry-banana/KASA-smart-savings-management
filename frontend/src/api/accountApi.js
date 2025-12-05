@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { apiClient } from "./apiClient";
 
 export const accountApi = {
   async getAccount(id) {
@@ -7,7 +7,7 @@ export const accountApi = {
   },
 
   async createAccount(accountData) {
-    const response = await apiClient.post('/api/savingbook', accountData);
+    const response = await apiClient.post("/api/savingbook", accountData);
     return response.data;
   },
 
@@ -16,10 +16,10 @@ export const accountApi = {
    * Body: { bookId, amount, employeeId }
    */
   async deposit(id, amount, employeeId) {
-    const response = await apiClient.post('/api/transactions/deposit', {
+    const response = await apiClient.post("/api/transactions/deposit", {
       bookId: id,
       amount,
-      employeeId
+      employeeId,
     });
     return response.data;
   },
@@ -29,17 +29,29 @@ export const accountApi = {
    * Body: { bookId, amount, employeeId, shouldCloseAccount? }
    */
   async withdraw(id, amount, shouldCloseAccount, employeeId) {
-    const response = await apiClient.post('/api/transactions/withdraw', {
+    const response = await apiClient.post("/api/transactions/withdraw", {
       bookId: id,
       amount,
       employeeId,
-      shouldCloseAccount
+      shouldCloseAccount,
+    });
+    return response.data;
+  },
+
+  /**
+   * Close savings account per OpenAPI: POST /api/savingbook/{id}/close
+   * Body: { employeeID, status: "Close" }
+   */
+  async closeAccount(id, employeeId) {
+    const response = await apiClient.post(`/api/savingbook/${id}/close`, {
+      employeeID: employeeId,
+      status: "Close",
     });
     return response.data;
   },
 
   async searchAccounts(params) {
-    const response = await apiClient.get('/api/savingbook/search', { params });
+    const response = await apiClient.get("/api/savingbook/search", { params });
     return response.data;
   },
 
@@ -48,8 +60,12 @@ export const accountApi = {
     return this.getAccount(id);
   },
 
-  async searchSavingBooks(keyword = '', typeFilter = 'all', statusFilter = 'all') {
+  async searchSavingBooks(
+    keyword = "",
+    typeFilter = "all",
+    statusFilter = "all"
+  ) {
     const params = { keyword, type: typeFilter, status: statusFilter };
     return this.searchAccounts(params);
-  }
+  },
 };

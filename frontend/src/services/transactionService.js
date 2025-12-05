@@ -94,6 +94,32 @@ export const withdrawMoney = async (
 };
 
 /**
+ * Tất toán sổ tiết kiệm (Close Savings Account)
+ * @param {string} accountCode - Mã sổ tiết kiệm
+ * @param {string} employeeIdOverride - Employee ID (optional)
+ * @returns {Promise<Object>} Close account result with finalBalance, interest, status
+ */
+export const closeSavingAccount = async (accountCode, employeeIdOverride) => {
+  if (!accountCode) {
+    throw new Error("Account code is required");
+  }
+
+  if (USE_MOCK) {
+    // Use withdraw with shouldCloseAccount for mock
+    const accountInfo = await getAccountInfo(accountCode);
+    return mockTransactionAdapter.withdrawMoney({
+      bookId: accountCode,
+      amount: accountInfo.data.balance,
+      shouldCloseAccount: true,
+    });
+  }
+
+  // Real API: Call POST /api/savingbook/{id}/close
+  const employeeId = employeeIdOverride || getCurrentUserId();
+  return accountApi.closeAccount(accountCode, employeeId);
+};
+
+/**
  * Get deposit transaction statistics by date for Transaction Statistics section
  * @param {string} date - Date in YYYY-MM-DD format
  * @returns {Promise<Object>} Deposit statistics grouped by saving type

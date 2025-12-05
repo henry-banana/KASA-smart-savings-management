@@ -33,6 +33,7 @@ import { AccountInfoSkeleton } from "../../components/ui/loading-skeleton";
 import {
   getAccountInfo,
   withdrawMoney,
+  closeSavingAccount,
 } from "../../services/transactionService";
 import { getRegulations } from "@/services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
@@ -172,11 +173,19 @@ export default function Withdraw() {
     setError("");
 
     try {
-      // Calculate interest and total payout
-      const interest = calculateInterest(amount);
-      const total = amount + interest;
+      let response;
 
-      await withdrawMoney(accountId, amount, isClosingAccount);
+      if (isClosingAccount) {
+        // Use close account API for fixed-term matured accounts
+        response = await closeSavingAccount(accountId);
+      } else {
+        // Use regular withdraw API for no-term accounts
+        response = await withdrawMoney(accountId, amount, false);
+      }
+
+      // Extract interest and final balance from response
+      const interest = response.data?.interest || calculateInterest(amount);
+      const finalBalance = response.data?.finalBalance || amount + interest;
 
       // Store snapshot for modal display
       setReceiptData({
@@ -184,7 +193,7 @@ export default function Withdraw() {
         customerName: accountInfo.customerName,
         withdrawalAmount: amount,
         interestEarned: interest,
-        totalPayout: total,
+        totalPayout: finalBalance,
       });
       setCalculatedInterest(interest);
       setShowSuccess(true);
