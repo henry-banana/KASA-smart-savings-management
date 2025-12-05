@@ -150,14 +150,15 @@ export default function SearchAccounts() {
     "bg-teal-100 text-teal-700 border-teal-200",
   ];
 
+  // Improved hash function using djb2 algorithm for better distribution
   const hashString = (str) => {
-    let h = 0;
-    const s = String(str || "");
+    const s = String(str || "").toLowerCase();
+    let hash = 5381;
     for (let i = 0; i < s.length; i++) {
-      h = (h << 5) - h + s.charCodeAt(i);
-      h |= 0;
+      hash = (hash << 5) + hash + s.charCodeAt(i); // hash * 33 + char
+      hash = hash & 0xffffffff; // Convert to 32bit integer
     }
-    return Math.abs(h);
+    return Math.abs(hash);
   };
 
   const getTypeBadgeColor = (type) => {
