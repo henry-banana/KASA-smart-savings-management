@@ -34,11 +34,11 @@ export const createSavingBook = async (data) => {
 
   // Backend API - OPENAPI contract: POST /api/savingbook
   return accountApi.createAccount({
-    citizenId: data.idCard,
+    citizenID: data.idCard,
     customerName: data.customerName,
-    typeSavingId: data.savingsType,
+    typeSavingID: data.savingsType,
     initialDeposit: parseFloat(data.initialDeposit),
-    employeeId: data.employeeId || "NV001", // TODO: Get from auth context
+    employeeID: data.employeeId || "NV001", // TODO: Get from auth context
   });
 };
 
