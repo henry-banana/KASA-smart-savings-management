@@ -74,8 +74,9 @@ export const userService = {
     if (!id?.trim()) {
       throw new Error("User ID is required");
     }
-    if (!status || !["active", "disabled"].includes(status)) {
-      throw new Error("Valid status is required (active or disabled)");
+    const validStatuses = ["Unsubmitted", "Submitted", "Approved", "Rejected"];
+    if (!status || !validStatuses.includes(status)) {
+      throw new Error(`Valid status is required (${validStatuses.join(", ")})`);
     }
 
     const response = await userAdapter.updateUserStatus(id, status);
