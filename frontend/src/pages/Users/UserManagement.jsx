@@ -120,10 +120,16 @@ export default function UserManagement() {
 
   const handleEditUser = (userData) => {
     setSelectedUser(userData);
+    // Normalize role for Select component: Administrator -> admin, Accountant -> accountant, Teller -> teller
+    const normalizeRoleForForm = (role) => {
+      const normalized = role?.toLowerCase();
+      if (normalized === "administrator") return "admin";
+      return normalized;
+    };
     setFormData({
       fullName: userData.fullName,
       email: userData.email,
-      role: userData.roleName,
+      role: normalizeRoleForForm(userData.roleName),
       branchName:
         userData.branchName || (branches.length > 0 ? branches[0] : "Thủ Đức"),
     });
@@ -158,8 +164,9 @@ export default function UserManagement() {
 
   const submitAddUser = async () => {
     try {
-      // Normalize role: capitalize first letter (teller → Teller)
+      // Normalize role for backend: admin -> Administrator, teller -> Teller, accountant -> Accountant
       const capitalizeRole = (role) => {
+        if (role.toLowerCase() === "admin") return "Administrator";
         return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
       };
 
@@ -182,8 +189,9 @@ export default function UserManagement() {
   const submitEditUser = async () => {
     if (selectedUser) {
       try {
-        // Normalize role: capitalize first letter (teller → Teller)
+        // Normalize role for backend: admin -> Administrator, teller -> Teller, accountant -> Accountant
         const capitalizeRole = (role) => {
+          if (role.toLowerCase() === "admin") return "Administrator";
           return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
         };
 
@@ -205,16 +213,17 @@ export default function UserManagement() {
   };
 
   const getRoleBadgeColor = (role) => {
-    switch (role) {
-      case "admin":
-        return "bg-purple-100 text-purple-700 border-purple-200";
-      case "accountant":
-        return "bg-cyan-100 text-cyan-700 border-cyan-200";
-      case "teller":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+    const normalizedRole = role?.toLowerCase();
+    if (normalizedRole === "admin" || normalizedRole === "administrator") {
+      return "bg-purple-100 text-purple-700 border-purple-200";
     }
+    if (normalizedRole === "accountant") {
+      return "bg-cyan-100 text-cyan-700 border-cyan-200";
+    }
+    if (normalizedRole === "teller") {
+      return "bg-blue-100 text-blue-700 border-blue-200";
+    }
+    return "bg-gray-100 text-gray-700 border-gray-200";
   };
 
   // if (user.role !== 'admin') {
@@ -386,11 +395,7 @@ export default function UserManagement() {
                                 userData.roleName
                               )} border capitalize`}
                             >
-                              {userData.roleName === "admin"
-                                ? "Administrator"
-                                : userData.roleName === "accountant"
-                                ? "Accountant"
-                                : "Teller"}
+                              {userData.roleName}
                             </Badge>
                           </TableCell>
                           <TableCell>
