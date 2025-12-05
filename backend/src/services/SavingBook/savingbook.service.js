@@ -105,21 +105,20 @@ class SavingBookService {
     const transactions = await transactionRepository.findById(bookID);
 
     return {
-      bookid: savingBook.bookid,
-      citizenid: customer.citizenid,
+      bookId: savingBook.bookid,
+      citizenId: customer.citizenid,
       customerName: customer.fullname,
-      typesavingid: typeSaving.typeid,
-      opendate: savingBook.registertime,
-      maturitydate: savingBook.maturitydate,
+      typeSavingId: typeSaving.typeid,
+      openDate: savingBook.registertime,
+      maturityDate: savingBook.maturitydate,
       balance: savingBook.currentbalance,
       status: savingBook.status,
 
-      typesaving: {
-        typesavingid: typeSaving.typeid,
-        typename: typeSaving.typename,
+      typeSaving: {
+        typeSavingId: typeSaving.typeid,
+        typeName: typeSaving.typename,
         term: typeSaving.termperiod,
-        interestrate: typeSaving.interest,
-        minimumdeposit: typeSaving.minimumdeposit,
+        interestRate: typeSaving.interest,
       },
 
       transactions: transactions || [],
