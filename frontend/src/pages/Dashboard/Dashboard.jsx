@@ -301,7 +301,7 @@ export default function Dashboard() {
                   <button
                     key={index}
                     onClick={() => navigate(action.path)}
-                    className="relative p-6 overflow-hidden text-left transition-all duration-300 border-2 border-transparent group rounded-2xl hover:scale-105 hover:border border-gray-200 hover:border-white"
+                    className="relative p-6 overflow-hidden text-left transition-all duration-300 border-2 border-transparent group rounded-2xl hover:scale-105 hover:border hover:border-white"
                     style={{ background: action.gradient }}
                   >
                     {/* Decorative elements */}
@@ -539,7 +539,7 @@ export default function Dashboard() {
                   return (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:border border-gray-200"
+                      className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-2xl hover:border-gray-200 hover:border"
                     >
                       <div className="flex items-center gap-4">
                         <div
