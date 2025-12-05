@@ -128,8 +128,11 @@ export const getDepositTransactionStats = async (date) => {
   if (USE_MOCK) {
     return mockTransactionAdapter.getDepositTransactionStats(date);
   }
-  // TODO: Replace with real API call when available
-  throw new Error("Real API for deposit transaction stats not yet implemented");
+  // Fallback to mock until real API is wired
+  console.warn(
+    "Fallback to mock: deposit transaction stats API not implemented; using mock adapter"
+  );
+  return mockTransactionAdapter.getDepositTransactionStats(date);
 };
 
 /**
@@ -141,10 +144,11 @@ export const getWithdrawalTransactionStats = async (date) => {
   if (USE_MOCK) {
     return mockTransactionAdapter.getWithdrawalTransactionStats(date);
   }
-  // TODO: Replace with real API call when available
-  throw new Error(
-    "Real API for withdrawal transaction stats not yet implemented"
+  // Fallback to mock until real API is wired
+  console.warn(
+    "Fallback to mock: withdrawal transaction stats API not implemented; using mock adapter"
   );
+  return mockTransactionAdapter.getWithdrawalTransactionStats(date);
 };
 
 // Attempt to derive current user/employee ID from localStorage
