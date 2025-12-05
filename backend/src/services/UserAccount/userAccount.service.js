@@ -56,7 +56,8 @@ class UserAccountService {
         fullName: newEmployee.fullname,
         email: email,
         roleName: roleName,
-        status: userAccount.accountstatus
+        status: userAccount.accountstatus,
+        branchName: branchName
         
     };
   }
