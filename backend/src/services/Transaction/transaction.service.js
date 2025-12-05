@@ -1,11 +1,18 @@
 import { transactionRepository } from "../../repositories/Transaction/TransactionRepository.js";
-import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js"; 
-import {employeeRepository} from "../../repositories/Employee/EmployeeRepository.js"
+import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
+import { employeeRepository } from "../../repositories/Employee/EmployeeRepository.js";
 import { customerRepository } from "../../repositories/Customer/CustomerRepository.js";
 
 class TransactionService {
   // Thêm giao dịch mới
-  async addTransaction({ bookID, amount, type, tellerid, transactionDate="",  note=""}) {
+  async addTransaction({
+    bookID,
+    amount,
+    type,
+    tellerid,
+    transactionDate = "",
+    note = "",
+  }) {
     if (!bookID || !amount || !type || !tellerid)
       throw new Error("Missing required information.");
 
@@ -15,16 +22,16 @@ class TransactionService {
 
     let newTransaction;
 
-    if (!transactionDate){
+    if (!transactionDate) {
       // tạo giao dịch mới
       newTransaction = await transactionRepository.create({
         bookid: bookID,
         amount,
         transactiontype: type,
         note,
-        tellerid
-      });  
-    }else{
+        tellerid,
+      });
+    } else {
       // tạo giao dịch mới
       newTransaction = await transactionRepository.create({
         bookid: bookID,
@@ -32,17 +39,17 @@ class TransactionService {
         transactiontype: type,
         note,
         transactiondate: transactionDate,
-        tellerid
+        tellerid,
       });
     }
 
     // Kiểm tra tellerid có tồn tại không
     const teller = await employeeRepository.findById(tellerid);
 
-    if (teller){
+    if (teller) {
       // Nếu tồn tại thì có phải teller không
-    }else{
-      throw new Error("Teller ID is not exists.")
+    } else {
+      throw new Error("Teller ID is not exists.");
     }
 
     // // có thể cập nhật số dư nếu nghiệp vụ yêu cầu
@@ -61,7 +68,7 @@ class TransactionService {
 
   // Lấy toàn bộ giao dịch
   async getAllTransactions() {
-      const data = await transactionRepository.findAll();
+    const data = await transactionRepository.findAll();
 
     // Map dữ liệu về đúng format
     const result = (data || []).map((item) => ({
@@ -93,13 +100,12 @@ class TransactionService {
             employeeId: item.employee.employeeid,
             fullName: item.employee.fullname,
             role: "teller", //Do ở đây là teller mới được tạo giao dịch nên code cứng, nếu muốn đổi thì kết bảng bên model
-           }
+          }
         : null,
     }));
 
-      return result;
+    return result;
   }
-
 
   // Lấy giao dịch theo ID
   async getTransactionById(id) {
@@ -139,7 +145,7 @@ class TransactionService {
     const savingBook = await savingBookRepository.findById(data.bookId);
     if (!savingBook) throw new Error("Account not found.");
 
-    if (data.amount <= 0 ){
+    if (data.amount <= 0) {
       throw new Error("Invalid amount.");
     }
 
@@ -155,7 +161,6 @@ class TransactionService {
       currentbalance: Number(savingBook.currentbalance) + Number(data.amount),
     });
 
-
     const newTransaction = await transactionRepository.create({
       bookid: data.bookId,
       amount: data.amount,
@@ -163,11 +168,11 @@ class TransactionService {
       tellerid: data.employeeId,
     });
 
-    if (!updatedBook){
+    if (!updatedBook) {
       throw new Error("Failed to deposit money.");
     }
 
-    if (!newTransaction){
+    if (!newTransaction) {
       throw new Error("Failed to make transaction but deposit successfully.");
     }
 
@@ -197,14 +202,14 @@ class TransactionService {
   }
 
   async withdrawTransaction(data) {
-    const savingBook = await savingBookRepository.findById(data.bookID);
+    const savingBook = await savingBookRepository.findById(data.bookId);
     if (!savingBook) throw new Error("Account not found.");
 
     if (data.amount <= 0) {
       throw new Error("Invalid amount.");
     }
 
-    const employee = await employeeRepository.findById(data.employeeID);
+    const employee = await employeeRepository.findById(data.employeeId);
     if (!employee) {
       throw new Error("Teller ID is not exists.");
     }
@@ -216,17 +221,15 @@ class TransactionService {
 
     const balanceAfter = balanceBefore - Number(data.amount);
 
-    const updatedBook = await savingBookRepository.update(data.bookID, {
+    const updatedBook = await savingBookRepository.update(data.bookId, {
       currentbalance: balanceAfter,
     });
 
     const newTransaction = await transactionRepository.create({
-      bookid: data.bookID,
+      bookid: data.bookId,
       amount: data.amount,
       transactiontype: "WithDraw",
-      tellerid: data.employeeID,
-      balancebefore: balanceBefore,
-      balanceafter: balanceAfter,
+      tellerid: data.employeeId,
     });
 
     if (!updatedBook) {
@@ -251,22 +254,18 @@ class TransactionService {
         bookId: updatedBook.bookid,
         customer: {
           customerId: customer.customerid,
-          fullName: customer.fullname
-        }
+          fullName: customer.fullname,
+        },
       },
       employee: {
         employeeId: employee.employeeid,
         fullName: employee.fullname,
-        roleName: "teller"
-      }
+        roleName: "teller",
+      },
     };
 
     return result;
   }
-    
 }
- 
-
-
 
 export const transactionService = new TransactionService();
