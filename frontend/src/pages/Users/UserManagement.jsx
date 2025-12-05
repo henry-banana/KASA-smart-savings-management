@@ -145,12 +145,16 @@ export default function UserManagement() {
     if (selectedUser) {
       try {
         const newStatus =
-          selectedUser.status === "active" ? "disabled" : "active";
+          selectedUser.status?.toLowerCase() === "approved"
+            ? "Rejected"
+            : "Approved";
         await userService.updateUserStatus(selectedUser.id, newStatus);
         await fetchUsers(); // Refresh list
         setSuccessMessage(
           `User ${
-            selectedUser.status === "active" ? "disabled" : "enabled"
+            selectedUser.status?.toLowerCase() === "approved"
+              ? "rejected"
+              : "approved"
           } successfully`
         );
         setShowSuccess(true);
@@ -224,6 +228,36 @@ export default function UserManagement() {
       return "bg-blue-100 text-blue-700 border-blue-200";
     }
     return "bg-gray-100 text-gray-700 border-gray-200";
+  };
+
+  const getStatusBadgeColor = (status) => {
+    const normalizedStatus = status?.toLowerCase();
+    switch (normalizedStatus) {
+      case "approved":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "submitted":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "rejected":
+        return "bg-red-100 text-red-700 border-red-200";
+      case "unsubmitted":
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
+    }
+  };
+
+  const getStatusLabel = (status) => {
+    const normalizedStatus = status?.toLowerCase();
+    switch (normalizedStatus) {
+      case "approved":
+        return "✓ Approved";
+      case "submitted":
+        return "📝 Submitted";
+      case "rejected":
+        return "✗ Rejected";
+      case "unsubmitted":
+      default:
+        return "⏳ Unsubmitted";
+    }
   };
 
   // if (user.role !== 'admin') {
@@ -400,15 +434,11 @@ export default function UserManagement() {
                           </TableCell>
                           <TableCell>
                             <Badge
-                              className={
-                                userData.status === "active"
-                                  ? "bg-green-100 text-green-700 border-green-200 border"
-                                  : "bg-gray-100 text-gray-700 border-gray-200 border"
-                              }
+                              className={`${getStatusBadgeColor(
+                                userData.status
+                              )} border`}
                             >
-                              {userData.status === "active"
-                                ? "Active"
-                                : "Disabled"}
+                              {getStatusLabel(userData.status)}
                             </Badge>
                           </TableCell>
                           <TableCell>{userData.branchName || "-"}</TableCell>
@@ -428,15 +458,15 @@ export default function UserManagement() {
                                 variant="ghost"
                                 onClick={() => handleDisableUser(userData)}
                                 className={`rounded-xl ${
-                                  userData.status === "active"
+                                  userData.status?.toLowerCase() === "approved"
                                     ? "text-red-600 hover:bg-red-50"
-                                    : "text-green-600 hover:bg-green-50"
+                                    : "text-blue-600 hover:bg-blue-50"
                                 }`}
                               >
                                 <UserX size={14} className="mr-1" />
-                                {userData.status === "active"
-                                  ? "Disable"
-                                  : "Enable"}
+                                {userData.status?.toLowerCase() === "approved"
+                                  ? "Reject"
+                                  : "Approve"}
                               </Button>
                             </div>
                           </TableCell>
@@ -706,14 +736,19 @@ export default function UserManagement() {
           <AlertDialogContent className="rounded-3xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-xl">
-                {selectedUser?.status === "active" ? "Disable" : "Enable"} User?
+                {selectedUser?.status?.toLowerCase() === "approved"
+                  ? "Reject"
+                  : "Approve"}{" "}
+                User?
               </AlertDialogTitle>
               <AlertDialogDescription className="text-base">
                 Are you sure you want to{" "}
-                {selectedUser?.status === "active" ? "disable" : "enable"}{" "}
+                {selectedUser?.status?.toLowerCase() === "approved"
+                  ? "reject"
+                  : "approve"}{" "}
                 {selectedUser?.fullName}?
-                {selectedUser?.status === "active" &&
-                  " This user will not be able to access the system."}
+                {selectedUser?.status?.toLowerCase() === "approved" &&
+                  " This will change the user status to Rejected."}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

@@ -56,7 +56,7 @@ export const userService = {
    * Update user
    */
   async updateUser(id, updates) {
-    if (!id?.trim()) {
+    if (!id || !String(id).trim()) {
       throw new Error("User ID is required");
     }
     if (!updates || Object.keys(updates).length === 0) {
@@ -71,11 +71,12 @@ export const userService = {
    * Update user status (enable/disable)
    */
   async updateUserStatus(id, status) {
-    if (!id?.trim()) {
+    if (!id || !String(id).trim()) {
       throw new Error("User ID is required");
     }
-    if (!status || !["active", "disabled"].includes(status)) {
-      throw new Error("Valid status is required (active or disabled)");
+    const validStatuses = ["Unsubmitted", "Submitted", "Approved", "Rejected"];
+    if (!status || !validStatuses.includes(status)) {
+      throw new Error(`Valid status is required (${validStatuses.join(", ")})`);
     }
 
     const response = await userAdapter.updateUserStatus(id, status);
@@ -86,7 +87,7 @@ export const userService = {
    * Delete user
    */
   async deleteUser(id) {
-    if (!id?.trim()) {
+    if (!id || !String(id).trim()) {
       throw new Error("User ID is required");
     }
 
