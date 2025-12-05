@@ -82,8 +82,7 @@ export default function Deposit() {
       const response = await getAccountInfo(accountId);
       const account = response.data;
 
-      //TODO: Sau đó sửa lại account.typeSaving.typeName
-      if (account.typesaving.typename !== "No term") {
+      if (account.typeSaving.typeName !== "No term") {
         setError("Deposits are only allowed for No term savings accounts");
         return;
       }
