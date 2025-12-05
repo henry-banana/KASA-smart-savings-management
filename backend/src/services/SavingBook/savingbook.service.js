@@ -27,7 +27,6 @@ class SavingBookService {
     maturityDate.setMonth(maturityDate.getMonth() + typeSaving.term);
 
     // Tạo sổ tiết kiệm mới
-    //PHau: chưa thêm nhân viên nào tạo ????
     const newSavingBook = await savingBookRepository.create({
       typeid: typeSavingID,
       customerid: customer.customerid,
@@ -35,6 +34,16 @@ class SavingBookService {
     });
 
     newSavingBook.citizenid = citizenID;
+
+    // 4. Tạo transaction cho khoản gửi tiền ban đầu
+    await transactionRepository.create({
+      bookid: newSavingBook.bookid,
+      tellerid: employeeID,
+      transactiondate: new Date().toISOString(),
+      amount: initialDeposit,
+      transactiontype: "Deposit",
+      note: "open",
+    });
 
     // 5. Trả về đúng format response bạn cần
     return {
@@ -67,6 +76,15 @@ class SavingBookService {
       status: updates.status,
       closetime: updates.closeTime,
       currentbalance: updates.currentBalance,
+    });
+
+    // 4. Tạo transaction cho khoản gửi tiền ban đầu
+    await transactionRepository.create({
+      bookid: bookID,
+      transactiondate: new Date().toISOString(),
+      amount: updates.currentBalance,
+      transactiontype: "Deposit",
+      note: "deposit",
     });
 
     return {
