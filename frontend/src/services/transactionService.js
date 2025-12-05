@@ -15,8 +15,24 @@ export const getAccountInfo = async (accountCode) => {
   if (USE_MOCK) {
     return mockTransactionAdapter.getAccountInfo(accountCode);
   } else {
-    // Real API uses getAccount method
-    return accountApi.getAccount(accountCode);
+    // Real API returns full savingbook object, need to convert to account info format
+    const response = await accountApi.getAccount(accountCode);
+    const savingBook = response.data || response;
+
+    return {
+      message: response.message || "Get account info successfully",
+      success: response.success !== false,
+      data: {
+        bookId: savingBook.bookId,
+        customerName: savingBook.customerName,
+        accountTypeName: savingBook.typeSaving?.typeName || "Unknown",
+        balance: savingBook.balance,
+        openDate: savingBook.openDate,
+        maturityDate: savingBook.maturityDate,
+        interestRate: savingBook.typeSaving?.interestRate || 0,
+        status: savingBook.status,
+      },
+    };
   }
 };
 
