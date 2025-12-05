@@ -82,8 +82,9 @@ export default function Deposit() {
       const response = await getAccountInfo(accountId);
       const account = response.data;
 
-      if (account.accountTypeName !== "No Term") {
-        setError("Deposits are only allowed for No Term savings accounts");
+      //TODO: Sau đó sửa lại account.typeSaving.typeName
+      if (account.typesaving.typename !== "No term") {
+        setError("Deposits are only allowed for No term savings accounts");
         return;
       }
 
@@ -298,7 +299,7 @@ export default function Deposit() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Account Type:</span>
                     <Badge className="text-blue-700 bg-blue-100 border-blue-200">
-                      No Term
+                      No term
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t border-gray-200">

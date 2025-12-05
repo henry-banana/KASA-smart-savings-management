@@ -97,7 +97,7 @@ export default function OpenAccount() {
           ...formData,
           employeeId: user?.userId || user?.id || "NV001",
         });
-        setAccountCode(response.data.accountCode);
+        setAccountCode(response.data.bookId || response.data.accountCode);
         // Save created data before resetting form
         setCreatedAccountData({ ...formData });
         setShowSuccess(true);
