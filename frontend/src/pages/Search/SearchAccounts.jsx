@@ -288,7 +288,7 @@ export default function SearchAccounts() {
             </div>
 
             {/* Results Table */}
-            <div className="overflow-hidden border border-gray-200 rounded-2xl">
+            <div className="overflow-hidden border border-gray-200">
               {loading ? (
                 <div className="p-6">
                   <TableSkeleton rows={5} columns={7} />
