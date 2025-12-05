@@ -205,16 +205,17 @@ export default function UserManagement() {
   };
 
   const getRoleBadgeColor = (role) => {
-    switch (role) {
-      case "admin":
-        return "bg-purple-100 text-purple-700 border-purple-200";
-      case "accountant":
-        return "bg-cyan-100 text-cyan-700 border-cyan-200";
-      case "teller":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+    const normalizedRole = role?.toLowerCase();
+    if (normalizedRole === "admin" || normalizedRole === "administrator") {
+      return "bg-purple-100 text-purple-700 border-purple-200";
     }
+    if (normalizedRole === "accountant") {
+      return "bg-cyan-100 text-cyan-700 border-cyan-200";
+    }
+    if (normalizedRole === "teller") {
+      return "bg-blue-100 text-blue-700 border-blue-200";
+    }
+    return "bg-gray-100 text-gray-700 border-gray-200";
   };
 
   // if (user.role !== 'admin') {
@@ -386,11 +387,7 @@ export default function UserManagement() {
                                 userData.roleName
                               )} border capitalize`}
                             >
-                              {userData.roleName === "admin"
-                                ? "Administrator"
-                                : userData.roleName === "accountant"
-                                ? "Accountant"
-                                : "Teller"}
+                              {userData.roleName}
                             </Badge>
                           </TableCell>
                           <TableCell>
