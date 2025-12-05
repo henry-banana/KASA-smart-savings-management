@@ -260,8 +260,8 @@ export default function SearchAccounts() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="closed">Closed</SelectItem>
+                      <SelectItem value="open">Open</SelectItem>
+                      <SelectItem value="close">Closed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -288,7 +288,7 @@ export default function SearchAccounts() {
             </div>
 
             {/* Results Table */}
-            <div className="overflow-hidden border border-gray-200 rounded-2xl">
+            <div className="overflow-hidden border border-gray-200">
               {loading ? (
                 <div className="p-6">
                   <TableSkeleton rows={5} columns={7} />
@@ -342,9 +342,9 @@ export default function SearchAccounts() {
                           ₫{(account.balance ?? 0).toLocaleString()}
                         </TableCell>
                         <TableCell>
-                          {account.status === "active" ? (
+                          {account.status?.toLowerCase() === "open" ? (
                             <Badge className="text-green-700 bg-green-100 border border-green-200">
-                              Active
+                              Open
                             </Badge>
                           ) : (
                             <Badge className="text-gray-700 bg-gray-100 border border-gray-200">
@@ -437,9 +437,9 @@ export default function SearchAccounts() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Status:</span>
-                    {selectedAccount.status === "active" ? (
+                    {selectedAccount.status?.toLowerCase() === "open" ? (
                       <Badge className="text-green-700 bg-green-100 border border-green-200">
-                        ✓ Active
+                        ✓ Open
                       </Badge>
                     ) : (
                       <Badge className="text-gray-700 bg-gray-100 border border-gray-200">
