@@ -1053,7 +1053,7 @@ export default function RegulationSettings() {
                       term: e.target.value,
                     })
                   }
-                  placeholder="0 for No Term, or number of months"
+                  placeholder="0 for No term, or number of months"
                   className="border-gray-200 h-11 rounded-2xl"
                 />
                 <p className="text-xs text-gray-500">

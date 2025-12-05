@@ -93,7 +93,7 @@ export default function Dashboard() {
   ]);
 
   const [accountTypeData, _setAccountTypeData] = useState([
-    { name: "No Term", value: 0, color: "#1A4D8F" },
+    { name: "No term", value: 0, color: "#1A4D8F" },
     { name: "3 Months", value: 0, color: "#00AEEF" },
     { name: "6 Months", value: 0, color: "#60A5FA" },
   ]);

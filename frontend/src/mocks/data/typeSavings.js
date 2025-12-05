@@ -7,7 +7,7 @@
 export const _typeSavingSeed = [
   {
     typeSavingId: "TS01",
-    typeName: "No Term",
+    typeName: "No term",
     term: 0,
     interestRate: 0.2
   },
