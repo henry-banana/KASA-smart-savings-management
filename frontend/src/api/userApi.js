@@ -38,7 +38,7 @@ export const userApi = {
   },
 
   /**
-   * Update user status (enable/disable)
+   * Update user status (approve/reject)
    */
   async updateUserStatus(id, status) {
     const response = await apiClient.patch(`/api/users/${id}/status`, { status });

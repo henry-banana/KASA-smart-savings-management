@@ -145,16 +145,16 @@ export default function UserManagement() {
     if (selectedUser) {
       try {
         const newStatus =
-          selectedUser.status?.toLowerCase() === "approved"
-            ? "Rejected"
-            : "Approved";
+          selectedUser.status?.toLowerCase() === "rejected"
+            ? "Approved"
+            : "Rejected";
         await userService.updateUserStatus(selectedUser.id, newStatus);
         await fetchUsers(); // Refresh list
         setSuccessMessage(
           `User ${
-            selectedUser.status?.toLowerCase() === "approved"
-              ? "rejected"
-              : "approved"
+            selectedUser.status?.toLowerCase() === "rejected"
+              ? "approved"
+              : "rejected"
           } successfully`
         );
         setShowSuccess(true);
@@ -458,15 +458,15 @@ export default function UserManagement() {
                                 variant="ghost"
                                 onClick={() => handleDisableUser(userData)}
                                 className={`rounded-xl ${
-                                  userData.status?.toLowerCase() === "approved"
-                                    ? "text-red-600 hover:bg-red-50"
-                                    : "text-blue-600 hover:bg-blue-50"
+                                  userData.status?.toLowerCase() === "rejected"
+                                    ? "text-blue-600 hover:bg-blue-50"
+                                    : "text-red-600 hover:bg-red-50"
                                 }`}
                               >
                                 <UserX size={14} className="mr-1" />
-                                {userData.status?.toLowerCase() === "approved"
-                                  ? "Reject"
-                                  : "Approve"}
+                                {userData.status?.toLowerCase() === "rejected"
+                                  ? "Approve"
+                                  : "Reject"}
                               </Button>
                             </div>
                           </TableCell>
@@ -736,18 +736,18 @@ export default function UserManagement() {
           <AlertDialogContent className="rounded-3xl">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-xl">
-                {selectedUser?.status?.toLowerCase() === "approved"
-                  ? "Reject"
-                  : "Approve"}{" "}
+                {selectedUser?.status?.toLowerCase() === "rejected"
+                  ? "Approve"
+                  : "Reject"}{" "}
                 User?
               </AlertDialogTitle>
               <AlertDialogDescription className="text-base">
                 Are you sure you want to{" "}
-                {selectedUser?.status?.toLowerCase() === "approved"
-                  ? "reject"
-                  : "approve"}{" "}
+                {selectedUser?.status?.toLowerCase() === "rejected"
+                  ? "approve"
+                  : "reject"}{" "}
                 {selectedUser?.fullName}?
-                {selectedUser?.status?.toLowerCase() === "approved" &&
+                {selectedUser?.status?.toLowerCase() !== "rejected" &&
                   " This will change the user status to Rejected."}
               </AlertDialogDescription>
             </AlertDialogHeader>
