@@ -414,16 +414,26 @@ export default function Withdraw() {
                       type="number"
                       value={withdrawAmount}
                       onChange={(e) => {
-                        setWithdrawAmount(e.target.value);
-                        if (accountInfo && e.target.value) {
-                          const interest = calculateInterest(
-                            Number(e.target.value)
+                        const value = e.target.value;
+                        const numValue = Number(value);
+
+                        // Prevent entering amount greater than balance
+                        if (accountInfo && numValue > accountInfo.balance) {
+                          setWithdrawAmount(accountInfo.balance.toString());
+                          setCalculatedInterest(
+                            calculateInterest(accountInfo.balance)
                           );
-                          setCalculatedInterest(interest);
+                        } else {
+                          setWithdrawAmount(value);
+                          if (accountInfo && value) {
+                            const interest = calculateInterest(numValue);
+                            setCalculatedInterest(interest);
+                          }
                         }
                       }}
                       placeholder="Enter amount"
                       disabled={!accountInfo || isFixedTermAccount()}
+                      max={accountInfo?.balance || undefined}
                       className="pl-8 h-14 text-lg rounded-2xl border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
                     />
                   </div>
