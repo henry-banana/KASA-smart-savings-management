@@ -15,7 +15,7 @@ class SavingBookService {
     const customer = await customerRepository.findByCitizenID(citizenID)
 
     // 2. Lấy thông tin loại sổ tiết kiệm
-    const typeSaving = await typeSavingRepository.getTypeSavingById(typeSavingID);
+    const typeSaving = await typeSavingRepository.findById(typeSavingID);
     if (!typeSaving) {
       throw new Error("TypeSaving not found: " + typeSavingID);
     }
@@ -36,20 +36,20 @@ class SavingBookService {
 
     // 5. Trả về đúng format response bạn cần
     return {
-      bookid: newSavingBook.bookid,
-      citizenid: citizenID,
+      bookId: newSavingBook.bookid,
+      citizenId: citizenID,
       customerName: customer.name,
-      typesavingid: typeSavingID,
-      opendate: newSavingBook.opendate,
-      maturitydate: newSavingBook.maturitydate,
+      typesavingId: typeSavingID,
+      openDate: newSavingBook.opendate,
+      maturityDate: newSavingBook.maturitydate,
       balance: initialDeposit,
       status: newSavingBook.status,
       typesaving: {
-        typesavingid: typeSavingID,
-        typename: typeSaving.typename,
-        term: typeSaving.termperiod,
-        interestrate: typeSaving.interest,
-        minimumdeposit: typeSaving.minimumdeposit,
+        typesavingId: typeSavingID,
+        typeName: typeSaving.typename,
+        term: typeSaving.termPeriod,
+        interestRate: typeSaving.interest,
+        minimumDeposit: typeSaving.minimumdeposit,
       }
     };
   }
