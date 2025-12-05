@@ -120,10 +120,16 @@ export default function UserManagement() {
 
   const handleEditUser = (userData) => {
     setSelectedUser(userData);
+    // Normalize role for Select component: Administrator -> admin, Accountant -> accountant, Teller -> teller
+    const normalizeRoleForForm = (role) => {
+      const normalized = role?.toLowerCase();
+      if (normalized === "administrator") return "admin";
+      return normalized;
+    };
     setFormData({
       fullName: userData.fullName,
       email: userData.email,
-      role: userData.roleName,
+      role: normalizeRoleForForm(userData.roleName),
       branchName:
         userData.branchName || (branches.length > 0 ? branches[0] : "Thủ Đức"),
     });
@@ -158,8 +164,9 @@ export default function UserManagement() {
 
   const submitAddUser = async () => {
     try {
-      // Normalize role: capitalize first letter (teller → Teller)
+      // Normalize role for backend: admin -> Administrator, teller -> Teller, accountant -> Accountant
       const capitalizeRole = (role) => {
+        if (role.toLowerCase() === "admin") return "Administrator";
         return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
       };
 
@@ -182,8 +189,9 @@ export default function UserManagement() {
   const submitEditUser = async () => {
     if (selectedUser) {
       try {
-        // Normalize role: capitalize first letter (teller → Teller)
+        // Normalize role for backend: admin -> Administrator, teller -> Teller, accountant -> Accountant
         const capitalizeRole = (role) => {
+          if (role.toLowerCase() === "admin") return "Administrator";
           return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
         };
 
