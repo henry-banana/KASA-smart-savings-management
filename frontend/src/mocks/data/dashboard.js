@@ -6,6 +6,7 @@
 import { mockSavingBooks } from "./savingBooks";
 import { mockTypeSavings } from "./typeSavings";
 import { mockTransactions } from "./transactions";
+import { getTypeChartColor } from "../../utils/typeColorUtils";
 // import { mockCustomers } from './customers'; // Not used yet, for future enhancements
 
 /**
@@ -99,14 +100,11 @@ export const calculateAccountTypeDistribution = () => {
       }
     });
 
-  // Color palette for visual distinction (extends as types increase)
-  const palette = ["#1A4D8F", "#00AEEF", "#60A5FA", "#EC4899", "#F59E0B"];
-
-  // Map configured types (preserve admin order) to result array
-  const result = mockTypeSavings.map((ts, idx) => ({
+  // Map configured types to result array with consistent colors
+  const result = mockTypeSavings.map((ts) => ({
     name: ts.typeName,
     value: counts[ts.typeSavingId] || 0,
-    color: palette[idx] || "#8884d8",
+    color: getTypeChartColor(ts.typeName),
   }));
 
   // Append 'Other' bucket if present
