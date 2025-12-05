@@ -125,7 +125,9 @@ export default function Deposit() {
 
     try {
       const response = await depositMoney(accountId, amount);
-      const balanceAfter = response.data.balanceAfter;
+      // Calculate new balance: current balance + deposit amount
+      const balanceAfter =
+        response.data?.balanceAfter || accountInfo.balance + amount;
       setReceiptData({
         accountId,
         customerName: accountInfo.customerName,
