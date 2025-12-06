@@ -35,7 +35,7 @@ export function PiggyBankIllustration({ size = 120, className = "" }) {
   return (
     <div className={`flex flex-col items-center justify-center ${className}`}>
       <div
-        className="rounded-md flex items-center justify-center mb-4"
+        className="rounded-sm flex items-center justify-center mb-4"
         style={{
           width: size,
           height: size,
@@ -59,7 +59,7 @@ export function CoinsIllustration({ size = 120, className = "" }) {
   return (
     <div className={`flex flex-col items-center justify-center ${className}`}>
       <div
-        className="rounded-lg flex items-center justify-center mb-4 relative"
+        className="rounded-md flex items-center justify-center mb-4 relative"
         style={{
           width: size,
           height: size,
@@ -77,7 +77,7 @@ export function ReceiptIllustration({ size = 120, className = "" }) {
   return (
     <div className={`flex flex-col items-center justify-center ${className}`}>
       <div
-        className="rounded-lg flex items-center justify-center mb-4"
+        className="rounded-md flex items-center justify-center mb-4"
         style={{
           width: size,
           height: size,
@@ -131,7 +131,7 @@ export function CuteLoading({ size = 40, className = "" }) {
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <div
-        className="animate-spin rounded-lg border-4 border-gray-200"
+        className="animate-spin rounded-md border-4 border-gray-200"
         style={{
           width: size,
           height: size,
@@ -156,7 +156,7 @@ export function CuteBadge({ children, variant = "primary", className = "" }) {
 
   return (
     <span
-      className={`inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium border ${variants[variant]} ${className}`}
+      className={`inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border ${variants[variant]} ${className}`}
     >
       {children}
     </span>
@@ -174,10 +174,10 @@ export function CuteStatCard({
   iconColor,
 }) {
   return (
-    <div className="relative overflow-hidden rounded-md p-6 bg-white border border-gray-100 transition-all duration-300 hover:border border-gray-200 hover:-translate-y-1 cursor-default">
+    <div className="relative overflow-hidden rounded-sm p-6 bg-white border border-gray-100 transition-all duration-300 hover:border border-gray-200 hover:-translate-y-1 cursor-default">
       {/* Decorative Background */}
       <div
-        className="absolute top-0 right-0 w-32 h-32 rounded-lg opacity-5 -mr-16 -mt-16 transition-opacity duration-300 group-hover:opacity-10"
+        className="absolute top-0 right-0 w-32 h-32 rounded-md opacity-5 -mr-16 -mt-16 transition-opacity duration-300 group-hover:opacity-10"
         style={{ background: gradient }}
       />
       <StarDecor className="top-3 right-3" />
@@ -206,7 +206,7 @@ export function CuteStatCard({
           )}
         </div>
         <div
-          className="w-14 h-14 rounded-md flex items-center justify-center"
+          className="w-14 h-14 rounded-sm flex items-center justify-center"
           style={{ background: gradient }}
         >
           <div style={{ color: iconColor }}>{icon}</div>

@@ -137,14 +137,14 @@ function EnterOTP({ email, onVerify, onBack }) {
         />
 
         {/* Floating circles */}
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-green-200 rounded-lg opacity-10 blur-2xl animate-pulse" />
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-green-200 rounded-md opacity-10 blur-2xl animate-pulse" />
         <div
-          className="absolute bottom-1/3 right-1/3 w-40 h-40 bg-cyan-200 rounded-lg opacity-10 blur-3xl animate-pulse"
+          className="absolute bottom-1/3 right-1/3 w-40 h-40 bg-cyan-200 rounded-md opacity-10 blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
         />
       </div>
 
-      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-md overflow-hidden">
+      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-sm overflow-hidden">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#10B981] via-[#00AEEF] to-[#10B981]" />
 
@@ -152,7 +152,7 @@ function EnterOTP({ email, onVerify, onBack }) {
           {/* Icon with cute design */}
           <div className="mx-auto relative">
             <div
-              className="w-20 h-20 rounded-md flex items-center justify-center border border-gray-200 relative overflow-hidden"
+              className="w-20 h-20 rounded-sm flex items-center justify-center border border-gray-200 relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #10B981 0%, #00AEEF 100%)",
               }}
@@ -170,9 +170,9 @@ function EnterOTP({ email, onVerify, onBack }) {
             </div>
 
             {/* Decorative elements around icon */}
-            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-lg bg-cyan-200 opacity-60 animate-pulse" />
+            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-md bg-cyan-200 opacity-60 animate-pulse" />
             <div
-              className="absolute -bottom-2 -left-2 w-4 h-4 rounded-lg bg-green-200 opacity-60 animate-pulse"
+              className="absolute -bottom-2 -left-2 w-4 h-4 rounded-md bg-green-200 opacity-60 animate-pulse"
               style={{ animationDelay: "0.5s" }}
             />
           </div>
@@ -227,7 +227,7 @@ function EnterOTP({ email, onVerify, onBack }) {
               type="submit"
               disabled={!isComplete || loading}
               className={`
-                w-full h-12 text-white rounded-lg font-medium border border-gray-200 transition-all duration-300
+                w-full h-12 text-white rounded-md font-medium border border-gray-200 transition-all duration-300
                 ${
                   isComplete && !loading
                     ? "hover:border border-gray-200 hover:scale-[1.02]"
@@ -279,7 +279,7 @@ function EnterOTP({ email, onVerify, onBack }) {
 
           {/* Dev Mode Info - Only show when devMode is true */}
           {devMode && (
-            <div className="bg-linear-to-r from-green-50 to-cyan-50 rounded-md p-4 border border-green-100">
+            <div className="bg-linear-to-r from-green-50 to-cyan-50 rounded-sm p-4 border border-green-100">
               <p className="text-xs text-green-700 text-center">
                 🔧 <strong>Dev Mode:</strong> Use code{" "}
                 <span className="font-mono bg-white px-2 py-0.5 rounded">

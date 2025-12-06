@@ -227,10 +227,10 @@ export default function Withdraw() {
   return (
     <RoleGuard allow={["teller"]}>
       <div className="max-w-4xl mx-auto">
-        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-md">
+        <Card className="overflow-hidden border border-gray-200 rounded-sm lg:rounded-sm">
           {/* Cute Header */}
           <CardHeader className="bg-linear-to-r from-[#FFF7D6] to-[#FFE8F0] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
+            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-md sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
             <Sparkles
               className="absolute opacity-50 top-6 right-20 sm:right-32 text-amber-400"
@@ -239,7 +239,7 @@ export default function Withdraw() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-md"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-sm"
                 style={{
                   background:
                     "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
@@ -282,7 +282,7 @@ export default function Withdraw() {
                       setError("");
                     }}
                     placeholder="Enter account ID (e.g., SA12345)"
-                    className="h-11 sm:h-12 rounded-md border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all text-sm sm:text-base"
+                    className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
                     }
@@ -291,7 +291,7 @@ export default function Withdraw() {
                 <Button
                   type="button"
                   onClick={handleAccountLookup}
-                  className="h-12 px-6 text-white rounded-md"
+                  className="h-12 px-6 text-white rounded-sm"
                   style={{
                     background:
                       "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
@@ -303,7 +303,7 @@ export default function Withdraw() {
               </div>
 
               {error && !accountInfo && (
-                <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-md">
+                <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-sm">
                   <AlertCircle
                     size={20}
                     className="text-red-500 shrink-0 mt-0.5"
@@ -319,7 +319,7 @@ export default function Withdraw() {
 
               {accountInfo && (
                 <div
-                  className="relative p-6 space-y-3 overflow-hidden border-2 rounded-md"
+                  className="relative p-6 space-y-3 overflow-hidden border-2 rounded-sm"
                   style={{
                     background:
                       "linear-gradient(135deg, #FFF7D6 0%, #FFE8F0 100%)",
@@ -434,12 +434,12 @@ export default function Withdraw() {
                       placeholder="Enter amount"
                       disabled={!accountInfo || isFixedTermAccount()}
                       max={accountInfo?.balance || undefined}
-                      className="pl-8 h-14 text-lg rounded-md border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
+                      className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
                     />
                   </div>
                   {accountInfo && withdrawAmount && (
                     <div
-                      className="p-5 border-2 rounded-md"
+                      className="p-5 border-2 rounded-sm"
                       style={{
                         background:
                           "linear-gradient(135deg, #FFF7D6 0%, #ffffff 100%)",
@@ -478,7 +478,7 @@ export default function Withdraw() {
                     (isFixedTermAccount() && !isFixedTermMatured()) ||
                     isSubmitting
                   }
-                  className="flex-1 h-12 text-white rounded-lg font-medium border border-gray-200 hover:border border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="flex-1 h-12 text-white rounded-md font-medium border border-gray-200 hover:border border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   style={{
                     background:
                       isFixedTermAccount() && !isFixedTermMatured()
@@ -494,7 +494,7 @@ export default function Withdraw() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-12 px-8 border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="h-12 px-8 border-gray-300 rounded-md hover:bg-gray-50"
                   onClick={() => {
                     setAccountId("");
                     setWithdrawAmount("");
@@ -509,7 +509,7 @@ export default function Withdraw() {
             </form>
 
             {/* Helper Text */}
-            <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
+            <div className="p-4 border border-blue-200 rounded-md bg-blue-50">
               <h5 className="mb-2 text-sm text-blue-900">Withdrawal Rules:</h5>
               <ul className="space-y-1 text-sm text-blue-800 list-disc list-inside">
                 <li>
@@ -530,12 +530,12 @@ export default function Withdraw() {
 
         {/* Success Modal */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-          <DialogContent className="max-w-md duration-300 rounded-md animate-in fade-in-0 zoom-in-95">
+          <DialogContent className="max-w-md duration-300 rounded-sm animate-in fade-in-0 zoom-in-95">
             <DialogHeader>
               <div className="flex flex-col items-center mb-4">
                 <div className="relative duration-500 animate-in zoom-in-0">
                   <div
-                    className="flex items-center justify-center w-24 h-24 mb-4 rounded-lg border border-gray-200 "
+                    className="flex items-center justify-center w-24 h-24 mb-4 rounded-md border border-gray-200 "
                     style={{
                       background:
                         "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -563,7 +563,7 @@ export default function Withdraw() {
 
             <div className="py-4 space-y-3">
               <div
-                className="p-6 space-y-3 duration-500 delay-200 border-2 rounded-md animate-in slide-in-from-bottom-4"
+                className="p-6 space-y-3 duration-500 delay-200 border-2 rounded-sm animate-in slide-in-from-bottom-4"
                 style={{
                   background:
                     "linear-gradient(135deg, #FFF7D6 0%, #FFE8F0 100%)",
@@ -614,7 +614,7 @@ export default function Withdraw() {
 
             <Button
               onClick={() => setShowSuccess(false)}
-              className="w-full h-12 text-white rounded-lg font-medium border border-gray-200 hover:border border-gray-200 hover: transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-12 text-white rounded-md font-medium border border-gray-200 hover:border border-gray-200 hover: transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
               }}

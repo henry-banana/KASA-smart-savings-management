@@ -140,14 +140,14 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
         />
 
         {/* Floating circles */}
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-indigo-200 rounded-lg opacity-10 blur-2xl animate-pulse" />
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-indigo-200 rounded-md opacity-10 blur-2xl animate-pulse" />
         <div
-          className="absolute bottom-1/3 right-1/3 w-40 h-40 bg-purple-200 rounded-lg opacity-10 blur-3xl animate-pulse"
+          className="absolute bottom-1/3 right-1/3 w-40 h-40 bg-purple-200 rounded-md opacity-10 blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
         />
       </div>
 
-      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-md overflow-hidden">
+      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-sm overflow-hidden">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#6366F1] via-[#8B5CF6] to-[#6366F1]" />
 
@@ -155,7 +155,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
           {/* Icon with cute design */}
           <div className="mx-auto relative">
             <div
-              className="w-20 h-20 rounded-md flex items-center justify-center border border-gray-200 relative overflow-hidden"
+              className="w-20 h-20 rounded-sm flex items-center justify-center border border-gray-200 relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)",
               }}
@@ -173,9 +173,9 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
             </div>
 
             {/* Decorative elements around icon */}
-            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-lg bg-purple-200 opacity-60 animate-pulse" />
+            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-md bg-purple-200 opacity-60 animate-pulse" />
             <div
-              className="absolute -bottom-2 -left-2 w-4 h-4 rounded-lg bg-indigo-200 opacity-60 animate-pulse"
+              className="absolute -bottom-2 -left-2 w-4 h-4 rounded-md bg-indigo-200 opacity-60 animate-pulse"
               style={{ animationDelay: "0.5s" }}
             />
           </div>
@@ -259,7 +259,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
             </div>
 
             {/* Password Requirements */}
-            <div className="bg-linear-to-r from-indigo-50 to-purple-50 rounded-md p-4 border border-indigo-100 space-y-2">
+            <div className="bg-linear-to-r from-indigo-50 to-purple-50 rounded-sm p-4 border border-indigo-100 space-y-2">
               <p className="text-xs font-semibold text-indigo-700 mb-2">
                 Password Requirements:
               </p>
@@ -328,7 +328,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
               type="submit"
               disabled={!isFormValid() || loading}
               className={`
-                w-full h-12 text-white rounded-lg font-medium border border-gray-200 transition-all duration-300
+                w-full h-12 text-white rounded-md font-medium border border-gray-200 transition-all duration-300
                 ${
                   isFormValid() && !loading
                     ? "hover:border border-gray-200 hover:scale-[1.02]"
@@ -364,7 +364,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
           </div>
 
           {/* Security Tip */}
-          <div className="bg-linear-to-r from-purple-50 to-pink-50 rounded-md p-4 border border-purple-100">
+          <div className="bg-linear-to-r from-purple-50 to-pink-50 rounded-sm p-4 border border-purple-100">
             <p className="text-xs text-purple-700 text-center">
               🛡️ <strong>Security Tip:</strong> Use a unique password that you
               don't use anywhere else.

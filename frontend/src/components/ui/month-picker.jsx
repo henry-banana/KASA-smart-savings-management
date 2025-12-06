@@ -71,7 +71,7 @@ export function MonthPicker({
           {date ? formatMonthYear(date) : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-4 rounded-md" align="start">
+      <PopoverContent className="w-auto p-4 rounded-sm" align="start">
         <div className="space-y-4">
           {/* Year Navigator */}
           <div className="flex items-center justify-between">

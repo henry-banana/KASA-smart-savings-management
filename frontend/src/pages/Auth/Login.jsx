@@ -23,7 +23,7 @@ function Spinner({ size = 16, light = true }) {
   const borderColor = light ? "border-white" : "border-gray-400";
   return (
     <span
-      className={`inline-block animate-spin rounded-lg border-2 ${borderColor} border-t-transparent align-middle`}
+      className={`inline-block animate-spin rounded-md border-2 ${borderColor} border-t-transparent align-middle`}
       style={{ width: size, height: size }}
       aria-hidden="true"
     />
@@ -128,14 +128,14 @@ export default function Login() {
         />
 
         {/* Floating circles */}
-        <div className="absolute w-32 h-32 bg-blue-200 rounded-lg top-1/4 left-1/4 opacity-10 blur-2xl animate-pulse" />
+        <div className="absolute w-32 h-32 bg-blue-200 rounded-md top-1/4 left-1/4 opacity-10 blur-2xl animate-pulse" />
         <div
-          className="absolute w-40 h-40 bg-pink-200 rounded-lg bottom-1/3 right-1/3 opacity-10 blur-3xl animate-pulse"
+          className="absolute w-40 h-40 bg-pink-200 rounded-md bottom-1/3 right-1/3 opacity-10 blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
         />
       </div>
 
-      <Card className="relative z-10 w-full max-w-md overflow-hidden border border-gray-200 rounded-md">
+      <Card className="relative z-10 w-full max-w-md overflow-hidden border border-gray-200 rounded-sm">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
 
@@ -143,7 +143,7 @@ export default function Login() {
           {/* Logo with cute design */}
           <div className="relative mx-auto">
             <div
-              className="relative flex items-center justify-center w-20 h-20 overflow-hidden border border-gray-200 rounded-md"
+              className="relative flex items-center justify-center w-20 h-20 overflow-hidden border border-gray-200 rounded-sm"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}
@@ -161,9 +161,9 @@ export default function Login() {
             </div>
 
             {/* Decorative elements around logo */}
-            <div className="absolute w-6 h-6 bg-pink-200 rounded-lg -top-2 -right-2 opacity-60 animate-pulse" />
+            <div className="absolute w-6 h-6 bg-pink-200 rounded-md -top-2 -right-2 opacity-60 animate-pulse" />
             <div
-              className="absolute w-4 h-4 rounded-lg -bottom-2 -left-2 bg-cyan-200 opacity-60 animate-pulse"
+              className="absolute w-4 h-4 rounded-md -bottom-2 -left-2 bg-cyan-200 opacity-60 animate-pulse"
               style={{ animationDelay: "0.5s" }}
             />
           </div>
@@ -258,7 +258,7 @@ export default function Login() {
             </div>
 
             {error && (
-              <div className="p-3 border border-red-200 bg-red-50 rounded-md">
+              <div className="p-3 border border-red-200 bg-red-50 rounded-sm">
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
@@ -297,7 +297,7 @@ export default function Login() {
                   <span className="w-full border-t border-gray-200" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="px-3 font-medium text-gray-500 bg-white rounded-lg">
+                  <span className="px-3 font-medium text-gray-500 bg-white rounded-md">
                     or select a role (dev mode) ⚙️
                   </span>
                 </div>
@@ -308,7 +308,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("teller")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-md p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                  className="group relative overflow-hidden rounded-sm p-4 border-2 border-transparent hover:border-[#1A4D8F] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)",
@@ -325,7 +325,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("accountant")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-md p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                  className="group relative overflow-hidden rounded-sm p-4 border-2 border-transparent hover:border-[#00AEEF] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #DFF9F4 0%, #FFF7D6 100%)",
@@ -342,7 +342,7 @@ export default function Login() {
                 <button
                   onClick={() => handleRoleSelect("admin")}
                   disabled={loading}
-                  className="group relative overflow-hidden rounded-md p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                  className="group relative overflow-hidden rounded-sm p-4 border-2 border-transparent hover:border-[#BE185D] transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   style={{
                     background:
                       "linear-gradient(135deg, #FFE8F0 0%, #F3E8FF 100%)",
@@ -359,7 +359,7 @@ export default function Login() {
 
               {/* Dev Mode Indicator */}
               <div className="pt-2 text-center">
-                <div className="inline-flex items-center gap-2 px-4 py-2 border border-purple-100 rounded-lg bg-linear-to-r from-purple-50 to-pink-50">
+                <div className="inline-flex items-center gap-2 px-4 py-2 border border-purple-100 rounded-md bg-linear-to-r from-purple-50 to-pink-50">
                   <Sparkles size={14} className="text-purple-400" />
                   <p className="text-xs font-medium text-purple-600">
                     Dev Mode — Role buttons for testing
@@ -373,7 +373,7 @@ export default function Login() {
         {/* Overlay khi loading */}
         {loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xs bg-white/20 backdrop-blur-[1px] animate-fade-in">
-            <span className="spinner inline-block animate-spin rounded-lg border-4 border-[#1A4D8F] border-t-transparent" />
+            <span className="spinner inline-block animate-spin rounded-md border-4 border-[#1A4D8F] border-t-transparent" />
             <p className="mt-3 text-[#1A4D8F] font-medium text-sm animate-wave">
               Loading...
             </p>

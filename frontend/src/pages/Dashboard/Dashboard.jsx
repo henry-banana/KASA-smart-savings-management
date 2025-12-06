@@ -269,7 +269,7 @@ export default function Dashboard() {
         {/* 🎯 Quick Actions - Cute Menu Cards */}
         <Card className="overflow-hidden border border-gray-200">
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-lg bg-white/50" />
+            <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-md bg-white/50" />
             <StarDecor className="top-4 right-8" />
             <CardTitle className="relative z-10 flex items-center gap-2">
               <Sparkles size={20} className="text-cyan-500" />
@@ -283,12 +283,12 @@ export default function Dashboard() {
                   {Array.from({ length: 6 }).map((_, index) => (
                     <div
                       key={index}
-                      className="relative p-6 overflow-hidden rounded-md bg-white border border-gray-100 animate-pulse"
+                      className="relative p-6 overflow-hidden rounded-sm bg-white border border-gray-100 animate-pulse"
                     >
                       <div className="space-y-3">
                         <div className="flex items-start justify-between">
-                          <Skeleton className="w-14 h-14 rounded-md bg-gray-200" />
-                          <Skeleton className="w-8 h-8 rounded-lg bg-gray-200" />
+                          <Skeleton className="w-14 h-14 rounded-sm bg-gray-200" />
+                          <Skeleton className="w-8 h-8 rounded-md bg-gray-200" />
                         </div>
                         <Skeleton className="h-5 w-32 bg-gray-200" />
                         <Skeleton className="h-4 w-24 bg-gray-200" />
@@ -301,16 +301,16 @@ export default function Dashboard() {
                   <button
                     key={index}
                     onClick={() => navigate(action.path)}
-                    className="relative p-6 overflow-hidden text-left transition-all cursor-pointer duration-300 border-2 border-transparent group rounded-md hover:scale-105 hover:border hover:border-white"
+                    className="relative p-6 overflow-hidden text-left transition-all cursor-pointer duration-300 border-2 border-transparent group rounded-sm hover:scale-105 hover:border hover:border-white"
                     style={{ background: action.gradient }}
                   >
                     {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-24 h-24 -mt-12 -mr-12 transition-transform duration-500 rounded-lg bg-white/10 group-hover:scale-150" />
+                    <div className="absolute top-0 right-0 w-24 h-24 -mt-12 -mr-12 transition-transform duration-500 rounded-md bg-white/10 group-hover:scale-150" />
                     <StarDecor className="top-2 right-2" />
 
                     <div className="relative z-10">
                       <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center justify-center transition-transform duration-300 w-14 h-14 rounded-md bg-white/20 backdrop-blur-sm group-hover:scale-110">
+                        <div className="flex items-center justify-center transition-transform duration-300 w-14 h-14 rounded-sm bg-white/20 backdrop-blur-sm group-hover:scale-110">
                           <div className="text-white">{action.icon}</div>
                         </div>
                         <span className="text-3xl">{action.emoji}</span>
@@ -332,7 +332,7 @@ export default function Dashboard() {
         {/* 📈 Charts Row */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Bar Chart */}
-          <Card className="overflow-hidden border border-gray-200 lg:col-span-2 rounded-md">
+          <Card className="overflow-hidden border border-gray-200 lg:col-span-2 rounded-sm">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp size={20} className="text-[#1A4D8F]" />
@@ -390,7 +390,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Pie Chart */}
-          <Card className="overflow-hidden border border-gray-200 rounded-md">
+          <Card className="overflow-hidden border border-gray-200 rounded-sm">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="flex items-center gap-2">
                 <PiggyBank size={20} className="text-[#00AEEF]" />
@@ -401,7 +401,7 @@ export default function Dashboard() {
               {loading ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-center h-[300px]">
-                    <Skeleton className="w-48 h-48 rounded-lg bg-gray-300 animate-pulse" />
+                    <Skeleton className="w-48 h-48 rounded-md bg-gray-300 animate-pulse" />
                   </div>
                   <div className="space-y-2">
                     {Array.from({ length: typeCount || 3 }).map((_, i) => (
@@ -410,7 +410,7 @@ export default function Dashboard() {
                         className="flex items-center justify-between"
                       >
                         <div className="flex items-center gap-2">
-                          <Skeleton className="w-3 h-3 rounded-lg bg-gray-300" />
+                          <Skeleton className="w-3 h-3 rounded-md bg-gray-300" />
                           <Skeleton className="h-4 w-24 bg-gray-200" />
                         </div>
                         <Skeleton className="h-4 w-20 bg-gray-200" />
@@ -452,7 +452,7 @@ export default function Dashboard() {
                       >
                         <div className="flex items-center gap-2">
                           <div
-                            className="w-3 h-3 rounded-lg"
+                            className="w-3 h-3 rounded-md"
                             style={{ backgroundColor: item.color }}
                           />
                           <span className="text-sm text-gray-600">
@@ -472,9 +472,9 @@ export default function Dashboard() {
         </div>
 
         {/* 🔔 Recent Transactions */}
-        <Card className="overflow-hidden border border-gray-200 rounded-md">
+        <Card className="overflow-hidden border border-gray-200 rounded-sm">
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-lg bg-white/50" />
+            <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-md bg-white/50" />
             <CardTitle className="relative z-10 flex items-center gap-2">
               <Receipt size={20} className="text-[#00AEEF]" />
               Recent Transactions
@@ -486,10 +486,10 @@ export default function Dashboard() {
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-md animate-pulse"
+                    className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-sm animate-pulse"
                   >
                     <div className="flex items-center gap-4">
-                      <Skeleton className="w-12 h-12 rounded-md bg-gray-300" />
+                      <Skeleton className="w-12 h-12 rounded-sm bg-gray-300" />
                       <div className="space-y-2">
                         <Skeleton className="h-4 w-32 bg-gray-300" />
                         <Skeleton className="h-3 w-40 bg-gray-200" />
@@ -539,11 +539,11 @@ export default function Dashboard() {
                   return (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-md hover:border-gray-200 hover:border"
+                      className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-sm hover:border-gray-200 hover:border"
                     >
                       <div className="flex items-center gap-4">
                         <div
-                          className="flex items-center justify-center w-12 h-12 text-2xl border border-gray-100 rounded-md"
+                          className="flex items-center justify-center w-12 h-12 text-2xl border border-gray-100 rounded-sm"
                           style={{ backgroundColor: `${color}15` }}
                         >
                           {emoji}

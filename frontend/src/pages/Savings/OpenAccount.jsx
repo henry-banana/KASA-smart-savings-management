@@ -195,10 +195,10 @@ export default function OpenAccount() {
   return (
     <RoleGuard allow={["teller"]}>
       <div className="max-w-4xl mx-auto">
-        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-md">
+        <Card className="overflow-hidden border border-gray-200 rounded-sm lg:rounded-sm">
           {/* Cute Header with Gradient */}
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
+            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-md sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
             <Sparkles
               className="absolute opacity-50 top-6 right-20 sm:right-32 text-cyan-300"
@@ -207,7 +207,7 @@ export default function OpenAccount() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-md"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-sm"
                 style={{
                   background:
                     "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
@@ -267,7 +267,7 @@ export default function OpenAccount() {
                           })
                         }
                         placeholder="Enter full name"
-                        className="pl-10 h-11 sm:h-12 rounded-md border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
                     </div>
                     {errors.customerName && (
@@ -297,7 +297,7 @@ export default function OpenAccount() {
                           setFormData({ ...formData, idCard: e.target.value })
                         }
                         placeholder="Enter ID citizen number"
-                        className="pl-10 h-11 sm:h-12 rounded-md border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
                     </div>
                     {errors.idCard && (
@@ -328,7 +328,7 @@ export default function OpenAccount() {
                       }
                       placeholder="Enter full address"
                       rows={3}
-                      className="pl-10 rounded-md border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                      className="pl-10 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     />
                   </div>
                   {errors.address && (
@@ -367,7 +367,7 @@ export default function OpenAccount() {
                             setFormData({ ...formData, savingsType: type.id });
                             setErrors({ ...errors, savingsType: "" });
                           }}
-                          className={`relative p-4 rounded-md border-2 transition-all duration-200 text-left group cursor-pointer ${
+                          className={`relative p-4 rounded-sm border-2 transition-all duration-200 text-left group cursor-pointer ${
                             formData.savingsType === type.id
                               ? "border-[#00AEEF] bg-linear-to-br " +
                                 type.color +
@@ -446,7 +446,7 @@ export default function OpenAccount() {
                             : "Enter amount"
                         }
                         disabled={!!regulationsError || loadingRegulations}
-                        className="pl-7 sm:pl-8 h-11 sm:h-12 rounded-md border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        className="pl-7 sm:pl-8 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
                     </div>
                     {errors.initialDeposit && (
@@ -487,7 +487,7 @@ export default function OpenAccount() {
                           setFormData({ ...formData, openDate: e.target.value })
                         }
                         disabled
-                        className="pl-10 text-sm border-gray-200 h-11 sm:h-12 rounded-md bg-gray-50 sm:text-base"
+                        className="pl-10 text-sm border-gray-200 h-11 sm:h-12 rounded-sm bg-gray-50 sm:text-base"
                       />
                     </div>
                   </div>
@@ -499,7 +499,7 @@ export default function OpenAccount() {
                 <Button
                   type="submit"
                   disabled={isSubmitting || !minBalance || !!regulationsError}
-                  className="flex-1 h-11 sm:h-12 text-white rounded-lg font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
+                  className="flex-1 h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
                   style={{
                     background:
                       "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
@@ -514,7 +514,7 @@ export default function OpenAccount() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="text-sm border-gray-300 rounded-lg h-11 sm:h-12 sm:px-8 hover:bg-gray-50 sm:text-base"
+                  className="text-sm border-gray-300 rounded-md h-11 sm:h-12 sm:px-8 hover:bg-gray-50 sm:text-base"
                   onClick={() => {
                     setFormData({
                       customerName: "",
@@ -536,12 +536,12 @@ export default function OpenAccount() {
 
         {/* 🎉 Cute Success Modal */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-          <DialogContent className="rounded-md sm:rounded-md max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+          <DialogContent className="rounded-sm sm:rounded-sm max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
             <DialogHeader>
               <div className="flex flex-col items-center mb-3 sm:mb-4">
                 <div className="relative duration-500 animate-in zoom-in-0">
                   <div
-                    className="flex items-center justify-center w-20 h-20 mb-3 rounded-lg border border-gray-200 sm:w-24 sm:h-24 sm:mb-4"
+                    className="flex items-center justify-center w-20 h-20 mb-3 rounded-md border border-gray-200 sm:w-24 sm:h-24 sm:mb-4"
                     style={{
                       background:
                         "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -574,7 +574,7 @@ export default function OpenAccount() {
 
             <div className="py-3 space-y-3 sm:py-4">
               <div
-                className="p-4 space-y-2 duration-500 delay-200 border-2 sm:p-6 rounded-md sm:space-y-3 animate-in slide-in-from-bottom-4"
+                className="p-4 space-y-2 duration-500 delay-200 border-2 sm:p-6 rounded-sm sm:space-y-3 animate-in slide-in-from-bottom-4"
                 style={{
                   background:
                     "linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)",
@@ -633,7 +633,7 @@ export default function OpenAccount() {
 
             <Button
               onClick={() => setShowSuccess(false)}
-              className="w-full h-11 sm:h-12 text-white rounded-lg font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}
@@ -645,11 +645,11 @@ export default function OpenAccount() {
 
         {/* Error Dialog for failed account opening */}
         <Dialog open={showError} onOpenChange={setShowError}>
-          <DialogContent className="rounded-md sm:rounded-md max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+          <DialogContent className="rounded-sm sm:rounded-sm max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
             <DialogHeader>
               <div className="flex flex-col items-center mb-3 sm:mb-4">
                 <div
-                  className="flex items-center justify-center w-20 h-20 mb-3 rounded-lg border border-gray-200 sm:w-24 sm:h-24 sm:mb-4"
+                  className="flex items-center justify-center w-20 h-20 mb-3 rounded-md border border-gray-200 sm:w-24 sm:h-24 sm:mb-4"
                   style={{
                     background:
                       "linear-gradient(135deg, #F87171 0%, #FBBF24 100%)",
@@ -668,7 +668,7 @@ export default function OpenAccount() {
             </DialogHeader>
             <Button
               onClick={() => setShowError(false)}
-              className="w-full h-11 sm:h-12 text-white rounded-lg font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: "linear-gradient(135deg, #F87171 0%, #FBBF24 100%)",
               }}
