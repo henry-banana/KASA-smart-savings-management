@@ -277,7 +277,7 @@ export default function UserManagement() {
       <div className="space-y-4 sm:space-y-6">
         {/* Error Alert */}
         {error && (
-          <Card className="overflow-hidden border-red-200 border bg-red-50 rounded-2xl">
+          <Card className="overflow-hidden border-red-200 border bg-red-50 rounded-md">
             <CardContent className="p-4">
               <div className="flex items-center gap-3 text-red-800">
                 <AlertTriangle size={20} />
@@ -288,9 +288,9 @@ export default function UserManagement() {
         )}
 
         {/* Header */}
-        <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
+            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
             <Sparkles
               className="absolute text-purple-400 opacity-50 top-6 right-20 sm:right-32"
@@ -300,7 +300,7 @@ export default function UserManagement() {
             <div className="relative z-10 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
               <div className="flex items-start flex-1 min-w-0 gap-3 sm:gap-4">
                 <div
-                  className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+                  className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -323,7 +323,7 @@ export default function UserManagement() {
               </div>
               <Button
                 onClick={handleAddUser}
-                className="shrink-0 w-full h-10 px-4 text-sm font-medium text-white border border-gray-200 sm:w-auto sm:h-11 lg:h-12 sm:px-6 rounded-2xl sm:text-base"
+                className="shrink-0 w-full h-10 px-4 text-sm font-medium text-white border border-gray-200 sm:w-auto sm:h-11 lg:h-12 sm:px-6 rounded-md sm:text-base"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -338,14 +338,14 @@ export default function UserManagement() {
         </Card>
 
         {/* Users Table */}
-        <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
           <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100 p-4 sm:p-6">
             <CardTitle className="text-base sm:text-lg lg:text-xl">
               User List ({users.length})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 sm:p-6">
-            <div className="overflow-hidden border rounded-xl lg:rounded-2xl">
+            <div className="overflow-hidden border rounded-xl lg:rounded-md">
               <div className="overflow-x-auto">
                 {loading ? (
                   <div className="p-4 space-y-3">
@@ -368,8 +368,8 @@ export default function UserManagement() {
                         <Skeleton className="h-4 w-24 bg-gray-200" />
                         <Skeleton className="h-4 w-32 bg-gray-200 hidden md:block" />
                         <Skeleton className="h-4 w-40 bg-gray-200 hidden lg:block" />
-                        <Skeleton className="h-6 w-24 bg-gray-200 rounded-full" />
-                        <Skeleton className="h-6 w-16 bg-gray-200 rounded-full" />
+                        <Skeleton className="h-6 w-24 bg-gray-200 rounded-lg" />
+                        <Skeleton className="h-6 w-16 bg-gray-200 rounded-lg" />
                         <Skeleton className="h-4 w-28 bg-gray-200 hidden sm:block" />
                         <div className="flex gap-2">
                           <Skeleton className="h-8 w-16 bg-gray-200 rounded-xl" />
@@ -486,7 +486,7 @@ export default function UserManagement() {
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
-                  className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-2xl"
+                  className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -514,7 +514,7 @@ export default function UserManagement() {
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                   placeholder="Enter full name"
-                  className="border-gray-200 h-11 rounded-2xl"
+                  className="border-gray-200 h-11 rounded-md"
                 />
               </div>
 
@@ -580,14 +580,14 @@ export default function UserManagement() {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   placeholder="Enter email address"
-                  className="border-gray-200 h-11 rounded-2xl"
+                  className="border-gray-200 h-11 rounded-md"
                 />
               </div>
             </div>
             <div className="flex gap-4">
               <Button
                 onClick={submitAddUser}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -598,7 +598,7 @@ export default function UserManagement() {
               <Button
                 onClick={() => setShowAddUser(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-2xl"
+                className="flex-1 h-12 border-gray-200 rounded-md"
               >
                 Cancel
               </Button>
@@ -612,7 +612,7 @@ export default function UserManagement() {
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
-                  className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-2xl"
+                  className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -637,7 +637,7 @@ export default function UserManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, fullName: e.target.value })
                   }
-                  className="border-gray-200 h-11 rounded-2xl"
+                  className="border-gray-200 h-11 rounded-md"
                 />
               </div>
 
@@ -702,14 +702,14 @@ export default function UserManagement() {
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  className="border-gray-200 h-11 rounded-2xl"
+                  className="border-gray-200 h-11 rounded-md"
                 />
               </div>
             </div>
             <div className="flex gap-4">
               <Button
                 onClick={submitEditUser}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -720,7 +720,7 @@ export default function UserManagement() {
               <Button
                 onClick={() => setShowEditUser(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-2xl"
+                className="flex-1 h-12 border-gray-200 rounded-md"
               >
                 Cancel
               </Button>
@@ -752,12 +752,12 @@ export default function UserManagement() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="border-gray-200 rounded-2xl">
+              <AlertDialogCancel className="border-gray-200 rounded-md">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmDisable}
-                className="text-white border border-gray-200 rounded-2xl"
+                className="text-white border border-gray-200 rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -775,7 +775,7 @@ export default function UserManagement() {
             <DialogHeader>
               <div className="flex justify-center mb-4">
                 <div
-                  className="flex items-center justify-center w-20 h-20 rounded-full"
+                  className="flex items-center justify-center w-20 h-20 rounded-lg"
                   style={{
                     background:
                       "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -793,7 +793,7 @@ export default function UserManagement() {
             </DialogHeader>
             <Button
               onClick={() => setShowSuccess(false)}
-              className="w-full h-12 font-medium text-white border border-gray-200 rounded-2xl"
+              className="w-full h-12 font-medium text-white border border-gray-200 rounded-md"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}

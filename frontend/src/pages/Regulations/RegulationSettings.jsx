@@ -282,9 +282,9 @@ export default function RegulationSettings() {
     <RoleGuard allow={["admin"]}>
       <div className="space-y-4 sm:space-y-6">
         {/* Settings Form */}
-        <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
+            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
             <Sparkles
               className="absolute text-purple-400 opacity-50 top-6 right-20 sm:right-32"
@@ -293,7 +293,7 @@ export default function RegulationSettings() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -319,7 +319,7 @@ export default function RegulationSettings() {
           <CardContent className="p-8">
             {/* Error Message */}
             {error && (
-              <div className="p-4 mb-6 border-2 border-red-200 rounded-2xl bg-red-50">
+              <div className="p-4 mb-6 border-2 border-red-200 rounded-md bg-red-50">
                 <p className="flex items-center gap-2 text-sm text-red-900">
                   <AlertTriangle size={16} />
                   {error}
@@ -333,7 +333,7 @@ export default function RegulationSettings() {
                 {/* Basic Regulations Skeleton */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-4">
-                    <Skeleton className="w-2 h-2 rounded-full bg-gray-300" />
+                    <Skeleton className="w-2 h-2 rounded-lg bg-gray-300" />
                     <Skeleton className="h-5 w-36 bg-gray-200" />
                   </div>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -350,10 +350,10 @@ export default function RegulationSettings() {
                 {/* Interest Rates Table Skeleton */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-4">
-                    <Skeleton className="w-2 h-2 rounded-full bg-gray-300" />
+                    <Skeleton className="w-2 h-2 rounded-lg bg-gray-300" />
                     <Skeleton className="h-5 w-56 bg-gray-200" />
                   </div>
-                  <div className="overflow-hidden border rounded-2xl">
+                  <div className="overflow-hidden border rounded-md">
                     <div className="bg-gray-50 p-4">
                       <div className="flex gap-4">
                         <Skeleton className="h-5 w-8 bg-gray-200" />
@@ -391,7 +391,7 @@ export default function RegulationSettings() {
                 {/* Basic Settings */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-lg"></div>
                     <h4 className="font-semibold text-gray-900">
                       Basic Regulations
                     </h4>
@@ -407,7 +407,7 @@ export default function RegulationSettings() {
                         type="number"
                         value={minBalance}
                         onChange={(e) => setMinBalance(e.target.value)}
-                        className="border-gray-200 h-11 rounded-2xl"
+                        className="border-gray-200 h-11 rounded-md"
                       />
                       <p className="text-xs text-gray-500">
                         Minimum amount to open account or deposit
@@ -426,7 +426,7 @@ export default function RegulationSettings() {
                         type="number"
                         value={minWithdrawalDays}
                         onChange={(e) => setMinWithdrawalDays(e.target.value)}
-                        className="border-gray-200 h-11 rounded-2xl"
+                        className="border-gray-200 h-11 rounded-md"
                       />
                       <p className="text-xs text-gray-500">
                         Minimum days before withdrawal allowed
@@ -439,7 +439,7 @@ export default function RegulationSettings() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-purple-500 rounded-lg"></div>
                       <h4 className="font-semibold text-gray-900">
                         Interest Rates by Account Type
                       </h4>
@@ -462,7 +462,7 @@ export default function RegulationSettings() {
                     )}
                   </div>
 
-                  <div className="overflow-hidden border rounded-2xl">
+                  <div className="overflow-hidden border rounded-md">
                     <Table>
                       <TableHeader>
                         <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
@@ -542,7 +542,7 @@ export default function RegulationSettings() {
                                     };
                                     setInterestRates(updated);
                                   }}
-                                  className="w-28 h-10 border-gray-200 rounded-2xl"
+                                  className="w-28 h-10 border-gray-200 rounded-md"
                                 />
                               </TableCell>
                               <TableCell>
@@ -553,7 +553,7 @@ export default function RegulationSettings() {
                                   onChange={(e) =>
                                     handleUpdateRate(index, e.target.value)
                                   }
-                                  className="w-32 h-10 border-gray-200 rounded-2xl"
+                                  className="w-32 h-10 border-gray-200 rounded-md"
                                 />
                               </TableCell>
                             </TableRow>
@@ -567,7 +567,7 @@ export default function RegulationSettings() {
                   <Button
                     type="button"
                     onClick={() => setShowCreateTypeSaving(true)}
-                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-2xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-md"
                     style={{
                       background:
                         "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -588,7 +588,7 @@ export default function RegulationSettings() {
                       }
                       setShowDeleteConfirm(true);
                     }}
-                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-2xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-md"
                     style={{
                       background:
                         "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
@@ -599,7 +599,7 @@ export default function RegulationSettings() {
                   </Button>
                   <Button
                     type="submit"
-                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-2xl"
+                    className="h-12 px-8 font-medium text-white border border-gray-200 rounded-md"
                     style={{
                       background:
                         "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -611,7 +611,7 @@ export default function RegulationSettings() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-12 px-8 border-gray-200 rounded-2xl"
+                    className="h-12 px-8 border-gray-200 rounded-md"
                     disabled={loading}
                     onClick={async () => {
                       try {
@@ -649,7 +649,7 @@ export default function RegulationSettings() {
             <CardContent className="p-6">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div
-                  className="p-6 border-2 border-blue-100 rounded-2xl"
+                  className="p-6 border-2 border-blue-100 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
@@ -679,7 +679,7 @@ export default function RegulationSettings() {
                 </div>
 
                 <div
-                  className="p-6 border-2 border-green-100 rounded-2xl"
+                  className="p-6 border-2 border-green-100 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%)",
@@ -733,7 +733,7 @@ export default function RegulationSettings() {
               </div>
             </CardHeader>
             <CardContent className="p-6">
-              <div className="overflow-hidden border rounded-2xl">
+              <div className="overflow-hidden border rounded-md">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
@@ -778,7 +778,7 @@ export default function RegulationSettings() {
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
-                  className="flex items-center justify-center w-12 h-12 rounded-2xl"
+                  className="flex items-center justify-center w-12 h-12 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
@@ -798,7 +798,7 @@ export default function RegulationSettings() {
               </div>
             </DialogHeader>
             <div className="py-4 space-y-4">
-              <div className="p-4 border-2 border-yellow-200 rounded-2xl bg-yellow-50">
+              <div className="p-4 border-2 border-yellow-200 rounded-md bg-yellow-50">
                 <p className="flex items-center gap-2 text-sm text-yellow-900">
                   <AlertTriangle size={16} />
                   Changes will take effect immediately and apply to all
@@ -809,7 +809,7 @@ export default function RegulationSettings() {
             <div className="flex gap-4">
               <Button
                 onClick={confirmUpdate}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -820,7 +820,7 @@ export default function RegulationSettings() {
               <Button
                 onClick={() => setShowConfirm(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-2xl"
+                className="flex-1 h-12 border-gray-200 rounded-md"
               >
                 Cancel
               </Button>
@@ -833,7 +833,7 @@ export default function RegulationSettings() {
             <DialogHeader>
               <div className="flex justify-center mb-4">
                 <div
-                  className="flex items-center justify-center w-20 h-20 rounded-full"
+                  className="flex items-center justify-center w-20 h-20 rounded-lg"
                   style={{
                     background:
                       "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -852,7 +852,7 @@ export default function RegulationSettings() {
               </DialogDescription>
             </DialogHeader>
             <div className="py-4 space-y-4">
-              <div className="p-4 space-y-2 border border-gray-200 rounded-2xl bg-gray-50">
+              <div className="p-4 space-y-2 border border-gray-200 rounded-md bg-gray-50">
                 <p className="text-sm font-semibold text-gray-700">
                   Updated regulations:
                 </p>
@@ -872,7 +872,7 @@ export default function RegulationSettings() {
             </div>
             <Button
               onClick={() => setShowSuccess(false)}
-              className="w-full h-12 font-medium text-white border border-gray-200 rounded-2xl"
+              className="w-full h-12 font-medium text-white border border-gray-200 rounded-md"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
@@ -887,7 +887,7 @@ export default function RegulationSettings() {
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
-                  className="flex items-center justify-center w-12 h-12 rounded-2xl"
+                  className="flex items-center justify-center w-12 h-12 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
@@ -907,7 +907,7 @@ export default function RegulationSettings() {
               </div>
             </DialogHeader>
             <div className="py-4 space-y-4">
-              <div className="p-4 border-2 border-red-200 rounded-2xl bg-red-50">
+              <div className="p-4 border-2 border-red-200 rounded-md bg-red-50">
                 <p className="flex items-center gap-2 mb-3 text-sm font-semibold text-red-900">
                   <AlertTriangle size={16} />
                   You are about to delete {selectedTypeSavings.length} savings
@@ -920,7 +920,7 @@ export default function RegulationSettings() {
                     );
                     return item ? (
                       <li key={id} className="flex items-center gap-2">
-                        <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                        <span className="w-2 h-2 bg-red-500 rounded-lg"></span>
                         <span className="font-medium">{item.typeName}</span>
                         <span className="text-xs text-red-600">
                           ({item.rate}% per month)
@@ -930,7 +930,7 @@ export default function RegulationSettings() {
                   })}
                 </ul>
               </div>
-              <div className="p-4 border-2 border-yellow-200 rounded-2xl bg-yellow-50">
+              <div className="p-4 border-2 border-yellow-200 rounded-md bg-yellow-50">
                 <p className="flex items-center gap-2 text-sm text-yellow-900">
                   <AlertTriangle size={16} />
                   Warning: Deleting savings types may affect existing accounts
@@ -974,7 +974,7 @@ export default function RegulationSettings() {
                     setLoading(false);
                   }
                 }}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
@@ -986,7 +986,7 @@ export default function RegulationSettings() {
               <Button
                 onClick={() => setShowDeleteConfirm(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-2xl"
+                className="flex-1 h-12 border-gray-200 rounded-md"
               >
                 Cancel
               </Button>
@@ -1002,7 +1002,7 @@ export default function RegulationSettings() {
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
-                  className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-2xl"
+                  className="flex items-center justify-center w-12 h-12 border border-gray-200 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -1035,7 +1035,7 @@ export default function RegulationSettings() {
                     })
                   }
                   placeholder="e.g., 3 Months, 6 Months"
-                  className="border-gray-200 h-11 rounded-2xl"
+                  className="border-gray-200 h-11 rounded-md"
                 />
               </div>
 
@@ -1054,7 +1054,7 @@ export default function RegulationSettings() {
                     })
                   }
                   placeholder="0 for No term, or number of months"
-                  className="border-gray-200 h-11 rounded-2xl"
+                  className="border-gray-200 h-11 rounded-md"
                 />
                 <p className="text-xs text-gray-500">
                   Enter 0 for no term (flexible)
@@ -1077,7 +1077,7 @@ export default function RegulationSettings() {
                     })
                   }
                   placeholder="e.g., 0.5 for 0.5%"
-                  className="border-gray-200 h-11 rounded-2xl"
+                  className="border-gray-200 h-11 rounded-md"
                 />
               </div>
             </div>
@@ -1126,7 +1126,7 @@ export default function RegulationSettings() {
                     setLoading(false);
                   }
                 }}
-                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-2xl"
+                className="flex-1 h-12 font-medium text-white border border-gray-200 rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -1145,7 +1145,7 @@ export default function RegulationSettings() {
                   });
                 }}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-2xl"
+                className="flex-1 h-12 border-gray-200 rounded-md"
               >
                 Cancel
               </Button>

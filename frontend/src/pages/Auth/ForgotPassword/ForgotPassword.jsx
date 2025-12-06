@@ -74,9 +74,9 @@ function ForgotPassword({ onContinue, onBack }) {
         />
 
         {/* Floating circles */}
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-200 rounded-full opacity-10 blur-2xl animate-pulse" />
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-200 rounded-lg opacity-10 blur-2xl animate-pulse" />
         <div
-          className="absolute bottom-1/3 right-1/3 w-40 h-40 bg-pink-200 rounded-full opacity-10 blur-3xl animate-pulse"
+          className="absolute bottom-1/3 right-1/3 w-40 h-40 bg-pink-200 rounded-lg opacity-10 blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
         />
       </div>
@@ -107,9 +107,9 @@ function ForgotPassword({ onContinue, onBack }) {
             </div>
 
             {/* Decorative elements around icon */}
-            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-pink-200 opacity-60 animate-pulse" />
+            <div className="absolute -top-2 -right-2 w-6 h-6 rounded-lg bg-pink-200 opacity-60 animate-pulse" />
             <div
-              className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-purple-200 opacity-60 animate-pulse"
+              className="absolute -bottom-2 -left-2 w-4 h-4 rounded-lg bg-purple-200 opacity-60 animate-pulse"
               style={{ animationDelay: "0.5s" }}
             />
           </div>
@@ -158,7 +158,7 @@ function ForgotPassword({ onContinue, onBack }) {
               type="submit"
               disabled={!isValid || loading}
               className={`
-                w-full h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300
+                w-full h-12 text-white rounded-lg font-medium border border-gray-200 transition-all duration-300
                 ${
                   isValid && !loading
                     ? "hover:border border-gray-200 hover:scale-[1.02]"
@@ -198,7 +198,7 @@ function ForgotPassword({ onContinue, onBack }) {
           </div>
 
           {/* Info Box */}
-          <div className="bg-linear-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100">
+          <div className="bg-linear-to-r from-purple-50 to-pink-50 rounded-md p-4 border border-purple-100">
             <p className="text-xs text-purple-700 text-center">
               💡 <strong>Tip:</strong> Check your spam folder if you don't
               receive the email within a few minutes.

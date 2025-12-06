@@ -1,15 +1,37 @@
 import * as React from "react";
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { cn } from "./utils";
 import { Button } from "./button";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-export function MonthPicker({ date, onSelect, placeholder = "Pick a month", className, maxDate }) {
-  const [currentYear, setCurrentYear] = React.useState(date?.getFullYear() || new Date().getFullYear());
+export function MonthPicker({
+  date,
+  onSelect,
+  placeholder = "Pick a month",
+  className,
+  maxDate,
+}) {
+  const [currentYear, setCurrentYear] = React.useState(
+    date?.getFullYear() || new Date().getFullYear()
+  );
 
   const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const handleMonthSelect = (monthIndex) => {
@@ -27,9 +49,11 @@ export function MonthPicker({ date, onSelect, placeholder = "Pick a month", clas
     const today = maxDate instanceof Date ? maxDate : new Date();
     const currentMonth = today.getMonth();
     const currentYearNow = today.getFullYear();
-    
-    return currentYear > currentYearNow || 
-           (currentYear === currentYearNow && monthIndex >= currentMonth);
+
+    return (
+      currentYear > currentYearNow ||
+      (currentYear === currentYearNow && monthIndex >= currentMonth)
+    );
   };
 
   return (
@@ -47,7 +71,7 @@ export function MonthPicker({ date, onSelect, placeholder = "Pick a month", clas
           {date ? formatMonthYear(date) : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-4 rounded-2xl" align="start">
+      <PopoverContent className="w-auto p-4 rounded-md" align="start">
         <div className="space-y-4">
           {/* Year Navigator */}
           <div className="flex items-center justify-between">
@@ -55,7 +79,7 @@ export function MonthPicker({ date, onSelect, placeholder = "Pick a month", clas
               variant="outline"
               size="icon"
               className="h-8 w-8"
-              onClick={() => setCurrentYear(y => y - 1)}
+              onClick={() => setCurrentYear((y) => y - 1)}
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -64,7 +88,7 @@ export function MonthPicker({ date, onSelect, placeholder = "Pick a month", clas
               variant="outline"
               size="icon"
               className="h-8 w-8"
-              onClick={() => setCurrentYear(y => y + 1)}
+              onClick={() => setCurrentYear((y) => y + 1)}
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -73,11 +97,12 @@ export function MonthPicker({ date, onSelect, placeholder = "Pick a month", clas
           {/* Month Grid */}
           <div className="grid grid-cols-3 gap-2">
             {months.map((month, index) => {
-              const isSelected = date && 
-                date.getMonth() === index && 
+              const isSelected =
+                date &&
+                date.getMonth() === index &&
                 date.getFullYear() === currentYear;
               const isDisabled = isMonthDisabled(index);
-              
+
               return (
                 <Button
                   key={month}
@@ -85,7 +110,8 @@ export function MonthPicker({ date, onSelect, placeholder = "Pick a month", clas
                   disabled={isDisabled}
                   className={cn(
                     "h-10 text-sm rounded-xl",
-                    isSelected && "bg-gradient-to-r from-[#1A4D8F] to-[#00AEEF] text-white",
+                    isSelected &&
+                      "bg-gradient-to-r from-[#1A4D8F] to-[#00AEEF] text-white",
                     isDisabled && "opacity-50 cursor-not-allowed"
                   )}
                   onClick={() => !isDisabled && handleMonthSelect(index)}

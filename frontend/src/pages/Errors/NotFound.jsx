@@ -47,7 +47,7 @@ export default function NotFound() {
       <Card className="overflow-hidden border border-gray-200 rounded-3xl">
         {/* Header với gradient + sparkle giống style KASA */}
         <CardHeader className="relative bg-linear-to-r from-[#E8F6FF] via-[#DFF9F4] to-[#FFF7D6] border-b border-gray-100">
-          <div className="absolute top-0 right-0 w-40 h-40 -mt-16 -mr-16 rounded-full bg-white/50 opacity-60" />
+          <div className="absolute top-0 right-0 w-40 h-40 -mt-16 -mr-16 rounded-lg bg-white/50 opacity-60" />
           <StarDecor className="top-4 right-6" />
           <div className="relative z-10 flex items-center justify-between gap-3">
             <div>
@@ -76,7 +76,7 @@ export default function NotFound() {
               <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <Button
                   onClick={handleGoHome}
-                  className="h-11 px-6 rounded-full text-white border border-gray-200 hover:border border-gray-200 transition-all duration-300 hover:scale-[1.02]"
+                  className="h-11 px-6 rounded-lg text-white border border-gray-200 hover:border border-gray-200 transition-all duration-300 hover:scale-[1.02]"
                   style={{
                     background:
                       "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
@@ -88,7 +88,7 @@ export default function NotFound() {
                 <Button
                   variant="outline"
                   onClick={handleGoBack}
-                  className="flex items-center gap-2 px-6 text-gray-700 border-gray-200 rounded-full h-11 hover:bg-gray-50"
+                  className="flex items-center gap-2 px-6 text-gray-700 border-gray-200 rounded-lg h-11 hover:bg-gray-50"
                 >
                   <ArrowLeft size={18} />
                   Go Back

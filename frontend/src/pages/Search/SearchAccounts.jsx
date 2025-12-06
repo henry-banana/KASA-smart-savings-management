@@ -132,10 +132,10 @@ export default function SearchAccounts() {
   return (
     <RoleGuard allow={["teller", "accountant"]}>
       <div className="space-y-4 sm:space-y-6">
-        <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
           {/* Cute Header */}
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
+            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
             <Sparkles
               className="absolute text-purple-400 opacity-50 top-6 right-20 sm:right-32"
@@ -144,7 +144,7 @@ export default function SearchAccounts() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -191,7 +191,7 @@ export default function SearchAccounts() {
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder="Account code or customer name..."
-                      className="pl-10 h-11 sm:h-12 rounded-2xl border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all text-sm sm:text-base"
+                      className="pl-10 h-11 sm:h-12 rounded-md border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all text-sm sm:text-base"
                     />
                   </div>
                 </div>
@@ -242,7 +242,7 @@ export default function SearchAccounts() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-gray-200 rounded-2xl hover:bg-gray-50"
+                  className="border-gray-200 rounded-md hover:bg-gray-50"
                   onClick={() => handleExport("excel")}
                 >
                   <FileDown size={16} className="mr-2" />
@@ -342,7 +342,7 @@ export default function SearchAccounts() {
             <DialogHeader>
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className="flex items-center justify-center border border-gray-200 w-14 h-14 rounded-2xl"
+                  className="flex items-center justify-center border border-gray-200 w-14 h-14 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -364,7 +364,7 @@ export default function SearchAccounts() {
             {selectedAccount && (
               <div className="space-y-3">
                 <div
-                  className="p-6 space-y-3 border-2 rounded-2xl"
+                  className="p-6 space-y-3 border-2 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #F3E8FF 0%, #E8F6FF 100%)",
@@ -423,7 +423,7 @@ export default function SearchAccounts() {
 
             <Button
               onClick={() => setShowDetails(false)}
-              className="w-full h-12 font-medium text-white rounded-2xl border border-gray-200"
+              className="w-full h-12 font-medium text-white rounded-md border border-gray-200"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}

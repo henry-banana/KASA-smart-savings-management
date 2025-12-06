@@ -143,7 +143,7 @@ export default function MonthlyReport() {
             <Button
               onClick={handleGenerateReport}
               disabled={loading}
-              className="w-full h-12 rounded-2xl px-6 text-white border border-gray-200 hover:border border-gray-200 disabled:opacity-50"
+              className="w-full h-12 rounded-md px-6 text-white border border-gray-200 hover:border border-gray-200 disabled:opacity-50"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}
@@ -161,7 +161,7 @@ export default function MonthlyReport() {
               )}
             </Button>
             {error && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm">
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
                 {error}
               </div>
             )}
@@ -178,7 +178,7 @@ export default function MonthlyReport() {
             </div>
 
             {/* Skeleton for Main Report */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-8">
+            <div className="bg-white rounded-md border border-gray-200 p-8">
               {/* Skeleton for Report Header */}
               <div className="mb-8 space-y-4">
                 <div className="flex justify-center">
@@ -271,14 +271,14 @@ export default function MonthlyReport() {
               <Button
                 onClick={handleExport}
                 variant="outline"
-                className="rounded-2xl border border-gray-100 hover:border border-gray-200"
+                className="rounded-md border border-gray-100 hover:border border-gray-200"
               >
                 <Printer size={18} className="mr-2" />
                 Print Report
               </Button>
               <Button
                 onClick={handleExport}
-                className="rounded-2xl border border-gray-100 hover:border border-gray-200 bg-linear-to-r from-green-600 to-green-500 text-white"
+                className="rounded-md border border-gray-100 hover:border border-gray-200 bg-linear-to-r from-green-600 to-green-500 text-white"
               >
                 <FileDown size={18} className="mr-2" />
                 Export PDF
@@ -286,7 +286,7 @@ export default function MonthlyReport() {
             </div>
 
             {/* Main Report Container - Printable */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-8 print:shadow-none print:rounded-none print:p-12">
+            <div className="bg-white rounded-md border border-gray-200 p-8 print:shadow-none print:rounded-none print:p-12">
               {/* Report Header */}
               <div className="mb-8 space-y-4">
                 <h1 className="text-2xl font-bold text-[#1A4D8F] text-center tracking-tight">
@@ -316,7 +316,7 @@ export default function MonthlyReport() {
               </div>
 
               {/* Report Table */}
-              <div className="overflow-hidden rounded-2xl border-2 border-gray-200 border border-gray-200">
+              <div className="overflow-hidden rounded-md border-2 border-gray-200 border border-gray-200">
                 <table className="w-full border-collapse">
                   {/* Table Header */}
                   <thead>

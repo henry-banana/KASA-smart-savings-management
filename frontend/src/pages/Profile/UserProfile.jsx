@@ -200,15 +200,15 @@ export default function UserProfile() {
     return (
       <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
         {/* Profile Header Skeleton */}
-        <div className="border border-gray-200 rounded-2xl lg:rounded-3xl overflow-hidden">
+        <div className="border border-gray-200 rounded-mdlg:rounded-3xl overflow-hidden">
           <div className="p-4 sm:p-6 lg:p-8 bg-linear-to-br from-[#F3E8FF] to-[#E8F6FF]">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-              <Skeleton className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200" />
+              <Skeleton className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-gray-200" />
               <div className="flex-1 text-center sm:text-left space-y-3">
                 <Skeleton className="h-8 w-48 mx-auto sm:mx-0 bg-gray-200" />
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                  <Skeleton className="h-6 w-28 bg-gray-200 rounded-full" />
-                  <Skeleton className="h-6 w-20 bg-gray-200 rounded-full" />
+                  <Skeleton className="h-6 w-28 bg-gray-200 rounded-lg" />
+                  <Skeleton className="h-6 w-20 bg-gray-200 rounded-lg" />
                 </div>
                 <Skeleton className="h-4 w-32 mx-auto sm:mx-0 bg-gray-200" />
               </div>
@@ -231,7 +231,7 @@ export default function UserProfile() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-gray-50"
+                className="flex items-center gap-4 p-4 rounded-mdbg-gray-50"
               >
                 <Skeleton className="w-12 h-12 rounded-xl bg-gray-200" />
                 <div className="space-y-2">
@@ -250,7 +250,7 @@ export default function UserProfile() {
             <Skeleton className="h-4 w-48 bg-gray-200" />
           </div>
           <div className="p-6">
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50">
+            <div className="flex items-center justify-between p-4 rounded-mdbg-gray-50">
               <div className="flex items-center gap-4">
                 <Skeleton className="w-12 h-12 rounded-xl bg-gray-200" />
                 <div className="space-y-2">
@@ -271,7 +271,7 @@ export default function UserProfile() {
           <div className="p-6">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="p-4 rounded-2xl bg-gray-50">
+                <div key={i} className="p-4 rounded-mdbg-gray-50">
                   <Skeleton className="h-4 w-24 bg-gray-200 mb-2" />
                   <Skeleton className="h-5 w-36 bg-gray-200" />
                 </div>
@@ -287,13 +287,13 @@ export default function UserProfile() {
     <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
       {/* Error Message */}
       {error && (
-        <div className="p-4 mb-4 border-2 border-red-200 rounded-2xl bg-red-50">
+        <div className="p-4 mb-4 border-2 border-red-200 rounded-mdbg-red-50">
           <p className="text-sm text-red-900">{error}</p>
         </div>
       )}
 
       {/* Profile Header */}
-      <Card className="border border-gray-200 rounded-2xl lg:rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-mdlg:rounded-3xl overflow-hidden">
         <CardContent className="p-4 sm:p-6 lg:p-8 bg-linear-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
           <StarDecor className="top-4 right-8 sm:right-12" />
           <Sparkles
@@ -303,7 +303,7 @@ export default function UserProfile() {
 
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 relative z-10">
             <div
-              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-gray-200 border-4 border-white shrink-0 overflow-hidden"
+              className="flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-lg border border-gray-200 border-4 border-white shrink-0 overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
@@ -355,7 +355,7 @@ export default function UserProfile() {
             <Button
               onClick={() => setShowEditContact(true)}
               variant="outline"
-              className="rounded-2xl border-gray-200"
+              className="rounded-mdborder-gray-200"
             >
               Edit
             </Button>
@@ -442,7 +442,7 @@ export default function UserProfile() {
               </div>
               <Button
                 onClick={() => setShowChangePassword(true)}
-                className="rounded-2xl bg-white border border-yellow-200 hover:bg-yellow-50"
+                className="rounded-mdbg-white border border-yellow-200 hover:bg-yellow-50"
                 variant="outline"
               >
                 Change Password
@@ -501,7 +501,7 @@ export default function UserProfile() {
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
               <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center border border-gray-200"
+                className="w-12 h-12 rounded-mdflex items-center justify-center border border-gray-200"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -533,7 +533,7 @@ export default function UserProfile() {
                   })
                 }
                 placeholder="Enter current password"
-                className="h-11 rounded-2xl border-gray-200"
+                className="h-11 rounded-mdborder-gray-200"
               />
             </div>
 
@@ -552,7 +552,7 @@ export default function UserProfile() {
                   })
                 }
                 placeholder="Enter new password"
-                className="h-11 rounded-2xl border-gray-200"
+                className="h-11 rounded-mdborder-gray-200"
               />
               <p className="text-xs text-gray-500">
                 Must be at least 6 characters
@@ -574,7 +574,7 @@ export default function UserProfile() {
                   })
                 }
                 placeholder="Confirm new password"
-                className="h-11 rounded-2xl border-gray-200"
+                className="h-11 rounded-mdborder-gray-200"
               />
             </div>
           </div>
@@ -582,7 +582,7 @@ export default function UserProfile() {
             <Button
               onClick={handleChangePassword}
               disabled={loading}
-              className="flex-1 h-12 text-white rounded-2xl border border-gray-200 font-medium"
+              className="flex-1 h-12 text-white rounded-mdborder border-gray-200 font-medium"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
@@ -599,7 +599,7 @@ export default function UserProfile() {
                 });
               }}
               variant="outline"
-              className="flex-1 h-12 rounded-2xl border-gray-200"
+              className="flex-1 h-12 rounded-mdborder-gray-200"
               disabled={loading}
             >
               Cancel
@@ -614,7 +614,7 @@ export default function UserProfile() {
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
               <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center border border-gray-200"
+                className="w-12 h-12 rounded-mdflex items-center justify-center border border-gray-200"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -644,7 +644,7 @@ export default function UserProfile() {
                 onChange={(e) =>
                   setContactInfo({ ...contactInfo, email: e.target.value })
                 }
-                className="h-11 rounded-2xl border-gray-200"
+                className="h-11 rounded-mdborder-gray-200"
               />
             </div>
 
@@ -659,7 +659,7 @@ export default function UserProfile() {
                 onChange={(e) =>
                   setContactInfo({ ...contactInfo, phone: e.target.value })
                 }
-                className="h-11 rounded-2xl border-gray-200"
+                className="h-11 rounded-mdborder-gray-200"
               />
             </div>
 
@@ -673,7 +673,7 @@ export default function UserProfile() {
                 onChange={(e) =>
                   setContactInfo({ ...contactInfo, address: e.target.value })
                 }
-                className="h-11 rounded-2xl border-gray-200"
+                className="h-11 rounded-mdborder-gray-200"
               />
             </div>
 
@@ -691,7 +691,7 @@ export default function UserProfile() {
                     dateOfBirth: e.target.value,
                   })
                 }
-                className="h-11 rounded-2xl border-gray-200"
+                className="h-11 rounded-mdborder-gray-200"
               />
             </div>
 
@@ -706,7 +706,7 @@ export default function UserProfile() {
                 onChange={(e) =>
                   setContactInfo({ ...contactInfo, avatarUrl: e.target.value })
                 }
-                className="h-11 rounded-2xl border-gray-200"
+                className="h-11 rounded-mdborder-gray-200"
                 placeholder="https://example.com/avatar.png"
               />
             </div>
@@ -715,7 +715,7 @@ export default function UserProfile() {
             <Button
               onClick={handleUpdateContact}
               disabled={loading}
-              className="flex-1 h-12 text-white rounded-2xl border border-gray-200 font-medium"
+              className="flex-1 h-12 text-white rounded-mdborder border-gray-200 font-medium"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
@@ -725,7 +725,7 @@ export default function UserProfile() {
             <Button
               onClick={() => setShowEditContact(false)}
               variant="outline"
-              className="flex-1 h-12 rounded-2xl border-gray-200"
+              className="flex-1 h-12 rounded-mdborder-gray-200"
               disabled={loading}
             >
               Cancel
@@ -740,7 +740,7 @@ export default function UserProfile() {
           <DialogHeader>
             <div className="flex justify-center mb-4">
               <div
-                className="w-20 h-20 rounded-full flex items-center justify-center"
+                className="w-20 h-20 rounded-lg flex items-center justify-center"
                 style={{
                   background:
                     "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -756,7 +756,7 @@ export default function UserProfile() {
           </DialogHeader>
           <Button
             onClick={() => setShowSuccess(false)}
-            className="w-full h-12 text-white rounded-2xl border border-gray-200 font-medium"
+            className="w-full h-12 text-white rounded-mdborder border-gray-200 font-medium"
             style={{
               background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
             }}

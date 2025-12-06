@@ -166,7 +166,7 @@ export default function DailyReport() {
           <CardHeader className="pb-6 border-b border-gray-100 bg-linear-to-r from-purple-50 to-pink-50">
             <div className="flex items-center gap-3 mb-2">
               <div
-                className="flex items-center justify-center w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 rounded-2xl"
+                className="flex items-center justify-center w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -203,7 +203,7 @@ export default function DailyReport() {
               <Button
                 onClick={handleGenerateReport}
                 disabled={loading || isDateInvalid()}
-                className="w-full h-12 px-6 text-white  border border-gray-200 sm:w-auto rounded-2xl hover:border"
+                className="w-full h-12 px-6 text-white  border border-gray-200 sm:w-auto rounded-md hover:border"
                 style={{
                   background:
                     "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -222,10 +222,10 @@ export default function DailyReport() {
 
         {/* Error Message */}
         {error && (
-          <Card className="border-2 border-red-200 bg-red-50 rounded-2xl">
+          <Card className="border-2 border-red-200 bg-red-50 rounded-md">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
+                <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-lg">
                   <span className="text-2xl">⚠️</span>
                 </div>
                 <div>
@@ -245,7 +245,7 @@ export default function DailyReport() {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="relative p-6 overflow-hidden bg-white border border-gray-200 rounded-2xl animate-pulse"
+                  className="relative p-6 overflow-hidden bg-white border border-gray-200 rounded-md animate-pulse"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1 space-y-3">
@@ -253,14 +253,14 @@ export default function DailyReport() {
                       <Skeleton className="h-8 w-40 bg-gray-200" />
                       <Skeleton className="h-3 w-32 bg-gray-200" />
                     </div>
-                    <Skeleton className="w-14 h-14 rounded-2xl bg-gray-200" />
+                    <Skeleton className="w-14 h-14 rounded-md bg-gray-200" />
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Skeleton for Data Table */}
-            <div className="overflow-hidden border border-gray-200 rounded-2xl bg-white">
+            <div className="overflow-hidden border border-gray-200 rounded-md bg-white">
               <div className="border-b border-gray-100 bg-gray-50 p-4">
                 <Skeleton className="h-6 w-64 bg-gray-200" />
               </div>
@@ -280,7 +280,7 @@ export default function DailyReport() {
             </div>
 
             {/* Skeleton for Chart */}
-            <div className="overflow-hidden border border-gray-200 rounded-2xl bg-white">
+            <div className="overflow-hidden border border-gray-200 rounded-md bg-white">
               <div className="border-b border-gray-100 bg-gray-50 p-4 space-y-2">
                 <Skeleton className="h-6 w-48 bg-gray-200" />
                 <Skeleton className="h-4 w-72 bg-gray-200" />
@@ -304,7 +304,7 @@ export default function DailyReport() {
             </div>
 
             {/* Skeleton for Transaction Statistics */}
-            <div className="overflow-hidden border border-gray-200 rounded-2xl bg-white">
+            <div className="overflow-hidden border border-gray-200 rounded-md bg-white">
               <div className="border-b border-gray-100 bg-gray-50 p-4">
                 <Skeleton className="h-6 w-52 bg-gray-200" />
               </div>
@@ -339,9 +339,9 @@ export default function DailyReport() {
           <>
             {/* Summary Cards */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border">
+              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-md hover:border">
                 <div
-                  className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
+                  className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg opacity-10"
                   style={{
                     background:
                       "linear-gradient(135deg, #10B981 0%, #059669 100%)",
@@ -363,7 +363,7 @@ export default function DailyReport() {
                     </div>
                   </div>
                   <div
-                    className="flex items-center justify-center w-14 h-14 rounded-2xl"
+                    className="flex items-center justify-center w-14 h-14 rounded-md"
                     style={{
                       background:
                         "linear-gradient(135deg, #10B981 0%, #059669 100%)",
@@ -374,9 +374,9 @@ export default function DailyReport() {
                 </div>
               </div>
 
-              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border">
+              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-md hover:border">
                 <div
-                  className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
+                  className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg opacity-10"
                   style={{
                     background:
                       "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
@@ -400,7 +400,7 @@ export default function DailyReport() {
                     </div>
                   </div>
                   <div
-                    className="flex items-center justify-center w-14 h-14 rounded-2xl"
+                    className="flex items-center justify-center w-14 h-14 rounded-md"
                     style={{
                       background:
                         "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
@@ -411,9 +411,9 @@ export default function DailyReport() {
                 </div>
               </div>
 
-              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-2xl hover:border">
+              <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-md hover:border">
                 <div
-                  className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full opacity-10"
+                  className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg opacity-10"
                   style={{
                     background:
                       "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
@@ -435,7 +435,7 @@ export default function DailyReport() {
                     </div>
                   </div>
                   <div
-                    className="flex items-center justify-center w-14 h-14 rounded-2xl"
+                    className="flex items-center justify-center w-14 h-14 rounded-md"
                     style={{
                       background:
                         "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
@@ -448,7 +448,7 @@ export default function DailyReport() {
             </div>
 
             {/* Data Table */}
-            <Card className="overflow-hidden border border-gray-200 rounded-2xl">
+            <Card className="overflow-hidden border border-gray-200 rounded-md">
               <CardHeader className="border-b-2 border-purple-100 bg-linear-to-r from-blue-50 to-purple-50">
                 <CardTitle className="text-xl text-gray-800">
                   Detailed Report - {format(selectedDate, "dd/MM/yyyy")}
@@ -514,7 +514,7 @@ export default function DailyReport() {
             </Card>
 
             {/* Chart Visualization */}
-            <Card className="overflow-hidden border border-gray-200 rounded-2xl">
+            <Card className="overflow-hidden border border-gray-200 rounded-md">
               <CardHeader className="border-b-2 border-blue-100 bg-linear-to-r from-cyan-50 to-blue-50">
                 <CardTitle className="text-xl text-gray-800">
                   Visual Comparison
@@ -601,7 +601,7 @@ export default function DailyReport() {
             </Card>
 
             {/* Transaction Statistics */}
-            <Card className="overflow-hidden border border-gray-200 rounded-2xl">
+            <Card className="overflow-hidden border border-gray-200 rounded-md">
               <CardHeader className="border-b-2 border-green-100 bg-linear-to-r from-green-50 to-emerald-50">
                 <CardTitle className="text-xl text-gray-800">
                   Transaction Statistics

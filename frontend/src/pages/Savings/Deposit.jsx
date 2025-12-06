@@ -154,10 +154,10 @@ export default function Deposit() {
   return (
     <RoleGuard allow={["teller"]}>
       <div className="max-w-4xl mx-auto">
-        <Card className="overflow-hidden border border-gray-200 rounded-2xl lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
           {/* Cute Header */}
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
-            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-full sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
+            <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
             <Sparkles
               className="absolute opacity-50 top-6 right-20 sm:right-32 text-cyan-300"
@@ -166,7 +166,7 @@ export default function Deposit() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)",
@@ -192,7 +192,7 @@ export default function Deposit() {
           <CardContent className="p-4 space-y-6 sm:p-6 lg:p-8">
             {/* Regulations Error */}
             {regulationsError && (
-              <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-2xl">
+              <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-md">
                 <AlertCircle
                   size={20}
                   className="text-red-500 shrink-0 mt-0.5"
@@ -228,7 +228,7 @@ export default function Deposit() {
                       setError("");
                     }}
                     placeholder="Enter account code (e.g., SA12345)"
-                    className="h-11 sm:h-12 rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                    className="h-11 sm:h-12 rounded-md border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
                     }
@@ -244,7 +244,7 @@ export default function Deposit() {
                     !!regulationsError ||
                     loadingRegulations
                   }
-                  className="h-11 sm:h-12 px-4 sm:px-6 rounded-2xl bg-[#1A4D8F] hover:bg-[#154171] text-white text-sm sm:text-base"
+                  className="h-11 sm:h-12 px-4 sm:px-6 rounded-md bg-[#1A4D8F] hover:bg-[#154171] text-white text-sm sm:text-base"
                 >
                   <Search
                     size={16}
@@ -259,7 +259,7 @@ export default function Deposit() {
               </div>
 
               {error && !accountInfo && (
-                <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-2xl">
+                <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-md">
                   <AlertCircle
                     size={20}
                     className="text-red-500 shrink-0 mt-0.5"
@@ -275,7 +275,7 @@ export default function Deposit() {
 
               {accountInfo && (
                 <div
-                  className="relative p-6 space-y-3 overflow-hidden border-2 rounded-2xl"
+                  className="relative p-6 space-y-3 overflow-hidden border-2 rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)",
@@ -346,7 +346,7 @@ export default function Deposit() {
                           setError("");
                         }}
                         placeholder="Enter deposit amount"
-                        className="pl-8 h-14 text-lg rounded-2xl border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                        className="pl-8 h-14 text-lg rounded-md border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                       />
                     </div>
                     <p className="flex items-center gap-1 text-xs text-gray-500">
@@ -360,7 +360,7 @@ export default function Deposit() {
                   </div>
 
                   {error && accountInfo && (
-                    <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-2xl">
+                    <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-md">
                       <AlertCircle
                         size={20}
                         className="text-red-500 shrink-0 mt-0.5"
@@ -402,7 +402,7 @@ export default function Deposit() {
                   <Button
                     type="submit"
                     disabled={isSubmitting || !minDeposit}
-                    className="flex-1 h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02]"
+                    className="flex-1 h-12 text-white rounded-lg font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02]"
                     style={{
                       background:
                         "linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)",
@@ -414,7 +414,7 @@ export default function Deposit() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-12 px-8 border-gray-300 rounded-full hover:bg-gray-50"
+                    className="h-12 px-8 border-gray-300 rounded-lg hover:bg-gray-50"
                     onClick={() => {
                       setAccountId("");
                       setDepositAmount("");
@@ -437,7 +437,7 @@ export default function Deposit() {
               <div className="flex flex-col items-center mb-4">
                 <div className="relative duration-500 animate-in zoom-in-0">
                   <div
-                    className="flex items-center justify-center w-24 h-24 mb-4 rounded-full border border-gray-200"
+                    className="flex items-center justify-center w-24 h-24 mb-4 rounded-lg border border-gray-200"
                     style={{
                       background:
                         "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -465,7 +465,7 @@ export default function Deposit() {
 
             <div className="py-4 space-y-3">
               <div
-                className="p-6 space-y-3 duration-500 delay-200 border-2 rounded-2xl animate-in slide-in-from-bottom-4"
+                className="p-6 space-y-3 duration-500 delay-200 border-2 rounded-md animate-in slide-in-from-bottom-4"
                 style={{
                   background:
                     "linear-gradient(135deg, #E8F6FF 0%, #DFF9F4 100%)",
@@ -504,7 +504,7 @@ export default function Deposit() {
                 setShowSuccess(false);
                 setReceiptData(null);
               }}
-              className="w-full h-12 text-white rounded-full font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-12 text-white rounded-lg font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: "linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)",
               }}

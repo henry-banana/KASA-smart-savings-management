@@ -7,7 +7,13 @@ import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
-export function DatePicker({ date, onSelect, placeholder = "Pick a date", className, disabled }) {
+export function DatePicker({
+  date,
+  onSelect,
+  placeholder = "Pick a date",
+  className,
+  disabled,
+}) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -23,7 +29,7 @@ export function DatePicker({ date, onSelect, placeholder = "Pick a date", classN
           {date ? format(date, "PPP") : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 rounded-2xl" align="start">
+      <PopoverContent className="w-auto p-0 rounded-md" align="start">
         <Calendar
           mode="single"
           selected={date}
@@ -37,7 +43,12 @@ export function DatePicker({ date, onSelect, placeholder = "Pick a date", classN
 }
 
 // Date Range Picker
-export function DateRangePicker({ dateRange, setDateRange, placeholder = "Pick a date range", className }) {
+export function DateRangePicker({
+  dateRange,
+  setDateRange,
+  placeholder = "Pick a date range",
+  className,
+}) {
   return (
     <Popover>
       <PopoverTrigger asChild>
