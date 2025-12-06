@@ -30,7 +30,8 @@ logs
 # Temporary files
 tmp/
 temp/
-
+generateHashPassword.js
+convertingPassword.js
 # Optional lockfiles (tùy chọn, nếu bạn không muốn commit)
 # package-lock.json
 # yarn.lock

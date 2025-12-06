@@ -12,6 +12,7 @@ import reportRoutes from "./src/routers/report.router.js";
 import userRoutes from "./src/routers/userAccount.router.js";
 import branchRoutes from "./src/routers/branch.router.js";
 import regulationRoutes from "./src/routers/regulation.router.js";
+import dashboardRoutes from "./src/routers/dashboard.router.js";
 
 dotenv.config();
 
@@ -31,7 +32,6 @@ app.use(express.json());
 
 // Middleware log các request
 app.use(requestLogger);
-
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/savingbook", savingBookRoutes);
@@ -41,6 +41,7 @@ app.use("/api/typesaving", typeSavingRoutes);
 app.use("/api/report", reportRoutes);
 app.use("/api/branch", branchRoutes);
 app.use("/api/regulations", regulationRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
