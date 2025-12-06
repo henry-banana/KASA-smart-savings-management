@@ -200,7 +200,7 @@ export default function UserProfile() {
     return (
       <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
         {/* Profile Header Skeleton */}
-        <div className="border border-gray-200 rounded-mdlg:rounded-3xl overflow-hidden">
+        <div className="border border-gray-200 rounded-mdlg:rounded-md overflow-hidden">
           <div className="p-4 sm:p-6 lg:p-8 bg-linear-to-br from-[#F3E8FF] to-[#E8F6FF]">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
               <Skeleton className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-gray-200" />
@@ -217,14 +217,14 @@ export default function UserProfile() {
         </div>
 
         {/* Contact Information Skeleton */}
-        <div className="border border-gray-200 rounded-3xl overflow-hidden">
+        <div className="border border-gray-200 rounded-md overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-100 p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <Skeleton className="h-6 w-48 bg-gray-200" />
                 <Skeleton className="h-4 w-36 bg-gray-200" />
               </div>
-              <Skeleton className="h-10 w-16 bg-gray-200 rounded-xl" />
+              <Skeleton className="h-10 w-16 bg-gray-200 rounded-xs" />
             </div>
           </div>
           <div className="p-6 space-y-4">
@@ -233,7 +233,7 @@ export default function UserProfile() {
                 key={i}
                 className="flex items-center gap-4 p-4 rounded-mdbg-gray-50"
               >
-                <Skeleton className="w-12 h-12 rounded-xl bg-gray-200" />
+                <Skeleton className="w-12 h-12 rounded-xs bg-gray-200" />
                 <div className="space-y-2">
                   <Skeleton className="h-4 w-20 bg-gray-200" />
                   <Skeleton className="h-4 w-48 bg-gray-200" />
@@ -244,7 +244,7 @@ export default function UserProfile() {
         </div>
 
         {/* Security Settings Skeleton */}
-        <div className="border border-gray-200 rounded-3xl overflow-hidden">
+        <div className="border border-gray-200 rounded-md overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-100 p-4 sm:p-6 space-y-2">
             <Skeleton className="h-6 w-40 bg-gray-200" />
             <Skeleton className="h-4 w-48 bg-gray-200" />
@@ -252,19 +252,19 @@ export default function UserProfile() {
           <div className="p-6">
             <div className="flex items-center justify-between p-4 rounded-mdbg-gray-50">
               <div className="flex items-center gap-4">
-                <Skeleton className="w-12 h-12 rounded-xl bg-gray-200" />
+                <Skeleton className="w-12 h-12 rounded-xs bg-gray-200" />
                 <div className="space-y-2">
                   <Skeleton className="h-4 w-24 bg-gray-200" />
                   <Skeleton className="h-3 w-32 bg-gray-200" />
                 </div>
               </div>
-              <Skeleton className="h-10 w-36 bg-gray-200 rounded-xl" />
+              <Skeleton className="h-10 w-36 bg-gray-200 rounded-xs" />
             </div>
           </div>
         </div>
 
         {/* Account Details Skeleton */}
-        <div className="border border-gray-200 rounded-3xl overflow-hidden">
+        <div className="border border-gray-200 rounded-md overflow-hidden">
           <div className="bg-gray-50 border-b border-gray-100 p-4 sm:p-6">
             <Skeleton className="h-6 w-36 bg-gray-200" />
           </div>
@@ -293,7 +293,7 @@ export default function UserProfile() {
       )}
 
       {/* Profile Header */}
-      <Card className="border border-gray-200 rounded-mdlg:rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-mdlg:rounded-md overflow-hidden">
         <CardContent className="p-4 sm:p-6 lg:p-8 bg-linear-to-br from-[#F3E8FF] to-[#E8F6FF] relative">
           <StarDecor className="top-4 right-8 sm:right-12" />
           <Sparkles
@@ -345,7 +345,7 @@ export default function UserProfile() {
       </Card>
 
       {/* Contact Information */}
-      <Card className="border border-gray-200 rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-md overflow-hidden">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div>
@@ -363,9 +363,9 @@ export default function UserProfile() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-blue-50 border border-blue-100">
+            <div className="flex items-center gap-4 p-4 rounded-xs bg-blue-50 border border-blue-100">
               <div
-                className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
+                className="flex items-center justify-center w-12 h-12 rounded-xs border border-gray-100"
                 style={{
                   background:
                     "linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)",
@@ -379,9 +379,9 @@ export default function UserProfile() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-green-50 border border-green-100">
+            <div className="flex items-center gap-4 p-4 rounded-xs bg-green-50 border border-green-100">
               <div
-                className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
+                className="flex items-center justify-center w-12 h-12 rounded-xs border border-gray-100"
                 style={{
                   background:
                     "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
@@ -397,9 +397,9 @@ export default function UserProfile() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-purple-50 border border-purple-100">
+            <div className="flex items-center gap-4 p-4 rounded-xs bg-purple-50 border border-purple-100">
               <div
-                className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
+                className="flex items-center justify-center w-12 h-12 rounded-xs border border-gray-100"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -417,17 +417,17 @@ export default function UserProfile() {
       </Card>
 
       {/* Security Settings */}
-      <Card className="border border-gray-200 rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-md overflow-hidden">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Security Settings</CardTitle>
           <CardDescription>Manage your account security</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-xl bg-linear-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
+            <div className="flex items-center justify-between p-4 rounded-xs bg-linear-to-r from-[#FEF3C7] to-[#FDE68A] border border-yellow-200">
               <div className="flex items-center gap-4">
                 <div
-                  className="flex items-center justify-center w-12 h-12 rounded-xl border border-gray-100"
+                  className="flex items-center justify-center w-12 h-12 rounded-xs border border-gray-100"
                   style={{
                     background:
                       "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
@@ -453,19 +453,19 @@ export default function UserProfile() {
       </Card>
 
       {/* Account Details */}
-      <Card className="border border-gray-200 rounded-3xl overflow-hidden">
+      <Card className="border border-gray-200 rounded-md overflow-hidden">
         <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
           <CardTitle className="text-xl">Account Details</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Username</p>
               <p className="text-sm font-semibold text-gray-900">
                 {user.username}
               </p>
             </div>
-            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
                 Employee ID
               </p>
@@ -473,7 +473,7 @@ export default function UserProfile() {
                 {profileData?.id || user?.id || "N/A"}
               </p>
             </div>
-            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
                 Department
               </p>
@@ -485,7 +485,7 @@ export default function UserProfile() {
                   : "Teller"}
               </p>
             </div>
-            <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+            <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">Status</p>
               <Badge className="text-green-700 bg-green-100 border-green-200 border">
                 ✓ Active
@@ -497,7 +497,7 @@ export default function UserProfile() {
 
       {/* Change Password Dialog */}
       <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
-        <DialogContent className="rounded-3xl">
+        <DialogContent className="rounded-md">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
               <div
@@ -610,7 +610,7 @@ export default function UserProfile() {
 
       {/* Edit Contact Dialog */}
       <Dialog open={showEditContact} onOpenChange={setShowEditContact}>
-        <DialogContent className="rounded-3xl">
+        <DialogContent className="rounded-md">
           <DialogHeader>
             <div className="flex items-center gap-3 mb-2">
               <div
@@ -736,7 +736,7 @@ export default function UserProfile() {
 
       {/* Success Dialog */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent className="rounded-3xl">
+        <DialogContent className="rounded-md">
           <DialogHeader>
             <div className="flex justify-center mb-4">
               <div

@@ -195,7 +195,7 @@ export default function OpenAccount() {
   return (
     <RoleGuard allow={["teller"]}>
       <div className="max-w-4xl mx-auto">
-        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-md">
           {/* Cute Header with Gradient */}
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
@@ -207,7 +207,7 @@ export default function OpenAccount() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
@@ -536,7 +536,7 @@ export default function OpenAccount() {
 
         {/* 🎉 Cute Success Modal */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-          <DialogContent className="rounded-md sm:rounded-3xl max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+          <DialogContent className="rounded-md sm:rounded-md max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
             <DialogHeader>
               <div className="flex flex-col items-center mb-3 sm:mb-4">
                 <div className="relative duration-500 animate-in zoom-in-0">
@@ -645,7 +645,7 @@ export default function OpenAccount() {
 
         {/* Error Dialog for failed account opening */}
         <Dialog open={showError} onOpenChange={setShowError}>
-          <DialogContent className="rounded-md sm:rounded-3xl max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+          <DialogContent className="rounded-md sm:rounded-md max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
             <DialogHeader>
               <div className="flex flex-col items-center mb-3 sm:mb-4">
                 <div

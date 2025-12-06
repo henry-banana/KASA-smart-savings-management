@@ -132,7 +132,7 @@ export default function SearchAccounts() {
   return (
     <RoleGuard allow={["teller", "accountant"]}>
       <div className="space-y-4 sm:space-y-6">
-        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-md">
           {/* Cute Header */}
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
@@ -144,7 +144,7 @@ export default function SearchAccounts() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -321,7 +321,7 @@ export default function SearchAccounts() {
                             size="sm"
                             variant="ghost"
                             onClick={() => handleViewDetails(account)}
-                            className="rounded-xl hover:bg-[#F3E8FF]"
+                            className="rounded-xs hover:bg-[#F3E8FF]"
                           >
                             <Eye size={16} className="mr-1" />
                             Details
@@ -338,7 +338,7 @@ export default function SearchAccounts() {
 
         {/* Account Details Modal */}
         <Dialog open={showDetails} onOpenChange={setShowDetails}>
-          <DialogContent className="max-w-md rounded-3xl">
+          <DialogContent className="max-w-md rounded-md">
             <DialogHeader>
               <div className="flex items-center gap-3 mb-4">
                 <div

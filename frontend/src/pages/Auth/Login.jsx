@@ -135,7 +135,7 @@ export default function Login() {
         />
       </div>
 
-      <Card className="relative z-10 w-full max-w-md overflow-hidden border border-gray-200 rounded-3xl">
+      <Card className="relative z-10 w-full max-w-md overflow-hidden border border-gray-200 rounded-md">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
 
@@ -143,7 +143,7 @@ export default function Login() {
           {/* Logo with cute design */}
           <div className="relative mx-auto">
             <div
-              className="relative flex items-center justify-center w-20 h-20 overflow-hidden border border-gray-200 rounded-3xl"
+              className="relative flex items-center justify-center w-20 h-20 overflow-hidden border border-gray-200 rounded-md"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}
@@ -215,7 +215,7 @@ export default function Login() {
                     setError("");
                   }}
                   disabled={loading}
-                  className="pl-10 h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  className="pl-10 h-12 rounded-xs border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                 />
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function Login() {
                     setError("");
                   }}
                   disabled={loading}
-                  className="pl-10 pr-10 h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  className="pl-10 pr-10 h-12 rounded-xs border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                 />
                 <button
                   type="button"
@@ -266,7 +266,7 @@ export default function Login() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 text-white rounded-sm font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="w-full h-12 text-white rounded-xs font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
               }}
@@ -372,7 +372,7 @@ export default function Login() {
 
         {/* Overlay khi loading */}
         {loading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-white/20 backdrop-blur-[1px] animate-fade-in">
+          <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xs bg-white/20 backdrop-blur-[1px] animate-fade-in">
             <span className="spinner inline-block animate-spin rounded-lg border-4 border-[#1A4D8F] border-t-transparent" />
             <p className="mt-3 text-[#1A4D8F] font-medium text-sm animate-wave">
               Loading...

@@ -282,7 +282,7 @@ export default function RegulationSettings() {
     <RoleGuard allow={["admin"]}>
       <div className="space-y-4 sm:space-y-6">
         {/* Settings Form */}
-        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-md">
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
@@ -293,7 +293,7 @@ export default function RegulationSettings() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -340,7 +340,7 @@ export default function RegulationSettings() {
                     {[1, 2].map((i) => (
                       <div key={i} className="space-y-2">
                         <Skeleton className="h-4 w-40 bg-gray-200" />
-                        <Skeleton className="h-11 w-full bg-gray-200 rounded-xl" />
+                        <Skeleton className="h-11 w-full bg-gray-200 rounded-xs" />
                         <Skeleton className="h-3 w-56 bg-gray-200" />
                       </div>
                     ))}
@@ -370,8 +370,8 @@ export default function RegulationSettings() {
                         >
                           <Skeleton className="h-5 w-5 bg-gray-200 rounded" />
                           <Skeleton className="h-4 flex-1 bg-gray-200" />
-                          <Skeleton className="h-10 w-28 bg-gray-200 rounded-xl" />
-                          <Skeleton className="h-10 w-32 bg-gray-200 rounded-xl" />
+                          <Skeleton className="h-10 w-28 bg-gray-200 rounded-xs" />
+                          <Skeleton className="h-10 w-32 bg-gray-200 rounded-xs" />
                         </div>
                       ))}
                     </div>
@@ -380,10 +380,10 @@ export default function RegulationSettings() {
 
                 {/* Buttons Skeleton */}
                 <div className="flex gap-4 pt-4">
-                  <Skeleton className="h-12 w-40 bg-gray-200 rounded-xl" />
-                  <Skeleton className="h-12 w-44 bg-gray-200 rounded-xl" />
-                  <Skeleton className="h-12 w-40 bg-gray-200 rounded-xl" />
-                  <Skeleton className="h-12 w-36 bg-gray-200 rounded-xl" />
+                  <Skeleton className="h-12 w-40 bg-gray-200 rounded-xs" />
+                  <Skeleton className="h-12 w-44 bg-gray-200 rounded-xs" />
+                  <Skeleton className="h-12 w-40 bg-gray-200 rounded-xs" />
+                  <Skeleton className="h-12 w-36 bg-gray-200 rounded-xs" />
                 </div>
               </div>
             ) : (
@@ -640,7 +640,7 @@ export default function RegulationSettings() {
         </Card>
         {/* Current Regulations Summary */}
         {!loading && (
-          <Card className="overflow-hidden border border-gray-200 rounded-3xl">
+          <Card className="overflow-hidden border border-gray-200 rounded-md">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="text-xl">
                 Current Regulations Summary
@@ -712,11 +712,11 @@ export default function RegulationSettings() {
         {/* Change History */}
         {/* 
         {!loading && (
-          <Card className="overflow-hidden border border-gray-200 rounded-3xl">
+          <Card className="overflow-hidden border border-gray-200 rounded-md">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <div
-                  className="flex items-center justify-center w-10 h-10 rounded-xl"
+                  className="flex items-center justify-center w-10 h-10 rounded-xs"
                   style={{
                     background:
                       "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -774,7 +774,7 @@ export default function RegulationSettings() {
         */}
         {/* Confirmation Dialog */}
         <Dialog open={showConfirm} onOpenChange={setShowConfirm}>
-          <DialogContent className="rounded-3xl">
+          <DialogContent className="rounded-md">
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
@@ -829,7 +829,7 @@ export default function RegulationSettings() {
         </Dialog>
         {/* Success Modal */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-          <DialogContent className="rounded-3xl">
+          <DialogContent className="rounded-md">
             <DialogHeader>
               <div className="flex justify-center mb-4">
                 <div
@@ -883,7 +883,7 @@ export default function RegulationSettings() {
         </Dialog>
         {/* Delete Confirmation Dialog */}
         <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-          <DialogContent className="rounded-3xl">
+          <DialogContent className="rounded-md">
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
@@ -998,7 +998,7 @@ export default function RegulationSettings() {
           open={showCreateTypeSaving}
           onOpenChange={setShowCreateTypeSaving}
         >
-          <DialogContent className="rounded-3xl">
+          <DialogContent className="rounded-md">
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div

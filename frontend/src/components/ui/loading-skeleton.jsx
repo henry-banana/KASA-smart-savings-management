@@ -80,10 +80,10 @@ export function FormSkeleton({ fields = 3 }) {
       {Array.from({ length: fields }).map((_, i) => (
         <div key={i} className="space-y-2">
           <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-12 w-full rounded-xl" />
+          <Skeleton className="h-12 w-full rounded-xs" />
         </div>
       ))}
-      <Skeleton className="h-12 w-full rounded-xl" />
+      <Skeleton className="h-12 w-full rounded-xs" />
     </div>
   );
 }

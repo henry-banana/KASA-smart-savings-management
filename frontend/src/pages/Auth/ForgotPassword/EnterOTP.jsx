@@ -144,7 +144,7 @@ function EnterOTP({ email, onVerify, onBack }) {
         />
       </div>
 
-      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-3xl overflow-hidden">
+      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-md overflow-hidden">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#10B981] via-[#00AEEF] to-[#10B981]" />
 
@@ -152,7 +152,7 @@ function EnterOTP({ email, onVerify, onBack }) {
           {/* Icon with cute design */}
           <div className="mx-auto relative">
             <div
-              className="w-20 h-20 rounded-3xl flex items-center justify-center border border-gray-200 relative overflow-hidden"
+              className="w-20 h-20 rounded-md flex items-center justify-center border border-gray-200 relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #10B981 0%, #00AEEF 100%)",
               }}
@@ -203,7 +203,7 @@ function EnterOTP({ email, onVerify, onBack }) {
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={index === 0 ? handlePaste : undefined}
                   className={`
-                    w-12 h-14 text-center text-xl font-bold rounded-xl border-2 
+                    w-12 h-14 text-center text-xl font-bold rounded-xs border-2 
                     transition-all duration-200 outline-none
                     ${
                       digit
@@ -218,7 +218,7 @@ function EnterOTP({ email, onVerify, onBack }) {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-3 animate-shake">
+              <div className="bg-red-50 border border-red-200 rounded-xs p-3 animate-shake">
                 <p className="text-sm text-red-600 text-center">{error}</p>
               </div>
             )}

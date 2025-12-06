@@ -104,7 +104,7 @@ export default function MonthlyReport() {
     <RoleGuard allow={["accountant"]}>
       <div className="space-y-6">
         {/* Report Header - Filter Controls */}
-        <Card className="border border-gray-200 rounded-3xl overflow-hidden print:hidden">
+        <Card className="border border-gray-200 rounded-md overflow-hidden print:hidden">
           <CardHeader className="bg-linear-to-r from-purple-50 to-pink-50 pb-8">
             <CardTitle className="flex items-center gap-2">
               <span className="text-2xl">📊</span>
@@ -173,8 +173,8 @@ export default function MonthlyReport() {
           <>
             {/* Skeleton for Print Actions */}
             <div className="flex justify-end gap-3 print:hidden">
-              <Skeleton className="h-10 w-36 rounded-xl bg-gray-200" />
-              <Skeleton className="h-10 w-32 rounded-xl bg-gray-200" />
+              <Skeleton className="h-10 w-36 rounded-xs bg-gray-200" />
+              <Skeleton className="h-10 w-32 rounded-xs bg-gray-200" />
             </div>
 
             {/* Skeleton for Main Report */}
@@ -191,7 +191,7 @@ export default function MonthlyReport() {
               </div>
 
               {/* Skeleton for Table */}
-              <div className="overflow-hidden rounded-xl border border-gray-200">
+              <div className="overflow-hidden rounded-xs border border-gray-200">
                 <div className="bg-gray-100 p-4">
                   <div className="flex gap-4">
                     <Skeleton className="h-5 w-12 bg-gray-200" />
@@ -230,7 +230,7 @@ export default function MonthlyReport() {
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="rounded-xl p-6 border-l-4 border-gray-300 bg-gray-50 animate-pulse"
+                    className="rounded-xs p-6 border-l-4 border-gray-300 bg-gray-50 animate-pulse"
                   >
                     <Skeleton className="h-4 w-28 bg-gray-200 mb-2" />
                     <Skeleton className="h-10 w-20 bg-gray-200 mb-1" />
@@ -427,7 +427,7 @@ export default function MonthlyReport() {
 
               {/* Report Footer - Summary Stats */}
               <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-linear-to-br from-green-50 to-green-100 rounded-xl p-6 border-l-4 border-green-500">
+                <div className="bg-linear-to-br from-green-50 to-green-100 rounded-xs p-6 border-l-4 border-green-500">
                   <p className="text-sm font-medium text-green-700 mb-1">
                     Total Opened
                   </p>
@@ -439,7 +439,7 @@ export default function MonthlyReport() {
                   </p>
                 </div>
 
-                <div className="bg-linear-to-br from-red-50 to-red-100 rounded-xl p-6 border-l-4 border-red-500">
+                <div className="bg-linear-to-br from-red-50 to-red-100 rounded-xs p-6 border-l-4 border-red-500">
                   <p className="text-sm font-medium text-red-700 mb-1">
                     Total Closed
                   </p>
@@ -451,7 +451,7 @@ export default function MonthlyReport() {
                   </p>
                 </div>
 
-                <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-xl p-6 border-l-4 border-blue-500">
+                <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-xs p-6 border-l-4 border-blue-500">
                   <p className="text-sm font-medium text-blue-700 mb-1">
                     Net Difference
                   </p>

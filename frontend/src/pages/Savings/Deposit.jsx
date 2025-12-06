@@ -154,7 +154,7 @@ export default function Deposit() {
   return (
     <RoleGuard allow={["teller"]}>
       <div className="max-w-4xl mx-auto">
-        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-md">
           {/* Cute Header */}
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
@@ -166,7 +166,7 @@ export default function Deposit() {
 
             <div className="relative z-10 flex items-start gap-3 sm:gap-4">
               <div
-                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
+                className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-md"
                 style={{
                   background:
                     "linear-gradient(135deg, #00AEEF 0%, #33BFF3 100%)",
@@ -387,7 +387,7 @@ export default function Deposit() {
                               onClick={() =>
                                 setDepositAmount(amount.toString())
                               }
-                              className="h-12 rounded-xl border-2 border-gray-200 hover:border-[#00AEEF] hover:bg-[#E8F6FF] transition-all font-medium text-sm cursor-pointer"
+                              className="h-12 rounded-xs border-2 border-gray-200 hover:border-[#00AEEF] hover:bg-[#E8F6FF] transition-all font-medium text-sm cursor-pointer"
                             >
                               {label}
                             </button>
@@ -432,7 +432,7 @@ export default function Deposit() {
 
         {/* Success Modal */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-          <DialogContent className="max-w-md duration-300 rounded-3xl animate-in fade-in-0 zoom-in-95">
+          <DialogContent className="max-w-md duration-300 rounded-md animate-in fade-in-0 zoom-in-95">
             <DialogHeader>
               <div className="flex flex-col items-center mb-4">
                 <div className="relative duration-500 animate-in zoom-in-0">

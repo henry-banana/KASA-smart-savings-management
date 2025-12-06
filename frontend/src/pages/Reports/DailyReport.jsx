@@ -162,7 +162,7 @@ export default function DailyReport() {
     <RoleGuard allow={["accountant"]}>
       <div className="space-y-4 sm:space-y-6">
         {/* Report Header */}
-        <Card className="overflow-hidden border border-gray-200 rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md">
           <CardHeader className="pb-6 border-b border-gray-100 bg-linear-to-r from-purple-50 to-pink-50">
             <div className="flex items-center gap-3 mb-2">
               <div
@@ -313,7 +313,7 @@ export default function DailyReport() {
                   {[1, 2].map((i) => (
                     <div
                       key={i}
-                      className="p-4 space-y-4 rounded-xl bg-gray-50 animate-pulse"
+                      className="p-4 space-y-4 rounded-xs bg-gray-50 animate-pulse"
                     >
                       <Skeleton className="h-5 w-40 bg-gray-200" />
                       <div className="space-y-3">
@@ -610,7 +610,7 @@ export default function DailyReport() {
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   {/* Deposit Transactions */}
-                  <div className="p-4 space-y-4 rounded-xl bg-linear-to-br from-green-50 to-emerald-50">
+                  <div className="p-4 space-y-4 rounded-xs bg-linear-to-br from-green-50 to-emerald-50">
                     <h4 className="flex items-center gap-2 text-sm font-semibold text-green-700">
                       <TrendingUp size={16} />
                       Deposit Transactions
@@ -642,7 +642,7 @@ export default function DailyReport() {
                   </div>
 
                   {/* Withdrawal Transactions */}
-                  <div className="p-4 space-y-4 rounded-xl bg-linear-to-br from-red-50 to-rose-50">
+                  <div className="p-4 space-y-4 rounded-xs bg-linear-to-br from-red-50 to-rose-50">
                     <h4 className="flex items-center gap-2 text-sm font-semibold text-red-700">
                       <TrendingDown size={16} />
                       Withdrawal Transactions

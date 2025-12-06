@@ -81,7 +81,7 @@ function ForgotPassword({ onContinue, onBack }) {
         />
       </div>
 
-      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-3xl overflow-hidden">
+      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-md overflow-hidden">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#1A4D8F] via-[#00AEEF] to-[#1A4D8F]" />
 
@@ -89,7 +89,7 @@ function ForgotPassword({ onContinue, onBack }) {
           {/* Icon with cute design */}
           <div className="mx-auto relative">
             <div
-              className="w-20 h-20 rounded-3xl flex items-center justify-center border border-gray-200 relative overflow-hidden"
+              className="w-20 h-20 rounded-md flex items-center justify-center border border-gray-200 relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
               }}
@@ -141,14 +141,14 @@ function ForgotPassword({ onContinue, onBack }) {
                   placeholder="Enter your email or username"
                   value={emailOrUsername}
                   onChange={(e) => setEmailOrUsername(e.target.value)}
-                  className="pl-10 h-12 rounded-xl border-gray-200 focus:border-purple-400 focus:ring-purple-400 transition-all"
+                  className="pl-10 h-12 rounded-xs border-gray-200 focus:border-purple-400 focus:ring-purple-400 transition-all"
                   autoFocus
                 />
               </div>
             </div>
 
             {error && (
-              <div className="text-sm text-red-600 bg-red-50 p-3 rounded-xl border border-red-200 flex items-center gap-2">
+              <div className="text-sm text-red-600 bg-red-50 p-3 rounded-xs border border-red-200 flex items-center gap-2">
                 <span className="font-medium">⚠️</span>
                 {error}
               </div>

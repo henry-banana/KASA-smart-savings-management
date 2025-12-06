@@ -20,7 +20,7 @@ export function DatePicker({
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-start text-left font-normal h-12 rounded-xl",
+            "w-full justify-start text-left font-normal h-12 rounded-xs",
             !date && "text-muted-foreground",
             className
           )}
@@ -55,7 +55,7 @@ export function DateRangePicker({
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-start text-left font-normal h-12 rounded-xl border-gray-200 hover:border-[#00AEEF] transition-colors",
+            "w-full justify-start text-left font-normal h-12 rounded-xs border-gray-200 hover:border-[#00AEEF] transition-colors",
             !dateRange && "text-muted-foreground",
             className
           )}
@@ -75,7 +75,7 @@ export function DateRangePicker({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 rounded-xl" align="start">
+      <PopoverContent className="w-auto p-0 rounded-xs" align="start">
         <Calendar
           mode="range"
           selected={dateRange}

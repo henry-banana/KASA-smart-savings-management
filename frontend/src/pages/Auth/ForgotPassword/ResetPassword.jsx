@@ -147,7 +147,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
         />
       </div>
 
-      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-3xl overflow-hidden">
+      <Card className="w-full max-w-md border border-gray-200 relative z-10 rounded-md overflow-hidden">
         {/* Gradient Top Bar */}
         <div className="h-2 bg-linear-to-r from-[#6366F1] via-[#8B5CF6] to-[#6366F1]" />
 
@@ -155,7 +155,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
           {/* Icon with cute design */}
           <div className="mx-auto relative">
             <div
-              className="w-20 h-20 rounded-3xl flex items-center justify-center border border-gray-200 relative overflow-hidden"
+              className="w-20 h-20 rounded-md flex items-center justify-center border border-gray-200 relative overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)",
               }}
@@ -210,7 +210,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
                     setNewPassword(e.target.value);
                     setErrors([]);
                   }}
-                  className="pl-10 pr-10 h-12 rounded-xl border-gray-200 focus:border-indigo-400 focus:ring-indigo-400 transition-all"
+                  className="pl-10 pr-10 h-12 rounded-xs border-gray-200 focus:border-indigo-400 focus:ring-indigo-400 transition-all"
                   autoFocus
                 />
                 <button
@@ -242,7 +242,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
                     setConfirmPassword(e.target.value);
                     setErrors([]);
                   }}
-                  className="pl-10 pr-10 h-12 rounded-xl border-gray-200 focus:border-indigo-400 focus:ring-indigo-400 transition-all"
+                  className="pl-10 pr-10 h-12 rounded-xs border-gray-200 focus:border-indigo-400 focus:ring-indigo-400 transition-all"
                 />
                 <button
                   type="button"
@@ -311,7 +311,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
 
             {/* Error Messages */}
             {errors.length > 0 && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-1">
+              <div className="bg-red-50 border border-red-200 rounded-xs p-3 space-y-1">
                 {errors.map((err, index) => (
                   <p
                     key={index}

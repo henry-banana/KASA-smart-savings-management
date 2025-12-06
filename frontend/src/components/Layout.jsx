@@ -214,7 +214,7 @@ export default function Layout() {
             {isMobile && (
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="flex items-center justify-center p-2 transition-all duration-200 group rounded-xl hover:bg-white/10 active:bg-white/20 min-w-11 min-h-11"
+                className="flex items-center justify-center p-2 transition-all duration-200 group rounded-xs hover:bg-white/10 active:bg-white/20 min-w-11 min-h-11"
                 aria-label="Close menu"
               >
                 <X
@@ -238,7 +238,7 @@ export default function Layout() {
                 <button
                   key={item.path}
                   onClick={() => handleNavigate(item.path)}
-                  className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden ${
+                  className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xs transition-all duration-200 group relative overflow-hidden ${
                     isActive
                       ? "bg-white/15 text-white border border-gray-200 backdrop-blur-sm scale-[1.02]"
                       : "text-white/80 hover:bg-white/10 hover:text-white hover:scale-[1.01]"
@@ -311,7 +311,7 @@ export default function Layout() {
               {/* Menu Toggle Button */}
               <button
                 onClick={toggleSidebar}
-                className="p-2 transition-colors rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm cursor-pointer"
+                className="p-2 transition-colors rounded-xs bg-white/10 hover:bg-white/20 backdrop-blur-sm cursor-pointer"
               >
                 <Menu size={20} className="text-white" />
               </button>
@@ -321,7 +321,7 @@ export default function Layout() {
                 onClick={() => handleNavigate("/")}
                 className="flex items-center gap-2 transition-opacity hover:opacity-90 group cursor-pointer"
               >
-                <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden border border-gray-200 rounded-xl bg-white/20 backdrop-blur-sm">
+                <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden border border-gray-200 rounded-xs bg-white/20 backdrop-blur-sm">
                   <div className="absolute inset-0 bg-linear-to-br from-white/30 to-transparent" />
                   <span className="relative z-10 text-lg font-bold text-white">
                     K
@@ -387,7 +387,7 @@ export default function Layout() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="px-3 text-white rounded-xl bg-white/10 border-white/20 hover:bg-white/20 hover:text-white backdrop-blur-sm lg:px-4"
+                    className="px-3 text-white rounded-xs bg-white/10 border-white/20 hover:bg-white/20 hover:text-white backdrop-blur-sm lg:px-4"
                   >
                     <LogOut size={16} className="sm:mr-2" />
                     <span className="hidden sm:inline">Logout</span>
@@ -401,12 +401,12 @@ export default function Layout() {
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-xl">
+                    <AlertDialogCancel className="rounded-xs">
                       Cancel
                     </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleLogout}
-                      className="bg-red-600 rounded-xl hover:bg-red-700"
+                      className="bg-red-600 rounded-xs hover:bg-red-700"
                     >
                       Logout
                     </AlertDialogAction>

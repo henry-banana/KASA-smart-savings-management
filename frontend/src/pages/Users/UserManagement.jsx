@@ -262,7 +262,7 @@ export default function UserManagement() {
 
   // if (user.role !== 'admin') {
   //   return (
-  //     <Card className="border border-gray-200 rounded-3xl">
+  //     <Card className="border border-gray-200 rounded-md">
   //       <CardContent className="p-12 text-center">
   //         <AlertTriangle size={64} className="mx-auto mb-4 text-yellow-500" />
   //         <h3 className="mb-2 text-xl font-semibold">Access Restricted</h3>
@@ -288,7 +288,7 @@ export default function UserManagement() {
         )}
 
         {/* Header */}
-        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-md">
           <CardHeader className="bg-linear-to-r from-[#F3E8FF] to-[#E8F6FF] border-b border-gray-100 relative overflow-hidden pb-6 sm:pb-8">
             <div className="absolute top-0 right-0 w-32 h-32 -mt-16 -mr-16 rounded-lg sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-white/50 sm:-mr-24 lg:-mr-32 sm:-mt-24 lg:-mt-32" />
             <StarDecor className="top-4 right-8 sm:right-12" />
@@ -300,7 +300,7 @@ export default function UserManagement() {
             <div className="relative z-10 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
               <div className="flex items-start flex-1 min-w-0 gap-3 sm:gap-4">
                 <div
-                  className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-md"
+                  className="flex items-center justify-center shrink-0 w-12 h-12 border border-gray-200 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xs sm:rounded-md"
                   style={{
                     background:
                       "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -338,19 +338,19 @@ export default function UserManagement() {
         </Card>
 
         {/* Users Table */}
-        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-3xl">
+        <Card className="overflow-hidden border border-gray-200 rounded-md lg:rounded-md">
           <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100 p-4 sm:p-6">
             <CardTitle className="text-base sm:text-lg lg:text-xl">
               User List ({users.length})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 sm:p-6">
-            <div className="overflow-hidden border rounded-xl lg:rounded-md">
+            <div className="overflow-hidden border rounded-xs lg:rounded-md">
               <div className="overflow-x-auto">
                 {loading ? (
                   <div className="p-4 space-y-3">
                     {/* Table Header Skeleton */}
-                    <div className="flex gap-4 p-3 bg-gray-50 rounded-xl">
+                    <div className="flex gap-4 p-3 bg-gray-50 rounded-xs">
                       <Skeleton className="h-5 w-24 bg-gray-200" />
                       <Skeleton className="h-5 w-32 bg-gray-200 hidden md:block" />
                       <Skeleton className="h-5 w-40 bg-gray-200 hidden lg:block" />
@@ -363,7 +363,7 @@ export default function UserManagement() {
                     {[1, 2, 3, 4, 5].map((i) => (
                       <div
                         key={i}
-                        className="flex items-center gap-4 p-4 border border-gray-100 rounded-xl animate-pulse"
+                        className="flex items-center gap-4 p-4 border border-gray-100 rounded-xs animate-pulse"
                       >
                         <Skeleton className="h-4 w-24 bg-gray-200" />
                         <Skeleton className="h-4 w-32 bg-gray-200 hidden md:block" />
@@ -372,8 +372,8 @@ export default function UserManagement() {
                         <Skeleton className="h-6 w-16 bg-gray-200 rounded-lg" />
                         <Skeleton className="h-4 w-28 bg-gray-200 hidden sm:block" />
                         <div className="flex gap-2">
-                          <Skeleton className="h-8 w-16 bg-gray-200 rounded-xl" />
-                          <Skeleton className="h-8 w-20 bg-gray-200 rounded-xl" />
+                          <Skeleton className="h-8 w-16 bg-gray-200 rounded-xs" />
+                          <Skeleton className="h-8 w-20 bg-gray-200 rounded-xs" />
                         </div>
                       </div>
                     ))}
@@ -448,7 +448,7 @@ export default function UserManagement() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleEditUser(userData)}
-                                className="rounded-xl hover:bg-[#F3E8FF]"
+                                className="rounded-xs hover:bg-[#F3E8FF]"
                               >
                                 <Edit size={14} className="mr-1" />
                                 Edit
@@ -457,7 +457,7 @@ export default function UserManagement() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleDisableUser(userData)}
-                                className={`rounded-xl ${
+                                className={`rounded-xs ${
                                   userData.status?.toLowerCase() === "rejected"
                                     ? "text-blue-600 hover:bg-blue-50"
                                     : "text-red-600 hover:bg-red-50"
@@ -482,7 +482,7 @@ export default function UserManagement() {
 
         {/* Add User Dialog */}
         <Dialog open={showAddUser} onOpenChange={setShowAddUser}>
-          <DialogContent className="rounded-3xl">
+          <DialogContent className="rounded-md">
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
@@ -608,7 +608,7 @@ export default function UserManagement() {
 
         {/* Edit User Dialog */}
         <Dialog open={showEditUser} onOpenChange={setShowEditUser}>
-          <DialogContent className="rounded-3xl">
+          <DialogContent className="rounded-md">
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
                 <div
@@ -733,7 +733,7 @@ export default function UserManagement() {
           open={showDisableConfirm}
           onOpenChange={setShowDisableConfirm}
         >
-          <AlertDialogContent className="rounded-3xl">
+          <AlertDialogContent className="rounded-md">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-xl">
                 {selectedUser?.status?.toLowerCase() === "rejected"
@@ -771,7 +771,7 @@ export default function UserManagement() {
 
         {/* Success Dialog */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-          <DialogContent className="rounded-3xl">
+          <DialogContent className="rounded-md">
             <DialogHeader>
               <div className="flex justify-center mb-4">
                 <div
