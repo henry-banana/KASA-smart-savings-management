@@ -183,7 +183,7 @@ export default function Layout() {
                 !isMobile && isSidebarCollapsed ? "justify-center w-full" : ""
               }`}
             >
-              <div className="relative flex items-center justify-center w-12 h-12 overflow-hidden transition-all duration-300 border border-gray-200 shrink-0 rounded-md bg-white/10 backdrop-blur-sm hover:scale-110">
+              <div className="relative flex items-center justify-center w-12 h-12 overflow-hidden transition-all duration-300 border border-gray-200 shrink-0 rounded-sm bg-white/10 backdrop-blur-sm hover:scale-110">
                 <div className="absolute inset-0 bg-linear-to-br from-white/20 to-transparent" />
                 <span className="relative z-10 text-xl font-bold text-white transition-all duration-300">
                   K
@@ -270,9 +270,9 @@ export default function Layout() {
                       </span>
                       {isActive && (
                         <div className="flex items-center gap-1 ml-auto">
-                          <div className="w-1.5 h-1.5 rounded-lg bg-cyan-300 animate-pulse" />
+                          <div className="w-1.5 h-1.5 rounded-md bg-cyan-300 animate-pulse" />
                           <div
-                            className="w-1 h-1 rounded-lg bg-cyan-300/60 animate-pulse"
+                            className="w-1 h-1 rounded-md bg-cyan-300/60 animate-pulse"
                             style={{ animationDelay: "0.2s" }}
                           />
                         </div>
@@ -321,7 +321,7 @@ export default function Layout() {
                 onClick={() => handleNavigate("/")}
                 className="flex items-center gap-2 transition-opacity hover:opacity-90 group cursor-pointer"
               >
-                <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden border border-gray-200 rounded-xs bg-white/20 backdrop-blur-sm">
+                <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden border border-gray-200 rounded-md bg-white/20 backdrop-blur-sm">
                   <div className="absolute inset-0 bg-linear-to-br from-white/30 to-transparent" />
                   <span className="relative z-10 text-lg font-bold text-white">
                     K
@@ -354,9 +354,9 @@ export default function Layout() {
 
             <div className="flex items-center gap-2 shrink-0 sm:gap-3 lg:gap-4">
               {/* User Info - Enhanced with hover effect */}
-              <div className="items-center hidden gap-2 px-3 py-2 transition-all duration-200 border sm:flex lg:gap-3 bg-white/10 backdrop-blur-sm rounded-md lg:px-4 border-white/20 hover:bg-white/15 hover:border-white/30 group">
+              <div className="items-center hidden gap-2 px-3 py-2 transition-all duration-200 border sm:flex lg:gap-3 bg-white/10 backdrop-blur-sm rounded-sm lg:px-4 border-white/20 hover:bg-white/15 hover:border-white/30 group">
                 <div
-                  className="flex items-center justify-center w-8 h-8 text-sm font-semibold text-white transition-transform duration-200 rounded-lg border border-gray-200 shrink-0 lg:w-10 lg:h-10 lg:text-base group-hover:scale-110"
+                  className="flex items-center justify-center w-8 h-8 text-sm font-semibold text-white transition-transform duration-200 rounded-md border border-gray-200 shrink-0 lg:w-10 lg:h-10 lg:text-base group-hover:scale-110"
                   style={{
                     background:
                       "linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%)",
@@ -369,7 +369,7 @@ export default function Layout() {
                     {user?.fullName || "User"}
                   </p>
                   <span
-                    className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] lg:text-xs font-medium mt-1 transition-all duration-200 group-hover:scale-105"
+                    className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] lg:text-xs font-medium mt-1 transition-all duration-200 group-hover:scale-105"
                     style={{
                       backgroundColor: currentRole.bg,
                       color: currentRole.text,
@@ -393,7 +393,7 @@ export default function Layout() {
                     <span className="hidden sm:inline">Logout</span>
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent className="rounded-md">
+                <AlertDialogContent className="rounded-sm">
                   <AlertDialogHeader>
                     <AlertDialogTitle>Confirm Logout?</AlertDialogTitle>
                     <AlertDialogDescription>
