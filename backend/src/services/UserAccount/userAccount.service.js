@@ -48,7 +48,10 @@ class UserAccountService {
 
     const userAccount = await userAccountRepository.findById(newEmployee.employeeid)
 
-    
+    await userAccountRepository.update(newEmployee.employeeid, {
+      password: await hashPassword(defaultPassword)
+    });
+
     return {
         
         id: newEmployee.employeeid,
