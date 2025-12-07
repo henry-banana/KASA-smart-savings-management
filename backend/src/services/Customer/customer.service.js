@@ -12,7 +12,7 @@ class CustomerService {
       citizenid: citizenId,
       street,
       district,
-      province,
+      province, 
     });
 
     return {
