@@ -142,15 +142,19 @@ class TransactionService {
     return { message: "Transaction deleted successfully." };
   }
 
-  async depositTransaction(data) {
-    const savingBook = await savingBookRepository.findById(data.bookId);
+  async depositTransaction({amount, bookId, employeeId}) {
+    const savingBook = await savingBookRepository.findById(bookId);
     if (!savingBook) throw new Error("Account not found.");
 
-    if (data.amount <= 0) {
+    if (amount <= 0) {
       throw new Error("Invalid amount.");
     }
 
-    const employee = await employeeRepository.findById(data.employeeId);
+    if (savingBook.status === "Close") {
+      throw new Error("Cannot deposit to a closed account.");
+    }
+
+    const employee = await employeeRepository.findById(employeeId);
     if (!employee) throw new Error("Teller ID is not exists.");
 
     // if (employee.roleid != 2){ //code cứng vì chưa có model role
@@ -158,15 +162,15 @@ class TransactionService {
 
     // }
 
-    const updatedBook = await savingBookRepository.update(data.bookId, {
-      currentbalance: Number(savingBook.currentbalance) + Number(data.amount),
+    const updatedBook = await savingBookRepository.update(bookId, {
+      currentbalance: Number(savingBook.currentbalance) + Number(amount),
     });
 
     const newTransaction = await transactionRepository.create({
-      bookid: data.bookId,
-      amount: data.amount,
+      bookid: bookId,
+      amount: amount,
       transactiontype: "Deposit",
-      tellerid: data.employeeId,
+      tellerid: employeeId,
     });
 
     if (!updatedBook) {
