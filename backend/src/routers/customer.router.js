@@ -79,7 +79,7 @@ router.get("/search", searchCustomer);
  *             schema:
  *               $ref: '#/components/schemas/Customer'
  */
-router.post("/add", addCustomer);
+router.post("/", addCustomer);
 
 
 /**
