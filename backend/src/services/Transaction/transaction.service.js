@@ -2,6 +2,7 @@ import { transactionRepository } from "../../repositories/Transaction/Transactio
 import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
 import { employeeRepository } from "../../repositories/Employee/EmployeeRepository.js";
 import { customerRepository } from "../../repositories/Customer/CustomerRepository.js";
+import { savingBookService } from "../SavingBook/savingBook.service.js";
 
 class TransactionService {
   // Thêm giao dịch mới
@@ -201,35 +202,52 @@ class TransactionService {
     return result;
   }
 
-  async withdrawTransaction(data) {
-    const savingBook = await savingBookRepository.findById(data.bookId);
+  async withdrawTransaction({bookId, amount, employeeId}) {
+    const savingBook = await savingBookRepository.findById(bookId);
     if (!savingBook) throw new Error("Account not found.");
 
-    if (data.amount <= 0) {
+    //Chỉ được rút tiền sau 15 ngày kể từ ngày mở sổ
+    const registerDate = new Date(savingBook.registertime);
+    const now = new Date();
+    const diffDays = (now - registerDate) / (1000 * 60 * 60 * 24);
+
+    if (diffDays < 15) {
+      throw new Error("Cannot withdraw within 15 days of opening the account.");
+    }
+
+    //Kiểm tra số tiền rút phải lớn hơn 0
+    if (amount <= 0) {
       throw new Error("Invalid amount.");
     }
 
-    const employee = await employeeRepository.findById(data.employeeId);
+    //Kiểm tra nhân viên thu ngân có tồn tại
+    const employee = await employeeRepository.findById(employeeId);
     if (!employee) {
       throw new Error("Teller ID is not exists.");
     }
 
+    //Kiểm tra số tiền rút không được lớn hơn số dư hiện có
     const balanceBefore = Number(savingBook.currentbalance);
-    if (balanceBefore < Number(data.amount)) {
+
+    if (balanceBefore < Number(amount)) {
       throw new Error("Insufficient balance.");
     }
 
-    const balanceAfter = balanceBefore - Number(data.amount);
+    //Tính số dư sau khi rút
+    const balanceAfter = balanceBefore - Number(amount);
 
-    const updatedBook = await savingBookRepository.update(data.bookId, {
+    //Cập nhật số dư sau khi rút, đóng sở nếu số dư = 0
+    const updatedBook = await savingBookRepository.update(bookId, {
       currentbalance: balanceAfter,
+      status: balanceAfter === 0 ? "Close" : savingBook.status,
     });
 
     const newTransaction = await transactionRepository.create({
-      bookid: data.bookId,
-      amount: data.amount,
+      bookid: bookId,
+      amount: amount,
       transactiontype: "WithDraw",
-      tellerid: data.employeeId,
+      tellerid: employeeId,
+      note: balanceAfter === 0 ? `Tất toán sổ. Số dư gốc: ${balanceBefore}.` : "",
     });
 
     if (!updatedBook) {
