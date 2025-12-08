@@ -62,6 +62,8 @@ export const mockTransactionAdapter = {
         interestRate: typeSaving?.interestRate || 0,
         // mock-extension: needed by withdraw page for maturity check
         maturityDate: savingBook.maturityDate,
+        // mock-extension: needed for closed account validation
+        status: savingBook.status,
       },
     };
   },

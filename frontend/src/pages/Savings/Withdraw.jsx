@@ -97,6 +97,11 @@ export default function Withdraw() {
       const response = await getAccountInfo(accountId);
       const account = response.data;
 
+      if (account.status?.toLowerCase() === "close") {
+        setError("Saving book was closed");
+        return;
+      }
+
       const daysSinceOpen = calculateDaysDifference(account.openDate);
 
       if (daysSinceOpen < minWithdrawalDays) {

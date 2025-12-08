@@ -82,6 +82,11 @@ export default function Deposit() {
       const response = await getAccountInfo(accountId);
       const account = response.data;
 
+      if (account.status?.toLowerCase() === "close") {
+        setError("Saving book was closed");
+        return;
+      }
+
       if (account.accountTypeName !== "No term") {
         setError("Deposits are only allowed for No term savings accounts");
         return;

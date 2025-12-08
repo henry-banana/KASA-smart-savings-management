@@ -34,24 +34,24 @@ export function TableSkeleton({ rows = 5, columns = 6 }) {
 // 💳 Account Info Skeleton - For loading account details
 export function AccountInfoSkeleton() {
   return (
-    <div className="rounded-sm border-2 border-cyan-200 bg-linear-to-br from-cyan-50 to-blue-50 p-6 space-y-4 animate-pulse">
+    <div className="rounded-sm border border-gray-200 bg-white p-6 space-y-4 animate-pulse">
       <div className="flex items-center gap-2 mb-4">
-        <Skeleton className="w-5 h-5 rounded-md" />
-        <Skeleton className="h-5 w-40" />
+        <Skeleton className="w-5 h-5 rounded-md bg-gray-200" />
+        <Skeleton className="h-5 w-40 bg-gray-200" />
       </div>
 
       {/* Account Details */}
       {[1, 2, 3, 4].map((i) => (
         <div key={i} className="flex items-center justify-between">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-4 w-32 bg-gray-200" />
+          <Skeleton className="h-4 w-40 bg-gray-200" />
         </div>
       ))}
 
       {/* Balance Row - Larger */}
       <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-6 w-48" />
+        <Skeleton className="h-4 w-32 bg-gray-200" />
+        <Skeleton className="h-6 w-48 bg-gray-200" />
       </div>
     </div>
   );
