@@ -161,7 +161,7 @@ export default function Dashboard() {
               title: "Withdrawals Current",
               value: `₫${(statsData.withdrawalsToday / 1000000).toFixed(2)}M`,
               change: statsData.changes.withdrawalsToday,
-              trend: statsData.changes.withdrawalsToday.startsWith("+")
+              trend: statsData.changes.withdrawalsToday.startsWith("-")
                 ? "down"
                 : "up",
               icon: <ArrowUpIcon size={28} />,
