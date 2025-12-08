@@ -23,7 +23,7 @@ function Spinner({ size = 16, light = true }) {
   const borderColor = light ? "border-white" : "border-gray-400";
   return (
     <span
-      className={`inline-block animate-spin rounded-md border-2 ${borderColor} border-t-transparent align-middle`}
+      className={`inline-block animate-spin rounded-full border-2 ${borderColor} border-t-transparent align-middle`}
       style={{ width: size, height: size }}
       aria-hidden="true"
     />
@@ -372,8 +372,8 @@ export default function Login() {
 
         {/* Overlay khi loading */}
         {loading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xs bg-white/20 backdrop-blur-[1px] animate-fade-in">
-            <span className="spinner inline-block animate-spin rounded-md border-4 border-[#1A4D8F] border-t-transparent" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center rounded-sm bg-white/20 backdrop-blur-[1px] animate-fade-in">
+            <span className="spinner inline-block animate-spin rounded-full border-4 border-[#1A4D8F] border-t-transparent" />
             <p className="mt-3 text-[#1A4D8F] font-medium text-sm animate-wave">
               Loading...
             </p>

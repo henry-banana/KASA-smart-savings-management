@@ -131,7 +131,7 @@ export function CuteLoading({ size = 40, className = "" }) {
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <div
-        className="animate-spin rounded-md border-4 border-gray-200"
+        className="animate-spin rounded-full border-4 border-gray-200"
         style={{
           width: size,
           height: size,
