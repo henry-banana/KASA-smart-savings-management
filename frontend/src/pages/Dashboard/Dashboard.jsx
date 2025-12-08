@@ -62,7 +62,7 @@ export default function Dashboard() {
       iconColor: "#ffffff",
     },
     {
-      title: "Deposits Today",
+      title: "Deposits Current",
       value: "₫0",
       change: "+0%",
       trend: "up",
@@ -71,7 +71,7 @@ export default function Dashboard() {
       iconColor: "#ffffff",
     },
     {
-      title: "Withdrawals Today",
+      title: "Withdrawals Current",
       value: "₫0",
       change: "0%",
       trend: "down",
@@ -147,7 +147,7 @@ export default function Dashboard() {
               iconColor: "#ffffff",
             },
             {
-              title: "Deposits Today",
+              title: "Deposits Current",
               value: `₫${(statsData.depositsToday / 1000000).toFixed(2)}M`,
               change: statsData.changes.depositsToday,
               trend: statsData.changes.depositsToday.startsWith("+")
@@ -158,7 +158,7 @@ export default function Dashboard() {
               iconColor: "#ffffff",
             },
             {
-              title: "Withdrawals Today",
+              title: "Withdrawals Current",
               value: `₫${(statsData.withdrawalsToday / 1000000).toFixed(2)}M`,
               change: statsData.changes.withdrawalsToday,
               trend: statsData.changes.withdrawalsToday.startsWith("+")
@@ -272,7 +272,6 @@ export default function Dashboard() {
             <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-md bg-white/50" />
             <StarDecor className="top-4 right-8" />
             <CardTitle className="relative z-10 flex items-center gap-2">
-              <Sparkles size={20} className="text-cyan-500" />
               Quick Actions
             </CardTitle>
           </CardHeader>
@@ -335,7 +334,6 @@ export default function Dashboard() {
           <Card className="overflow-hidden border border-gray-200 lg:col-span-2 rounded-sm">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp size={20} className="text-[#1A4D8F]" />
                 Deposits & Withdrawals This Week
               </CardTitle>
             </CardHeader>
@@ -393,7 +391,6 @@ export default function Dashboard() {
           <Card className="overflow-hidden border border-gray-200 rounded-sm">
             <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
               <CardTitle className="flex items-center gap-2">
-                <PiggyBank size={20} className="text-[#00AEEF]" />
                 Account Type
               </CardTitle>
             </CardHeader>
@@ -476,7 +473,6 @@ export default function Dashboard() {
           <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-md bg-white/50" />
             <CardTitle className="relative z-10 flex items-center gap-2">
-              <Receipt size={20} className="text-[#00AEEF]" />
               Recent Transactions
             </CardTitle>
           </CardHeader>
