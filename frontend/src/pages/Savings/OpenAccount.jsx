@@ -83,9 +83,9 @@ export default function OpenAccount() {
     if (!formData.initialDeposit) {
       newErrors.initialDeposit = "Please enter amount";
     } else if (!minBalance || Number(formData.initialDeposit) < minBalance) {
-      newErrors.initialDeposit = `Minimum amount is ₫${
+      newErrors.initialDeposit = `Minimum amount is ${
         minBalance ? minBalance.toLocaleString() : "..."
-      }`;
+      }₫`;
     }
 
     setErrors(newErrors);
@@ -427,9 +427,6 @@ export default function OpenAccount() {
                       Initial Deposit (VND) *
                     </Label>
                     <div className="relative">
-                      <span className="absolute text-sm font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2 sm:text-base">
-                        ₫
-                      </span>
                       <Input
                         id="initialDeposit"
                         type="number"
@@ -448,6 +445,9 @@ export default function OpenAccount() {
                         disabled={!!regulationsError || loadingRegulations}
                         className="pl-7 sm:pl-8 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
+                      <span className="absolute text-sm font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2 sm:text-base">
+                        ₫
+                      </span>
                     </div>
                     {errors.initialDeposit && (
                       <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
@@ -461,9 +461,9 @@ export default function OpenAccount() {
                         ? "Loading minimum amount..."
                         : regulationsError
                         ? regulationsError
-                        : `Minimum amount: ₫${
+                        : `Minimum amount: ${
                             minBalance?.toLocaleString() ?? "..."
-                          }`}
+                          }₫`}
                     </p>
                   </div>
 
@@ -614,10 +614,9 @@ export default function OpenAccount() {
                     Amount:
                   </span>
                   <span className="text-sm font-semibold text-green-600 truncate sm:text-base">
-                    ₫
                     {Number(
                       createdAccountData?.initialDeposit || 0
-                    ).toLocaleString()}
+                    ).toLocaleString()}₫
                   </span>
                 </div>
                 <div className="flex justify-between gap-2">

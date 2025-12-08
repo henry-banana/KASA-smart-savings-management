@@ -63,7 +63,7 @@ export default function Dashboard() {
     },
     {
       title: "Deposits Current",
-      value: "₫0",
+      value: "0₫",
       change: "+0%",
       trend: "up",
       icon: <ArrowDownIcon size={28} />,
@@ -72,7 +72,7 @@ export default function Dashboard() {
     },
     {
       title: "Withdrawals Current",
-      value: "₫0",
+      value: "0₫",
       change: "0%",
       trend: "down",
       icon: <ArrowUpIcon size={28} />,
@@ -148,7 +148,7 @@ export default function Dashboard() {
             },
             {
               title: "Deposits Current",
-              value: `₫${(statsData.depositsToday / 1000000).toFixed(2)}M`,
+              value: `${(statsData.depositsToday / 1000000).toFixed(2)}M₫`,
               change: statsData.changes.depositsToday,
               trend: statsData.changes.depositsToday.startsWith("+")
                 ? "up"
@@ -159,7 +159,7 @@ export default function Dashboard() {
             },
             {
               title: "Withdrawals Current",
-              value: `₫${(statsData.withdrawalsToday / 1000000).toFixed(2)}M`,
+              value: `${(statsData.withdrawalsToday / 1000000).toFixed(2)}M₫`,
               change: statsData.changes.withdrawalsToday,
               trend: statsData.changes.withdrawalsToday.startsWith("-")
                 ? "down"
@@ -362,7 +362,7 @@ export default function Dashboard() {
                     <XAxis dataKey="name" stroke="#64748B" />
                     <YAxis stroke="#64748B" />
                     <Tooltip
-                      formatter={(value) => `₫${Number(value)}M`}
+                      formatter={(value) => `${Number(value)}M₫`}
                       contentStyle={{
                         borderRadius: "12px",
                         border: "1px solid #E5E7EB",
@@ -529,8 +529,8 @@ export default function Dashboard() {
                   }
 
                   const amountDisplay = isDeposit
-                    ? `+₫${transaction.amount.toLocaleString()}`
-                    : `-₫${transaction.amount.toLocaleString()}`;
+                    ? `+${transaction.amount.toLocaleString()}₫`
+                    : `-${transaction.amount.toLocaleString()}₫`;
 
                   return (
                     <div

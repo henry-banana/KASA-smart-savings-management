@@ -14,6 +14,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -353,7 +354,7 @@ export default function DailyReport() {
                   <div className="flex-1">
                     <p className="mb-2 text-sm text-gray-600">Total Deposits</p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text">
-                      ₫{totals.deposits.toLocaleString()}
+                      {totals.deposits.toLocaleString()}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <ArrowUpRight size={14} className="text-green-600" />
@@ -390,7 +391,7 @@ export default function DailyReport() {
                       Total Withdrawals
                     </p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-red-600 to-rose-600 bg-clip-text">
-                      ₫{totals.withdrawals.toLocaleString()}
+                      {totals.withdrawals.toLocaleString()}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <ArrowDownRight size={14} className="text-red-600" />
@@ -425,7 +426,7 @@ export default function DailyReport() {
                   <div className="flex-1">
                     <p className="mb-2 text-sm text-gray-600">Net Difference</p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text">
-                      ₫{totals.difference.toLocaleString()}
+                      {totals.difference.toLocaleString()}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <DollarSign size={14} className="text-blue-600" />
@@ -454,7 +455,7 @@ export default function DailyReport() {
                   Detailed Report - {format(selectedDate, "dd/MM/yyyy")}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0">
+              <CardContent>
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -483,31 +484,31 @@ export default function DailyReport() {
                             {row.typeName}
                           </TableCell>
                           <TableCell className="font-semibold text-right text-green-600">
-                            ₫{row.totalDeposits.toLocaleString()}
+                            {row.totalDeposits.toLocaleString()}₫
                           </TableCell>
                           <TableCell className="font-semibold text-right text-red-600">
-                            ₫{row.totalWithdrawals.toLocaleString()}
+                            {row.totalWithdrawals.toLocaleString()}₫
                           </TableCell>
                           <TableCell className="font-semibold text-right text-blue-600">
-                            ₫{row.difference.toLocaleString()}
+                            {row.difference.toLocaleString()}₫
                           </TableCell>
                         </TableRow>
                       ))}
-                      <TableRow className="font-bold bg-linear-to-r from-purple-100 to-pink-100">
-                        <TableCell className="font-bold text-gray-800">
-                          Total
-                        </TableCell>
-                        <TableCell className="font-bold text-right text-green-700">
-                          ₫{totals.deposits.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="font-bold text-right text-red-700">
-                          ₫{totals.withdrawals.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="font-bold text-right text-blue-700">
-                          ₫{totals.difference.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
                     </TableBody>
+                    <TableFooter className="font-bold bg-linear-to-r from-purple-100 to-pink-100">
+                      <TableCell className="font-bold text-gray-800">
+                        Total
+                      </TableCell>
+                      <TableCell className="font-bold text-right text-green-700">
+                        {totals.deposits.toLocaleString()}₫
+                      </TableCell>
+                      <TableCell className="font-bold text-right text-red-700">
+                        {totals.withdrawals.toLocaleString()}₫
+                      </TableCell>
+                      <TableCell className="font-bold text-right text-blue-700">
+                        {totals.difference.toLocaleString()}₫
+                      </TableCell>
+                    </TableFooter>
                   </Table>
                 </div>
               </CardContent>

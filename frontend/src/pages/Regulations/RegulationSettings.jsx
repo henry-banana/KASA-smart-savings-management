@@ -664,7 +664,7 @@ export default function RegulationSettings() {
                         Minimum Balance:
                       </span>
                       <span className="text-sm font-semibold text-blue-900">
-                        ₫{Number(minBalance).toLocaleString()}
+                        {Number(minBalance).toLocaleString()}₫
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -858,7 +858,7 @@ export default function RegulationSettings() {
                 </p>
                 <ul className="space-y-1 text-sm text-gray-600 list-disc list-inside">
                   <li>
-                    Minimum Balance: ₫{Number(minBalance).toLocaleString()}
+                    Minimum Balance: {Number(minBalance).toLocaleString()}₫
                   </li>
                   <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
                   {Array.isArray(interestRates) &&

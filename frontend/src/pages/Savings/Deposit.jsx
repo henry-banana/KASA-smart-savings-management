@@ -118,9 +118,9 @@ export default function Deposit() {
 
     if (!minDeposit || amount < minDeposit) {
       setError(
-        `Minimum balance amount is ₫${
+        `Minimum balance amount is ${
           minDeposit ? minDeposit.toLocaleString() : "..."
-        }`
+        }₫`
       );
       return;
     }
@@ -313,7 +313,7 @@ export default function Deposit() {
                       Current Balance:
                     </span>
                     <span className="text-lg font-bold text-green-600">
-                      ₫{(accountInfo.balance ?? 0).toLocaleString()}
+                      {(accountInfo.balance ?? 0).toLocaleString()}₫
                     </span>
                   </div>
                 </div>
@@ -339,9 +339,6 @@ export default function Deposit() {
                       Deposit Amount (VND) *
                     </Label>
                     <div className="relative">
-                      <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
-                        ₫
-                      </span>
                       <Input
                         id="depositAmount"
                         type="number"
@@ -354,13 +351,16 @@ export default function Deposit() {
                         className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                       />
                     </div>
+                    <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
+                      ₫
+                    </span>
                     <p className="flex items-center gap-1 text-xs text-gray-500">
                       <span>💡</span>{" "}
                       {loadingRegulations
                         ? "Loading minimum amount..."
-                        : `Minimum amount: ₫${
+                        : `Minimum amount: ${
                             minDeposit?.toLocaleString() ?? "..."
-                          }`}
+                          }₫`}
                     </p>
                   </div>
 
@@ -383,8 +383,8 @@ export default function Deposit() {
                           const amount = minDeposit * multiplier;
                           const label =
                             amount >= 1000000
-                              ? `₫${(amount / 1000000).toFixed(0)}M`
-                              : `₫${(amount / 1000).toFixed(0)}K`;
+                              ? `${(amount / 1000000).toFixed(0)}M₫`
+                              : `${(amount / 1000).toFixed(0)}K₫`;
                           return (
                             <button
                               key={multiplier}
@@ -492,13 +492,13 @@ export default function Deposit() {
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Deposit Amount:</span>
                   <span className="font-semibold text-green-600">
-                    +₫{Number(receiptData?.depositAmount || 0).toLocaleString()}
+                    +{Number(receiptData?.depositAmount || 0).toLocaleString()}₫
                   </span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-gray-200">
                   <span className="text-sm text-gray-600">New Balance:</span>
                   <span className="text-lg font-bold text-green-600">
-                    ₫{Number(receiptData?.newBalance || 0).toLocaleString()}
+                    {Number(receiptData?.newBalance || 0).toLocaleString()}₫
                   </span>
                 </div>
               </div>

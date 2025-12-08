@@ -390,7 +390,7 @@ export default function Withdraw() {
                     <div>
                       <p className="text-xs text-gray-500">Current Balance</p>
                       <p className="text-sm font-semibold text-green-600">
-                        ₫{(accountInfo.balance ?? 0).toLocaleString()}
+                        {(accountInfo.balance ?? 0).toLocaleString()}₫
                       </p>
                     </div>
                     <div>
@@ -453,9 +453,6 @@ export default function Withdraw() {
                     Withdrawal Amount (VND) *
                   </Label>
                   <div className="relative">
-                    <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
-                      ₫
-                    </span>
                     <Input
                       id="withdrawAmount"
                       type="number"
@@ -483,6 +480,9 @@ export default function Withdraw() {
                       max={accountInfo?.balance || undefined}
                       className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
                     />
+                    <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
+                      ₫
+                    </span>
                   </div>
                   {accountInfo && withdrawAmount && (
                     <div
@@ -498,7 +498,7 @@ export default function Withdraw() {
                           Estimated Interest:
                         </span>
                         <span className="font-semibold text-green-600">
-                          ₫{calculatedInterest.toLocaleString()}
+                          {calculatedInterest.toLocaleString()}₫
                         </span>
                       </div>
                       <div className="flex items-center justify-between pt-2 border-t border-amber-200">
@@ -506,10 +506,9 @@ export default function Withdraw() {
                           Total Payout:
                         </span>
                         <span className="text-xl font-bold text-green-600">
-                          ₫
                           {(
                             Number(withdrawAmount) + calculatedInterest
-                          ).toLocaleString()}
+                          ).toLocaleString()}₫
                         </span>
                       </div>
                     </div>
@@ -634,10 +633,9 @@ export default function Withdraw() {
                     Withdrawal Amount:
                   </span>
                   <span className="font-semibold">
-                    ₫
                     {Number(
                       receiptData?.withdrawalAmount || 0
-                    ).toLocaleString()}
+                    ).toLocaleString()}₫
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -645,7 +643,7 @@ export default function Withdraw() {
                     Interest Earned:
                   </span>
                   <span className="font-semibold text-green-600">
-                    +₫{(receiptData?.interestEarned || 0).toLocaleString()}
+                    +{(receiptData?.interestEarned || 0).toLocaleString()}₫
                   </span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-gray-200">
@@ -653,7 +651,7 @@ export default function Withdraw() {
                     Total Payout:
                   </span>
                   <span className="text-xl font-bold text-green-600">
-                    ₫{(receiptData?.totalPayout || 0).toLocaleString()}
+                    {(receiptData?.totalPayout || 0).toLocaleString()}₫
                   </span>
                 </div>
               </div>
