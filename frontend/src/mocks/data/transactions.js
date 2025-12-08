@@ -1,7 +1,47 @@
 /**
  * Mock data for Transactions (Giao dịch)
- * Based on database schema: transaction table
+ * Structure matches API contract: transactionId, bookId, type, amount, transactionDate, savingBook, employee
  */
+
+import { mockSavingBooks } from "./savingBooks";
+import { mockEmployees } from "./employees";
+
+/**
+ * Helper to build transaction response with full contract
+ */
+const buildTransactionPayload = (transaction) => {
+  const savingBook = mockSavingBooks.find(
+    (sb) => sb.bookId === transaction.bookId
+  );
+  // Note: employees.js uses lowercase 'employeeid', not 'employeeId'
+  const employee = mockEmployees.find(
+    (emp) => emp.employeeid === (transaction.employeeId || "EMP001")
+  );
+
+  return {
+    transactionId: transaction.transactionId,
+    bookId: transaction.bookId,
+    type: transaction.type,
+    amount: transaction.amount,
+    transactionDate: transaction.transactionDate,
+    savingBook: savingBook
+      ? {
+          bookId: savingBook.bookId,
+          customer: {
+            customerId: savingBook.citizenId, // Using citizenId as customerId
+            fullName: savingBook.customerName,
+          },
+        }
+      : null,
+    employee: employee
+      ? {
+          employeeId: employee.employeeid, // Return lowercase as per API contract
+          fullName: employee.fullname, // employees.js uses 'fullname', not 'fullName'
+          roleName: "teller",
+        }
+      : null,
+  };
+};
 
 export const mockTransactions = [
   {
@@ -10,6 +50,7 @@ export const mockTransactions = [
     type: "deposit",
     amount: 5000000,
     transactionDate: "2025-08-20T09:00:00.000Z",
+    employeeId: "EMP001",
   },
   {
     transactionId: "TXN002",
@@ -17,6 +58,7 @@ export const mockTransactions = [
     type: "deposit",
     amount: 1000000,
     transactionDate: "2025-09-15T10:30:00.000Z",
+    employeeId: "EMP001",
   },
   {
     transactionId: "TXN003",
@@ -24,6 +66,7 @@ export const mockTransactions = [
     type: "deposit",
     amount: 10000000,
     transactionDate: "2025-05-15T14:00:00.000Z",
+    employeeId: "EMP002",
   },
   {
     transactionId: "TXN004",
@@ -31,6 +74,7 @@ export const mockTransactions = [
     type: "deposit",
     amount: 7500000,
     transactionDate: "2025-03-10T11:15:00.000Z",
+    employeeId: "EMP001",
   },
   {
     transactionId: "TXN005",
@@ -38,6 +82,7 @@ export const mockTransactions = [
     type: "deposit",
     amount: 500000,
     transactionDate: "2025-04-20T09:30:00.000Z",
+    employeeId: "EMP002",
   },
   {
     transactionId: "TXN006",
@@ -45,6 +90,7 @@ export const mockTransactions = [
     type: "deposit",
     amount: 15000000,
     transactionDate: "2025-03-20T10:00:00.000Z",
+    employeeId: "EMP001",
   },
   {
     transactionId: "TXN007",
@@ -52,6 +98,7 @@ export const mockTransactions = [
     type: "deposit",
     amount: 3500000,
     transactionDate: "2025-02-10T15:45:00.000Z",
+    employeeId: "EMP003",
   },
   {
     transactionId: "TXN008",
@@ -59,6 +106,7 @@ export const mockTransactions = [
     type: "deposit",
     amount: 300000,
     transactionDate: "2025-05-15T11:20:00.000Z",
+    employeeId: "EMP001",
   },
   {
     transactionId: "TXN009",
@@ -1094,7 +1142,7 @@ export const mockTransactions = [
     type: "withdraw",
     amount: 6200000,
     transactionDate: "2025-11-27T09:00:00.000Z",
-  }
+  },
 ];
 
 /**
@@ -1103,36 +1151,33 @@ export const mockTransactions = [
 
 // Canonical helper: find by transactionId
 export const findTransactionById = (transactionId) => {
-  return mockTransactions.find(t => t.transactionId === transactionId);
+  return mockTransactions.find((t) => t.transactionId === transactionId);
 };
-
 
 export const findTransactionsByBookId = (bookId) => {
-  return mockTransactions.filter(t => t.bookId === bookId);
+  return mockTransactions.filter((t) => t.bookId === bookId);
 };
-
 
 export const findTransactionsByType = (type) => {
-  return mockTransactions.filter(t => t.type === type);
+  return mockTransactions.filter((t) => t.type === type);
 };
 
-
 export const findTransactionsByDateRange = (startDate, endDate) => {
-  return mockTransactions.filter(t => {
+  return mockTransactions.filter((t) => {
     const transDate = new Date(t.transactionDate);
     return transDate >= new Date(startDate) && transDate <= new Date(endDate);
   });
 };
-
 
 export const addTransaction = (transaction) => {
   mockTransactions.push(transaction);
   return transaction;
 };
 
-
 export const updateTransaction = (transactionId, updates) => {
-  const index = mockTransactions.findIndex(t => t.transactionId === transactionId);
+  const index = mockTransactions.findIndex(
+    (t) => t.transactionId === transactionId
+  );
   if (index !== -1) {
     mockTransactions[index] = { ...mockTransactions[index], ...updates };
     return mockTransactions[index];
@@ -1140,9 +1185,10 @@ export const updateTransaction = (transactionId, updates) => {
   return null;
 };
 
-
 export const deleteTransaction = (transactionId) => {
-  const index = mockTransactions.findIndex(t => t.transactionId === transactionId);
+  const index = mockTransactions.findIndex(
+    (t) => t.transactionId === transactionId
+  );
   if (index !== -1) {
     const deleted = mockTransactions.splice(index, 1)[0];
     return deleted;
@@ -1155,9 +1201,12 @@ export const deleteTransaction = (transactionId) => {
  */
 
 export const generateTransactionId = () => {
-  const lastId = mockTransactions[mockTransactions.length - 1]?.transactionId || "TXN000";
+  const lastId =
+    mockTransactions[mockTransactions.length - 1]?.transactionId || "TXN000";
   const num = parseInt(lastId.substring(3)) + 1;
-  return `TXN${String(num).padStart(3, '0')}`;
+  return `TXN${String(num).padStart(3, "0")}`;
 };
+
+export { buildTransactionPayload };
 
 export default mockTransactions;

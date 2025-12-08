@@ -3,7 +3,10 @@ import {
   updateSavingBookBalance,
 } from "../data/savingBooks.js";
 import { findTypeSavingById } from "../data/typeSavings.js";
-import { addTransaction } from "../data/transactions.js";
+import {
+  addTransaction,
+  buildTransactionPayload,
+} from "../data/transactions.js";
 import { randomDelay, generateId } from "../utils";
 import { findEmployeeById, findRoleById } from "../data/employees.js";
 import { BUSINESS_RULES, TRANSACTION_TYPES } from "@/constants/business.js";
@@ -89,43 +92,30 @@ export const mockTransactionAdapter = {
     const result = updateSavingBookBalance(bookId, amount);
     if (!result) throw new Error("Failed to update balance");
 
-    // Build transaction record (OpenAPI contract fields)
+    // Build transaction record matching backend API contract
     const transactionId = generateId("TXN");
     const transactionDate = new Date().toISOString();
     const employeeObj =
       findEmployeeById(employeeId) || findEmployeeById("EMP001");
-    const employee = buildEmployeePayload(employeeObj);
 
-    const type = "Deposit";
-    addTransaction({
+    // Store transaction in mock data with full context
+    const newTransaction = {
       transactionId,
       bookId,
-      type,
+      type: "deposit",
       amount,
       transactionDate,
-      balanceBefore: result.balanceBefore,
-      balanceAfter: result.balanceAfter,
-      employeeId: employee?.employeeId,
-    });
+      employeeId: employeeObj?.employeeid || "EMP001",
+    };
+    addTransaction(newTransaction);
 
-    // Update savingBook object with new balance
-    const updatedSavingBook = { ...savingBook, balance: result.balanceAfter };
-    const savingBookPayload = buildSavingBookPayload(updatedSavingBook);
+    // Build response using buildTransactionPayload (matches backend format)
+    const transactionPayload = buildTransactionPayload(newTransaction);
 
     return {
       message: "Deposit successfully",
       success: true,
-      data: {
-        transactionId,
-        bookId,
-        type,
-        amount,
-        balanceBefore: result.balanceBefore,
-        balanceAfter: result.balanceAfter,
-        transactionDate,
-        savingBook: savingBookPayload,
-        employee,
-      },
+      data: transactionPayload,
     };
   },
 
@@ -188,41 +178,30 @@ export const mockTransactionAdapter = {
       if (sb) sb.status = "close";
     }
 
+    // Build transaction record matching backend API contract
     const transactionId = generateId("TXN");
     const transactionDate = new Date().toISOString();
     const employeeObj =
       findEmployeeById(employeeId) || findEmployeeById("EMP001");
-    const employee = buildEmployeePayload(employeeObj);
 
-    const type = "Withdraw";
-    addTransaction({
+    // Store transaction in mock data with full context
+    const newTransaction = {
       transactionId,
       bookId,
-      type,
+      type: "withdraw",
       amount,
       transactionDate,
-      balanceBefore: result.balanceBefore,
-      balanceAfter: result.balanceAfter,
-      employeeId: employee?.employeeId,
-    });
+      employeeId: employeeObj?.employeeid || "EMP001",
+    };
+    addTransaction(newTransaction);
 
-    const updatedSavingBook = { ...savingBook, balance: result.balanceAfter };
-    const savingBookPayload = buildSavingBookPayload(updatedSavingBook);
+    // Build response using buildTransactionPayload (matches backend format)
+    const transactionPayload = buildTransactionPayload(newTransaction);
 
     return {
       message: "Withdraw successfully",
       success: true,
-      data: {
-        transactionId,
-        bookId,
-        type,
-        amount,
-        balanceBefore: result.balanceBefore,
-        balanceAfter: result.balanceAfter,
-        transactionDate,
-        savingBook: savingBookPayload,
-        employee,
-      },
+      data: transactionPayload,
     };
   },
 
