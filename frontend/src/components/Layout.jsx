@@ -321,7 +321,7 @@ export default function Layout() {
                 onClick={() => handleNavigate("/")}
                 className="flex items-center gap-2 transition-opacity hover:opacity-90 group cursor-pointer"
               >
-                <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden border border-gray-200 rounded-md bg-white/20 backdrop-blur-sm">
+                <div className="relative flex items-center justify-center w-10 h-10 overflow-hidden border border-gray-200 rounded-sm bg-white/20 backdrop-blur-sm">
                   <div className="absolute inset-0 bg-linear-to-br from-white/30 to-transparent" />
                   <span className="relative z-10 text-lg font-bold text-white">
                     K
@@ -356,7 +356,7 @@ export default function Layout() {
               {/* User Info - Enhanced with hover effect */}
               <div className="items-center hidden gap-2 px-3 py-2 transition-all duration-200 border sm:flex lg:gap-3 bg-white/10 backdrop-blur-sm rounded-sm lg:px-4 border-white/20 hover:bg-white/15 hover:border-white/30 group">
                 <div
-                  className="flex items-center justify-center w-8 h-8 text-sm font-semibold text-white transition-transform duration-200 rounded-md border border-gray-200 shrink-0 lg:w-10 lg:h-10 lg:text-base group-hover:scale-110"
+                  className="flex items-center justify-center w-8 h-8 text-sm font-semibold text-white transition-transform duration-200 rounded-sm border border-gray-200 shrink-0 lg:w-10 lg:h-10 lg:text-base group-hover:scale-110"
                   style={{
                     background:
                       "linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%)",
