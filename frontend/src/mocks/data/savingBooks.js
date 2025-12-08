@@ -1,6 +1,7 @@
 /**
  * Mock data for SavingBooks (Sổ tiết kiệm)
- * New structure with embedded customer data
+ * Structure matches API contract: bookId, accountCode, citizenId, customerName, accountTypeName, openDate, status, balance
+ * Storage: includes typeSavingId and maturityDate for internal use only (not returned by search API)
  */
 
 export const mockSavingBooks = [
@@ -12,7 +13,7 @@ export const mockSavingBooks = [
     openDate: "2025-08-20",
     maturityDate: "2025-11-20",
     balance: 6000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00124",
@@ -22,7 +23,7 @@ export const mockSavingBooks = [
     openDate: "2025-05-15",
     maturityDate: "2025-11-15",
     balance: 10000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00125",
@@ -32,7 +33,7 @@ export const mockSavingBooks = [
     openDate: "2025-03-10",
     maturityDate: null,
     balance: 8000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00126",
@@ -42,7 +43,7 @@ export const mockSavingBooks = [
     openDate: "2025-03-20",
     maturityDate: "2025-09-20",
     balance: 15000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00127",
@@ -52,7 +53,7 @@ export const mockSavingBooks = [
     openDate: "2025-02-10",
     maturityDate: null,
     balance: 3800000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00128",
@@ -62,7 +63,7 @@ export const mockSavingBooks = [
     openDate: "2024-09-01",
     maturityDate: "2024-12-01",
     balance: 0,
-    status: "closed"
+    status: "close",
   },
   {
     bookId: "SB00129",
@@ -72,7 +73,7 @@ export const mockSavingBooks = [
     openDate: "2024-11-15",
     maturityDate: "2025-11-15",
     balance: 20000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00130",
@@ -82,7 +83,7 @@ export const mockSavingBooks = [
     openDate: "2025-03-20",
     maturityDate: null,
     balance: 4500000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00131",
@@ -92,7 +93,7 @@ export const mockSavingBooks = [
     openDate: "2025-04-15",
     maturityDate: "2025-07-15",
     balance: 8500000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00132",
@@ -102,7 +103,7 @@ export const mockSavingBooks = [
     openDate: "2025-05-20",
     maturityDate: "2025-08-20",
     balance: 12800000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00133",
@@ -112,7 +113,7 @@ export const mockSavingBooks = [
     openDate: "2025-06-10",
     maturityDate: "2025-12-10",
     balance: 26500000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00134",
@@ -122,7 +123,7 @@ export const mockSavingBooks = [
     openDate: "2025-07-01",
     maturityDate: null,
     balance: 5200000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00135",
@@ -132,7 +133,7 @@ export const mockSavingBooks = [
     openDate: "2025-08-05",
     maturityDate: null,
     balance: 6800000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00136",
@@ -142,7 +143,7 @@ export const mockSavingBooks = [
     openDate: "2025-09-12",
     maturityDate: "2026-03-12",
     balance: 19000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00137",
@@ -152,7 +153,7 @@ export const mockSavingBooks = [
     openDate: "2025-10-08",
     maturityDate: "2026-01-08",
     balance: 9800000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00138",
@@ -162,7 +163,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-01",
     maturityDate: null,
     balance: 3100000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00139",
@@ -172,7 +173,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-15",
     maturityDate: "2026-05-15",
     balance: 22500000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00140",
@@ -182,7 +183,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-20",
     maturityDate: "2026-02-20",
     balance: 11200000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00141",
@@ -192,7 +193,7 @@ export const mockSavingBooks = [
     openDate: "2025-10-25",
     maturityDate: null,
     balance: 7500000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00142",
@@ -202,7 +203,7 @@ export const mockSavingBooks = [
     openDate: "2025-09-18",
     maturityDate: "2025-12-18",
     balance: 14000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00143",
@@ -212,7 +213,7 @@ export const mockSavingBooks = [
     openDate: "2024-08-10",
     maturityDate: "2025-02-10",
     balance: 0,
-    status: "closed"
+    status: "close",
   },
   {
     bookId: "SB00144",
@@ -222,7 +223,7 @@ export const mockSavingBooks = [
     openDate: "2024-06-15",
     maturityDate: null,
     balance: 0,
-    status: "closed"
+    status: "close",
   },
   {
     bookId: "SB00145",
@@ -232,7 +233,7 @@ export const mockSavingBooks = [
     openDate: "2025-08-06",
     maturityDate: "2025-11-06",
     balance: 0,
-    status: "closed"
+    status: "close",
   },
   {
     bookId: "SB00146",
@@ -242,7 +243,7 @@ export const mockSavingBooks = [
     openDate: "2025-10-08",
     maturityDate: null,
     balance: 0,
-    status: "closed"
+    status: "close",
   },
   {
     bookId: "SB00147",
@@ -252,7 +253,7 @@ export const mockSavingBooks = [
     openDate: "2025-05-17",
     maturityDate: "2025-11-17",
     balance: 0,
-    status: "closed"
+    status: "close",
   },
   {
     bookId: "SB00148",
@@ -262,7 +263,7 @@ export const mockSavingBooks = [
     openDate: "2025-08-23",
     maturityDate: "2025-11-23",
     balance: 0,
-    status: "closed"
+    status: "close",
   },
   {
     bookId: "SB00149",
@@ -272,7 +273,7 @@ export const mockSavingBooks = [
     openDate: "2025-10-20",
     maturityDate: null,
     balance: 0,
-    status: "closed"
+    status: "close",
   },
   {
     bookId: "SB00150",
@@ -282,7 +283,7 @@ export const mockSavingBooks = [
     openDate: "2025-10-25",
     maturityDate: "2026-04-25",
     balance: 15000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00151",
@@ -292,7 +293,7 @@ export const mockSavingBooks = [
     openDate: "2025-10-28",
     maturityDate: null,
     balance: 6200000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00152",
@@ -302,7 +303,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-02",
     maturityDate: "2026-02-02",
     balance: 9000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00153",
@@ -312,7 +313,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-05",
     maturityDate: null,
     balance: 4600000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00154",
@@ -322,7 +323,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-08",
     maturityDate: "2026-05-08",
     balance: 14000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00155",
@@ -332,7 +333,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-10",
     maturityDate: "2026-02-10",
     balance: 11000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00156",
@@ -342,7 +343,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-12",
     maturityDate: null,
     balance: 5700000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00157",
@@ -352,7 +353,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-15",
     maturityDate: "2026-05-15",
     balance: 18000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00158",
@@ -362,7 +363,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-02",
     maturityDate: null,
     balance: 5000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00159",
@@ -372,7 +373,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-05",
     maturityDate: "2026-05-05",
     balance: 15000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00160",
@@ -382,7 +383,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-08",
     maturityDate: "2026-02-08",
     balance: 8000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00161",
@@ -392,7 +393,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-12",
     maturityDate: null,
     balance: 3500000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00162",
@@ -402,7 +403,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-16",
     maturityDate: "2026-05-16",
     balance: 20000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00163",
@@ -412,7 +413,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-19",
     maturityDate: "2026-02-19",
     balance: 12000000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00164",
@@ -422,7 +423,7 @@ export const mockSavingBooks = [
     openDate: "2025-11-25",
     maturityDate: null,
     balance: 4500000,
-    status: "active"
+    status: "open",
   },
   {
     bookId: "SB00165",
@@ -432,27 +433,27 @@ export const mockSavingBooks = [
     openDate: "2025-11-28",
     maturityDate: "2026-05-28",
     balance: 18000000,
-    status: "active"
-  }
+    status: "open",
+  },
 ];
 
 /**
  * Helper functions for savingbook data
  */
 export const findSavingBookById = (bookId) => {
-  return mockSavingBooks.find(sb => sb.bookId === bookId);
+  return mockSavingBooks.find((sb) => sb.bookId === bookId);
 };
 
 export const findSavingBooksByCitizenId = (citizenId) => {
-  return mockSavingBooks.filter(sb => sb.citizenId === citizenId);
+  return mockSavingBooks.filter((sb) => sb.citizenId === citizenId);
 };
 
 export const findSavingBooksByType = (typeSavingId) => {
-  return mockSavingBooks.filter(sb => sb.typeSavingId === typeSavingId);
+  return mockSavingBooks.filter((sb) => sb.typeSavingId === typeSavingId);
 };
 
 export const findActiveSavingBooks = () => {
-  return mockSavingBooks.filter(sb => sb.status === "active");
+  return mockSavingBooks.filter((sb) => sb.status === "open");
 };
 
 export const addSavingBook = (savingBook) => {
@@ -461,7 +462,7 @@ export const addSavingBook = (savingBook) => {
 };
 
 export const updateSavingBook = (bookId, updates) => {
-  const index = mockSavingBooks.findIndex(sb => sb.bookId === bookId);
+  const index = mockSavingBooks.findIndex((sb) => sb.bookId === bookId);
   if (index !== -1) {
     mockSavingBooks[index] = { ...mockSavingBooks[index], ...updates };
     return mockSavingBooks[index];
@@ -477,7 +478,7 @@ export const updateSavingBookBalance = (bookId, amount) => {
     return {
       savingBook,
       balanceBefore: oldBalance,
-      balanceAfter: savingBook.balance
+      balanceAfter: savingBook.balance,
     };
   }
   return null;
@@ -486,19 +487,19 @@ export const updateSavingBookBalance = (bookId, amount) => {
 export const closeSavingBook = (bookId) => {
   const savingBook = findSavingBookById(bookId);
   if (savingBook) {
-    savingBook.status = "closed";
+    savingBook.status = "close";
     const finalBalance = savingBook.balance;
     savingBook.balance = 0;
     return {
       ...savingBook,
-      finalBalance
+      finalBalance,
     };
   }
   return null;
 };
 
 export const deleteSavingBook = (bookId) => {
-  const index = mockSavingBooks.findIndex(sb => sb.bookId === bookId);
+  const index = mockSavingBooks.findIndex((sb) => sb.bookId === bookId);
   if (index !== -1) {
     const deleted = mockSavingBooks.splice(index, 1)[0];
     return deleted;

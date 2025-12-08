@@ -78,7 +78,7 @@ export const mockTransactionAdapter = {
 
     const savingBook = findSavingBookById(bookId);
     if (!savingBook) throw new Error("Account not found");
-    if (savingBook.status !== "active")
+    if (savingBook.status !== "open")
       throw new Error("Cannot deposit to a closed account");
 
     const typeSaving = findTypeSavingById(savingBook.typeSavingId);
@@ -153,7 +153,7 @@ export const mockTransactionAdapter = {
 
     const savingBook = findSavingBookById(bookId);
     if (!savingBook) throw new Error("Account not found");
-    if (savingBook.status !== "active")
+    if (savingBook.status !== "open")
       throw new Error("Cannot withdraw from a closed account");
     if (amount > savingBook.balance) throw new Error("Insufficient balance");
 
@@ -185,7 +185,7 @@ export const mockTransactionAdapter = {
       result.balanceAfter === 0
     ) {
       const sb = findSavingBookById(bookId);
-      if (sb) sb.status = "closed";
+      if (sb) sb.status = "close";
     }
 
     const transactionId = generateId("TXN");

@@ -148,7 +148,7 @@ export const mockSavingBookAdapter = {
       openDate,
       maturityDate,
       balance,
-      status: "active",
+      status: "open",
     };
 
     // Persist in mock store

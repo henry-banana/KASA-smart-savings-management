@@ -17,7 +17,7 @@ export const calculateDashboardStats = () => {
 
   // Active accounts
   const activeAccounts = mockSavingBooks.filter(
-    (sb) => sb.status === "active"
+    (sb) => sb.status === "open"
   ).length;
 
   // Today's transactions
@@ -91,7 +91,7 @@ export const calculateAccountTypeDistribution = () => {
 
   // Count active saving books per typeSavingId
   mockSavingBooks
-    .filter((sb) => sb.status === "active")
+    .filter((sb) => sb.status === "open")
     .forEach((sb) => {
       if (sb.typeSavingId && counts.hasOwnProperty(sb.typeSavingId)) {
         counts[sb.typeSavingId] += 1;
