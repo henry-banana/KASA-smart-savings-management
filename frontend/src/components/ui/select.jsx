@@ -24,7 +24,7 @@ function SelectTrigger({ className, size = "default", children, ...props }) {
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex items-center justify-between w-full h-11 sm:h-12 px-4 rounded-md border border-gray-200 bg-input-background text-sm sm:text-base",
+        "flex items-center justify-between w-full h-11 sm:h-12 px-4 rounded-sm border border-gray-200 bg-input-background text-sm sm:text-base",
         "data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground",
         "focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 focus:border-[#8B5CF6]",
         "disabled:cursor-not-allowed disabled:opacity-50",
@@ -49,7 +49,7 @@ function SelectContent({ className, children, position = "popper", ...props }) {
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          "bg-white text-popover-foreground rounded-md border border-gray-100 shadow-lg p-1.5",
+          "bg-white text-popover-foreground rounded-sm border border-gray-100 shadow-lg p-1.5",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           "relative z-50 max-h-(--radix-select-content-available-height) min-w-32 origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto",
@@ -91,7 +91,7 @@ function SelectItem({ className, children, ...props }) {
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-sm sm:text-base",
+        "relative flex w-full cursor-pointer items-center gap-2 rounded-md px-4 py-2 text-sm sm:text-base",
         "hover:bg-gray-100 focus:bg-gray-100 focus:outline-none",
         "[&_svg:not([class*='text-'])]:text-muted-foreground",
         "pr-8 select-none data-disabled:pointer-events-none data-disabled:opacity-50",

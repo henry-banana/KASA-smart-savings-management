@@ -620,23 +620,27 @@ export default function DailyReport() {
                       {depositStats?.items.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between p-2 bg-white rounded-md border border-gray-100"
+                          className="flex items-center justify-between p-2 bg-white rounded-sm border border-gray-100"
                         >
                           <span className="text-sm text-gray-700">
                             {item.typeName}
                           </span>
                           <span className="text-sm font-semibold text-green-600">
                             {item.count || 0} transaction
-                            {item.count !== 1 ? "s" : ""}
+                            {item.count !== 1 && item.count !== 0 ? "s" : ""}
                           </span>
                         </div>
                       ))}
-                      <div className="flex items-center justify-between pt-2 border-t-2 border-green-200">
+                      <div className="flex items-center justify-between p-2 border-t-2 border-green-200">
                         <span className="text-sm font-bold text-gray-800">
                           Total
                         </span>
                         <span className="text-sm font-bold text-green-700">
-                          {depositStats?.total.count || 0} transactions
+                          {depositStats?.total.count || 0} transaction
+                          {depositStats?.total.count !== 1 &&
+                          depositStats?.total.count !== 0
+                            ? "s"
+                            : ""}
                         </span>
                       </div>
                     </div>
@@ -652,23 +656,27 @@ export default function DailyReport() {
                       {withdrawalStats?.items.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between p-2 bg-white rounded-md border border-gray-100"
+                          className="flex items-center justify-between p-2 bg-white rounded-sm border border-gray-100"
                         >
                           <span className="text-sm text-gray-700">
                             {item.typeName}
                           </span>
                           <span className="text-sm font-semibold text-red-600">
                             {item.count || 0} transaction
-                            {item.count !== 1 ? "s" : ""}
+                            {item.count !== 1 && item.count !== 0 ? "s" : ""}
                           </span>
                         </div>
                       ))}
-                      <div className="flex items-center justify-between pt-2 border-t-2 border-red-200">
+                      <div className="flex items-center justify-between p-2 border-t-2 border-red-200">
                         <span className="text-sm font-bold text-gray-800">
                           Total
                         </span>
                         <span className="text-sm font-bold text-red-700">
-                          {withdrawalStats?.total.count || 0} transactions
+                          {withdrawalStats?.total.count || 0} transaction
+                          {withdrawalStats?.total.count !== 1 &&
+                          withdrawalStats?.total.count !== 0
+                            ? "s"
+                            : ""}
                         </span>
                       </div>
                     </div>
