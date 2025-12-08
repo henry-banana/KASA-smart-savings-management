@@ -52,19 +52,32 @@ export default function Withdraw() {
   // Snapshot data for success modal to prevent clearing after reset
   const [receiptData, setReceiptData] = useState(null);
 
+  // Regulations loading state
+  const [regulationsError, setRegulationsError] = useState("");
+  const [loadingRegulations, setLoadingRegulations] = useState(true);
+
   // Load regulations (minimum withdrawal days)
   useEffect(() => {
-    (async () => {
+    const fetchRegulations = async () => {
+      setLoadingRegulations(true);
+      setRegulationsError("");
       try {
         const resp = await getRegulations();
         if (resp?.success && resp.data?.minimumTermDays !== undefined) {
           setMinWithdrawalDays(Number(resp.data.minimumTermDays));
+        } else {
+          setRegulationsError(
+            "Failed to load minimum withdrawal days regulation"
+          );
         }
-      } catch {
-        // Fallback keeps default 15
-        console.warn("Failed to load regulations, using default min days = 15");
+      } catch (err) {
+        console.error("Fetch regulations error:", err);
+        setRegulationsError(err.message || "Failed to load regulations");
+      } finally {
+        setLoadingRegulations(false);
       }
-    })();
+    };
+    fetchRegulations();
   }, []);
 
   const calculateDaysDifference = (startDate) => {
@@ -263,6 +276,25 @@ export default function Withdraw() {
           </CardHeader>
 
           <CardContent className="p-4 space-y-4 sm:p-6 lg:p-8 sm:space-y-6">
+            {/* Regulations Error */}
+            {regulationsError && (
+              <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-sm">
+                <AlertCircle
+                  size={20}
+                  className="text-red-500 shrink-0 mt-0.5"
+                />
+                <div>
+                  <p className="font-medium text-red-700">
+                    Unable to load regulations
+                  </p>
+                  <p className="text-sm text-red-600">{regulationsError}</p>
+                  <p className="text-xs text-red-500 mt-1">
+                    Withdrawal form is disabled until regulations are loaded.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Account Lookup Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-3 sm:mb-4">
@@ -286,19 +318,29 @@ export default function Withdraw() {
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
                     }
+                    disabled={!!regulationsError || loadingRegulations}
                   />
                 </div>
                 <Button
                   type="button"
                   onClick={handleAccountLookup}
-                  className="h-12 px-6 text-white rounded-sm"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
-                  }}
+                  disabled={
+                    isLookingUp ||
+                    !accountId ||
+                    !!regulationsError ||
+                    loadingRegulations
+                  }
+                  className="h-11 sm:h-12 px-4 sm:px-6 rounded-sm bg-[#F59E0B] hover:bg-[#E5930E] text-white text-sm sm:text-base"
                 >
-                  <Search size={18} className="mr-2" />
-                  Lookup
+                  <Search
+                    size={16}
+                    className="sm:w-[18px] sm:h-[18px] sm:mr-2"
+                  />
+                  {loadingRegulations
+                    ? "Loading..."
+                    : isLookingUp
+                    ? "Lookup..."
+                    : "Lookup"}
                 </Button>
               </div>
 

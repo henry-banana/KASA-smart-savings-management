@@ -253,8 +253,8 @@ export default function Deposit() {
                   {loadingRegulations
                     ? "Loading..."
                     : isLookingUp
-                    ? "Searching..."
-                    : "Search"}
+                    ? "Lookup..."
+                    : "Lookup"}
                 </Button>
               </div>
 
