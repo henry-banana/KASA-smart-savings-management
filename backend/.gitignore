@@ -32,6 +32,11 @@ tmp/
 temp/
 generateHashPassword.js
 convertingPassword.js
+#gendata Savingbook and Transaction files
+genDataBook_Transaction.js
+reset_db.sql
+savingbook.csv
+transaction.csv
 # Optional lockfiles (tùy chọn, nếu bạn không muốn commit)
 # package-lock.json
 # yarn.lock
