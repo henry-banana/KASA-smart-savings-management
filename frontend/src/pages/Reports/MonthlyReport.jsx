@@ -83,7 +83,7 @@ export default function MonthlyReport() {
           const types = [
             { value: "all", label: "All Types" },
             ...response.data.map((ts) => ({
-              value: `${ts.term}-months`,
+              value: ts.typeSavingId,
               label: ts.typeName,
             })),
           ];

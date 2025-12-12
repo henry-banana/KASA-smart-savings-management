@@ -43,7 +43,7 @@ export const getDailyTransactionStatistics = async (date) => {
 export const getMonthlyReport = async (month, year, savingsType = "all") => {
   const normalized = (savingsType || "").toString().trim();
   const isTypeId = /^TS\d+/i.test(normalized);
-  const typeSavingId = isTypeId ? normalized : undefined;
+  const typeSavingId = isTypeId ? normalized : normalized || "all";
   return reportAdapter.getMonthlyReport(month, year, typeSavingId);
 };
 
