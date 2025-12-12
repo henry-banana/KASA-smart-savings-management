@@ -53,7 +53,7 @@ export default function Dashboard() {
   // State for dashboard data
   const [stats, _setStats] = useState([
     {
-      title: "Active Accounts",
+      title: "Active Saving Books",
       value: "0",
       change: "+0%",
       trend: "up",
@@ -62,7 +62,7 @@ export default function Dashboard() {
       iconColor: "#ffffff",
     },
     {
-      title: "Deposits Current",
+      title: "Deposits vs Prev Week",
       value: "0₫",
       change: "+0%",
       trend: "up",
@@ -71,7 +71,7 @@ export default function Dashboard() {
       iconColor: "#ffffff",
     },
     {
-      title: "Withdrawals Current",
+      title: "Withdrawals vs Prev Week",
       value: "0₫",
       change: "0%",
       trend: "down",
@@ -136,10 +136,12 @@ export default function Dashboard() {
           // Update stats cards
           _setStats([
             {
-              title: "Active Accounts",
-              value: statsData.activeAccounts.toLocaleString(),
-              change: statsData.changes.activeAccounts,
-              trend: statsData.changes.activeAccounts.startsWith("+")
+              title: "Active Saving Books",
+              value: (statsData.activeSavingBooks || 0).toLocaleString(),
+              change: statsData.changes?.activeSavingBooks || "0%",
+              trend: (statsData.changes?.activeSavingBooks || "").startsWith(
+                "+"
+              )
                 ? "up"
                 : "down",
               icon: <Wallet size={28} />,
@@ -147,10 +149,14 @@ export default function Dashboard() {
               iconColor: "#ffffff",
             },
             {
-              title: "Deposits Current",
-              value: `${(statsData.depositsToday / 1000000).toFixed(2)}M₫`,
-              change: statsData.changes.depositsToday,
-              trend: statsData.changes.depositsToday.startsWith("+")
+              title: "Deposits vs Prev Week",
+              value: `${(
+                (statsData.depositsComparePreWeek || 0) / 1_000_000
+              ).toFixed(2)}M₫`,
+              change: statsData.changes?.depositsComparePreWeek || "0%",
+              trend: (
+                statsData.changes?.depositsComparePreWeek || ""
+              ).startsWith("+")
                 ? "up"
                 : "down",
               icon: <ArrowDownIcon size={28} />,
@@ -158,10 +164,14 @@ export default function Dashboard() {
               iconColor: "#ffffff",
             },
             {
-              title: "Withdrawals Current",
-              value: `${(statsData.withdrawalsToday / 1000000).toFixed(2)}M₫`,
-              change: statsData.changes.withdrawalsToday,
-              trend: statsData.changes.withdrawalsToday.startsWith("-")
+              title: "Withdrawals vs Prev Week",
+              value: `${(
+                (statsData.withdrawalsComparePreWeek || 0) / 1_000_000
+              ).toFixed(2)}M₫`,
+              change: statsData.changes?.withdrawalsComparePreWeek || "0%",
+              trend: (
+                statsData.changes?.withdrawalsComparePreWeek || ""
+              ).startsWith("-")
                 ? "down"
                 : "up",
               icon: <ArrowUpIcon size={28} />,

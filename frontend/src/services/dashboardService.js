@@ -1,8 +1,8 @@
 import { USE_MOCK } from "@/config/app.config";
-// import { dashboardApi } from '@/api/dashboardApi'; // TODO: Create when backend is ready
+import { dashboardApi } from "@/api/dashboardApi";
 import { mockDashboardAdapter } from "@/mocks/adapters/dashboardAdapter";
 
-const dashboardAdapter = USE_MOCK ? mockDashboardAdapter : null; // TODO: Replace null with dashboardApi when ready
+const dashboardAdapter = USE_MOCK ? mockDashboardAdapter : dashboardApi;
 
 /**
  * Get dashboard statistics
@@ -30,12 +30,6 @@ const dashboardAdapter = USE_MOCK ? mockDashboardAdapter : null; // TODO: Replac
  * @returns {Promise<Object>} Dashboard statistics
  */
 export const getDashboardStats = async () => {
-  if (!dashboardAdapter) {
-    throw new Error(
-      "Dashboard API not configured. Enable USE_MOCK or configure backend API."
-    );
-  }
-
   return dashboardAdapter.getDashboardStats();
 };
 
