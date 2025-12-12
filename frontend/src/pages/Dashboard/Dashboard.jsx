@@ -47,6 +47,21 @@ import { RoleGuard } from "../../components/RoleGuard";
 import { StatCardSkeleton } from "../../components/ui/loading-skeleton";
 import { Skeleton } from "../../components/ui/skeleton";
 
+const formatVnNumber = (value, options = {}) => {
+  const formatter = new Intl.NumberFormat("vi-VN", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 20,
+    ...options,
+  });
+
+  return formatter.format(Number(value) || 0);
+};
+
+const formatPercentText = (text) => {
+  if (typeof text !== "string") return text;
+  return text.replace(/(\d+)\.(\d+)/g, "$1,$2");
+};
+
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -63,7 +78,7 @@ export default function Dashboard() {
       iconColor: "#ffffff",
     },
     {
-      title: "Deposits vs Prev Week",
+      title: "Current Deposits",
       value: "0₫",
       change: "+0%",
       trend: "up",
@@ -72,7 +87,7 @@ export default function Dashboard() {
       iconColor: "#ffffff",
     },
     {
-      title: "Withdrawals vs Prev Week",
+      title: "Current Withdrawals",
       value: "0₫",
       change: "0%",
       trend: "down",
@@ -138,8 +153,10 @@ export default function Dashboard() {
           _setStats([
             {
               title: "Active Saving Books",
-              value: (statsData.activeSavingBooks || 0).toLocaleString(),
-              change: statsData.changes?.activeSavingBooks || "0%",
+              value: formatVnNumber(statsData.activeSavingBooks || 0),
+              change: formatPercentText(
+                statsData.changes?.activeSavingBooks || "0%"
+              ),
               trend: (statsData.changes?.activeSavingBooks || "").startsWith(
                 "+"
               )
@@ -150,11 +167,14 @@ export default function Dashboard() {
               iconColor: "#ffffff",
             },
             {
-              title: "Deposits vs Prev Week",
-              value: `${(
-                (statsData.depositsComparePreWeek || 0) / 1_000_000
-              ).toFixed(2)}M₫`,
-              change: statsData.changes?.currentDeposits || "0%",
+              title: "Current Deposits",
+              value: `${formatVnNumber(
+                (statsData.depositsComparePreWeek || 0) / 1_000_000,
+                { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+              )}M₫`,
+              change: formatPercentText(
+                statsData.changes?.currentDeposits || "0%"
+              ),
               trend: (statsData.changes?.currentDeposits || "").startsWith("+")
                 ? "up"
                 : "down",
@@ -163,11 +183,14 @@ export default function Dashboard() {
               iconColor: "#ffffff",
             },
             {
-              title: "Withdrawals vs Prev Week",
-              value: `${(
-                (statsData.withdrawalsComparePreWeek || 0) / 1_000_000
-              ).toFixed(2)}M₫`,
-              change: statsData.changes?.currentWithdrawals || "0%",
+              title: "Current Withdrawals",
+              value: `${formatVnNumber(
+                (statsData.withdrawalsComparePreWeek || 0) / 1_000_000,
+                { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+              )}M₫`,
+              change: formatPercentText(
+                statsData.changes?.currentWithdrawals || "0%"
+              ),
               trend: (statsData.changes?.currentWithdrawals || "").startsWith(
                 "-"
               )
@@ -395,7 +418,12 @@ export default function Dashboard() {
                     <XAxis dataKey="name" stroke="#64748B" />
                     <YAxis stroke="#64748B" />
                     <Tooltip
-                      formatter={(value) => `${Number(value)}M₫`}
+                      formatter={(value) =>
+                        `${formatVnNumber(Number(value), {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                        })}M₫`
+                      }
                       contentStyle={{
                         borderRadius: "12px",
                         border: "1px solid #E5E7EB",
@@ -457,7 +485,7 @@ export default function Dashboard() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ value }) => `${value}`}
+                        label={({ value }) => `${formatVnNumber(value)}`}
                         outerRadius={90}
                         fill="#8884d8"
                         dataKey="value"
@@ -471,6 +499,7 @@ export default function Dashboard() {
                           borderRadius: "12px",
                           border: "1px solid #E5E7EB",
                         }}
+                        formatter={(value) => formatVnNumber(value)}
                       />
                     </PieChart>
                   </ResponsiveContainer>
@@ -490,7 +519,7 @@ export default function Dashboard() {
                           </span>
                         </div>
                         <span className="text-sm font-semibold text-gray-900">
-                          {item.value} accounts
+                          {formatVnNumber(item.value)} accounts
                         </span>
                       </div>
                     ))}
@@ -562,8 +591,8 @@ export default function Dashboard() {
                   }
 
                   const amountDisplay = isDeposit
-                    ? `+${transaction.amount.toLocaleString()}₫`
-                    : `-${transaction.amount.toLocaleString()}₫`;
+                    ? `+${formatVnNumber(transaction.amount)}₫`
+                    : `-${formatVnNumber(transaction.amount)}₫`;
 
                   return (
                     <div
