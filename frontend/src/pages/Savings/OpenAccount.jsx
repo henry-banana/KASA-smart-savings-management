@@ -7,6 +7,7 @@ import {
   CardDescription,
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
+import { formatVnNumber } from "../../utils/numberFormatter";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import {
@@ -84,7 +85,7 @@ export default function OpenAccount() {
       newErrors.initialDeposit = "Please enter amount";
     } else if (!minBalance || Number(formData.initialDeposit) < minBalance) {
       newErrors.initialDeposit = `Minimum amount is ${
-        minBalance ? minBalance.toLocaleString() : "..."
+        minBalance ? formatVnNumber(minBalance) : "..."
       }₫`;
     }
 
@@ -388,7 +389,11 @@ export default function OpenAccount() {
                                 : "text-[#1A4D8F]"
                             }`}
                           >
-                            {type.interestRate}%
+                            {formatVnNumber(type.interestRate, {
+                              minimumFractionDigits: 1,
+                              maximumFractionDigits: 2,
+                            })}
+                            %
                           </div>
                           <div
                             className={`text-sm font-semibold mb-0.5 ${
@@ -439,7 +444,7 @@ export default function OpenAccount() {
                         }
                         placeholder={
                           minBalance
-                            ? `Minimum: ${minBalance.toLocaleString()}`
+                            ? `Minimum: ${formatVnNumber(minBalance)}`
                             : "Enter amount"
                         }
                         disabled={!!regulationsError || loadingRegulations}
@@ -462,7 +467,7 @@ export default function OpenAccount() {
                         : regulationsError
                         ? regulationsError
                         : `Minimum amount: ${
-                            minBalance?.toLocaleString() ?? "..."
+                            minBalance ? formatVnNumber(minBalance) : "..."
                           }₫`}
                     </p>
                   </div>
@@ -614,9 +619,7 @@ export default function OpenAccount() {
                     Amount:
                   </span>
                   <span className="text-sm font-semibold text-green-600 truncate sm:text-base">
-                    {Number(
-                      createdAccountData?.initialDeposit || 0
-                    ).toLocaleString()}₫
+                    {formatVnNumber(createdAccountData?.initialDeposit || 0)}₫
                   </span>
                 </div>
                 <div className="flex justify-between gap-2">

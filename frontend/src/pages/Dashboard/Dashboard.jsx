@@ -46,21 +46,7 @@ import { CuteStatCard, StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { StatCardSkeleton } from "../../components/ui/loading-skeleton";
 import { Skeleton } from "../../components/ui/skeleton";
-
-const formatVnNumber = (value, options = {}) => {
-  const formatter = new Intl.NumberFormat("vi-VN", {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 20,
-    ...options,
-  });
-
-  return formatter.format(Number(value) || 0);
-};
-
-const formatPercentText = (text) => {
-  if (typeof text !== "string") return text;
-  return text.replace(/(\d+)\.(\d+)/g, "$1,$2");
-};
+import { formatVnNumber, formatPercentText } from "../../utils/numberFormatter";
 
 export default function Dashboard() {
   const { user } = useAuth();
