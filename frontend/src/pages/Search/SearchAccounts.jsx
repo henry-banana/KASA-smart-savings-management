@@ -236,7 +236,7 @@ export default function SearchAccounts() {
                 <p className="text-sm text-gray-600">
                   Found{" "}
                   <span className="font-semibold text-[#8B5CF6]">
-                    {filteredAccounts.length}
+                    {formatVnNumber(filteredAccounts.length || 0)}
                   </span>{" "}
                   savings accounts
                 </p>
@@ -290,7 +290,7 @@ export default function SearchAccounts() {
                         className="hover:bg-[#F8F9FC] transition-colors"
                       >
                         <TableCell className="font-medium text-[#8B5CF6]">
-                          {account.accountCode}
+                          {formatVnNumber(account.accountCode || 0)}
                         </TableCell>
                         <TableCell>{account.customerName}</TableCell>
                         <TableCell>
@@ -375,7 +375,7 @@ export default function SearchAccounts() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Account Code:</span>
                     <span className="font-semibold text-lg text-[#8B5CF6]">
-                      {selectedAccount.accountCode}
+                      {formatVnNumber(selectedAccount.accountCode || 0)}
                     </span>
                   </div>
                   <div className="flex justify-between">
