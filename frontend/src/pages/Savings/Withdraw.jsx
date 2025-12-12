@@ -35,6 +35,7 @@ import {
   withdrawMoney,
   closeSavingAccount,
 } from "../../services/transactionService";
+import { formatVnNumber, formatPercentText } from "../../utils/numberFormatter";
 import { getRegulations } from "@/services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
 
@@ -106,7 +107,9 @@ export default function Withdraw() {
 
       if (daysSinceOpen < minWithdrawalDays) {
         setError(
-          `Account must be open for at least ${minWithdrawalDays} days. Current: ${daysSinceOpen} days`
+          `Account must be open for at least ${formatVnNumber(
+            minWithdrawalDays
+          )} days. Current: ${formatVnNumber(daysSinceOpen)} days`
         );
         return;
       }
@@ -390,7 +393,7 @@ export default function Withdraw() {
                     <div>
                       <p className="text-xs text-gray-500">Current Balance</p>
                       <p className="text-sm font-semibold text-green-600">
-                        {(accountInfo.balance ?? 0).toLocaleString()}₫
+                        {formatVnNumber(accountInfo.balance ?? 0)}₫
                       </p>
                     </div>
                     <div>
@@ -408,7 +411,9 @@ export default function Withdraw() {
                     <div>
                       <p className="text-xs text-gray-500">Interest Rate</p>
                       <p className="text-sm font-medium">
-                        {accountInfo.interestRate.toFixed(1)}% per month
+                        {formatPercentText(
+                          `${accountInfo.interestRate.toFixed(1)}% per month`
+                        )}
                       </p>
                     </div>
                     {accountInfo.accountTypeName !== "No term" && (
@@ -498,7 +503,7 @@ export default function Withdraw() {
                           Estimated Interest:
                         </span>
                         <span className="font-semibold text-green-600">
-                          {calculatedInterest.toLocaleString()}₫
+                          {formatVnNumber(calculatedInterest)}₫
                         </span>
                       </div>
                       <div className="flex items-center justify-between pt-2 border-t border-amber-200">
@@ -506,9 +511,10 @@ export default function Withdraw() {
                           Total Payout:
                         </span>
                         <span className="text-xl font-bold text-green-600">
-                          {(
+                          {formatVnNumber(
                             Number(withdrawAmount) + calculatedInterest
-                          ).toLocaleString()}₫
+                          )}
+                          ₫
                         </span>
                       </div>
                     </div>
@@ -559,7 +565,8 @@ export default function Withdraw() {
               <h5 className="mb-2 text-sm text-blue-900">Withdrawal Rules:</h5>
               <ul className="space-y-1 text-sm text-blue-800 list-disc list-inside">
                 <li>
-                  Account must be open for at least {minWithdrawalDays} days
+                  Account must be open for at least{" "}
+                  {formatVnNumber(minWithdrawalDays)} days
                 </li>
                 <li>No-Term accounts: Partial withdrawals allowed</li>
                 <li>Fixed-Term accounts: Can only withdraw at maturity date</li>
@@ -633,9 +640,7 @@ export default function Withdraw() {
                     Withdrawal Amount:
                   </span>
                   <span className="font-semibold">
-                    {Number(
-                      receiptData?.withdrawalAmount || 0
-                    ).toLocaleString()}₫
+                    {formatVnNumber(receiptData?.withdrawalAmount || 0)}₫
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -643,7 +648,7 @@ export default function Withdraw() {
                     Interest Earned:
                   </span>
                   <span className="font-semibold text-green-600">
-                    +{(receiptData?.interestEarned || 0).toLocaleString()}₫
+                    +{formatVnNumber(receiptData?.interestEarned || 0)}₫
                   </span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-gray-200">
@@ -651,7 +656,7 @@ export default function Withdraw() {
                     Total Payout:
                   </span>
                   <span className="text-xl font-bold text-green-600">
-                    {(receiptData?.totalPayout || 0).toLocaleString()}₫
+                    {formatVnNumber(receiptData?.totalPayout || 0)}₫
                   </span>
                 </div>
               </div>

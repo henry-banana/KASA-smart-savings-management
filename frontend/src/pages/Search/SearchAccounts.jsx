@@ -46,6 +46,7 @@ import { searchSavingBooks } from "../../services/savingBookService";
 import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
+import { formatVnNumber } from "../../utils/numberFormatter";
 
 export default function SearchAccounts() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -303,7 +304,7 @@ export default function SearchAccounts() {
                         </TableCell>
                         <TableCell>{account.openDate}</TableCell>
                         <TableCell className="font-semibold text-right">
-                          {(account.balance ?? 0).toLocaleString()}₫
+                          {formatVnNumber(account.balance ?? 0)}₫
                         </TableCell>
                         <TableCell>
                           {account.status?.toLowerCase() === "open" ? (
@@ -414,7 +415,7 @@ export default function SearchAccounts() {
                   <div className="flex justify-between pt-3 border-t border-gray-200">
                     <span className="font-medium text-gray-700">Balance:</span>
                     <span className="text-xl font-bold text-green-600">
-                      {(selectedAccount.balance ?? 0).toLocaleString()}₫
+                      {formatVnNumber(selectedAccount.balance ?? 0)}₫
                     </span>
                   </div>
                 </div>

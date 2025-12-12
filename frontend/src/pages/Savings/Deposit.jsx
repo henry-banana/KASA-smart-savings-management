@@ -32,6 +32,7 @@ import {
   getAccountInfo,
   depositMoney,
 } from "../../services/transactionService";
+import { formatVnNumber } from "../../utils/numberFormatter";
 import { getRegulations } from "../../services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
 
@@ -119,7 +120,7 @@ export default function Deposit() {
     if (!minDeposit || amount < minDeposit) {
       setError(
         `Minimum balance amount is ${
-          minDeposit ? minDeposit.toLocaleString() : "..."
+          minDeposit ? formatVnNumber(minDeposit) : "..."
         }₫`
       );
       return;
@@ -313,7 +314,7 @@ export default function Deposit() {
                       Current Balance:
                     </span>
                     <span className="text-lg font-bold text-green-600">
-                      {(accountInfo.balance ?? 0).toLocaleString()}₫
+                      {formatVnNumber(accountInfo.balance ?? 0)}₫
                     </span>
                   </div>
                 </div>
@@ -359,7 +360,7 @@ export default function Deposit() {
                       {loadingRegulations
                         ? "Loading minimum amount..."
                         : `Minimum amount: ${
-                            minDeposit?.toLocaleString() ?? "..."
+                            formatVnNumber(minDeposit ?? 0) ?? "..."
                           }₫`}
                     </p>
                   </div>
@@ -492,13 +493,13 @@ export default function Deposit() {
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Deposit Amount:</span>
                   <span className="font-semibold text-green-600">
-                    +{Number(receiptData?.depositAmount || 0).toLocaleString()}₫
+                    +{formatVnNumber(receiptData?.depositAmount || 0)}₫
                   </span>
                 </div>
                 <div className="flex justify-between pt-3 border-t border-gray-200">
                   <span className="text-sm text-gray-600">New Balance:</span>
                   <span className="text-lg font-bold text-green-600">
-                    {Number(receiptData?.newBalance || 0).toLocaleString()}₫
+                    {formatVnNumber(receiptData?.newBalance || 0)}₫
                   </span>
                 </div>
               </div>
