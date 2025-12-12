@@ -7,7 +7,7 @@ import {
   CardDescription,
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { formatVnNumber, formatPercentText } from "../../utils/numberFormatter";
+import { formatVnNumber } from "../../utils/numberFormatter";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import {
@@ -162,9 +162,8 @@ export default function OpenAccount() {
             description:
               ts.term === 0
                 ? "Flexible withdrawal"
-                : `Fixed term ${formatVnNumber(ts.term)} month${
-                    ts.term > 1 ? "s" : ""
-                  }`,
+                : `Fixed term ${ts.term} month${ts.term > 1 ? "s" : ""}`,
+            interestRate: ts.rate,
             term: ts.term,
             emoji:
               ts.term === 0
@@ -390,12 +389,11 @@ export default function OpenAccount() {
                                 : "text-[#1A4D8F]"
                             }`}
                           >
-                            {formatPercentText(
-                              `${formatVnNumber(type.interestRate, {
-                                minimumFractionDigits: 1,
-                                maximumFractionDigits: 2,
-                              })}%`
-                            )}
+                            {formatVnNumber(type.interestRate, {
+                              minimumFractionDigits: 1,
+                              maximumFractionDigits: 2,
+                            })}
+                            %
                           </div>
                           <div
                             className={`text-sm font-semibold mb-0.5 ${
