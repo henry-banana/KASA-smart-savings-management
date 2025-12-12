@@ -162,7 +162,9 @@ export default function OpenAccount() {
             description:
               ts.term === 0
                 ? "Flexible withdrawal"
-                : `Fixed term ${ts.term} month${ts.term > 1 ? "s" : ""}`,
+                : `Fixed term ${formatVnNumber(ts.term)} month${
+                    ts.term > 1 ? "s" : ""
+                  }`,
             interestRate: ts.rate,
             term: ts.term,
             emoji:
