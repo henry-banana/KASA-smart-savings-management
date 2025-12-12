@@ -181,7 +181,19 @@ export default function Dashboard() {
           ]);
 
           // Update charts
-          _setDepositWithdrawalData(weeklyTransactions);
+          const normalizedWeeklyTransactions = (weeklyTransactions || []).map(
+            (item) => {
+              const rawName = item?.name;
+              const formattedName =
+                typeof rawName === "string" && /^\d{2}\.\d{2}$/.test(rawName)
+                  ? rawName.replace(".", "/")
+                  : rawName;
+
+              return { ...item, name: formattedName };
+            }
+          );
+
+          _setDepositWithdrawalData(normalizedWeeklyTransactions);
           const hashedAccountTypes = (accountTypeDistribution || []).map(
             (item) => {
               const label =
