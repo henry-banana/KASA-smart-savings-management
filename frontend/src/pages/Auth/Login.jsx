@@ -247,6 +247,7 @@ export default function Login() {
                   disabled={loading}
                   className="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-full text-gray-500 cursor-pointer rounded-r-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label={showPassword ? "Show password" : "Hide password"}
+                  tabIndex={-1}
                 >
                   <img
                     src={showPassword ? eyeOpenIcon : eyeCloseIcon}
