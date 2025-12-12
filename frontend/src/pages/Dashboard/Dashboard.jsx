@@ -402,7 +402,15 @@ export default function Dashboard() {
                   <BarChart data={depositWithdrawalData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
                     <XAxis dataKey="name" stroke="#64748B" />
-                    <YAxis stroke="#64748B" />
+                    <YAxis
+                      label={{
+                        value: "(Million VND)",
+                        angle: -90,
+                        position: "insideLeft",
+                        style: { fill: "#64748B" },
+                      }}
+                      stroke="#64748B"
+                    />
                     <Tooltip
                       formatter={(value) =>
                         `${formatVnNumber(Number(value), {
