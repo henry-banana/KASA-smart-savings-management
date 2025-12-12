@@ -154,10 +154,8 @@ export default function Dashboard() {
               value: `${(
                 (statsData.depositsComparePreWeek || 0) / 1_000_000
               ).toFixed(2)}M₫`,
-              change: statsData.changes?.depositsComparePreWeek || "0%",
-              trend: (
-                statsData.changes?.depositsComparePreWeek || ""
-              ).startsWith("+")
+              change: statsData.changes?.currentDeposits || "0%",
+              trend: (statsData.changes?.currentDeposits || "").startsWith("+")
                 ? "up"
                 : "down",
               icon: <ArrowDownIcon size={28} />,
@@ -169,10 +167,10 @@ export default function Dashboard() {
               value: `${(
                 (statsData.withdrawalsComparePreWeek || 0) / 1_000_000
               ).toFixed(2)}M₫`,
-              change: statsData.changes?.withdrawalsComparePreWeek || "0%",
-              trend: (
-                statsData.changes?.withdrawalsComparePreWeek || ""
-              ).startsWith("-")
+              change: statsData.changes?.currentWithdrawals || "0%",
+              trend: (statsData.changes?.currentWithdrawals || "").startsWith(
+                "-"
+              )
                 ? "down"
                 : "up",
               icon: <ArrowUpIcon size={28} />,

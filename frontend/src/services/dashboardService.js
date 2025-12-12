@@ -13,17 +13,17 @@ const dashboardAdapter = USE_MOCK ? mockDashboardAdapter : dashboardApi;
  *   success: true,
  *   data: {
  *     stats: {
- *       activeAccounts: number,
- *       depositsToday: number,
- *       withdrawalsToday: number,
+ *       activeSavingBooks: number,
+ *       depositsComparePreWeek: number,
+ *       withdrawalsComparePreWeek: number,
  *       changes: {
- *         activeAccounts: string (e.g., "+12.5%"),
- *         depositsToday: string,
- *         withdrawalsToday: string
+ *         activeSavingBooks: string (e.g., "+12.5%"),
+ *         currentDeposits: string,
+ *         currentWithdrawals: string
  *       }
  *     },
- *     weeklyTransactions: Array<{ day: string, deposits: number, withdrawals: number }>,
- *     accountTypeDistribution: Array<{ type: string, count: number }>
+ *     weeklyTransactions: Array<{ name: string, deposits: number, withdrawals: number }>,
+ *     accountTypeDistribution: Array<{ name: string, value: number }>
  *   }
  * }
  *

@@ -13,30 +13,62 @@ import { getTypeChartColor } from "../../utils/typeColorUtils";
  * Calculate dashboard statistics from mock data
  */
 export const calculateDashboardStats = () => {
-  const today = new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-  // Active accounts
-  const activeAccounts = mockSavingBooks.filter(
-    (sb) => sb.status === "open"
+  const activeSavingBooks = mockSavingBooks.filter(
+    (sb) => sb.status === "open" || sb.status === "active"
   ).length;
 
-  // Today's transactions
-  const todayTransactions = mockTransactions.filter((t) =>
-    t.transactionDate?.startsWith(today)
-  );
+  const sumTransactionsInRange = (startDay, endDay) => {
+    let deposits = 0;
+    let withdrawals = 0;
 
-  const depositsToday = todayTransactions
-    .filter((t) => t.type === "deposit")
-    .reduce((sum, t) => sum + t.amount, 0);
+    mockTransactions.forEach((t) => {
+      const txnDate = new Date(t.transactionDate || now);
+      const diffDays = (now - txnDate) / MS_PER_DAY;
 
-  const withdrawalsToday = todayTransactions
-    .filter((t) => t.type === "withdraw")
-    .reduce((sum, t) => sum + t.amount, 0);
+      if (diffDays >= startDay && diffDays < endDay) {
+        if (t.type === "deposit") deposits += t.amount || 0;
+        else if (t.type === "withdraw") withdrawals += t.amount || 0;
+      }
+    });
+
+    return { deposits, withdrawals };
+  };
+
+  const currentWeekTotals = sumTransactionsInRange(0, 7);
+  const previousWeekTotals = sumTransactionsInRange(7, 14);
+
+  const depositsComparePreWeek =
+    currentWeekTotals.deposits - previousWeekTotals.deposits;
+  const withdrawalsComparePreWeek =
+    currentWeekTotals.withdrawals - previousWeekTotals.withdrawals;
+
+  const formatPercentChange = (current, previous) => {
+    if (!previous) return current ? "+100%" : "0%";
+    const change = ((current - previous) / previous) * 100;
+    const sign = change >= 0 ? "+" : "";
+    return `${sign}${change.toFixed(1)}%`;
+  };
+
+  const changes = {
+    activeSavingBooks: "+0%",
+    currentDeposits: formatPercentChange(
+      currentWeekTotals.deposits,
+      previousWeekTotals.deposits
+    ),
+    currentWithdrawals: formatPercentChange(
+      currentWeekTotals.withdrawals,
+      previousWeekTotals.withdrawals
+    ),
+  };
 
   return {
-    activeAccounts,
-    depositsToday,
-    withdrawalsToday,
+    activeSavingBooks,
+    depositsComparePreWeek,
+    withdrawalsComparePreWeek,
+    changes,
   };
 };
 
@@ -119,12 +151,6 @@ export const calculateAccountTypeDistribution = () => {
  * Mock data for changes/trends (percentage changes)
  * In real app, this would be calculated from historical data
  */
-export const mockChanges = {
-  activeAccounts: "+12.5%",
-  depositsToday: "+8.2%",
-  withdrawalsToday: "-3.1%",
-};
-
 /**
  * Get recent transactions (last 5 transactions)
  * Returns raw data per OpenAPI contract (no UI formatting)
@@ -174,10 +200,7 @@ export const getDashboardData = () => {
   const accountTypeDistribution = calculateAccountTypeDistribution();
 
   return {
-    stats: {
-      ...stats,
-      changes: mockChanges,
-    },
+    stats,
     weeklyTransactions,
     accountTypeDistribution,
   };
