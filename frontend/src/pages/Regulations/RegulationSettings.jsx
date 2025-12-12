@@ -51,6 +51,7 @@ import {
 import { StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
+import { formatPercentText, formatVnNumber } from "@/utils/numberFormatter";
 
 export default function RegulationSettings() {
   // const { user } = useAuth();
@@ -664,7 +665,7 @@ export default function RegulationSettings() {
                         Minimum Balance:
                       </span>
                       <span className="text-sm font-semibold text-blue-900">
-                        {Number(minBalance).toLocaleString()}₫
+                        {formatVnNumber(minBalance)}₫
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -672,7 +673,7 @@ export default function RegulationSettings() {
                         Minimum Holding Period:
                       </span>
                       <span className="text-sm font-semibold text-blue-900">
-                        {minWithdrawalDays} days
+                        {formatVnNumber(minWithdrawalDays)} days
                       </span>
                     </div>
                   </div>
@@ -699,7 +700,7 @@ export default function RegulationSettings() {
                             {item.typeName}:
                           </span>
                           <span className="text-sm font-semibold text-green-900">
-                            {item.rate}% per month
+                            {formatPercentText(`${item.rate}% per month`)}
                           </span>
                         </div>
                       ))}
@@ -857,14 +858,16 @@ export default function RegulationSettings() {
                   Updated regulations:
                 </p>
                 <ul className="space-y-1 text-sm text-gray-600 list-disc list-inside">
+                  <li>Minimum Balance: {formatVnNumber(minBalance)}₫</li>
                   <li>
-                    Minimum Balance: {Number(minBalance).toLocaleString()}₫
+                    Minimum Withdrawal Period:{" "}
+                    {formatVnNumber(minWithdrawalDays)} days
                   </li>
-                  <li>Minimum Withdrawal Period: {minWithdrawalDays} days</li>
                   {Array.isArray(interestRates) &&
                     interestRates.map((item, index) => (
                       <li key={index}>
-                        Interest Rate {item.typeName}: {item.rate}%
+                        Interest Rate {item.typeName}:{" "}
+                        {formatPercentText(`${item.rate}%`)}
                       </li>
                     ))}
                 </ul>
@@ -923,7 +926,7 @@ export default function RegulationSettings() {
                         <span className="w-2 h-2 bg-red-500 rounded-md"></span>
                         <span className="font-medium">{item.typeName}</span>
                         <span className="text-xs text-red-600">
-                          ({item.rate}% per month)
+                          ({formatPercentText(`${item.rate}% per month`)})
                         </span>
                       </li>
                     ) : null;

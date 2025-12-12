@@ -57,6 +57,7 @@ import {
 import { StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
+import { formatVnNumber } from "@/utils/numberFormatter";
 
 export default function UserManagement() {
   const { user } = useAuth();
@@ -341,7 +342,7 @@ export default function UserManagement() {
         <Card className="overflow-hidden border border-gray-200 rounded-sm lg:rounded-sm">
           <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100 p-4 sm:p-6">
             <CardTitle className="text-base sm:text-lg lg:text-xl">
-              User List ({users.length})
+              User List ({formatVnNumber(users.length)})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 sm:p-6">
