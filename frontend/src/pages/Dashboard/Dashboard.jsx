@@ -6,6 +6,7 @@ import {
   getRecentTransactions,
 } from "@/services/dashboardService";
 import { getAllTypeSavings } from "@/services/typeSavingService";
+import { getTypeChartColor } from "@/utils/typeColorUtils";
 import { mockSavingBooks } from "@/mocks/data/savingBooks";
 import {
   Card,
@@ -183,7 +184,19 @@ export default function Dashboard() {
 
           // Update charts
           _setDepositWithdrawalData(weeklyTransactions);
-          _setAccountTypeData(accountTypeDistribution);
+          const hashedAccountTypes = (accountTypeDistribution || []).map(
+            (item) => {
+              const label =
+                item.name || item.typeName || item.typeSavingName || "Unknown";
+              return {
+                ...item,
+                name: label,
+                color: getTypeChartColor(label),
+              };
+            }
+          );
+
+          _setAccountTypeData(hashedAccountTypes);
         }
 
         // Fetch recent transactions
