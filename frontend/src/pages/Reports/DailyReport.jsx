@@ -118,8 +118,12 @@ export default function DailyReport() {
     }
   };
 
-  // Calculate breakdown by type from reportData (canonical 'items' field)
-  const typeBreakdown = reportData?.items || [];
+  // Prefer OpenAPI fields; keep fallback for older mock shape
+  const typeBreakdown =
+    reportData?.byTypeSaving ||
+    reportData?.items ||
+    reportData?.itemsByType ||
+    [];
 
   const chartData = typeBreakdown.map((item) => ({
     name: item.typeName,
@@ -128,26 +132,22 @@ export default function DailyReport() {
     Difference: item.difference / 1000000,
   }));
 
-  const totals = reportData?.total
-    ? {
-        deposits: reportData.total.totalDeposits,
-        withdrawals: reportData.total.totalWithdrawals,
-        difference: reportData.total.difference,
-      }
-    : {
-        deposits: typeBreakdown.reduce(
-          (sum, item) => sum + item.totalDeposits,
-          0
-        ),
-        withdrawals: typeBreakdown.reduce(
-          (sum, item) => sum + item.totalWithdrawals,
-          0
-        ),
-        difference: typeBreakdown.reduce(
-          (sum, item) => sum + item.difference,
-          0
-        ),
-      };
+  const summary = reportData?.summary || reportData?.total || {};
+
+  const totals = {
+    deposits:
+      summary.totalDeposits ??
+      typeBreakdown.reduce((sum, item) => sum + (item.totalDeposits || 0), 0),
+    withdrawals:
+      summary.totalWithdrawals ??
+      typeBreakdown.reduce(
+        (sum, item) => sum + (item.totalWithdrawals || 0),
+        0
+      ),
+    difference:
+      summary.difference ??
+      typeBreakdown.reduce((sum, item) => sum + (item.difference || 0), 0),
+  };
 
   const _handleExport = () => {
     // TODO: Implement PDF export when backend provides endpoint
