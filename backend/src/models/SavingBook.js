@@ -153,6 +153,24 @@ export class SavingBook extends BaseModel {
 
     return result;
   }
+  //Lấy toàn bộ sổ có Status = 'Open' (đang mở)
+  async getAllActiveBooks() {
+    const { data, error } = await supabase
+      .from("savingbook")
+      .select(`
+        bookid,
+        registertime,
+        status,
+        typesaving:typeid (
+          typeid,
+          typename
+        )
+      `)
+      .eq("status", "Open"); // Chỉ lấy sổ đang mở
+
+    if (error) throw new Error(`GetAllActiveBooks failed: ${error.message}`);
+    return data || [];
+  }
 }
 
 export const SavingBookModel = new SavingBook();
