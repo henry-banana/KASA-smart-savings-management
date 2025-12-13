@@ -39,9 +39,11 @@ export const mockSavingBookAdapter = {
     // Map to contract list item (canonical fields only)
     let items = mockSavingBooks.map((sb) => {
       const type = findTypeSavingById(sb.typeSavingId);
+      // Extract numeric accountCode from bookId (e.g., "SB00123" -> 123)
+      const accountCode = parseInt(sb.bookId.replace(/\D/g, ""), 10) || 0;
       return {
         bookId: sb.bookId,
-        accountCode: sb.bookId, // alias per contract
+        accountCode: accountCode, // numeric value per API contract
         citizenId: sb.citizenId,
         customerName: sb.customerName,
         accountTypeName: type?.typeName || "Unknown",

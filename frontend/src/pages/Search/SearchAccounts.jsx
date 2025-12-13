@@ -290,7 +290,9 @@ export default function SearchAccounts() {
                         className="hover:bg-[#F8F9FC] transition-colors"
                       >
                         <TableCell className="font-medium text-[#8B5CF6]">
-                          {formatVnNumber(account.accountCode || 0)}
+                          {typeof account.accountCode === "number"
+                            ? formatVnNumber(account.accountCode)
+                            : account.accountCode || account.bookId}
                         </TableCell>
                         <TableCell>{account.customerName}</TableCell>
                         <TableCell>
@@ -375,7 +377,9 @@ export default function SearchAccounts() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Account Code:</span>
                     <span className="font-semibold text-lg text-[#8B5CF6]">
-                      {formatVnNumber(selectedAccount.accountCode || 0)}
+                      {typeof selectedAccount.accountCode === "number"
+                        ? formatVnNumber(selectedAccount.accountCode)
+                        : selectedAccount.accountCode || selectedAccount.bookId}
                     </span>
                   </div>
                   <div className="flex justify-between">
