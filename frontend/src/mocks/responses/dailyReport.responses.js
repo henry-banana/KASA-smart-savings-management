@@ -2,7 +2,7 @@
  * Response structure templates for Daily Report API
  * ⚠️ BACKEND CHƯA CÓ - ĐỀ XUẤT CHO BACKEND
  * Proposed endpoint: GET /api/report/daily?date=YYYY-MM-DD
- * 
+ *
  * Note: Use builder function to create responses with actual data
  */
 
@@ -15,17 +15,25 @@
  * @param {Array} newSavingBooks - List of new saving books opened (mock-extension)
  * @returns {Object} Daily report response matching OpenAPI contract
  */
-export const buildDailyReportResponse = ({ date, summary, byTypeSaving, transactions, newSavingBooks }) => ({
+export const buildDailyReportResponse = ({
+  date,
+  summary,
+  byTypeSaving,
+  transactions,
+  newSavingBooks,
+}) => ({
   message: "Get daily report successfully",
   success: true,
   data: {
     date,
     // Canonical fields per OpenAPI
     items: byTypeSaving || [],
+    // Provide both keys for compatibility with existing UI fallbacks
+    byTypeSaving: byTypeSaving || [],
     total: {
       totalDeposits: summary.totalDeposits || 0,
       totalWithdrawals: summary.totalWithdrawals || 0,
-      difference: summary.netCashFlow || 0
+      difference: summary.netCashFlow || 0,
     },
     // mock-extension: extra fields for UI enhancements
     meta: {
@@ -34,9 +42,9 @@ export const buildDailyReportResponse = ({ date, summary, byTypeSaving, transact
       closedSavingBooksCount: summary.closedSavingBooks || 0,
       // Detailed lists for UI visualization
       transactions: transactions || [],
-      newSavingBooks: newSavingBooks || []
-    }
-  }
+      newSavingBooks: newSavingBooks || [],
+    },
+  },
 });
 
 /**
@@ -45,26 +53,26 @@ export const buildDailyReportResponse = ({ date, summary, byTypeSaving, transact
 export const dailyReportTemplates = {
   invalidDate: {
     message: "Invalid date format",
-    success: false
+    success: false,
   },
 
   noDataAvailable: {
     message: "No data available for the selected date",
-    success: false
+    success: false,
   },
 
   missingParameters: {
     message: "Missing required parameter: date",
-    success: false
+    success: false,
   },
 
   serverError: {
     message: "Failed to generate daily report",
-    success: false
-  }
+    success: false,
+  },
 };
 
 export default {
   buildDailyReportResponse,
-  ...dailyReportTemplates
+  ...dailyReportTemplates,
 };

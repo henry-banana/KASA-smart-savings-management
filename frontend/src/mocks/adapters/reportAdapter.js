@@ -26,6 +26,28 @@ export const mockReportAdapter = {
       .reduce((sum, t) => sum + t.amount, 0);
 
     // Calculate summary statistics
+    // Approximate counts for opened/closed books
+    const newBooksCount = mockSavingBooks.filter(
+      (sb) => sb.openDate === reportDate
+    ).length;
+
+    // Count books that were closed and had a withdrawal on the report date
+    const closedBooksCount = (() => {
+      const withdrawalsOnDate = dailyTransactions.filter(
+        (t) => t.type === "withdraw"
+      );
+      const closedIds = new Set(
+        mockSavingBooks
+          .filter((sb) => sb.status === "close")
+          .map((sb) => sb.bookId)
+      );
+      let count = 0;
+      withdrawalsOnDate.forEach((t) => {
+        if (closedIds.has(t.bookId)) count += 1;
+      });
+      return count;
+    })();
+
     const summary = {
       totalDeposits,
       totalWithdrawals,
@@ -35,11 +57,8 @@ export const mockReportAdapter = {
         .length,
       withdrawalCount: dailyTransactions.filter((t) => t.type === "withdraw")
         .length,
-      newSavingBooks: mockSavingBooks.filter((sb) => sb.openDate === reportDate)
-        .length,
-      closedSavingBooks: mockSavingBooks.filter(
-        (sb) => sb.status === "closed" && sb.closeDate === reportDate
-      ).length,
+      newSavingBooks: newBooksCount,
+      closedSavingBooks: closedBooksCount,
     };
 
     // Calculate breakdown by type saving
