@@ -47,7 +47,20 @@ export const mockCustomerAdapter = {
       };
     }
 
-    return buildGetCustomerByIdResponse(customer);
+    // Map internal fields to OpenAPI contract shape
+    return {
+      message: "Customer retrieved successfully",
+      success: true,
+      data: {
+        customer: {
+          fullName: customer.fullname,
+          citizenId: String(customer.citizenid),
+          street: customer.street || customer.address || "",
+          district: customer.district || "",
+          province: customer.province || "",
+        },
+      },
+    };
   },
 
   /**
@@ -170,7 +183,14 @@ export const mockCustomerAdapter = {
       success: true,
       total: 1,
       data: {
-        customer: newCustomer,
+        customer: {
+          customerId: newCustomer.customerid,
+          fullName: newCustomer.fullname,
+          citizenId: newCustomer.citizenid,
+          street: newCustomer.street,
+          district: newCustomer.district,
+          province: newCustomer.province,
+        },
       },
     };
   },
