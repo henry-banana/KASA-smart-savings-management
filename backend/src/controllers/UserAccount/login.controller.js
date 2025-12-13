@@ -81,9 +81,9 @@ export async function login(req, res) {
     // Lấy thêm thông tin fullName, status
     const fullName = userData.fullname || "Unknown";
     const status = userData.useraccount?.accountstatus || "active";
-    
-    // 🔹 Kiểm tra tài khoản bị vô hiệu hóa
-    if (status !== "Submitted") {
+
+    // 🔹 Chỉ chặn khi trạng thái là Rejected
+    if (status === "Rejected") {
       return res.status(403).json({
         message: "Account disabled. Contact administrator.",
         success: false,
