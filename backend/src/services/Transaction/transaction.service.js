@@ -219,6 +219,11 @@ class TransactionService {
       throw new Error("Cannot withdraw within 15 days of opening the account.");
     }
 
+    //Tiền lãi chỉ tính khi gởi ít nhất 1 tháng với lãi suất 0.15%
+    if (diffDays >= 15 && diffDays < 30) {
+      throw new Error("Cannot withdraw before 1 month to earn interest.");
+    }
+
     //Kiểm tra số tiền rút phải lớn hơn 0
     if (amount <= 0) {
       throw new Error("Invalid amount.");
@@ -233,12 +238,12 @@ class TransactionService {
     //Kiểm tra số tiền rút không được lớn hơn số dư hiện có
     const balanceBefore = Number(savingBook.currentbalance);
 
-    if (balanceBefore < Number(amount)) {
+    if (balanceBefore < Number(amount)*1.15) {
       throw new Error("Insufficient balance.");
     }
 
     //Tính số dư sau khi rút
-    const balanceAfter = balanceBefore - Number(amount);
+    const balanceAfter = balanceBefore - Number(amount)*1.15;
 
     //Cập nhật số dư sau khi rút, đóng sở nếu số dư = 0
     const updatedBook = await savingBookRepository.update(bookId, {
