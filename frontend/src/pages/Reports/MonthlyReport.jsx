@@ -272,14 +272,14 @@ export default function MonthlyReport() {
               <Button
                 onClick={handleExport}
                 variant="outline"
-                className="rounded-sm border border-gray-100 hover:border border-gray-200"
+                className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
               >
                 <Printer size={18} className="mr-2" />
                 Print Report
               </Button>
               <Button
                 onClick={handleExport}
-                className="rounded-sm border border-gray-100 hover:border border-gray-200 bg-linear-to-r from-green-600 to-green-500 text-white"
+                className="rounded-sm border border-gray-300 bg-linear-to-r from-green-600 to-green-500 text-white hover:bg-green-700 hover:border-green-700 hover:scale-[1.05]"
               >
                 <FileDown size={18} className="mr-2" />
                 Export PDF

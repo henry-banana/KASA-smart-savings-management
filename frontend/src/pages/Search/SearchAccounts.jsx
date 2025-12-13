@@ -243,7 +243,7 @@ export default function SearchAccounts() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="border-gray-200 rounded-sm hover:bg-gray-50"
+                  className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
                   onClick={() => handleExport("excel")}
                 >
                   <FileDown size={16} className="mr-2" />
@@ -322,7 +322,7 @@ export default function SearchAccounts() {
                             size="sm"
                             variant="ghost"
                             onClick={() => handleViewDetails(account)}
-                            className="rounded-xs hover:bg-[#F3E8FF]"
+                            className="rounded-xs border border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
                           >
                             <Eye size={16} className="mr-1" />
                             Details

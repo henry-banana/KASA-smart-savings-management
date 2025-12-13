@@ -449,7 +449,7 @@ export default function UserManagement() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleEditUser(userData)}
-                                className="rounded-xs hover:bg-[#F3E8FF]"
+                                className="rounded-xs border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
                               >
                                 <Edit size={14} className="mr-1" />
                                 Edit
@@ -458,7 +458,7 @@ export default function UserManagement() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleDisableUser(userData)}
-                                className={`rounded-xs ${
+                                className={`min-w-[100px] rounded-xs border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05] ${
                                   userData.status?.toLowerCase() === "rejected"
                                     ? "text-blue-600 hover:bg-blue-50"
                                     : "text-red-600 hover:bg-red-50"
@@ -599,7 +599,7 @@ export default function UserManagement() {
               <Button
                 onClick={() => setShowAddUser(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-sm"
+                className="flex-1 h-12 border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05] rounded-sm"
               >
                 Cancel
               </Button>
@@ -721,7 +721,7 @@ export default function UserManagement() {
               <Button
                 onClick={() => setShowEditUser(false)}
                 variant="outline"
-                className="flex-1 h-12 border-gray-200 rounded-sm"
+                className="flex-1 h-12 border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05] rounded-sm"
               >
                 Cancel
               </Button>
@@ -753,7 +753,7 @@ export default function UserManagement() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="border-gray-200 rounded-sm">
+              <AlertDialogCancel className="border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]  rounded-sm">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction

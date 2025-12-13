@@ -401,7 +401,7 @@ export default function Layout() {
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-xs">
+                    <AlertDialogCancel className="rounded-xs border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700">
                       Cancel
                     </AlertDialogCancel>
                     <AlertDialogAction
