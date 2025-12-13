@@ -95,9 +95,9 @@ export default function Dashboard() {
   ]);
 
   const [accountTypeData, _setAccountTypeData] = useState([
-    { name: "No term", value: 0, color: "#1A4D8F" },
-    { name: "3 Months", value: 0, color: "#00AEEF" },
-    { name: "6 Months", value: 0, color: "#60A5FA" },
+    { name: "No term", value: 0 },
+    { name: "3 Months", value: 0 },
+    { name: "6 Months", value: 0 },
   ]);
 
   // Number of saving types configured in Admin (used for skeleton placeholders)
@@ -190,9 +190,11 @@ export default function Dashboard() {
           ]);
 
           // Update charts
+          // Backend returns dates in DD.MM format, normalize for display
           const normalizedWeeklyTransactions = (weeklyTransactions || []).map(
             (item) => {
               const rawName = item?.name;
+              // Convert DD.MM to DD/MM for display
               const formattedName =
                 typeof rawName === "string" && /^\d{2}\.\d{2}$/.test(rawName)
                   ? rawName.replace(".", "/")
@@ -203,6 +205,8 @@ export default function Dashboard() {
           );
 
           _setDepositWithdrawalData(normalizedWeeklyTransactions);
+
+          // Backend doesn't return color, add it on frontend
           const hashedAccountTypes = (accountTypeDistribution || []).map(
             (item) => {
               const label =
@@ -566,7 +570,7 @@ export default function Dashboard() {
 
                   // Detect if this is an opening deposit by checking if transaction date matches saving book open date
                   const savingBook = mockSavingBooks.find(
-                    (sb) => sb.bookId === transaction.accountCode
+                    (sb) => sb.bookId === transaction.bookId
                   );
                   const isOpenAccount = Boolean(
                     savingBook &&
@@ -605,7 +609,7 @@ export default function Dashboard() {
                             {transaction.customerName}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {transaction.accountCode} • {typeLabel}
+                            {transaction.bookId} • {typeLabel}
                           </p>
                         </div>
                       </div>
