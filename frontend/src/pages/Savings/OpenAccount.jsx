@@ -24,6 +24,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "../../components/ui/dialog";
 import {
   CheckCircle2,
@@ -1069,12 +1070,12 @@ export default function OpenAccount() {
               </p>
             )}
 
-            <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4">
+            <DialogFooter className="flex gap-3">
               <Button
                 type="button"
                 onClick={handleSubmitRegisterCustomer}
                 disabled={isSubmittingRegister}
-                className="w-full h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                className="flex-1 h-11 sm:h-12 px-4 sm:px-6 text-white rounded-md font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
                 style={{
                   background:
                     "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
@@ -1092,12 +1093,12 @@ export default function OpenAccount() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-11 sm:h-12 border-gray-300 rounded-md text-sm sm:text-base hover:bg-gray-50"
+                className="flex-1 h-11 sm:h-12 px-4 sm:px-6 border-gray-300 rounded-md text-sm sm:text-base hover:bg-gray-50"
                 onClick={() => setShowRegisterCustomerFormDialog(false)}
               >
-                Close
+                Cancel
               </Button>
-            </div>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
