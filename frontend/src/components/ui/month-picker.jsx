@@ -62,7 +62,7 @@ export function MonthPicker({
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-start text-left h-12 rounded-xs",
+            "w-full justify-start text-left h-12 rounded-sm",
             !date && "text-muted-foreground",
             className
           )}
@@ -109,7 +109,7 @@ export function MonthPicker({
                   variant={isSelected ? "default" : "outline"}
                   disabled={isDisabled}
                   className={cn(
-                    "h-10 text-sm rounded-xs",
+                    "h-10 text-sm rounded-sm",
                     isSelected &&
                       "bg-gradient-to-r from-[#1A4D8F] to-[#00AEEF] text-white",
                     isDisabled && "opacity-50 cursor-not-allowed"

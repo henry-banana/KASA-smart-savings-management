@@ -35,7 +35,7 @@ export const reportApi = {
       month: String(reportMonth),
       year: String(reportYear),
     });
-    if (typeSavingId) params.append("typeSavingId", typeSavingId);
+    params.append("typeSavingId", typeSavingId || "all");
     const response = await apiClient.get(
       `/api/report/monthly?${params.toString()}`
     );

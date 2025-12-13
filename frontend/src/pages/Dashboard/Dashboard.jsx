@@ -6,6 +6,7 @@ import {
   getRecentTransactions,
 } from "@/services/dashboardService";
 import { getAllTypeSavings } from "@/services/typeSavingService";
+import { getTypeChartColor } from "@/utils/typeColorUtils";
 import { mockSavingBooks } from "@/mocks/data/savingBooks";
 import {
   Card,
@@ -45,6 +46,7 @@ import { CuteStatCard, StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { StatCardSkeleton } from "../../components/ui/loading-skeleton";
 import { Skeleton } from "../../components/ui/skeleton";
+import { formatVnNumber, formatPercentText } from "../../utils/numberFormatter";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -53,7 +55,7 @@ export default function Dashboard() {
   // State for dashboard data
   const [stats, _setStats] = useState([
     {
-      title: "Active Accounts",
+      title: "Active Saving Books",
       value: "0",
       change: "+0%",
       trend: "up",
@@ -62,8 +64,8 @@ export default function Dashboard() {
       iconColor: "#ffffff",
     },
     {
-      title: "Deposits Current",
-      value: "₫0",
+      title: "Current Deposits",
+      value: "0₫",
       change: "+0%",
       trend: "up",
       icon: <ArrowDownIcon size={28} />,
@@ -71,8 +73,8 @@ export default function Dashboard() {
       iconColor: "#ffffff",
     },
     {
-      title: "Withdrawals Current",
-      value: "₫0",
+      title: "Current Withdrawals",
+      value: "0₫",
       change: "0%",
       trend: "down",
       icon: <ArrowUpIcon size={28} />,
@@ -93,9 +95,9 @@ export default function Dashboard() {
   ]);
 
   const [accountTypeData, _setAccountTypeData] = useState([
-    { name: "No term", value: 0, color: "#1A4D8F" },
-    { name: "3 Months", value: 0, color: "#00AEEF" },
-    { name: "6 Months", value: 0, color: "#60A5FA" },
+    { name: "No term", value: 0 },
+    { name: "3 Months", value: 0 },
+    { name: "6 Months", value: 0 },
   ]);
 
   // Number of saving types configured in Admin (used for skeleton placeholders)
@@ -136,10 +138,14 @@ export default function Dashboard() {
           // Update stats cards
           _setStats([
             {
-              title: "Active Accounts",
-              value: statsData.activeAccounts.toLocaleString(),
-              change: statsData.changes.activeAccounts,
-              trend: statsData.changes.activeAccounts.startsWith("+")
+              title: "Active Saving Books",
+              value: formatVnNumber(statsData.activeSavingBooks || 0),
+              change: formatPercentText(
+                statsData.changes?.activeSavingBooks || "0%"
+              ),
+              trend: (statsData.changes?.activeSavingBooks || "").startsWith(
+                "+"
+              )
                 ? "up"
                 : "down",
               icon: <Wallet size={28} />,
@@ -147,10 +153,15 @@ export default function Dashboard() {
               iconColor: "#ffffff",
             },
             {
-              title: "Deposits Current",
-              value: `₫${(statsData.depositsToday / 1000000).toFixed(2)}M`,
-              change: statsData.changes.depositsToday,
-              trend: statsData.changes.depositsToday.startsWith("+")
+              title: "Current Deposits",
+              value: `${formatVnNumber(
+                (statsData.depositsComparePreWeek || 0) / 1_000_000,
+                { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+              )}M₫`,
+              change: formatPercentText(
+                statsData.changes?.currentDeposits || "0%"
+              ),
+              trend: (statsData.changes?.currentDeposits || "").startsWith("+")
                 ? "up"
                 : "down",
               icon: <ArrowDownIcon size={28} />,
@@ -158,10 +169,17 @@ export default function Dashboard() {
               iconColor: "#ffffff",
             },
             {
-              title: "Withdrawals Current",
-              value: `₫${(statsData.withdrawalsToday / 1000000).toFixed(2)}M`,
-              change: statsData.changes.withdrawalsToday,
-              trend: statsData.changes.withdrawalsToday.startsWith("+")
+              title: "Current Withdrawals",
+              value: `${formatVnNumber(
+                (statsData.withdrawalsComparePreWeek || 0) / 1_000_000,
+                { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+              )}M₫`,
+              change: formatPercentText(
+                statsData.changes?.currentWithdrawals || "0%"
+              ),
+              trend: (statsData.changes?.currentWithdrawals || "").startsWith(
+                "-"
+              )
                 ? "down"
                 : "up",
               icon: <ArrowUpIcon size={28} />,
@@ -172,8 +190,36 @@ export default function Dashboard() {
           ]);
 
           // Update charts
-          _setDepositWithdrawalData(weeklyTransactions);
-          _setAccountTypeData(accountTypeDistribution);
+          // Backend returns dates in DD.MM format, normalize for display
+          const normalizedWeeklyTransactions = (weeklyTransactions || []).map(
+            (item) => {
+              const rawName = item?.name;
+              // Convert DD.MM to DD/MM for display
+              const formattedName =
+                typeof rawName === "string" && /^\d{2}\.\d{2}$/.test(rawName)
+                  ? rawName.replace(".", "/")
+                  : rawName;
+
+              return { ...item, name: formattedName };
+            }
+          );
+
+          _setDepositWithdrawalData(normalizedWeeklyTransactions);
+
+          // Backend doesn't return color, add it on frontend
+          const hashedAccountTypes = (accountTypeDistribution || []).map(
+            (item) => {
+              const label =
+                item.name || item.typeName || item.typeSavingName || "Unknown";
+              return {
+                ...item,
+                name: label,
+                color: getTypeChartColor(label),
+              };
+            }
+          );
+
+          _setAccountTypeData(hashedAccountTypes);
         }
 
         // Fetch recent transactions
@@ -360,9 +406,22 @@ export default function Dashboard() {
                   <BarChart data={depositWithdrawalData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
                     <XAxis dataKey="name" stroke="#64748B" />
-                    <YAxis stroke="#64748B" />
+                    <YAxis
+                      label={{
+                        value: "(Million VND)",
+                        angle: -90,
+                        position: "insideLeft",
+                        style: { fill: "#64748B" },
+                      }}
+                      stroke="#64748B"
+                    />
                     <Tooltip
-                      formatter={(value) => `₫${Number(value)}M`}
+                      formatter={(value) =>
+                        `${formatVnNumber(Number(value), {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                        })}M₫`
+                      }
                       contentStyle={{
                         borderRadius: "12px",
                         border: "1px solid #E5E7EB",
@@ -424,7 +483,7 @@ export default function Dashboard() {
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ value }) => `${value}`}
+                        label={({ value }) => `${formatVnNumber(value)}`}
                         outerRadius={90}
                         fill="#8884d8"
                         dataKey="value"
@@ -438,6 +497,7 @@ export default function Dashboard() {
                           borderRadius: "12px",
                           border: "1px solid #E5E7EB",
                         }}
+                        formatter={(value) => formatVnNumber(value)}
                       />
                     </PieChart>
                   </ResponsiveContainer>
@@ -457,7 +517,7 @@ export default function Dashboard() {
                           </span>
                         </div>
                         <span className="text-sm font-semibold text-gray-900">
-                          {item.value} accounts
+                          {formatVnNumber(item.value)} accounts
                         </span>
                       </div>
                     ))}
@@ -510,7 +570,7 @@ export default function Dashboard() {
 
                   // Detect if this is an opening deposit by checking if transaction date matches saving book open date
                   const savingBook = mockSavingBooks.find(
-                    (sb) => sb.bookId === transaction.accountCode
+                    (sb) => sb.bookId === transaction.bookId
                   );
                   const isOpenAccount = Boolean(
                     savingBook &&
@@ -529,8 +589,8 @@ export default function Dashboard() {
                   }
 
                   const amountDisplay = isDeposit
-                    ? `+₫${transaction.amount.toLocaleString()}`
-                    : `-₫${transaction.amount.toLocaleString()}`;
+                    ? `+${formatVnNumber(transaction.amount)}₫`
+                    : `-${formatVnNumber(transaction.amount)}₫`;
 
                   return (
                     <div
@@ -549,7 +609,7 @@ export default function Dashboard() {
                             {transaction.customerName}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {transaction.accountCode} • {typeLabel}
+                            {transaction.bookId} • {typeLabel}
                           </p>
                         </div>
                       </div>

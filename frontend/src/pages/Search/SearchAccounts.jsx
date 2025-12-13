@@ -46,6 +46,7 @@ import { searchSavingBooks } from "../../services/savingBookService";
 import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
+import { formatVnNumber } from "../../utils/numberFormatter";
 
 export default function SearchAccounts() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -235,7 +236,7 @@ export default function SearchAccounts() {
                 <p className="text-sm text-gray-600">
                   Found{" "}
                   <span className="font-semibold text-[#8B5CF6]">
-                    {filteredAccounts.length}
+                    {formatVnNumber(filteredAccounts.length || 0)}
                   </span>{" "}
                   savings accounts
                 </p>
@@ -289,7 +290,7 @@ export default function SearchAccounts() {
                         className="hover:bg-[#F8F9FC] transition-colors"
                       >
                         <TableCell className="font-medium text-[#8B5CF6]">
-                          {account.accountCode}
+                          {account.accountCode || account.bookId}
                         </TableCell>
                         <TableCell>{account.customerName}</TableCell>
                         <TableCell>
@@ -303,7 +304,7 @@ export default function SearchAccounts() {
                         </TableCell>
                         <TableCell>{account.openDate}</TableCell>
                         <TableCell className="font-semibold text-right">
-                          ₫{(account.balance ?? 0).toLocaleString()}
+                          {formatVnNumber(account.balance ?? 0)}₫
                         </TableCell>
                         <TableCell>
                           {account.status?.toLowerCase() === "open" ? (
@@ -374,7 +375,7 @@ export default function SearchAccounts() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Account Code:</span>
                     <span className="font-semibold text-lg text-[#8B5CF6]">
-                      {selectedAccount.accountCode}
+                      {selectedAccount.accountCode || selectedAccount.bookId}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -414,7 +415,7 @@ export default function SearchAccounts() {
                   <div className="flex justify-between pt-3 border-t border-gray-200">
                     <span className="font-medium text-gray-700">Balance:</span>
                     <span className="text-xl font-bold text-green-600">
-                      ₫{(selectedAccount.balance ?? 0).toLocaleString()}
+                      {formatVnNumber(selectedAccount.balance ?? 0)}₫
                     </span>
                   </div>
                 </div>

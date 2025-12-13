@@ -1,4 +1,5 @@
 import {
+  mockSavingBooks,
   findSavingBookById,
   updateSavingBookBalance,
 } from "../data/savingBooks.js";
@@ -35,6 +36,24 @@ const buildEmployeePayload = (employee) => {
   };
 };
 
+// Helper: support both full bookId and numeric account code inputs
+const resolveSavingBook = (bookIdOrCode) => {
+  const raw = (bookIdOrCode || "").trim();
+  if (!raw) return null;
+
+  const normalized = raw.toUpperCase();
+  const direct = findSavingBookById(normalized);
+  if (direct) return direct;
+
+  const digits = normalized.replace(/\D/g, "");
+  if (!digits) return null;
+
+  return mockSavingBooks.find((sb) => {
+    const sbDigits = (sb.bookId || "").replace(/\D/g, "");
+    return sbDigits === digits;
+  });
+};
+
 export const mockTransactionAdapter = {
   /**
    * Get account info (contract fields only)
@@ -43,7 +62,7 @@ export const mockTransactionAdapter = {
     await randomDelay();
     logger.info("🎭 Mock Get Account Info", { bookId });
 
-    const savingBook = findSavingBookById(bookId);
+    const savingBook = resolveSavingBook(bookId);
     if (!savingBook) {
       throw new Error("Account not found");
     }
@@ -81,7 +100,7 @@ export const mockTransactionAdapter = {
     if (amount < BUSINESS_RULES.MIN_DEPOSIT)
       throw new Error(`Minimum balance is ${BUSINESS_RULES.MIN_DEPOSIT}`);
 
-    const savingBook = findSavingBookById(bookId);
+    const savingBook = resolveSavingBook(bookId);
     if (!savingBook) throw new Error("Account not found");
     if (savingBook.status !== "open")
       throw new Error("Cannot deposit to a closed account");
@@ -91,7 +110,7 @@ export const mockTransactionAdapter = {
       throw new Error("Cannot deposit into fixed-term account");
     }
 
-    const result = updateSavingBookBalance(bookId, amount);
+    const result = updateSavingBookBalance(savingBook.bookId, amount);
     if (!result) throw new Error("Failed to update balance");
 
     // Build transaction record matching backend API contract
@@ -103,7 +122,7 @@ export const mockTransactionAdapter = {
     // Store transaction in mock data with full context
     const newTransaction = {
       transactionId,
-      bookId,
+      bookId: savingBook.bookId,
       type: "deposit",
       amount,
       transactionDate,
@@ -143,7 +162,7 @@ export const mockTransactionAdapter = {
       throw new Error("Amount must be a number");
     if (amount <= 0) throw new Error("Amount must be greater than 0");
 
-    const savingBook = findSavingBookById(bookId);
+    const savingBook = resolveSavingBook(bookId);
     if (!savingBook) throw new Error("Account not found");
     if (savingBook.status !== "open")
       throw new Error("Cannot withdraw from a closed account");
@@ -168,7 +187,7 @@ export const mockTransactionAdapter = {
     }
 
     // Perform balance update
-    const result = updateSavingBookBalance(bookId, -amount);
+    const result = updateSavingBookBalance(savingBook.bookId, -amount);
     if (!result) throw new Error("Failed to update balance");
 
     // Close account if early withdrawal closing or balance reaches zero
@@ -189,7 +208,7 @@ export const mockTransactionAdapter = {
     // Store transaction in mock data with full context
     const newTransaction = {
       transactionId,
-      bookId,
+      bookId: savingBook.bookId,
       type: "withdraw",
       amount,
       transactionDate,

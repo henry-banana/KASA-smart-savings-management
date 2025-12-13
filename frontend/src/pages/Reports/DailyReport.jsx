@@ -14,6 +14,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -50,6 +51,7 @@ import {
 } from "../../services/transactionService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
+import { formatVnNumber } from "../../utils/numberFormatter";
 
 export default function DailyReport() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -117,8 +119,12 @@ export default function DailyReport() {
     }
   };
 
-  // Calculate breakdown by type from reportData (canonical 'items' field)
-  const typeBreakdown = reportData?.items || [];
+  // Prefer OpenAPI fields; keep fallback for older mock shape
+  const typeBreakdown =
+    reportData?.byTypeSaving ||
+    reportData?.items ||
+    reportData?.itemsByType ||
+    [];
 
   const chartData = typeBreakdown.map((item) => ({
     name: item.typeName,
@@ -127,26 +133,22 @@ export default function DailyReport() {
     Difference: item.difference / 1000000,
   }));
 
-  const totals = reportData?.total
-    ? {
-        deposits: reportData.total.totalDeposits,
-        withdrawals: reportData.total.totalWithdrawals,
-        difference: reportData.total.difference,
-      }
-    : {
-        deposits: typeBreakdown.reduce(
-          (sum, item) => sum + item.totalDeposits,
-          0
-        ),
-        withdrawals: typeBreakdown.reduce(
-          (sum, item) => sum + item.totalWithdrawals,
-          0
-        ),
-        difference: typeBreakdown.reduce(
-          (sum, item) => sum + item.difference,
-          0
-        ),
-      };
+  const summary = reportData?.summary || reportData?.total || {};
+
+  const totals = {
+    deposits:
+      summary.totalDeposits ??
+      typeBreakdown.reduce((sum, item) => sum + (item.totalDeposits || 0), 0),
+    withdrawals:
+      summary.totalWithdrawals ??
+      typeBreakdown.reduce(
+        (sum, item) => sum + (item.totalWithdrawals || 0),
+        0
+      ),
+    difference:
+      summary.difference ??
+      typeBreakdown.reduce((sum, item) => sum + (item.difference || 0), 0),
+  };
 
   const _handleExport = () => {
     // TODO: Implement PDF export when backend provides endpoint
@@ -353,7 +355,7 @@ export default function DailyReport() {
                   <div className="flex-1">
                     <p className="mb-2 text-sm text-gray-600">Total Deposits</p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text">
-                      ₫{totals.deposits.toLocaleString()}
+                      {formatVnNumber(totals.deposits ?? 0)}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <ArrowUpRight size={14} className="text-green-600" />
@@ -390,7 +392,7 @@ export default function DailyReport() {
                       Total Withdrawals
                     </p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-red-600 to-rose-600 bg-clip-text">
-                      ₫{totals.withdrawals.toLocaleString()}
+                      {formatVnNumber(totals.withdrawals ?? 0)}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <ArrowDownRight size={14} className="text-red-600" />
@@ -425,7 +427,7 @@ export default function DailyReport() {
                   <div className="flex-1">
                     <p className="mb-2 text-sm text-gray-600">Net Difference</p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text">
-                      ₫{totals.difference.toLocaleString()}
+                      {formatVnNumber(totals.difference ?? 0)}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <DollarSign size={14} className="text-blue-600" />
@@ -454,7 +456,7 @@ export default function DailyReport() {
                   Detailed Report - {format(selectedDate, "dd/MM/yyyy")}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0">
+              <CardContent>
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -483,31 +485,31 @@ export default function DailyReport() {
                             {row.typeName}
                           </TableCell>
                           <TableCell className="font-semibold text-right text-green-600">
-                            ₫{row.totalDeposits.toLocaleString()}
+                            {formatVnNumber(row.totalDeposits ?? 0)}₫
                           </TableCell>
                           <TableCell className="font-semibold text-right text-red-600">
-                            ₫{row.totalWithdrawals.toLocaleString()}
+                            {formatVnNumber(row.totalWithdrawals ?? 0)}₫
                           </TableCell>
                           <TableCell className="font-semibold text-right text-blue-600">
-                            ₫{row.difference.toLocaleString()}
+                            {formatVnNumber(row.difference ?? 0)}₫
                           </TableCell>
                         </TableRow>
                       ))}
-                      <TableRow className="font-bold bg-linear-to-r from-purple-100 to-pink-100">
-                        <TableCell className="font-bold text-gray-800">
-                          Total
-                        </TableCell>
-                        <TableCell className="font-bold text-right text-green-700">
-                          ₫{totals.deposits.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="font-bold text-right text-red-700">
-                          ₫{totals.withdrawals.toLocaleString()}
-                        </TableCell>
-                        <TableCell className="font-bold text-right text-blue-700">
-                          ₫{totals.difference.toLocaleString()}
-                        </TableCell>
-                      </TableRow>
                     </TableBody>
+                    <TableFooter className="font-bold bg-linear-to-r from-purple-100 to-pink-100">
+                      <TableCell className="font-bold text-gray-800">
+                        Total
+                      </TableCell>
+                      <TableCell className="font-bold text-right text-green-700">
+                        {formatVnNumber(totals.deposits ?? 0)}₫
+                      </TableCell>
+                      <TableCell className="font-bold text-right text-red-700">
+                        {formatVnNumber(totals.withdrawals ?? 0)}₫
+                      </TableCell>
+                      <TableCell className="font-bold text-right text-blue-700">
+                        {formatVnNumber(totals.difference ?? 0)}₫
+                      </TableCell>
+                    </TableFooter>
                   </Table>
                 </div>
               </CardContent>
@@ -538,7 +540,12 @@ export default function DailyReport() {
                       stroke="#6B7280"
                     />
                     <Tooltip
-                      formatter={(value) => `₫${Number(value).toFixed(1)}M`}
+                      formatter={(value) =>
+                        `${formatVnNumber(value, {
+                          minimumFractionDigits: 1,
+                          maximumFractionDigits: 1,
+                        })}M₫`
+                      }
                       contentStyle={{
                         borderRadius: "12px",
                         border: "2px solid #E5E7EB",
@@ -619,23 +626,28 @@ export default function DailyReport() {
                       {depositStats?.items.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between p-2 bg-white rounded-md border border-gray-100"
+                          className="flex items-center justify-between p-2 bg-white rounded-sm border border-gray-100"
                         >
                           <span className="text-sm text-gray-700">
                             {item.typeName}
                           </span>
                           <span className="text-sm font-semibold text-green-600">
-                            {item.count || 0} transaction
-                            {item.count !== 1 ? "s" : ""}
+                            {formatVnNumber(item.count || 0)} transaction
+                            {item.count !== 1 && item.count !== 0 ? "s" : ""}
                           </span>
                         </div>
                       ))}
-                      <div className="flex items-center justify-between pt-2 border-t-2 border-green-200">
+                      <div className="flex items-center justify-between p-2 border-t-2 border-green-200">
                         <span className="text-sm font-bold text-gray-800">
                           Total
                         </span>
                         <span className="text-sm font-bold text-green-700">
-                          {depositStats?.total.count || 0} transactions
+                          {formatVnNumber(depositStats?.total.count || 0)}{" "}
+                          transaction
+                          {depositStats?.total.count !== 1 &&
+                          depositStats?.total.count !== 0
+                            ? "s"
+                            : ""}
                         </span>
                       </div>
                     </div>
@@ -651,23 +663,28 @@ export default function DailyReport() {
                       {withdrawalStats?.items.map((item, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between p-2 bg-white rounded-md border border-gray-100"
+                          className="flex items-center justify-between p-2 bg-white rounded-sm border border-gray-100"
                         >
                           <span className="text-sm text-gray-700">
                             {item.typeName}
                           </span>
                           <span className="text-sm font-semibold text-red-600">
-                            {item.count || 0} transaction
-                            {item.count !== 1 ? "s" : ""}
+                            {formatVnNumber(item.count || 0)} transaction
+                            {item.count !== 1 && item.count !== 0 ? "s" : ""}
                           </span>
                         </div>
                       ))}
-                      <div className="flex items-center justify-between pt-2 border-t-2 border-red-200">
+                      <div className="flex items-center justify-between p-2 border-t-2 border-red-200">
                         <span className="text-sm font-bold text-gray-800">
                           Total
                         </span>
                         <span className="text-sm font-bold text-red-700">
-                          {withdrawalStats?.total.count || 0} transactions
+                          {formatVnNumber(withdrawalStats?.total.count || 0)}{" "}
+                          transaction
+                          {withdrawalStats?.total.count !== 1 &&
+                          withdrawalStats?.total.count !== 0
+                            ? "s"
+                            : ""}
                         </span>
                       </div>
                     </div>

@@ -13,35 +13,68 @@ import { getTypeChartColor } from "../../utils/typeColorUtils";
  * Calculate dashboard statistics from mock data
  */
 export const calculateDashboardStats = () => {
-  const today = new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-  // Active accounts
-  const activeAccounts = mockSavingBooks.filter(
-    (sb) => sb.status === "open"
+  const activeSavingBooks = mockSavingBooks.filter(
+    (sb) => sb.status === "open" || sb.status === "active"
   ).length;
 
-  // Today's transactions
-  const todayTransactions = mockTransactions.filter((t) =>
-    t.transactionDate?.startsWith(today)
-  );
+  const sumTransactionsInRange = (startDay, endDay) => {
+    let deposits = 0;
+    let withdrawals = 0;
 
-  const depositsToday = todayTransactions
-    .filter((t) => t.type === "deposit")
-    .reduce((sum, t) => sum + t.amount, 0);
+    mockTransactions.forEach((t) => {
+      const txnDate = new Date(t.transactionDate || now);
+      const diffDays = (now - txnDate) / MS_PER_DAY;
 
-  const withdrawalsToday = todayTransactions
-    .filter((t) => t.type === "withdraw")
-    .reduce((sum, t) => sum + t.amount, 0);
+      if (diffDays >= startDay && diffDays < endDay) {
+        if (t.type === "deposit") deposits += t.amount || 0;
+        else if (t.type === "withdraw") withdrawals += t.amount || 0;
+      }
+    });
+
+    return { deposits, withdrawals };
+  };
+
+  const currentWeekTotals = sumTransactionsInRange(0, 7);
+  const previousWeekTotals = sumTransactionsInRange(7, 14);
+
+  const depositsComparePreWeek =
+    currentWeekTotals.deposits - previousWeekTotals.deposits;
+  const withdrawalsComparePreWeek =
+    currentWeekTotals.withdrawals - previousWeekTotals.withdrawals;
+
+  const formatPercentChange = (current, previous) => {
+    if (!previous) return current ? "+100%" : "0%";
+    const change = ((current - previous) / previous) * 100;
+    const sign = change >= 0 ? "+" : "";
+    return `${sign}${change.toFixed(1)}%`;
+  };
+
+  const changes = {
+    activeSavingBooks: "+0%",
+    currentDeposits: formatPercentChange(
+      currentWeekTotals.deposits,
+      previousWeekTotals.deposits
+    ),
+    currentWithdrawals: formatPercentChange(
+      currentWeekTotals.withdrawals,
+      previousWeekTotals.withdrawals
+    ),
+  };
 
   return {
-    activeAccounts,
-    depositsToday,
-    withdrawalsToday,
+    activeSavingBooks,
+    depositsComparePreWeek,
+    withdrawalsComparePreWeek,
+    changes,
   };
 };
 
 /**
  * Calculate weekly transaction trends
+ * Returns data in format matching backend API: name as "DD.MM", amounts in millions VND
  */
 export const calculateWeeklyTransactions = () => {
   const today = new Date();
@@ -53,7 +86,7 @@ export const calculateWeeklyTransactions = () => {
     date.setDate(date.getDate() - i);
     const dateStr = date.toISOString().split("T")[0];
 
-    const dayTransactions = mockTransactions.filter((t) =>
+    const dayTransactions = mockTransactions.filter ((t) =>
       t.transactionDate?.startsWith(dateStr)
     );
 
@@ -65,14 +98,15 @@ export const calculateWeeklyTransactions = () => {
       .filter((t) => t.type === "withdraw")
       .reduce((sum, t) => sum + t.amount, 0);
 
-    // Day names in Vietnamese
-    const dayNames = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
-    const dayName = dayNames[date.getDay()];
+    // Format as DD.MM to match backend API
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const formattedDate = `${day}.${month}`;
 
     weekData.push({
-      name: dayName,
-      deposits: Math.round(deposits / 1000000), // Convert to millions
-      withdrawals: Math.round(withdrawals / 1000000),
+      name: formattedDate,
+      deposits: deposits / 1000000, // Convert to millions VND (keep decimal precision)
+      withdrawals: withdrawals / 1000000,
     });
   }
 
@@ -81,6 +115,7 @@ export const calculateWeeklyTransactions = () => {
 
 /**
  * Calculate account type distribution
+ * Returns data matching backend API format (no color field - handled by frontend)
  */
 export const calculateAccountTypeDistribution = () => {
   // Build counts keyed by typeSavingId from configured mockTypeSavings
@@ -100,16 +135,15 @@ export const calculateAccountTypeDistribution = () => {
       }
     });
 
-  // Map configured types to result array with consistent colors
+  // Map configured types to result array (without color - frontend handles it)
   const result = mockTypeSavings.map((ts) => ({
     name: ts.typeName,
     value: counts[ts.typeSavingId] || 0,
-    color: getTypeChartColor(ts.typeName),
   }));
 
   // Append 'Other' bucket if present
   if (counts["OTHER"]) {
-    result.push({ name: "Other", value: counts["OTHER"], color: "#9CA3AF" });
+    result.push({ name: "Other", value: counts["OTHER"] });
   }
 
   return result;
@@ -119,15 +153,9 @@ export const calculateAccountTypeDistribution = () => {
  * Mock data for changes/trends (percentage changes)
  * In real app, this would be calculated from historical data
  */
-export const mockChanges = {
-  activeAccounts: "+12.5%",
-  depositsToday: "+8.2%",
-  withdrawalsToday: "-3.1%",
-};
-
 /**
  * Get recent transactions (last 5 transactions)
- * Returns raw data per OpenAPI contract (no UI formatting)
+ * Returns raw data per OpenAPI contract matching backend API format
  */
 export const getRecentTransactions = () => {
   // Get last 5 transactions sorted by date desc
@@ -140,10 +168,10 @@ export const getRecentTransactions = () => {
     .slice(0, 5);
 
   return recentTxns.map((txn) => {
-    // Find saving book for customer name and account code
+    // Find saving book for customer name
     const savingBook = mockSavingBooks.find((sb) => sb.bookId === txn.bookId);
     const customerName = savingBook?.customerName || "Unknown Customer";
-    const accountCode = savingBook?.bookId || txn.bookId;
+    const accountCode = savingBook?.bookId || txn.bookId; // bookId is used as accountCode
 
     // Parse date and time from transactionDate
     const txnDate = new Date(txn.transactionDate || Date.now());
@@ -152,15 +180,15 @@ export const getRecentTransactions = () => {
     const minutes = txnDate.getMinutes().toString().padStart(2, "0");
     const time = `${hours}:${minutes}`; // HH:mm
 
-    // Return raw contract-compliant data per OpenAPI (no emoji, color, or formatted strings)
+    // Return data matching backend API format (bookId instead of accountCode)
     return {
       id: txn.transactionId,
       date,
       time,
       customerName,
-      type: txn.type, // "deposit" or "withdraw" (raw value)
+      type: txn.type, // "deposit" or "withdraw"
       amount: txn.amount, // Raw number (not formatted string)
-      accountCode,
+      accountCode, // Per OPENAPI spec
     };
   });
 };
@@ -174,10 +202,7 @@ export const getDashboardData = () => {
   const accountTypeDistribution = calculateAccountTypeDistribution();
 
   return {
-    stats: {
-      ...stats,
-      changes: mockChanges,
-    },
+    stats,
     weeklyTransactions,
     accountTypeDistribution,
   };
