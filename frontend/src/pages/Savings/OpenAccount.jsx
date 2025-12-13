@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -67,6 +67,8 @@ export default function OpenAccount() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showRegisterCustomerDialog, setShowRegisterCustomerDialog] =
+    useState(false);
 
   // Minimum balance from regulations (dynamic)
   const [minBalance, setMinBalance] = useState(null);
@@ -76,6 +78,7 @@ export default function OpenAccount() {
   // Customer lookup state
   const [isLookingUpCustomer, setIsLookingUpCustomer] = useState(false);
   const [lookupStatus, setLookupStatus] = useState("idle"); // 'idle' | 'found' | 'not_found' | 'error'
+  const idCardInputRef = useRef(null);
 
   // Handle customer lookup by ID
   const handleLookupCustomer = async () => {
@@ -115,10 +118,7 @@ export default function OpenAccount() {
           address: "",
         }));
         setLookupStatus("not_found");
-        setErrors((prev) => ({
-          ...prev,
-          idCard: "Customer not found. Please check the ID card number.",
-        }));
+        setShowRegisterCustomerDialog(true);
       }
     } catch (err) {
       console.error("Customer lookup error:", err);
@@ -130,10 +130,7 @@ export default function OpenAccount() {
           address: "",
         }));
         setLookupStatus("not_found");
-        setErrors((prev) => ({
-          ...prev,
-          idCard: "Customer not found. Please check the ID card number.",
-        }));
+        setShowRegisterCustomerDialog(true);
       } else {
         // Other errors
         setFormData((prev) => ({
@@ -150,6 +147,26 @@ export default function OpenAccount() {
     } finally {
       setIsLookingUpCustomer(false);
     }
+  };
+
+  const handleCloseRegisterCustomerDialog = () => {
+    setShowRegisterCustomerDialog(false);
+    // Ensure customer fields stay cleared and return focus to ID input
+    setFormData((prev) => ({ ...prev, customerName: "", address: "" }));
+    setTimeout(() => {
+      idCardInputRef.current?.focus();
+    }, 0);
+  };
+
+  // Placeholder handler for opening customer registration form
+  const handleOpenRegisterCustomerForm = () => {
+    console.log(
+      "[TODO] Open customer registration form for ID:",
+      formData.idCard
+    );
+    // TODO: Implement customer registration form/flow
+    // This could navigate to a registration page or open a registration modal
+    setShowRegisterCustomerDialog(false);
   };
 
   const handleSubmit = async (e) => {
@@ -358,6 +375,7 @@ export default function OpenAccount() {
                         />
                         <Input
                           id="idCard"
+                          ref={idCardInputRef}
                           value={formData.idCard}
                           onChange={(e) =>
                             setFormData({ ...formData, idCard: e.target.value })
@@ -402,11 +420,12 @@ export default function OpenAccount() {
                         <span className="text-xs">✓</span> Customer found
                       </p>
                     )}
-                    {lookupStatus === "not_found" && (
-                      <p className="flex items-center gap-1 text-xs text-amber-600 sm:text-sm">
-                        <span className="text-xs">⚠</span> Customer not found
-                      </p>
-                    )}
+                    {lookupStatus === "not_found" &&
+                      !showRegisterCustomerDialog && (
+                        <p className="flex items-center gap-1 text-xs text-amber-600 sm:text-sm">
+                          <span className="text-xs">⚠</span> Customer not found
+                        </p>
+                      )}
                     {lookupStatus === "error" && (
                       <p className="flex items-center gap-1 text-xs text-red-600 sm:text-sm">
                         <span className="text-xs">✕</span> Lookup failed. Please
@@ -819,6 +838,55 @@ export default function OpenAccount() {
             >
               Close
             </Button>
+          </DialogContent>
+        </Dialog>
+
+        {/* Customer Not Found Dialog */}
+        <Dialog
+          open={showRegisterCustomerDialog}
+          onOpenChange={setShowRegisterCustomerDialog}
+        >
+          <DialogContent className="rounded-sm sm:rounded-sm max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+            <DialogHeader>
+              <div className="flex flex-col items-center mb-3 sm:mb-4">
+                <div
+                  className="flex items-center justify-center w-20 h-20 mb-3 rounded-md border border-gray-200 sm:w-24 sm:h-24 sm:mb-4"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
+                  }}
+                >
+                  <UserIcon size={40} className="text-white sm:w-12 sm:h-12" />
+                </div>
+              </div>
+              <DialogTitle className="text-xl text-center sm:text-2xl text-gray-900">
+                Customer not found
+              </DialogTitle>
+              <DialogDescription className="text-sm text-center sm:text-base text-gray-600">
+                This customer has not registered personal information in our
+                service yet. Would you like to register now?
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex flex-col gap-3 pt-2 sm:gap-4">
+              <Button
+                onClick={handleOpenRegisterCustomerForm}
+                className="w-full h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
+                }}
+              >
+                Register now
+              </Button>
+              <Button
+                onClick={handleCloseRegisterCustomerDialog}
+                variant="outline"
+                className="w-full h-11 sm:h-12 border-gray-300 rounded-md text-sm sm:text-base hover:bg-gray-50"
+              >
+                Not now
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
