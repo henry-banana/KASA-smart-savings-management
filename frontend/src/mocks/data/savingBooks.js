@@ -6,7 +6,7 @@
 
 export const mockSavingBooks = [
   {
-    bookId: "SB001233",
+    bookId: "1233",
     citizenId: "079012345678",
     customerName: "Nguyễn Văn A",
     typeSavingId: "TS02",
@@ -16,7 +16,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00124",
+    bookId: "124",
     citizenId: "079087654321",
     customerName: "Trần Thị B",
     typeSavingId: "TS03",
@@ -26,7 +26,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00125",
+    bookId: "125",
     citizenId: "079011111111",
     customerName: "Lê Văn C",
     typeSavingId: "TS01",
@@ -36,7 +36,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00126",
+    bookId: "126",
     citizenId: "079022222222",
     customerName: "Phạm Thị D",
     typeSavingId: "TS03",
@@ -46,7 +46,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00127",
+    bookId: "127",
     citizenId: "079033333333",
     customerName: "Hoàng Văn E",
     typeSavingId: "TS01",
@@ -56,7 +56,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00128",
+    bookId: "128",
     citizenId: "079044444444",
     customerName: "Nguyễn Thị F",
     typeSavingId: "TS02",
@@ -66,7 +66,7 @@ export const mockSavingBooks = [
     status: "close",
   },
   {
-    bookId: "SB00129",
+    bookId: "129",
     citizenId: "079055555555",
     customerName: "Vũ Văn G",
     typeSavingId: "TS04",
@@ -76,7 +76,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00130",
+    bookId: "130",
     citizenId: "079066666666",
     customerName: "Đỗ Thị H",
     typeSavingId: "TS01",
@@ -86,7 +86,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00131",
+    bookId: "131",
     citizenId: "079077777777",
     customerName: "Nguyễn Thị I",
     typeSavingId: "TS02",
@@ -96,7 +96,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00132",
+    bookId: "132",
     citizenId: "079088888888",
     customerName: "Lê Văn J",
     typeSavingId: "TS02",
@@ -106,7 +106,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00133",
+    bookId: "133",
     citizenId: "079099999999",
     customerName: "Phạm Văn K",
     typeSavingId: "TS03",
@@ -116,7 +116,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00134",
+    bookId: "134",
     citizenId: "079010101010",
     customerName: "Trần Thị L",
     typeSavingId: "TS01",
@@ -126,7 +126,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00135",
+    bookId: "135",
     citizenId: "079020202020",
     customerName: "Hoàng Văn M",
     typeSavingId: "TS01",
@@ -136,7 +136,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00136",
+    bookId: "136",
     citizenId: "079030303030",
     customerName: "Vũ Thị N",
     typeSavingId: "TS03",
@@ -146,7 +146,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00137",
+    bookId: "137",
     citizenId: "079040404040",
     customerName: "Đỗ Văn O",
     typeSavingId: "TS02",
@@ -156,7 +156,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00138",
+    bookId: "138",
     citizenId: "079050505050",
     customerName: "Nguyễn Văn P",
     typeSavingId: "TS01",
@@ -166,7 +166,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00139",
+    bookId: "139",
     citizenId: "079060606060",
     customerName: "Lê Thị Q",
     typeSavingId: "TS03",
@@ -176,7 +176,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00140",
+    bookId: "140",
     citizenId: "079070707070",
     customerName: "Phạm Văn R",
     typeSavingId: "TS02",
@@ -186,7 +186,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00141",
+    bookId: "141",
     citizenId: "079080808080",
     customerName: "Trần Văn S",
     typeSavingId: "TS01",
@@ -196,7 +196,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00142",
+    bookId: "142",
     citizenId: "079090909090",
     customerName: "Hoàng Thị T",
     typeSavingId: "TS02",
@@ -206,7 +206,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00143",
+    bookId: "143",
     citizenId: "079011112222",
     customerName: "Vũ Văn U",
     typeSavingId: "TS03",
@@ -216,7 +216,7 @@ export const mockSavingBooks = [
     status: "close",
   },
   {
-    bookId: "SB00144",
+    bookId: "144",
     citizenId: "079022223333",
     customerName: "Đỗ Thị V",
     typeSavingId: "TS01",
@@ -226,7 +226,7 @@ export const mockSavingBooks = [
     status: "close",
   },
   {
-    bookId: "SB00145",
+    bookId: "145",
     citizenId: "079033334444",
     customerName: "Nguyễn Văn W",
     typeSavingId: "TS02",
@@ -236,7 +236,7 @@ export const mockSavingBooks = [
     status: "close",
   },
   {
-    bookId: "SB00146",
+    bookId: "146",
     citizenId: "079044445555",
     customerName: "Lê Văn X",
     typeSavingId: "TS01",
@@ -246,7 +246,7 @@ export const mockSavingBooks = [
     status: "close",
   },
   {
-    bookId: "SB00147",
+    bookId: "147",
     citizenId: "079055556666",
     customerName: "Phạm Thị Y",
     typeSavingId: "TS03",
@@ -256,7 +256,7 @@ export const mockSavingBooks = [
     status: "close",
   },
   {
-    bookId: "SB00148",
+    bookId: "148",
     citizenId: "079066667777",
     customerName: "Trần Văn Z",
     typeSavingId: "TS02",
@@ -266,7 +266,7 @@ export const mockSavingBooks = [
     status: "close",
   },
   {
-    bookId: "SB00149",
+    bookId: "149",
     citizenId: "079077778888",
     customerName: "Hoàng Văn AA",
     typeSavingId: "TS01",
@@ -276,7 +276,7 @@ export const mockSavingBooks = [
     status: "close",
   },
   {
-    bookId: "SB00150",
+    bookId: "150",
     citizenId: "079088889999",
     customerName: "Vũ Thị AB",
     typeSavingId: "TS03",
@@ -286,7 +286,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00151",
+    bookId: "151",
     citizenId: "079099990000",
     customerName: "Đỗ Văn AC",
     typeSavingId: "TS01",
@@ -296,7 +296,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00152",
+    bookId: "152",
     citizenId: "079010203040",
     customerName: "Nguyễn Thị AD",
     typeSavingId: "TS02",
@@ -306,7 +306,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00153",
+    bookId: "153",
     citizenId: "079020304050",
     customerName: "Lê Văn AE",
     typeSavingId: "TS01",
@@ -316,7 +316,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00154",
+    bookId: "154",
     citizenId: "079030405060",
     customerName: "Phạm Văn AF",
     typeSavingId: "TS03",
@@ -326,7 +326,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00155",
+    bookId: "155",
     citizenId: "079040506070",
     customerName: "Trần Thị AG",
     typeSavingId: "TS02",
@@ -336,7 +336,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00156",
+    bookId: "156",
     citizenId: "079050607080",
     customerName: "Hoàng Văn AH",
     typeSavingId: "TS01",
@@ -346,7 +346,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00157",
+    bookId: "157",
     citizenId: "079060708090",
     customerName: "Vũ Văn AI",
     typeSavingId: "TS03",
@@ -356,7 +356,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00158",
+    bookId: "158",
     citizenId: "079070809000",
     customerName: "Đỗ Thị AJ",
     typeSavingId: "TS01",
@@ -366,7 +366,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00159",
+    bookId: "159",
     citizenId: "079080900010",
     customerName: "Nguyễn Văn AK",
     typeSavingId: "TS03",
@@ -376,7 +376,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00160",
+    bookId: "160",
     citizenId: "079090001020",
     customerName: "Lê Thị AL",
     typeSavingId: "TS02",
@@ -386,7 +386,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00161",
+    bookId: "161",
     citizenId: "079000102030",
     customerName: "Phạm Văn AM",
     typeSavingId: "TS01",
@@ -396,7 +396,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00162",
+    bookId: "162",
     citizenId: "079001020304",
     customerName: "Trần Văn AN",
     typeSavingId: "TS03",
@@ -406,7 +406,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00163",
+    bookId: "163",
     citizenId: "079002030405",
     customerName: "Hoàng Thị AO",
     typeSavingId: "TS02",
@@ -416,7 +416,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00164",
+    bookId: "164",
     citizenId: "079003040506",
     customerName: "Vũ Văn AP",
     typeSavingId: "TS01",
@@ -426,7 +426,7 @@ export const mockSavingBooks = [
     status: "open",
   },
   {
-    bookId: "SB00165",
+    bookId: "165",
     citizenId: "079004050607",
     customerName: "Đỗ Văn AQ",
     typeSavingId: "TS03",
