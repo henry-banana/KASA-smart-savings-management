@@ -44,6 +44,7 @@ import {
 } from "../../components/CuteComponents";
 import { createSavingBook } from "../../services/savingBookService";
 import { getInterestRates, getRegulations } from "@/services/regulationService";
+import { customerService } from "../../services/customerService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { useAuthContext } from "../../contexts/AuthContext";
 
@@ -91,30 +92,23 @@ export default function OpenAccount() {
     setLookupStatus("idle");
 
     try {
-      // TODO: Replace with actual customer lookup service
-      // const response = await searchCustomerByIdCard(formData.idCard);
+      // Call customer service to lookup by citizen ID
+      const response = await customerService.searchCustomerByCitizenId(
+        formData.idCard
+      );
 
-      // Mock API call for development
-      await new Promise((resolve) => setTimeout(resolve, 800));
-
-      // Stub: Simulate customer found
-      // In real implementation, API would return customer data
-      const mockCustomerData = {
-        customerName: "Nguyen Van A", // TODO: from API response
-        address: "123 Main Street, Ho Chi Minh City", // TODO: from API response
-      };
-
-      // Check if customer found (in real API, would check response status)
-      if (mockCustomerData) {
+      // Check if customer found
+      if (response.success && response.data) {
+        const customer = response.data;
         setFormData((prev) => ({
           ...prev,
-          customerName: mockCustomerData.customerName,
-          address: mockCustomerData.address,
+          customerName: customer.fullname || "",
+          address: customer.address || "",
         }));
         setLookupStatus("found");
         setErrors((prev) => ({ ...prev, idCard: "" }));
       } else {
-        // Customer not found (404)
+        // Customer not found (should not reach here due to service throwing error)
         setFormData((prev) => ({
           ...prev,
           customerName: "",
@@ -128,16 +122,31 @@ export default function OpenAccount() {
       }
     } catch (err) {
       console.error("Customer lookup error:", err);
-      setFormData((prev) => ({
-        ...prev,
-        customerName: "",
-        address: "",
-      }));
-      setLookupStatus("error");
-      setErrors((prev) => ({
-        ...prev,
-        idCard: err.message || "Failed to lookup customer. Please try again.",
-      }));
+      // Check if it's a "not found" error
+      if (err.message === "Customer not found") {
+        setFormData((prev) => ({
+          ...prev,
+          customerName: "",
+          address: "",
+        }));
+        setLookupStatus("not_found");
+        setErrors((prev) => ({
+          ...prev,
+          idCard: "Customer not found. Please check the ID card number.",
+        }));
+      } else {
+        // Other errors
+        setFormData((prev) => ({
+          ...prev,
+          customerName: "",
+          address: "",
+        }));
+        setLookupStatus("error");
+        setErrors((prev) => ({
+          ...prev,
+          idCard: err.message || "Failed to lookup customer. Please try again.",
+        }));
+      }
     } finally {
       setIsLookingUpCustomer(false);
     }
