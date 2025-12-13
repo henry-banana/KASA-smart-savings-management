@@ -734,7 +734,7 @@ export default function OpenAccount() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="text-sm border-gray-300 rounded-md h-11 sm:h-12 sm:px-8 hover:bg-gray-50 sm:text-base"
+                  className="text-sm border rounded-md border-gray-300 bg-white text-gray-700 h-11 sm:h-12 sm:px-8 sm:text-base transition-all duration-300 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
                   onClick={() => {
                     setFormData({
                       customerName: "",

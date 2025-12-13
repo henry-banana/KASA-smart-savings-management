@@ -21,6 +21,11 @@ export function DatePicker({
           variant="outline"
           className={cn(
             "w-full justify-start text-left font-normal h-12 rounded-sm",
+            // ✅ đồng bộ như Select/MonthPicker
+            "bg-input-background border border-gray-200 text-gray-700",
+            "hover:bg-gray-100 hover:border-gray-300 hover:text-gray-700 hover:scale-100",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00AEEF]/20 focus-visible:border-[#00AEEF]",
+            "transition-colors duration-150",
             !date && "text-muted-foreground",
             className
           )}

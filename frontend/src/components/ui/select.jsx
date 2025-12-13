@@ -26,6 +26,7 @@ function SelectTrigger({ className, size = "default", children, ...props }) {
       className={cn(
         "flex items-center justify-between w-full h-11 sm:h-12 px-4 rounded-sm border border-gray-200 bg-input-background text-sm sm:text-base",
         "data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground",
+        "hover:bg-gray-100 hover:border-gray-300",
         "focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 focus:border-[#8B5CF6]",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",

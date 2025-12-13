@@ -455,7 +455,7 @@ export default function RegulationSettings() {
                           size="sm"
                           variant="ghost"
                           onClick={() => setSelectedTypeSavings([])}
-                          className="text-sm text-gray-500 hover:text-gray-700"
+                          className="text-sm text-gray-500 border hover:border-gray-400 hover:bg-gray-100 hover:text-gray-700 hover:scale-100"
                         >
                           Clear
                         </Button>
@@ -612,7 +612,7 @@ export default function RegulationSettings() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-12 px-8 border-gray-200 rounded-sm"
+                    className="h-12 px-8 border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.02] rounded-sm"
                     disabled={loading}
                     onClick={async () => {
                       try {

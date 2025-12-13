@@ -95,8 +95,8 @@ export const authService = {
     if (!data.newPassword?.trim()) {
       throw new Error("Please enter new password");
     }
-    if (data.newPassword.length < 8) {
-      throw new Error("Password must be at least 8 characters");
+    if (data.newPassword.length < 6) {
+      throw new Error("Password must be at least 6 characters");
     }
 
     const response = await authAdapter.resetPassword(data);
