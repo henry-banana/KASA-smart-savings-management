@@ -69,6 +69,15 @@ export default function OpenAccount() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showRegisterCustomerDialog, setShowRegisterCustomerDialog] =
     useState(false);
+  const [showRegisterCustomerFormDialog, setShowRegisterCustomerFormDialog] =
+    useState(false);
+  const [registerCustomerForm, setRegisterCustomerForm] = useState({
+    citizenId: "",
+    fullName: "",
+    street: "",
+    district: "",
+    province: "",
+  });
 
   // Minimum balance from regulations (dynamic)
   const [minBalance, setMinBalance] = useState(null);
@@ -153,20 +162,19 @@ export default function OpenAccount() {
     setShowRegisterCustomerDialog(false);
     // Ensure customer fields stay cleared and return focus to ID input
     setFormData((prev) => ({ ...prev, customerName: "", address: "" }));
+    setLookupStatus("idle");
     setTimeout(() => {
       idCardInputRef.current?.focus();
     }, 0);
   };
 
-  // Placeholder handler for opening customer registration form
-  const handleOpenRegisterCustomerForm = () => {
-    console.log(
-      "[TODO] Open customer registration form for ID:",
-      formData.idCard
-    );
-    // TODO: Implement customer registration form/flow
-    // This could navigate to a registration page or open a registration modal
+  const handleRegisterNow = () => {
     setShowRegisterCustomerDialog(false);
+    setRegisterCustomerForm((prev) => ({
+      ...prev,
+      citizenId: formData.idCard || "",
+    }));
+    setShowRegisterCustomerFormDialog(true);
   };
 
   const handleSubmit = async (e) => {
@@ -420,12 +428,6 @@ export default function OpenAccount() {
                         <span className="text-xs">✓</span> Customer found
                       </p>
                     )}
-                    {lookupStatus === "not_found" &&
-                      !showRegisterCustomerDialog && (
-                        <p className="flex items-center gap-1 text-xs text-amber-600 sm:text-sm">
-                          <span className="text-xs">⚠</span> Customer not found
-                        </p>
-                      )}
                     {lookupStatus === "error" && (
                       <p className="flex items-center gap-1 text-xs text-red-600 sm:text-sm">
                         <span className="text-xs">✕</span> Lookup failed. Please
@@ -870,7 +872,8 @@ export default function OpenAccount() {
 
             <div className="flex flex-col gap-3 pt-2 sm:gap-4">
               <Button
-                onClick={handleOpenRegisterCustomerForm}
+                type="button"
+                onClick={handleRegisterNow}
                 className="w-full h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
                 style={{
                   background:
@@ -885,6 +888,114 @@ export default function OpenAccount() {
                 className="w-full h-11 sm:h-12 border-gray-300 rounded-md text-sm sm:text-base hover:bg-gray-50"
               >
                 Not now
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Register Customer Form Dialog (placeholder) */}
+        <Dialog
+          open={showRegisterCustomerFormDialog}
+          onOpenChange={setShowRegisterCustomerFormDialog}
+        >
+          <DialogContent className="rounded-sm sm:rounded-sm max-w-[90vw] sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-300">
+            <DialogHeader>
+              <DialogTitle className="text-xl text-center sm:text-2xl text-gray-900">
+                Register Customer
+              </DialogTitle>
+              <DialogDescription className="text-sm text-center sm:text-base text-gray-600">
+                Enter customer details to register. Citizen ID is pre-filled and
+                read-only.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-2">
+                <Label className="text-sm text-gray-700 sm:text-base">
+                  Citizen ID
+                </Label>
+                <Input
+                  value={registerCustomerForm.citizenId}
+                  readOnly
+                  className="h-11 sm:h-12 rounded-sm border-gray-200 bg-gray-50 text-gray-700"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm text-gray-700 sm:text-base">
+                  Full name
+                </Label>
+                <Input
+                  value={registerCustomerForm.fullName}
+                  onChange={(e) =>
+                    setRegisterCustomerForm((prev) => ({
+                      ...prev,
+                      fullName: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter full name"
+                  className="h-11 sm:h-12 rounded-sm border-gray-200"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm text-gray-700 sm:text-base">
+                  Street
+                </Label>
+                <Input
+                  value={registerCustomerForm.street}
+                  onChange={(e) =>
+                    setRegisterCustomerForm((prev) => ({
+                      ...prev,
+                      street: e.target.value,
+                    }))
+                  }
+                  placeholder="Enter street address"
+                  className="h-11 sm:h-12 rounded-sm border-gray-200"
+                />
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-700 sm:text-base">
+                    District
+                  </Label>
+                  <Input
+                    value={registerCustomerForm.district}
+                    onChange={(e) =>
+                      setRegisterCustomerForm((prev) => ({
+                        ...prev,
+                        district: e.target.value,
+                      }))
+                    }
+                    placeholder="District"
+                    className="h-11 sm:h-12 rounded-sm border-gray-200"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-700 sm:text-base">
+                    Province
+                  </Label>
+                  <Input
+                    value={registerCustomerForm.province}
+                    onChange={(e) =>
+                      setRegisterCustomerForm((prev) => ({
+                        ...prev,
+                        province: e.target.value,
+                      }))
+                    }
+                    placeholder="Province"
+                    className="h-11 sm:h-12 rounded-sm border-gray-200"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-11 sm:h-12 border-gray-300 rounded-md text-sm sm:text-base hover:bg-gray-50"
+                onClick={() => setShowRegisterCustomerFormDialog(false)}
+              >
+                Close
               </Button>
             </div>
           </DialogContent>
