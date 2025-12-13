@@ -47,18 +47,23 @@ export const mockCustomerAdapter = {
       };
     }
 
-    // Map internal fields to OpenAPI contract shape
+    // Return flat customer object with consistent lowercase field names
+    const street = customer.street || customer.address || "";
+    const district = customer.district || "";
+    const province = customer.province || "";
+    const address = [street, district, province].filter(Boolean).join(", ");
+
     return {
       message: "Customer retrieved successfully",
       success: true,
       data: {
-        customer: {
-          fullName: customer.fullname,
-          citizenId: String(customer.citizenid),
-          street: customer.street || customer.address || "",
-          district: customer.district || "",
-          province: customer.province || "",
-        },
+        customerid: customer.customerid,
+        fullname: customer.fullname || "",
+        citizenid: String(customer.citizenid || ""),
+        street,
+        district,
+        province,
+        address,
       },
     };
   },
