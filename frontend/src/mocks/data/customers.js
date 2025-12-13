@@ -400,7 +400,7 @@ export const findCustomerById = (customerid) => {
 };
 
 export const findCustomerByCitizenId = (citizenid) => {
-  return mockCustomers.find((c) => c.citizenid === citizenid);
+  return mockCustomers.find((c) => String(c.citizenid) === String(citizenid));
 };
 
 export const addCustomer = (customer) => {
