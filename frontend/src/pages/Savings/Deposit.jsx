@@ -351,10 +351,10 @@ export default function Deposit() {
                         placeholder="Enter deposit amount"
                         className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                       />
+                      <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
+                        ₫
+                      </span>
                     </div>
-                    <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
-                      ₫
-                    </span>
                     <p className="flex items-center gap-1 text-xs text-gray-500">
                       <span>💡</span>{" "}
                       {loadingRegulations
