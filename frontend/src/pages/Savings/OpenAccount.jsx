@@ -35,6 +35,8 @@ import {
   Coins,
   Sparkles,
   Heart,
+  Loader2,
+  Search,
 } from "lucide-react";
 import {
   StarDecor,
@@ -69,6 +71,77 @@ export default function OpenAccount() {
   const [minBalance, setMinBalance] = useState(null);
   const [regulationsError, setRegulationsError] = useState("");
   const [loadingRegulations, setLoadingRegulations] = useState(true);
+
+  // Customer lookup state
+  const [isLookingUpCustomer, setIsLookingUpCustomer] = useState(false);
+  const [lookupStatus, setLookupStatus] = useState("idle"); // 'idle' | 'found' | 'not_found' | 'error'
+
+  // Handle customer lookup by ID
+  const handleLookupCustomer = async () => {
+    // Validate citizenId is not empty
+    if (!formData.idCard.trim()) {
+      setErrors((prev) => ({
+        ...prev,
+        idCard: "Please enter ID citizen number first",
+      }));
+      return;
+    }
+
+    setIsLookingUpCustomer(true);
+    setLookupStatus("idle");
+
+    try {
+      // TODO: Replace with actual customer lookup service
+      // const response = await searchCustomerByIdCard(formData.idCard);
+
+      // Mock API call for development
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      // Stub: Simulate customer found
+      // In real implementation, API would return customer data
+      const mockCustomerData = {
+        customerName: "Nguyen Van A", // TODO: from API response
+        address: "123 Main Street, Ho Chi Minh City", // TODO: from API response
+      };
+
+      // Check if customer found (in real API, would check response status)
+      if (mockCustomerData) {
+        setFormData((prev) => ({
+          ...prev,
+          customerName: mockCustomerData.customerName,
+          address: mockCustomerData.address,
+        }));
+        setLookupStatus("found");
+        setErrors((prev) => ({ ...prev, idCard: "" }));
+      } else {
+        // Customer not found (404)
+        setFormData((prev) => ({
+          ...prev,
+          customerName: "",
+          address: "",
+        }));
+        setLookupStatus("not_found");
+        setErrors((prev) => ({
+          ...prev,
+          idCard: "Customer not found. Please check the ID card number.",
+        }));
+      }
+    } catch (err) {
+      console.error("Customer lookup error:", err);
+      setFormData((prev) => ({
+        ...prev,
+        customerName: "",
+        address: "",
+      }));
+      setLookupStatus("error");
+      setErrors((prev) => ({
+        ...prev,
+        idCard: err.message || "Failed to lookup customer. Please try again.",
+      }));
+    } finally {
+      setIsLookingUpCustomer(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -127,6 +200,19 @@ export default function OpenAccount() {
 
   const [savingTypes, setSavingTypes] = useState([]);
   const [loadingTypes, setLoadingTypes] = useState(true);
+
+  // Watch citizenId changes and clear lookup results if changed after successful lookup
+  useEffect(() => {
+    if (lookupStatus === "found") {
+      setFormData((prev) => ({
+        ...prev,
+        customerName: "",
+        address: "",
+      }));
+      setLookupStatus("idle");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.idCard]);
 
   // Fetch regulations (minDeposit) on mount
   useEffect(() => {
@@ -250,6 +336,78 @@ export default function OpenAccount() {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6">
                   <div className="space-y-2">
                     <Label
+                      htmlFor="idCard"
+                      className="text-sm text-gray-700 sm:text-base"
+                    >
+                      ID Citizen Number *
+                    </Label>
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                      <div className="relative flex-1">
+                        <CreditCard
+                          className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2"
+                          size={16}
+                        />
+                        <Input
+                          id="idCard"
+                          value={formData.idCard}
+                          onChange={(e) =>
+                            setFormData({ ...formData, idCard: e.target.value })
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handleLookupCustomer();
+                            }
+                          }}
+                          placeholder="Enter ID citizen number"
+                          className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={handleLookupCustomer}
+                        disabled={isLookingUpCustomer}
+                        className="h-11 sm:h-12 px-4 sm:px-6 rounded-sm bg-[#1A4D8F] hover:bg-[#154171] text-white text-sm sm:text-base"
+                      >
+                        {isLookingUpCustomer ? (
+                          <Loader2
+                            size={16}
+                            className="sm:w-[18px] sm:h-[18px] sm:mr-2 animate-spin"
+                          />
+                        ) : (
+                          <Search
+                            size={16}
+                            className="sm:w-[18px] sm:h-[18px] sm:mr-2"
+                          />
+                        )}
+                        {isLookingUpCustomer ? "Looking up..." : "Lookup"}
+                      </Button>
+                    </div>
+                    {errors.idCard && (
+                      <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
+                        <span className="text-xs">⚠️</span> {errors.idCard}
+                      </p>
+                    )}
+                    {lookupStatus === "found" && !errors.idCard && (
+                      <p className="flex items-center gap-1 text-xs text-green-600 sm:text-sm">
+                        <span className="text-xs">✓</span> Customer found
+                      </p>
+                    )}
+                    {lookupStatus === "not_found" && (
+                      <p className="flex items-center gap-1 text-xs text-amber-600 sm:text-sm">
+                        <span className="text-xs">⚠</span> Customer not found
+                      </p>
+                    )}
+                    {lookupStatus === "error" && (
+                      <p className="flex items-center gap-1 text-xs text-red-600 sm:text-sm">
+                        <span className="text-xs">✕</span> Lookup failed. Please
+                        try again
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
                       htmlFor="customerName"
                       className="text-sm text-gray-700 sm:text-base"
                     >
@@ -269,8 +427,9 @@ export default function OpenAccount() {
                             customerName: e.target.value,
                           })
                         }
-                        placeholder="Enter full name"
-                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        placeholder="Customer name will appear after lookup"
+                        disabled
+                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 bg-gray-50 text-gray-600 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base cursor-not-allowed"
                       />
                     </div>
                     {errors.customerName && (
@@ -281,64 +440,36 @@ export default function OpenAccount() {
                     )}
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 md:col-span-2">
                     <Label
-                      htmlFor="idCard"
+                      htmlFor="address"
                       className="text-sm text-gray-700 sm:text-base"
                     >
-                      ID Citizen Number *
+                      Address *
                     </Label>
                     <div className="relative">
-                      <CreditCard
-                        className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2"
+                      <MapPin
+                        className="absolute text-gray-400 left-3 top-3"
                         size={16}
                       />
-                      <Input
-                        id="idCard"
-                        value={formData.idCard}
+                      <Textarea
+                        id="address"
+                        value={formData.address}
                         onChange={(e) =>
-                          setFormData({ ...formData, idCard: e.target.value })
+                          setFormData({ ...formData, address: e.target.value })
                         }
-                        placeholder="Enter ID citizen number"
-                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                        placeholder="Customer address will appear after lookup"
+                        rows={3}
+                        disabled
+                        className="pl-10 rounded-sm border-gray-200 bg-gray-50 text-gray-600 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base cursor-not-allowed"
                       />
                     </div>
-                    {errors.idCard && (
+                    {errors.address && (
                       <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
-                        <span className="text-xs">⚠️</span> {errors.idCard}
+                        <span className="text-xs">⚠️</span> {errors.address}
                       </p>
                     )}
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="address"
-                    className="text-sm text-gray-700 sm:text-base"
-                  >
-                    Address *
-                  </Label>
-                  <div className="relative">
-                    <MapPin
-                      className="absolute text-gray-400 left-3 top-3"
-                      size={16}
-                    />
-                    <Textarea
-                      id="address"
-                      value={formData.address}
-                      onChange={(e) =>
-                        setFormData({ ...formData, address: e.target.value })
-                      }
-                      placeholder="Enter full address"
-                      rows={3}
-                      className="pl-10 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
-                    />
-                  </div>
-                  {errors.address && (
-                    <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
-                      <span className="text-xs">⚠️</span> {errors.address}
-                    </p>
-                  )}
                 </div>
               </div>
 
