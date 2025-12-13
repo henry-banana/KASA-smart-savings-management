@@ -1,8 +1,8 @@
 import { USE_MOCK } from "@/config/app.config";
 import { mockCustomerAdapter } from "@/mocks/adapters/customerAdapter";
-// import { customerApi } from "@/api/customerApi"; // TODO: Create when backend API is ready
+import { customerApi } from "@/api/customerApi";
 
-const customerAdapter = USE_MOCK ? mockCustomerAdapter : null; // TODO: replace null with customerApi
+const customerAdapter = USE_MOCK ? mockCustomerAdapter : customerApi;
 
 export const customerService = {
   /**
@@ -36,7 +36,15 @@ export const customerService = {
     // - fullName (camelCase, derived)
     // - address (always composed from street, district, province if missing)
     if (response.success && response.data) {
-      const { fullname, street, district, province, address } = response.data;
+      // Real API wraps customer in data.customer; mock returns flat data
+      const customer = response.data.customer || response.data;
+
+      // Extract fields (handle both camelCase from API and lowercase from mock)
+      const fullname = customer.fullname || customer.fullName || "";
+      const street = customer.street || "";
+      const district = customer.district || "";
+      const province = customer.province || "";
+      const address = customer.address || "";
 
       // Compose address from parts, skipping empty values
       const composedAddress = [street, district, province]
@@ -45,8 +53,11 @@ export const customerService = {
 
       response.data = {
         ...response.data,
-        fullname: fullname || "",
-        fullName: fullname || "", // Camelcase variant for compatibility
+        fullname,
+        fullName: fullname, // Camelcase variant for compatibility
+        street,
+        district,
+        province,
         address: address || composedAddress, // Use provided address or compose it
       };
     }
@@ -133,6 +144,25 @@ export const customerService = {
 
     if (!response.success) {
       throw new Error(response.message || "Failed to create customer");
+    }
+
+    // Normalize response data to ensure consistent format
+    // Real API returns: { data: { customer: { customerId, fullName, ... } } }
+    // Mock returns: { data: { customer: { customerId, fullName, ... } } }
+    if (response.data) {
+      const customer = response.data.customer || response.data;
+      // Ensure we return a consistent customer object with both cases
+      response.data = {
+        ...response.data,
+        customer: {
+          customerId: customer.customerId || customer.customerid,
+          fullName: customer.fullName || customer.fullname,
+          citizenId: customer.citizenId || customer.citizenid,
+          street: customer.street || "",
+          district: customer.district || "",
+          province: customer.province || "",
+        },
+      };
     }
 
     return response;
