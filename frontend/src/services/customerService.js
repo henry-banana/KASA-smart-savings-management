@@ -31,6 +31,26 @@ export const customerService = {
       throw new Error(response.message || "Failed to search customer");
     }
 
+    // Map adapter response to ensure OpenAccount receives expected fields:
+    // - fullname (lowercase, from API)
+    // - fullName (camelCase, derived)
+    // - address (always composed from street, district, province if missing)
+    if (response.success && response.data) {
+      const { fullname, street, district, province, address } = response.data;
+
+      // Compose address from parts, skipping empty values
+      const composedAddress = [street, district, province]
+        .filter((s) => s && String(s).trim())
+        .join(", ");
+
+      response.data = {
+        ...response.data,
+        fullname: fullname || "",
+        fullName: fullname || "", // Camelcase variant for compatibility
+        address: address || composedAddress, // Use provided address or compose it
+      };
+    }
+
     return response;
   },
 

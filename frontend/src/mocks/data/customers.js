@@ -8,6 +8,9 @@ export const mockCustomers = [
     fullname: "Nguyễn Văn A",
     citizenid: "1",
     address: "123 Nguyễn Huệ, Q1, TP.HCM",
+    street: "123 Nguyễn Huệ",
+    district: "Q1",
+    province: "TP.HCM",
     phone: "0901234567",
     email: "nguyenvana@email.com",
     dateofbirth: "1990-01-15",
@@ -391,6 +394,31 @@ export const mockCustomers = [
     dateofbirth: "1994-03-16",
   },
 ];
+
+// Normalize customer records: ensure all required fields are present
+for (const c of mockCustomers) {
+  // Ensure lowercase field names (handle camelCase if present)
+  if (c.fullName && !c.fullname) c.fullname = String(c.fullName);
+  if (c.citizenId && !c.citizenid) c.citizenid = String(c.citizenId);
+
+  // Ensure fullname and citizenid are always strings
+  if (!c.fullname) c.fullname = "";
+  if (!c.citizenid) c.citizenid = "";
+
+  // If street, district, province are missing, parse them from address
+  const hasAllParts = c.street && c.district && c.province;
+  if (!hasAllParts && c.address) {
+    const parts = c.address.split(",").map((s) => s.trim());
+    if (!c.street) c.street = parts[0] || "";
+    if (!c.district) c.district = parts[1] || "";
+    if (!c.province) c.province = parts[2] || "";
+  }
+
+  // Ensure all address parts exist and are strings
+  c.street = String(c.street || "").trim();
+  c.district = String(c.district || "").trim();
+  c.province = String(c.province || "").trim();
+}
 
 /**
  * Helper functions for customer data

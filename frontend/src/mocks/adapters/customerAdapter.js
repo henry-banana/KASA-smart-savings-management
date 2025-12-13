@@ -48,23 +48,44 @@ export const mockCustomerAdapter = {
     }
 
     // Return flat customer object with consistent lowercase field names
-    const street = customer.street || customer.address || "";
-    const district = customer.district || "";
-    const province = customer.province || "";
-    const address = [street, district, province].filter(Boolean).join(", ");
+    // Extract or default each field
+    const street = String(customer.street || "").trim();
+    const district = String(customer.district || "").trim();
+    const province = String(customer.province || "").trim();
+
+    // Compose address from parts if not already present
+    const address =
+      customer.address ||
+      [street, district, province].filter((s) => s.length > 0).join(", ");
+
+    const responseData = {
+      customerid: customer.customerid,
+      fullname: String(customer.fullname || "").trim(),
+      citizenid: String(customer.citizenid || ""),
+      street,
+      district,
+      province,
+      address: address || "",
+    };
+
+    // DEV ONLY: Sanity check on returned customer object shape
+    if (import.meta.env.DEV) {
+      const requiredFields = ["fullname", "street", "district", "province"];
+      const hasAllFields = requiredFields.every(
+        (field) => field in responseData
+      );
+      console.log(
+        `[DEV] Customer lookup response shape:`,
+        Object.keys(responseData),
+        `Required fields present: ${hasAllFields ? "✓" : "✗"}`,
+        { responseData }
+      );
+    }
 
     return {
       message: "Customer retrieved successfully",
       success: true,
-      data: {
-        customerid: customer.customerid,
-        fullname: customer.fullname || "",
-        citizenid: String(customer.citizenid || ""),
-        street,
-        district,
-        province,
-        address,
-      },
+      data: responseData,
     };
   },
 
