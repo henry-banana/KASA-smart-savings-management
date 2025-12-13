@@ -15,6 +15,10 @@ class SavingBookService {
     }
 
     const customer = await customerRepository.findByCitizenID(citizenID);
+    if (!customer) {
+      throw new Error("Customer not found: " + citizenID);
+    }
+
 
     // 2. Lấy thông tin loại sổ tiết kiệm
     const typeSaving = await typeSavingRepository.findById(typeSavingID);
