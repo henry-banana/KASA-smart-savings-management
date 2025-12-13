@@ -2,6 +2,7 @@ import {
   findCustomerByCitizenId,
   findCustomerById,
   mockCustomers,
+  addCustomer,
 } from "../data/customers";
 import {
   buildGetCustomerByIdResponse,
@@ -80,6 +81,97 @@ export const mockCustomerAdapter = {
       success: true,
       data: mockCustomers,
       total: mockCustomers.length,
+    };
+  },
+
+  /**
+   * Create a new customer (mock POST /api/customers)
+   * @param {Object} body - The request body
+   * @param {string} body.fullName
+   * @param {string|number} body.citizenId
+   * @param {string} body.street
+   * @param {string} body.district
+   * @param {string} body.province
+   * @returns {Promise<Object>} Mock response
+   */
+  async createCustomer(body) {
+    await randomDelay();
+    logger.info("🎭 Mock Create Customer", { body });
+
+    const { fullName, citizenId, street, district, province } = body || {};
+
+    // Basic validation
+    if (!fullName || !String(fullName).trim()) {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Full name is required",
+      };
+    }
+    if (!citizenId || String(citizenId).trim() === "") {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Citizen ID is required",
+      };
+    }
+    if (!street || !String(street).trim()) {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Street is required",
+      };
+    }
+    if (!district || !String(district).trim()) {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "District is required",
+      };
+    }
+    if (!province || !String(province).trim()) {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Province is required",
+      };
+    }
+
+    // Duplicate check by citizenId
+    const existing = findCustomerByCitizenId(citizenId);
+    if (existing) {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Citizen ID already exists",
+      };
+    }
+
+    // Generate incrementing numeric customerid based on current max
+    const currentMax = mockCustomers.reduce((max, c) => {
+      const n = parseInt(String(c.customerid).replace(/\D/g, ""), 10);
+      return Number.isFinite(n) ? Math.max(max, n) : max;
+    }, 0);
+    const newId = currentMax + 1;
+
+    const newCustomer = {
+      customerid: newId,
+      fullname: String(fullName),
+      citizenid: String(citizenId),
+      street: String(street),
+      district: String(district),
+      province: String(province),
+    };
+
+    addCustomer(newCustomer);
+
+    return {
+      message: "Customer added successfully",
+      success: true,
+      total: 1,
+      data: {
+        customer: newCustomer,
+      },
     };
   },
 };

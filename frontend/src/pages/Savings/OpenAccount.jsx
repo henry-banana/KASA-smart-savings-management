@@ -78,6 +78,9 @@ export default function OpenAccount() {
     district: "",
     province: "",
   });
+  const [isSubmittingRegister, setIsSubmittingRegister] = useState(false);
+  const [registerCustomerErrors, setRegisterCustomerErrors] = useState({});
+  const [registerSubmitError, setRegisterSubmitError] = useState("");
 
   // Minimum balance from regulations (dynamic)
   const [minBalance, setMinBalance] = useState(null);
@@ -175,6 +178,54 @@ export default function OpenAccount() {
       citizenId: formData.idCard || "",
     }));
     setShowRegisterCustomerFormDialog(true);
+  };
+
+  const handleSubmitRegisterCustomer = async () => {
+    const errors = {};
+    if (!registerCustomerForm.fullName?.trim())
+      errors.fullName = "Full name is required";
+    if (!registerCustomerForm.street?.trim())
+      errors.street = "Street is required";
+    if (!registerCustomerForm.district?.trim())
+      errors.district = "District is required";
+    if (!registerCustomerForm.province?.trim())
+      errors.province = "Province is required";
+
+    setRegisterCustomerErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    setIsSubmittingRegister(true);
+    try {
+      setRegisterSubmitError("");
+      const response = await customerService.createCustomer({
+        fullName: registerCustomerForm.fullName,
+        citizenId: registerCustomerForm.citizenId,
+        street: registerCustomerForm.street,
+        district: registerCustomerForm.district,
+        province: registerCustomerForm.province,
+      });
+
+      const created = response?.data?.customer || response?.data;
+      const composedAddress = created?.address
+        ? created.address
+        : [created?.street, created?.district, created?.province]
+            .filter(Boolean)
+            .join(", ");
+
+      setFormData((prev) => ({
+        ...prev,
+        customerName: created?.fullname || prev.customerName,
+        address: composedAddress || prev.address,
+      }));
+      setLookupStatus("found");
+      setShowRegisterCustomerFormDialog(false);
+    } catch (err) {
+      setRegisterSubmitError(
+        err?.message || "Failed to create customer. Please try again."
+      );
+    } finally {
+      setIsSubmittingRegister(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -935,6 +986,12 @@ export default function OpenAccount() {
                   placeholder="Enter full name"
                   className="h-11 sm:h-12 rounded-sm border-gray-200"
                 />
+                {registerCustomerErrors.fullName && (
+                  <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
+                    <span className="text-xs">⚠️</span>{" "}
+                    {registerCustomerErrors.fullName}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label className="text-sm text-gray-700 sm:text-base">
@@ -951,6 +1008,12 @@ export default function OpenAccount() {
                   placeholder="Enter street address"
                   className="h-11 sm:h-12 rounded-sm border-gray-200"
                 />
+                {registerCustomerErrors.street && (
+                  <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
+                    <span className="text-xs">⚠️</span>{" "}
+                    {registerCustomerErrors.street}
+                  </p>
+                )}
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="space-y-2">
@@ -968,6 +1031,12 @@ export default function OpenAccount() {
                     placeholder="District"
                     className="h-11 sm:h-12 rounded-sm border-gray-200"
                   />
+                  {registerCustomerErrors.district && (
+                    <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
+                      <span className="text-xs">⚠️</span>{" "}
+                      {registerCustomerErrors.district}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm text-gray-700 sm:text-base">
@@ -984,11 +1053,42 @@ export default function OpenAccount() {
                     placeholder="Province"
                     className="h-11 sm:h-12 rounded-sm border-gray-200"
                   />
+                  {registerCustomerErrors.province && (
+                    <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
+                      <span className="text-xs">⚠️</span>{" "}
+                      {registerCustomerErrors.province}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
 
+            {registerSubmitError && (
+              <p className="text-sm sm:text-base text-red-600">
+                {registerSubmitError}
+              </p>
+            )}
+
             <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4">
+              <Button
+                type="button"
+                onClick={handleSubmitRegisterCustomer}
+                disabled={isSubmittingRegister}
+                className="w-full h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 text-sm sm:text-base transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
+                }}
+              >
+                {isSubmittingRegister ? (
+                  <span className="flex items-center">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                    Creating...
+                  </span>
+                ) : (
+                  "Create customer"
+                )}
+              </Button>
               <Button
                 type="button"
                 variant="outline"

@@ -74,6 +74,49 @@ export const customerService = {
 
     return response;
   },
+
+  /**
+   * Create a new customer
+   * @param {Object} payload - { fullName, citizenId, street, district, province }
+   * @returns {Promise<Object>} Created customer response
+   */
+  async createCustomer(payload) {
+    const { fullName, citizenId, street, district, province } = payload || {};
+
+    if (!fullName || String(fullName).trim() === "") {
+      throw new Error("Full name is required");
+    }
+    if (!citizenId || String(citizenId).trim() === "") {
+      throw new Error("Citizen ID is required");
+    }
+    if (!street || String(street).trim() === "") {
+      throw new Error("Street is required");
+    }
+    if (!district || String(district).trim() === "") {
+      throw new Error("District is required");
+    }
+    if (!province || String(province).trim() === "") {
+      throw new Error("Province is required");
+    }
+
+    if (!customerAdapter) {
+      throw new Error("Customer API not configured");
+    }
+
+    const response = await customerAdapter.createCustomer({
+      fullName,
+      citizenId,
+      street,
+      district,
+      province,
+    });
+
+    if (!response.success) {
+      throw new Error(response.message || "Failed to create customer");
+    }
+
+    return response;
+  },
 };
 
 export default customerService;
