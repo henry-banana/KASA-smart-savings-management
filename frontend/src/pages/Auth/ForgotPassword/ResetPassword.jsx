@@ -34,10 +34,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
   const [errors, setErrors] = useState([]);
 
   const passwordRequirements = [
-    { label: "At least 8 characters", test: (pwd) => pwd.length >= 8 },
-    { label: "Contains uppercase letter", test: (pwd) => /[A-Z]/.test(pwd) },
-    { label: "Contains lowercase letter", test: (pwd) => /[a-z]/.test(pwd) },
-    { label: "Contains number", test: (pwd) => /\d/.test(pwd) },
+    { label: "At least 6 characters", test: (pwd) => pwd.length >= 6 },
   ];
 
   const validatePassword = () => {
@@ -55,11 +52,8 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
       validationErrors.push("Passwords do not match");
     }
 
-    const failedRequirements = passwordRequirements.filter(
-      (req) => !req.test(newPassword)
-    );
-    if (failedRequirements.length > 0) {
-      validationErrors.push("Password does not meet all requirements");
+    if (newPassword && newPassword.length < 6) {
+      validationErrors.push("Password must be at least 6 characters");
     }
 
     return validationErrors;

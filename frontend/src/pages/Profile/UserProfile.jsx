@@ -355,7 +355,7 @@ export default function UserProfile() {
             <Button
               onClick={() => setShowEditContact(true)}
               variant="outline"
-              className="rounded-smborder-gray-200"
+              className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
             >
               Edit
             </Button>
@@ -442,7 +442,7 @@ export default function UserProfile() {
               </div>
               <Button
                 onClick={() => setShowChangePassword(true)}
-                className="rounded-smbg-white border border-yellow-200 hover:bg-yellow-50"
+                className="rounded-smbg-white border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
                 variant="outline"
               >
                 Change Password
@@ -599,7 +599,7 @@ export default function UserProfile() {
                 });
               }}
               variant="outline"
-              className="flex-1 h-12 rounded-smborder-gray-200"
+              className="flex-1 h-12 rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
               disabled={loading}
             >
               Cancel
@@ -725,7 +725,7 @@ export default function UserProfile() {
             <Button
               onClick={() => setShowEditContact(false)}
               variant="outline"
-              className="flex-1 h-12 rounded-smborder-gray-200"
+              className="flex-1 h-12 rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
               disabled={loading}
             >
               Cancel

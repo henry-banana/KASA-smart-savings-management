@@ -546,7 +546,7 @@ export default function Withdraw() {
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-12 px-8 border-gray-300 rounded-md hover:bg-gray-50"
+                  className="h-12 px-8 rounded-md border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
                   onClick={() => {
                     setAccountId("");
                     setWithdrawAmount("");
