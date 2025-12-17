@@ -69,9 +69,9 @@ export default function SearchAccounts() {
           const options = [
             { value: "all", label: "All" },
             ...response.data.map((ts) => {
-              // Use typeName as the filter value to match against accountTypeName
+              // Use typeSavingId as the filter value to match typeId parameter
               return {
-                value: ts.typeName,
+                value: ts.typeSavingId,
                 label: ts.typeName,
               };
             }),

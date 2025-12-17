@@ -65,7 +65,7 @@ export const accountApi = {
     typeFilter = "all",
     statusFilter = "all"
   ) {
-    const params = { keyword, type: typeFilter, status: statusFilter };
+    const params = { keyword, typeId: typeFilter, status: statusFilter };
     return this.searchAccounts(params);
   },
 };

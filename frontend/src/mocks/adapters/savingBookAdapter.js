@@ -47,6 +47,7 @@ export const mockSavingBookAdapter = {
         citizenId: sb.citizenId,
         customerName: sb.customerName,
         accountTypeName: type?.typeName || "Unknown",
+        typeSavingId: sb.typeSavingId,
         openDate: sb.openDate,
         balance: sb.balance,
         status: sb.status,
@@ -62,7 +63,7 @@ export const mockSavingBookAdapter = {
         item.customerName.toLowerCase().includes(q) ||
         item.citizenId.toLowerCase().includes(q);
       const matchesType =
-        typeFilter === "all" || item.accountTypeName === typeFilter;
+        typeFilter === "all" || item.typeSavingId === typeFilter;
       const matchesStatus =
         statusFilter === "all" || item.status === statusFilter;
       return matchesSearch && matchesType && matchesStatus;
