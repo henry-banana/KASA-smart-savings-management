@@ -19,7 +19,6 @@ class SavingBookService {
       throw new Error("Customer not found: " + citizenID);
     }
 
-
     // 2. Lấy thông tin loại sổ tiết kiệm
     const typeSaving = await typeSavingRepository.findById(typeSavingID);
     if (!typeSaving) {
@@ -128,27 +127,27 @@ class SavingBookService {
 
     //5. Kiểm tra nếu là sổ không kì hạn thì cộng lãi suất hàng tháng
     if (typeSaving.typename === "No term") {
-      const updateTime= new Date(savingBook.updatetime);
+      const updateTime = new Date(savingBook.updatetime);
       const currentDate = new Date();
       let daysHeld =
         (currentDate.getFullYear() - updateTime.getFullYear()) * 365 +
-        (currentDate.getMonth() - updateTime.getMonth()) * 30 + 
+        (currentDate.getMonth() - updateTime.getMonth()) * 30 +
         (currentDate.getDate() - updateTime.getDate());
 
+      let currentBalance = savingBook.currentbalance;
+      while (daysHeld >= 30) {
+        currentBalance += currentBalance * 0.0015;
+        daysHeld -= 30;
+      }
 
-        let currentBalance = savingBook.currentbalance;
-        while (daysHeld >= 30) {
-          currentBalance += currentBalance*0.0015;
-          daysHeld -= 30;
-        }
+      await savingBookRepository.update(bookID, {
+        currentbalance: currentBalance,
+        updatetime: new Date(
+          currentDate - daysHeld * 24 * 60 * 60 * 1000
+        ).toISOString(),
+      });
 
-
-        await savingBookRepository.update(bookID, {
-          currentbalance: currentBalance,
-          updatetime: new Date(currentDate - daysHeld * 24 * 60 * 60 * 1000).toISOString(),
-        });
-
-        savingBook.currentbalance = currentBalance;
+      savingBook.currentbalance = currentBalance;
     }
 
     return {
@@ -173,60 +172,71 @@ class SavingBookService {
   }
 
   // Tìm kiếm sổ tiết kiệm
-  async searchSavingBook(keyword) {
+  async searchSavingBook(keyword, pageSize = 10, pageNumber = 1) {
     // Nếu không có keyword hoặc keyword rỗng, lấy tất cả
-    if (!keyword || keyword.trim() === "") { 
-      return await savingBookRepository.findAll();
-    }
-
-    const trimmedKeyword = keyword.trim();
     let results = [];
-    const isOnlyDigits = /^\d+$/.test(trimmedKeyword);
-    // Regex để kiểm tra chuỗi chỉ chứa chữ cái (hỗ trợ Unicode) và khoảng trắng
-    const isOnlyLettersAndSpaces = /^[\p{L}\s]+$/u.test(trimmedKeyword);
-
-    if (trimmedKeyword.startsWith("0") && isOnlyDigits) {
-      // Tìm kiếm theo Citizen ID
-      results = await savingBookRepository.findByCustomerCitizenID(
-        trimmedKeyword
-      );
-    } else if (isOnlyDigits) {
-      // Tìm kiếm theo Book ID
-      // Do cần join bảng để in dữ liệu theo format nên sẽ tạo hàm riêng
-      results = await savingBookRepository.findByBookID(trimmedKeyword);
-    } else if (isOnlyLettersAndSpaces) {
-      // Tìm kiếm theo tên khách hàng
-      results = await savingBookRepository.findByCustomerName(trimmedKeyword);
+    if (!keyword || keyword.trim() === "") {
+      results = await savingBookRepository.findAll();
     } else {
-      throw new Error("Keyword is only contain number or letter");
-    }
+      const trimmedKeyword = keyword.trim();
 
-    // Kiểm tra và cộng lãi suất cho sổ không kì hạn
-    for (let i = 0; i < results.length; i++) {
-      if (results[i].typeid === 1) {
-        const updateTime= new Date(results[i].updatetime);
-        const currentDate = new Date();
-        const daysHeld =
-          (currentDate.getFullYear() - updateTime.getFullYear()) * 365 +
-          (currentDate.getMonth() - updateTime.getMonth()) * 30 + 
-          (currentDate.getDate() - updateTime.getDate());
-          let currentBalance = results[i].currentbalance;
-          while (daysHeld >= 30) {
-            currentBalance += currentBalance*0.0015;
-            daysHeld -= 30;
-          }
+      const isOnlyDigits = /^\d+$/.test(trimmedKeyword);
+      // Regex để kiểm tra chuỗi chỉ chứa chữ cái (hỗ trợ Unicode) và khoảng trắng
+      const isOnlyLettersAndSpaces = /^[\p{L}\s]+$/u.test(trimmedKeyword);
 
-          await savingBookRepository.update(results[i].bookid, {
-            currentbalance: currentBalance,
-            updatetime: new Date(currentDate - daysHeld * 24 * 60 * 60 * 1000).toISOString(),
-          });
-
-
-          results[i].currentbalance = currentBalance;
+      if (trimmedKeyword.startsWith("0") && isOnlyDigits) {
+        // Tìm kiếm theo Citizen ID
+        results = await savingBookRepository.findByCustomerCitizenID(
+          trimmedKeyword
+        );
+      } else if (isOnlyDigits) {
+        // Tìm kiếm theo Book ID
+        // Do cần join bảng để in dữ liệu theo format nên sẽ tạo hàm riêng
+        results = await savingBookRepository.findByBookID(trimmedKeyword);
+      } else if (isOnlyLettersAndSpaces) {
+        // Tìm kiếm theo tên khách hàng
+        results = await savingBookRepository.findByCustomerName(trimmedKeyword);
+      } else {
+        throw new Error("Keyword is only contain number or letter");
       }
     }
 
-    return results || [];
+    // Áp dụng phân trang trước khi tính lãi
+    const total = results.length;
+    const startIndex = (pageNumber - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedResults = results.slice(startIndex, endIndex);
+
+    // Kiểm tra và cộng lãi suất cho sổ không kì hạn (chỉ tính cho trang hiện tại)
+    for (let i = 0; i < paginatedResults.length; i++) {
+      if (paginatedResults[i].typeId == 1) {
+        const updateTime = new Date(paginatedResults[i].updatetime);
+        const currentDate = new Date();
+        let daysHeld =
+          (currentDate.getFullYear() - updateTime.getFullYear()) * 365 +
+          (currentDate.getMonth() - updateTime.getMonth()) * 30 +
+          (currentDate.getDate() - updateTime.getDate());
+        let currentBalance = paginatedResults[i].balance;
+        while (daysHeld >= 30) {
+          currentBalance += currentBalance * 0.0015;
+          daysHeld -= 30;
+        }
+
+        await savingBookRepository.update(paginatedResults[i].bookId, {
+          currentbalance: currentBalance,
+          updatetime: new Date(
+            currentDate - daysHeld * 24 * 60 * 60 * 1000
+          ).toISOString(),
+        });
+
+        paginatedResults[i].balance = currentBalance;
+      }
+    }
+
+    return {
+      total: total,
+      data: paginatedResults, 
+    };
   }
 
   // Tất toán sổ tiết kiệm

@@ -8,24 +8,32 @@ export class SavingBook extends BaseModel {
   }
 
   async getAll() {
-    const { data, error } = await supabase.from("savingbook").select(`
+    const { data, error } = await supabase
+      .from("savingbook")
+      .select(
+        `
         bookid,
         registertime,
         status,
         currentbalance,
+        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
         ),
         typesaving:typeid!inner (
+          typeid,
           typename
         )
-      `);
+      `
+      )
+      .order("bookid", { ascending: true });
 
     if (error) throw error;
 
     // Map dữ liệu về đúng format
     const result = data.map((item) => ({
+      typeId: item.typesaving.typeid,
       bookId: item.bookid,
       accountCode: item.bookid,
       citizenId: item.customer.citizenid,
@@ -34,6 +42,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
+      updatetime: item.updatetime,
     }));
 
     return result;
@@ -50,21 +59,25 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
+        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
         ),
         typesaving:typeid!inner (
+          typeid,
           typename
         )
       `
       )
-      .ilike("customer.fullname", `%${normalized}%`);
+      .ilike("customer.fullname", `%${normalized}%`)
+      .order("bookid", { ascending: true });
 
     if (error) throw error;
 
     // Map dữ liệu về đúng format bạn cần
     const result = data.map((item) => ({
+      typeId: item.typesaving.typeid,
       bookId: item.bookid,
       accountCode: item.bookid,
       citizenId: item.customer.citizenid,
@@ -73,6 +86,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
+      updatetime: item.updatetime,
     }));
 
     return result;
@@ -87,21 +101,25 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
+        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
         ),
         typesaving:typeid!inner (
-          typename
+          typename,
+          typeid
         )
       `
       )
-      .eq("customer.citizenid", citizenid);
+      .eq("customer.citizenid", citizenid)
+      .order("bookid", { ascending: true });
 
     if (error) throw error;
 
     // Map về đúng format yêu cầu
     const result = data.map((item) => ({
+      typeId: item.typesaving.typeid,
       bookId: item.bookid,
       accountCode: item.bookid,
       citizenId: item.customer.citizenid,
@@ -110,6 +128,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
+      updatetime: item.updatetime,
     }));
 
     return result;
@@ -124,16 +143,19 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
+        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
         ),
         typesaving:typeid!inner (
-          typename
+          typename,
+          typeid
         )
       `
       )
-      .eq(this.primaryKey, bookid);
+      .eq(this.primaryKey, bookid)
+      .order("bookid", { ascending: true });
 
     if (error) throw error;
 
@@ -141,6 +163,7 @@ export class SavingBook extends BaseModel {
 
     // Map về đúng format yêu cầu
     const result = data.map((item) => ({
+      typeId: item.typesaving.typeid,
       bookId: item.bookid,
       accountCode: item.bookid,
       citizenId: item.customer.citizenid,
@@ -149,6 +172,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
+      updatetime: item.updatetime,
     }));
 
     return result;
@@ -157,7 +181,8 @@ export class SavingBook extends BaseModel {
   async getAllActiveBooks() {
     const { data, error } = await supabase
       .from("savingbook")
-      .select(`
+      .select(
+        `
         bookid,
         registertime,
         status,
@@ -165,7 +190,8 @@ export class SavingBook extends BaseModel {
           typeid,
           typename
         )
-      `)
+      `
+      )
       .eq("status", "Open"); // Chỉ lấy sổ đang mở
 
     if (error) throw new Error(`GetAllActiveBooks failed: ${error.message}`);
