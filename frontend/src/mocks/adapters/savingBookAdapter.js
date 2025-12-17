@@ -21,29 +21,32 @@ const addMonths = (dateStr, months) => {
 
 export const mockSavingBookAdapter = {
   /**
-   * Search saving books (list endpoint)
-   * Returns contract list items with envelope.
+   * Search saving books (list endpoint) with pagination
+   * Returns contract list items with envelope and pagination metadata.
    */
   async searchSavingBooks(
     keyword = "",
     typeFilter = "all",
-    statusFilter = "all"
+    statusFilter = "all",
+    page = 1,
+    pageSize = 10
   ) {
     await randomDelay();
-    logger.info("🎭 Mock Search SavingBooks", {
+    logger.info("🎭 Mock Search SavingBooks (Paginated)", {
       keyword,
       typeFilter,
       statusFilter,
+      page,
+      pageSize,
     });
 
     // Map to contract list item (canonical fields only)
     let items = mockSavingBooks.map((sb) => {
       const type = findTypeSavingById(sb.typeSavingId);
-      // Extract numeric accountCode from bookId (e.g., "SB00123" -> 123)
-      const accountCode = parseInt(sb.bookId.replace(/\D/g, ""), 10) || 0;
+      // Use bookId directly as accountCode string per API contract
       return {
         bookId: sb.bookId,
-        accountCode: accountCode, // numeric value per API contract
+        accountCode: sb.bookId, // string value matching bookId
         citizenId: sb.citizenId,
         customerName: sb.customerName,
         accountTypeName: type?.typeName || "Unknown",
@@ -54,12 +57,13 @@ export const mockSavingBookAdapter = {
       };
     });
 
-    // Filters (case-insensitive)
+    // Apply filters (case-insensitive)
     items = items.filter((item) => {
       const q = keyword.toLowerCase();
       const matchesSearch =
         !q ||
         item.bookId.toLowerCase().includes(q) ||
+        String(item.accountCode).toLowerCase().includes(q) ||
         item.customerName.toLowerCase().includes(q) ||
         item.citizenId.toLowerCase().includes(q);
       const matchesType =
@@ -69,11 +73,26 @@ export const mockSavingBookAdapter = {
       return matchesSearch && matchesType && matchesStatus;
     });
 
+    // Get total after filtering
+    const total = items.length;
+
+    // Apply pagination - enforce pageSize = 10
+    const actualPageSize = 10; // hardcoded for consistency
+    const actualPage = Math.max(1, parseInt(page) || 1);
+    const totalPages = Math.ceil(total / actualPageSize);
+
+    // Calculate offset
+    const offset = (actualPage - 1) * actualPageSize;
+    const paginatedItems = items.slice(offset, offset + actualPageSize);
+
     return {
-      message: "Search saving books successfully",
+      message: "Search savingbooks successfully",
       success: true,
-      data: items,
-      total: items.length,
+      data: paginatedItems,
+      total,
+      page: actualPage,
+      pageSize: actualPageSize,
+      totalPages: totalPages || 1,
     };
   },
 
