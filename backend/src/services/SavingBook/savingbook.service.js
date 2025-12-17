@@ -126,6 +126,28 @@ class SavingBookService {
     // 4. Lấy danh sách giao dịch
     const transactions = await transactionRepository.findById(bookID);
 
+    //5. Kiểm tra nếu là sổ không kì hạn thì cộng lãi suất hàng tháng
+    if (typeSaving.typename === "No term") {
+      const updateTime= new Date(savingBook.updatetime);
+      const currentDate = new Date();
+      const monthsHeld =
+        (currentDate.getFullYear() - updateTime.getFullYear()) * 12 +
+        (currentDate.getMonth() - updateTime.getMonth());
+      
+        let currentBalance = savingBook.currentbalance;
+        while (monthsHeld >= 1) {
+          currentBalance += 1.15*currentBalance;
+          monthsHeld--;
+        }
+
+        await savingBookRepository.update(bookID, {
+          currentbalance: currentBalance,
+        });
+
+        savingBook.currentbalance = currentBalance;
+        savingBook.updatetime = new Date("1/" + currentDate.getMonth() + "/" + currentDate.getFullYear()).toISOString();
+    }
+
     return {
       bookId: savingBook.bookid,
       citizenId: customer.citizenid,
@@ -150,7 +172,7 @@ class SavingBookService {
   // Tìm kiếm sổ tiết kiệm
   async searchSavingBook(keyword) {
     // Nếu không có keyword hoặc keyword rỗng, lấy tất cả
-    if (!keyword || keyword.trim() === "") {
+    if (!keyword || keyword.trim() === "") { 
       return await savingBookRepository.findAll();
     }
 
@@ -174,6 +196,29 @@ class SavingBookService {
       results = await savingBookRepository.findByCustomerName(trimmedKeyword);
     } else {
       throw new Error("Keyword is only contain number or letter");
+    }
+
+    // Kiểm tra và cộng lãi suất cho sổ không kì hạn
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].typeid === 1) {
+        const updateTime= new Date(results[i].updatetime);
+        const currentDate = new Date();
+        const monthsHeld =
+          (currentDate.getFullYear() - updateTime.getFullYear()) * 12 +
+          (currentDate.getMonth() - updateTime.getMonth());
+          let currentBalance = results[i].currentbalance;
+          while (monthsHeld >= 1) {
+            currentBalance += 1.15*currentBalance;
+            monthsHeld--;
+          }
+
+          await savingBookRepository.update(results[i].bookid, {
+            currentbalance: currentBalance,
+          });
+
+          results[i].currentbalance = currentBalance;
+          results[i].updatetime = new Date("1/" + currentDate.getMonth() + "/" + currentDate.getFullYear()).toISOString();    
+      }
     }
 
     return results || [];
