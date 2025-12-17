@@ -172,7 +172,7 @@ class SavingBookService {
   }
 
   // Tìm kiếm sổ tiết kiệm
-  async searchSavingBook(keyword) {
+  async searchSavingBook(keyword, pageSize = 10, pageNumber = 1) {
     // Nếu không có keyword hoặc keyword rỗng, lấy tất cả
     let results = [];
     if (!keyword || keyword.trim() === "") {
@@ -201,33 +201,42 @@ class SavingBookService {
       }
     }
 
-    // Kiểm tra và cộng lãi suất cho sổ không kì hạn
-    for (let i = 0; i < results.length; i++) {
-      if (results[i].typeId == 1) {
-        const updateTime = new Date(results[i].updatetime);
+    // Áp dụng phân trang trước khi tính lãi
+    const total = results.length;
+    const startIndex = (pageNumber - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedResults = results.slice(startIndex, endIndex);
+
+    // Kiểm tra và cộng lãi suất cho sổ không kì hạn (chỉ tính cho trang hiện tại)
+    for (let i = 0; i < paginatedResults.length; i++) {
+      if (paginatedResults[i].typeId == 1) {
+        const updateTime = new Date(paginatedResults[i].updatetime);
         const currentDate = new Date();
         let daysHeld =
           (currentDate.getFullYear() - updateTime.getFullYear()) * 365 +
           (currentDate.getMonth() - updateTime.getMonth()) * 30 +
           (currentDate.getDate() - updateTime.getDate());
-        let currentBalance = results[i].balance;
+        let currentBalance = paginatedResults[i].balance;
         while (daysHeld >= 30) {
           currentBalance += currentBalance * 0.0015;
           daysHeld -= 30;
         }
 
-        await savingBookRepository.update(results[i].bookId, {
+        await savingBookRepository.update(paginatedResults[i].bookId, {
           currentbalance: currentBalance,
           updatetime: new Date(
             currentDate - daysHeld * 24 * 60 * 60 * 1000
           ).toISOString(),
         });
 
-        results[i].balance = currentBalance;
+        paginatedResults[i].balance = currentBalance;
       }
     }
 
-    return results || [];
+    return {
+      total: total,
+      data: paginatedResults, 
+    };
   }
 
   // Tất toán sổ tiết kiệm

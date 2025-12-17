@@ -8,7 +8,10 @@ export class SavingBook extends BaseModel {
   }
 
   async getAll() {
-    const { data, error } = await supabase.from("savingbook").select(`
+    const { data, error } = await supabase
+      .from("savingbook")
+      .select(
+        `
         bookid,
         registertime,
         status,
@@ -22,7 +25,9 @@ export class SavingBook extends BaseModel {
           typeid,
           typename
         )
-      `);
+      `
+      )
+      .order("bookid", { ascending: true });
 
     if (error) throw error;
 
@@ -54,6 +59,7 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
+        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -64,7 +70,8 @@ export class SavingBook extends BaseModel {
         )
       `
       )
-      .ilike("customer.fullname", `%${normalized}%`);
+      .ilike("customer.fullname", `%${normalized}%`)
+      .order("bookid", { ascending: true });
 
     if (error) throw error;
 
@@ -79,6 +86,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
+      updatetime: item.updatetime,
     }));
 
     return result;
@@ -93,6 +101,7 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
+        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -103,7 +112,8 @@ export class SavingBook extends BaseModel {
         )
       `
       )
-      .eq("customer.citizenid", citizenid);
+      .eq("customer.citizenid", citizenid)
+      .order("bookid", { ascending: true });
 
     if (error) throw error;
 
@@ -118,6 +128,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
+      updatetime: item.updatetime,
     }));
 
     return result;
@@ -132,6 +143,7 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
+        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -142,7 +154,8 @@ export class SavingBook extends BaseModel {
         )
       `
       )
-      .eq(this.primaryKey, bookid);
+      .eq(this.primaryKey, bookid)
+      .order("bookid", { ascending: true });
 
     if (error) throw error;
 
@@ -159,6 +172,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
+      updatetime: item.updatetime,
     }));
 
     return result;

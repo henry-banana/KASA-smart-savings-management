@@ -109,18 +109,29 @@ export async function getSavingBookById(req, res) {
 // Tìm kiếm sổ tiết kiệm theo keyword
 export async function searchSavingBook(req, res) {
   try {
-    const { keyword } = req.query;
+    const { keyword, pageSize, pageNumber } = req.query;
+
+    // Parse pageSize và pageNumber, set giá trị mặc định
+    const parsedPageSize = parseInt(pageSize) || 10;
+    const parsedPageNumber = parseInt(pageNumber) || 1;
 
     // Gọi service - nếu không có keyword thì lấy tất cả
-    const result = await savingBookService.searchSavingBook(keyword);
+    const result = await savingBookService.searchSavingBook(
+      keyword,
+      parsedPageSize,
+      parsedPageNumber
+    );
 
     return res.status(200).json({
       message: keyword
         ? "Search saving books successfully"
         : "Get all saving books successfully",
       success: true,
-      total: result.length,
-      data: result,
+      total: result.total,
+      pageSize: parsedPageSize,
+      pageNumber: parsedPageNumber,
+      totalPages: Math.ceil(result.total / parsedPageSize),
+      data: result.data,
     });
   } catch (err) {
     return res.status(err.status || 500).json({
