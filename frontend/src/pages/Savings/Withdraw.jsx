@@ -296,7 +296,7 @@ export default function Withdraw() {
                       setAccountInfo(null);
                       setError("");
                     }}
-                    placeholder="Enter account ID (e.g., SA12345)"
+                    placeholder="Enter account ID (e.g., 12345)"
                     className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
@@ -441,6 +441,12 @@ export default function Withdraw() {
                         const value = e.target.value;
                         const numValue = Number(value);
 
+                        // Prevent entering negative amounts
+                        if (numValue < 0) {
+                          setWithdrawAmount("");
+                          return;
+                        }
+
                         // Prevent entering amount greater than balance
                         if (accountInfo && numValue > accountInfo.balance) {
                           setWithdrawAmount(accountInfo.balance.toString());
@@ -450,6 +456,7 @@ export default function Withdraw() {
                       }}
                       placeholder="Enter amount"
                       disabled={!accountInfo || isFixedTermAccount()}
+                      min="0"
                       max={accountInfo?.balance || undefined}
                       className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
                     />
