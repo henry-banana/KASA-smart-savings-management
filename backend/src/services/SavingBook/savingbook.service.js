@@ -130,22 +130,25 @@ class SavingBookService {
     if (typeSaving.typename === "No term") {
       const updateTime= new Date(savingBook.updatetime);
       const currentDate = new Date();
-      const monthsHeld =
-        (currentDate.getFullYear() - updateTime.getFullYear()) * 12 +
-        (currentDate.getMonth() - updateTime.getMonth());
-      
+      let daysHeld =
+        (currentDate.getFullYear() - updateTime.getFullYear()) * 365 +
+        (currentDate.getMonth() - updateTime.getMonth()) * 30 + 
+        (currentDate.getDate() - updateTime.getDate());
+
+
         let currentBalance = savingBook.currentbalance;
-        while (monthsHeld >= 1) {
-          currentBalance += 1.15*currentBalance;
-          monthsHeld--;
+        while (daysHeld >= 30) {
+          currentBalance += currentBalance*0.0015;
+          daysHeld -= 30;
         }
+
 
         await savingBookRepository.update(bookID, {
           currentbalance: currentBalance,
+          updatetime: new Date(currentDate - daysHeld * 24 * 60 * 60 * 1000).toISOString(),
         });
 
         savingBook.currentbalance = currentBalance;
-        savingBook.updatetime = new Date("1/" + currentDate.getMonth() + "/" + currentDate.getFullYear()).toISOString();
     }
 
     return {
@@ -203,21 +206,23 @@ class SavingBookService {
       if (results[i].typeid === 1) {
         const updateTime= new Date(results[i].updatetime);
         const currentDate = new Date();
-        const monthsHeld =
-          (currentDate.getFullYear() - updateTime.getFullYear()) * 12 +
-          (currentDate.getMonth() - updateTime.getMonth());
+        const daysHeld =
+          (currentDate.getFullYear() - updateTime.getFullYear()) * 365 +
+          (currentDate.getMonth() - updateTime.getMonth()) * 30 + 
+          (currentDate.getDate() - updateTime.getDate());
           let currentBalance = results[i].currentbalance;
-          while (monthsHeld >= 1) {
-            currentBalance += 1.15*currentBalance;
-            monthsHeld--;
+          while (daysHeld >= 30) {
+            currentBalance += currentBalance*0.0015;
+            daysHeld -= 30;
           }
 
           await savingBookRepository.update(results[i].bookid, {
             currentbalance: currentBalance,
+            updatetime: new Date(currentDate - daysHeld * 24 * 60 * 60 * 1000).toISOString(),
           });
 
+
           results[i].currentbalance = currentBalance;
-          results[i].updatetime = new Date("1/" + currentDate.getMonth() + "/" + currentDate.getFullYear()).toISOString();    
       }
     }
 
