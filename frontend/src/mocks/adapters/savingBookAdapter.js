@@ -85,7 +85,7 @@ export const mockSavingBookAdapter = {
     const offset = (actualPage - 1) * actualPageSize;
     const paginatedItems = items.slice(offset, offset + actualPageSize);
 
-    return {
+    const response = {
       message: "Search savingbooks successfully",
       success: true,
       data: paginatedItems,
@@ -94,6 +94,18 @@ export const mockSavingBookAdapter = {
       pageSize: actualPageSize,
       totalPages: totalPages || 1,
     };
+
+    logger.info("🎭 Mock Search Response Debug", {
+      itemsAfterFilter: items.length,
+      total,
+      actualPage,
+      actualPageSize,
+      totalPages,
+      paginatedItemsCount: paginatedItems.length,
+      response,
+    });
+
+    return response;
   },
 
   /**
