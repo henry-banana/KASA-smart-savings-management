@@ -5,6 +5,7 @@ import { forgotPassword } from "../controllers/UserAccount/forgotPassword.contro
 import { verifyOTPController } from "../controllers/UserAccount/verifyOTP.controller.js";
 import { resetPassword } from "../controllers/UserAccount/resetPassword.controller.js";
 import { getAllEmployees } from "../controllers/Employee/employee.controller.js";
+import { changePassword } from "../controllers/UserAccount/changePassword.controller.js";
 import {
   createUserAccount,
   updateUserAccount,
@@ -16,6 +17,7 @@ const router = express.Router();
 router.post("/login", login);
 router.post("/", createUserAccount);
 router.post("/forgot-password", forgotPassword);
+router.post("/change-password", changePassword);
 router.post("/verify-otp", verifyOTPController);
 router.post("/reset-password", resetPassword);
 router.get("/", getAllEmployees);
