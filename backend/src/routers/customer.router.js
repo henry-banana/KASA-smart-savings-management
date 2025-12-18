@@ -6,6 +6,7 @@ import {
   updateCustomer,
   deleteCustomer,
   searchCustomer,
+  getCustomerByCitizenId,
 } from "../controllers/Customer/customer.controller.js";
 
 const router = express.Router();
@@ -86,12 +87,19 @@ router.post("/", addCustomer);
  * @swagger
  * /api/customer:
  *   get:
- *     summary: Get all customers
+ *     summary: Get all customers OR get customer by citizenId
  *     tags:
  *       - Customer
+ *     parameters:
+ *       - in: query
+ *         name: citizenId
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Filter by citizen ID (if provided)
  *     responses:
  *       200:
- *         description: List of customers
+ *         description: List of customers or single customer
  *         content:
  *           application/json:
  *             schema:
@@ -99,7 +107,14 @@ router.post("/", addCustomer);
  *               items:
  *                 $ref: '#/components/schemas/Customer'
  */
-router.get("/", getAllCustomers);
+router.get("/", (req, res, next) => {
+  // Nếu có query param citizenId, gọi getCustomerByCitizenId
+  if (req.query.citizenId) {
+    return getCustomerByCitizenId(req, res, next);
+  }
+  // Nếu không, trả về tất cả customers
+  return getAllCustomers(req, res, next);
+});
 
 /**
  * @swagger
@@ -179,6 +194,8 @@ router.put("/:id", updateCustomer);
  *       404:
  *         description: Customer not found
  */
+
+
 router.delete("/:id", deleteCustomer);
 
 export default router;
