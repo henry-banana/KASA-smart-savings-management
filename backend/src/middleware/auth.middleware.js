@@ -4,19 +4,45 @@ export function verifyToken(req, res, next) {
   const authHeader = req.headers["authorization"];
 
   if (!authHeader) {
+    console.log("❌ Missing Authorization header");
     return res.status(401).json({ message: "Missing Authorization header" });
   }
 
   const parts = authHeader.split(" ");
+  
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    return res.status(401).json({ message: "Invalid token format" });
+    console.error("❌ Invalid token format in Authorization header:", authHeader);
+    return res.status(401).json({ 
+      message: "Invalid token format." 
+    });
   }
 
   const token = parts[1];
 
+  // Validate JWT format (should have exactly 2 dots: header.payload.signature)
+  const tokenParts = token.split(".");
+  if (tokenParts.length !== 3) {
+    console.error("❌ Malformed token - Expected 3 parts, got:", tokenParts.length);
+    console.error("Token structure:", {
+      parts: tokenParts.length,
+      preview: token.substring(0, 50) + "..."
+    });
+    return res.status(401).json({ 
+      message: "Malformed token. Please login again to get a new token.",
+      details: `Token has ${tokenParts.length} parts instead of 3` 
+    });
+  }
+
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(403).json({ message: "Token is invalid or expired" });
+      console.error("❌ Token verification failed:", {
+        error: err.message,
+        name: err.name,
+        tokenPreview: token.substring(0, 30) + "..."
+      });
+      return res.status(403).json({ 
+        message: "Token is invalid or expired. Please login again." 
+      });
     }
 
     // Kiểm tra userId nếu route yêu cầu

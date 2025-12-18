@@ -1,4 +1,5 @@
 import { employeeRepository } from "../../repositories/Employee/EmployeeRepository.js";
+import { employeeService } from "../../services/Employee/employee.service.js";
 import { userAccountService } from "../../services/UserAccount/userAccount.service.js";
 import { Branch } from "../../models/Branch.js";
 import { Role } from "../../models/Role.js";
@@ -203,6 +204,62 @@ export async function updateStatusAccount(req, res) {
     return res.status(err.status || 500).json({
       message: "Failed to update user account status",
       success: false
+    });
+  }
+}
+  // GET/api/userAccount/me
+export async function getMe(req, res) {
+  try {
+    const userId = req.user.userId; // Lấy từ Token (đã qua middleware)
+    const profile = await employeeService.getMyProfile(userId);
+
+    if (!profile) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "User profile not found" 
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Get profile successfully",
+      data: profile,
+    });
+  } catch (error) {
+    console.error("Error in getMe:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Internal server error" 
+    });
+  }
+}
+//PUT/api/userAccount/me
+export async function updateMe(req, res) {
+  try {
+    const userId = req.user.userId;
+    const updateData = req.body;
+
+    const updatedProfile = await employeeService.updateMyProfile(userId, updateData);
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedProfile,
+    });
+  } catch (error) {
+    console.error("Error in updateMe:", error);
+    
+    // Xử lý các lỗi nghiệp vụ từ Service ném ra
+    if (error.message === "Email already exists." || error.message.includes("No valid fields")) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+
+    return res.status(500).json({ 
+      success: false, 
+      message: "Internal server error" 
     });
   }
 }
