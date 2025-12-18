@@ -116,19 +116,28 @@ export async function getCustomerByCitizenId(req, res) {
       });
     }
 
-    const customer = await customerService.findCustomerByCitizenId(citizenId);
+    const customerFound = await customerService.findCustomerByCitizenId(citizenId);
 
-    if (!customer) {
+    if (!customerFound) {
       return res.status(404).json({
         success: false,
         message: "Customer not found"
       });
     }
 
-    return res.status(200).json({
+    return res.status(200).json({ 
+      message: "Customer retrieved successfully",
       success: true,
-      data: customer
-    });
+      data: {
+        customer:{
+          "fullName": customerFound.fullname, //Tên biến trong customerFound phải là lowercase vì database trả về. 
+          "citizenId": customerFound.citizenid,
+          "street": customerFound.street,
+          "district": customerFound.district,
+          "province": customerFound.province
+        }
+      }
+      });
   } catch (error) {
     console.error("Controller Error:", error);
     return res.status(500).json({ success: false, message: "Internal server error" });
