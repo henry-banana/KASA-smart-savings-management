@@ -396,7 +396,7 @@ export default function UserProfile() {
           <CardTitle className="text-xl">Account Details</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="flex flex-col gap-6">
             <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
                 Employee ID
