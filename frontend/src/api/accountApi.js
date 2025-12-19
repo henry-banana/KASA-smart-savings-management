@@ -63,9 +63,17 @@ export const accountApi = {
   async searchSavingBooks(
     keyword = "",
     typeFilter = "all",
-    statusFilter = "all"
+    statusFilter = "all",
+    page = 1,
+    pageSize = 10
   ) {
-    const params = { keyword, typeId: typeFilter, status: statusFilter };
+    const params = {
+      keyword,
+      typeId: typeFilter,
+      status: statusFilter,
+      page,
+      pageSize,
+    };
     return this.searchAccounts(params);
   },
 };

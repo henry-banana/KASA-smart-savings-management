@@ -49,25 +49,37 @@ export const createSavingBook = async (data) => {
 };
 
 /**
- * Tra cứu sổ tiết kiệm (BM4)
+ * Tra cứu sổ tiết kiệm với phân trang (BM4)
  * @param {string} keyword - Từ khóa tìm kiếm
  * @param {string} typeFilter - Lọc theo loại sổ
  * @param {string} statusFilter - Lọc theo trạng thái
- * @returns {Promise<Object>} Search results
+ * @param {number} page - Số trang (default 1)
+ * @param {number} pageSize - Số record mỗi trang (default 10)
+ * @returns {Promise<Object>} Search results with pagination metadata
  */
 export const searchSavingBooks = async (
   keyword = "",
   typeFilter = "all",
-  statusFilter = "all"
+  statusFilter = "all",
+  page = 1,
+  pageSize = 10
 ) => {
   if (USE_MOCK) {
     return mockSavingBookAdapter.searchSavingBooks(
       keyword,
       typeFilter,
-      statusFilter
+      statusFilter,
+      page,
+      pageSize
     );
   }
-  return accountApi.searchSavingBooks(keyword, typeFilter, statusFilter);
+  return accountApi.searchSavingBooks(
+    keyword,
+    typeFilter,
+    statusFilter,
+    page,
+    pageSize
+  );
 };
 
 /**

@@ -20,6 +20,10 @@ export class EmployeeRepository {
   async delete(employeeId) {
     return await Employee.delete(employeeId);
   }
+  // --- Hàm nghiệp vụ riêng cho Profile ---
+  async findProfileById(id) {
+    return await Employee.getProfileById(id);
+  }
 }
 
 export const employeeRepository = new EmployeeRepository();

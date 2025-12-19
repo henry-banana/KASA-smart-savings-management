@@ -74,6 +74,70 @@ class EmployeeService {
     return employee;
   }
 
+  /**
+   * Lấy thông tin profile người dùng hiện tại
+   */
+  async getMyProfile(userId) {
+    try {
+      const data = await employeeRepository.findProfileById(userId);
+      if (!data) return null;
+
+      // Format lại dữ liệu cho đẹp trước khi trả về Controller
+      return {
+        userId: data.useraccount.userid,
+        fullName: data.fullname,
+        email: data.email,
+        role: data.role?.rolename,
+        branchName: data.branch?.branchname || "",
+        status: data.useraccount.accountstatus,
+      };
+    } catch (error) {
+      // Có thể log error tại đây
+      if (error.code === "PGRST116") return null; // Not found
+      throw error;
+    }
+  }
+
+  /**
+   * Cập nhật thông tin cá nhân (Có bảo mật White-list)
+   */
+  async updateMyProfile(userId, updateData) {
+    // 1. MAPPING: camelCase (from client) -> lowercase (database column)
+    const fieldMapping = {
+      fullName: "fullname",
+      email: "email",
+      phone: "phone",
+    };
+
+    const cleanData = {};
+
+    // 2. Convert và validate fields
+    Object.keys(updateData).forEach((key) => {
+      const dbColumn = fieldMapping[key];
+      
+      if (dbColumn) {
+        cleanData[dbColumn] = updateData[key];
+      }
+    });
+
+    // Nếu không có trường nào hợp lệ để update
+    if (Object.keys(cleanData).length === 0) {
+      throw new Error("No valid fields to update. Allowed: fullName, email, phone.");
+    }
+
+    // 3. Gọi Repository để update
+    // Lưu ý: userId của UserAccount chính là employeeid trong bảng Employee
+    try {
+      const updatedRecord = await employeeRepository.update(userId, cleanData);
+      return updatedRecord;
+    } catch (error) {
+      if (error.code === '23505') { // Mã lỗi unique constraint (trùng email)
+         throw new Error("Email already exists.");
+      }
+      throw error;
+    }
+  }
+
   // Xóa nhân viên
   async deleteEmployee(id) {
     const existingEmployee = await employeeRepository.findById(id);
