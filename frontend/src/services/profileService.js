@@ -6,7 +6,7 @@ const profileAdapter = USE_MOCK ? mockProfileAdapter : profileApi;
 
 /**
  * Get current user profile
- * @returns {Promise<Object>} Profile data including personal information
+ * @returns {Promise<Object>} Profile data with fields: id, fullName, email, roleName, branchName
  */
 export const getProfile = async () => {
   return profileAdapter.getProfile();

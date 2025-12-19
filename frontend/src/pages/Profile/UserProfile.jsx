@@ -417,6 +417,12 @@ export default function UserProfile() {
                   : "Teller"}
               </p>
             </div>
+            <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
+              <p className="mb-1 text-sm font-medium text-gray-600">Branch</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {profileData?.branchName || "N/A"}
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>
