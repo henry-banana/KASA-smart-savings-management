@@ -49,10 +49,6 @@ export default function UserProfile() {
 
   const [contactInfo, setContactInfo] = useState({
     email: `${user.username}@kasa.com`,
-    phone: "+84 123 456 789",
-    address: "123 Main Street, District 1, Ho Chi Minh City",
-    dateOfBirth: "2004-01-01",
-    avatarUrl: "",
   });
 
   // Fetch profile on mount
@@ -65,10 +61,6 @@ export default function UserProfile() {
           setProfileData(response.data);
           setContactInfo({
             email: response.data.email || "",
-            phone: response.data.phone || "",
-            address: response.data.address || "",
-            dateOfBirth: response.data.dateOfBirth || "2004-01-01",
-            avatarUrl: response.data.avatarUrl || "",
           });
         }
       } catch (err) {
@@ -136,8 +128,8 @@ export default function UserProfile() {
   };
 
   const handleUpdateContact = async () => {
-    if (!contactInfo.email || !contactInfo.phone) {
-      alert("Email and phone are required");
+    if (!contactInfo.email) {
+      alert("Email is required");
       return;
     }
 
@@ -145,20 +137,12 @@ export default function UserProfile() {
       setLoading(true);
       const response = await updateProfile({
         fullName: profileData?.fullName,
-        phone: contactInfo.phone,
-        address: contactInfo.address,
-        dateOfBirth: contactInfo.dateOfBirth,
-        avatarUrl: contactInfo.avatarUrl,
       });
 
       if (response.success && response.data) {
         setProfileData(response.data);
         setContactInfo({
           email: response.data.email,
-          phone: response.data.phone,
-          address: response.data.address,
-          dateOfBirth: response.data.dateOfBirth,
-          avatarUrl: response.data.avatarUrl,
         });
         setShowEditContact(false);
         setSuccessMessage("Contact information updated successfully");
@@ -308,15 +292,7 @@ export default function UserProfile() {
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
             >
-              {profileData?.avatarUrl ? (
-                <img
-                  src={profileData.avatarUrl}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
-              )}
+              <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
             </div>
             <div className="flex-1 text-center sm:text-left min-w-0">
               <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-gray-900 truncate">
@@ -334,11 +310,7 @@ export default function UserProfile() {
                     ? "💼 Accountant"
                     : "💰 Teller"}
                 </Badge>
-                <Badge className="text-green-700 bg-green-100 border-green-200 border font-medium">
-                  ✓ Active
-                </Badge>
               </div>
-              <p className="text-sm text-gray-700">@{user.username}</p>
             </div>
           </div>
         </CardContent>
@@ -376,40 +348,6 @@ export default function UserProfile() {
               <div>
                 <p className="text-sm font-medium text-gray-700">Email</p>
                 <p className="text-sm text-gray-900">{contactInfo.email}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 p-4 rounded-xs bg-green-50 border border-green-100">
-              <div
-                className="flex items-center justify-center w-12 h-12 rounded-xs border border-gray-100"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
-                }}
-              >
-                <Phone size={20} className="text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  Phone Number
-                </p>
-                <p className="text-sm text-gray-900">{contactInfo.phone}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 p-4 rounded-xs bg-purple-50 border border-purple-100">
-              <div
-                className="flex items-center justify-center w-12 h-12 rounded-xs border border-gray-100"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
-                }}
-              >
-                <MapPin size={20} className="text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-700">Address</p>
-                <p className="text-sm text-gray-900">{contactInfo.address}</p>
               </div>
             </div>
           </div>
@@ -460,12 +398,6 @@ export default function UserProfile() {
         <CardContent className="p-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Username</p>
-              <p className="text-sm font-semibold text-gray-900">
-                {user.username}
-              </p>
-            </div>
-            <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
                 Employee ID
               </p>
@@ -484,12 +416,6 @@ export default function UserProfile() {
                   ? "Accounting"
                   : "Teller"}
               </p>
-            </div>
-            <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Status</p>
-              <Badge className="text-green-700 bg-green-100 border-green-200 border">
-                ✓ Active
-              </Badge>
             </div>
           </div>
         </CardContent>
@@ -645,69 +571,6 @@ export default function UserProfile() {
                   setContactInfo({ ...contactInfo, email: e.target.value })
                 }
                 className="h-11 rounded-smborder-gray-200"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-gray-700">
-                Phone Number
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={contactInfo.phone}
-                onChange={(e) =>
-                  setContactInfo({ ...contactInfo, phone: e.target.value })
-                }
-                className="h-11 rounded-smborder-gray-200"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="address" className="text-gray-700">
-                Address
-              </Label>
-              <Input
-                id="address"
-                value={contactInfo.address}
-                onChange={(e) =>
-                  setContactInfo({ ...contactInfo, address: e.target.value })
-                }
-                className="h-11 rounded-smborder-gray-200"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="dateOfBirth" className="text-gray-700">
-                Date of Birth
-              </Label>
-              <Input
-                id="dateOfBirth"
-                type="date"
-                value={contactInfo.dateOfBirth}
-                onChange={(e) =>
-                  setContactInfo({
-                    ...contactInfo,
-                    dateOfBirth: e.target.value,
-                  })
-                }
-                className="h-11 rounded-smborder-gray-200"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="avatarUrl" className="text-gray-700">
-                Avatar URL
-              </Label>
-              <Input
-                id="avatarUrl"
-                type="url"
-                value={contactInfo.avatarUrl}
-                onChange={(e) =>
-                  setContactInfo({ ...contactInfo, avatarUrl: e.target.value })
-                }
-                className="h-11 rounded-smborder-gray-200"
-                placeholder="https://example.com/avatar.png"
               />
             </div>
           </div>

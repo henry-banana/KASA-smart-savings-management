@@ -1,6 +1,6 @@
-import { USE_MOCK } from '@/config/app.config';
-import { profileApi } from '@/api/profileApi';
-import { mockProfileAdapter } from '@/mocks/adapters/profileAdapter';
+import { USE_MOCK } from "@/config/app.config";
+import { profileApi } from "@/api/profileApi";
+import { mockProfileAdapter } from "@/mocks/adapters/profileAdapter";
 
 const profileAdapter = USE_MOCK ? mockProfileAdapter : profileApi;
 
@@ -15,11 +15,7 @@ export const getProfile = async () => {
 /**
  * Update current user profile
  * @param {Object} payload - Profile updates
- * @param {string} payload.fullName - Full name
- * @param {string} payload.phone - Phone number
- * @param {string} payload.address - Address
- * @param {string} payload.dateOfBirth - Date of birth (YYYY-MM-DD)
- * @param {string} payload.avatarUrl - Avatar URL
+ * @param {string} payload.fullName - Full name (only editable field)
  * @returns {Promise<Object>} Updated profile data
  */
 export const updateProfile = async (payload) => {
