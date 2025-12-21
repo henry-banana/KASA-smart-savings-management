@@ -1,3 +1,5 @@
+import { jest } from "@jest/globals";
+
 export const mockCustomerRepository = {
   findById: jest.fn(),
   findByCitizenID: jest.fn(),

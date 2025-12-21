@@ -37,7 +37,7 @@ export default {
   ],
   moduleFileExtensions: ['js', 'mjs'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    "^@src/(.*)$": "<rootDir>/src/$1",
     '^@config/(.*)$': '<rootDir>/src/config/$1',
     '^@models/(.*)$': '<rootDir>/src/models/$1',
   },
