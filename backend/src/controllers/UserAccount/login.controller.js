@@ -16,20 +16,6 @@ export async function login(req, res) {
         .json({ message: "Username and password are required" });
     }
 
-    // const { data: userData, error } = await supabase
-    //   .from("useraccount")
-    //   .select(`
-    //     userid,
-    //     password,
-    //     employee:employee (
-    //       fullname,
-    //       role:role (
-    //         rolename
-    //       )
-    //     )
-    //   `)
-    //   .eq("userid", username)
-    //   .single();
 
     // JOIN 3 bảng để lấy roleName thông qua Employee
     const { data: userData, error } = await supabase
@@ -53,8 +39,6 @@ export async function login(req, res) {
       .eq("email", username)
       .single();
 
-    console.log("Error:", error);
-    console.log("User data:", userData);
 
     if (error || !userData) {
       return res.status(401).json({

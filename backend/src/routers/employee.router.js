@@ -198,7 +198,7 @@ const router = express.Router();
 import { verifyToken } from "../middleware/auth.middleware.js";
 
 
-// router.post("/add", verifyToken, addEmployee); //Token khi tạo
+router.post("/add", verifyToken, addEmployee); //Token khi tạo
 router.post("/", addEmployee);
 router.get("/", getAllEmployees);
 router.get("/:id", getEmployeeById);
