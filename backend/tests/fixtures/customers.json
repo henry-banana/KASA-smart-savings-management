@@ -1,0 +1,26 @@
+[
+  {
+    "customerid": 1,
+    "fullname": "Nguyen Van A",
+    "citizenid": "123456789012",
+    "street": "Vo Van Ngan",
+    "district": "Thu Duc",
+    "province": "Ho Chi Minh"
+  },
+  {
+    "customerid": 2,
+    "fullname": "Tran Thi B",
+    "citizenid": "987654321098",
+    "street": "Le Van Viet",
+    "district": "Thu Duc",
+    "province": "Ho Chi Minh"
+  },
+  {
+    "customerid": 3,
+    "fullname": "Le Van C",
+    "citizenid": "456789123456",
+    "street": "Nguyen Van Linh",
+    "district": "Binh Tan",
+    "province": "Ho Chi Minh"
+  }
+]

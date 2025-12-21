@@ -1,0 +1,9 @@
+[
+  {
+    "employeeid": 1,
+    "fullname": "Nguyen Van B",
+    "email": "test.employee@example.com",
+    "roleid": "R001",
+    "branchid": "BR001"
+  }
+]
