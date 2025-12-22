@@ -268,4 +268,4 @@ Headers: { "Authorization": "Bearer <your-token>" }
 ## Cập nhật cuối cùng
 **Ngày:** 22/12/2025  
 **Version:** 1.0  
-**Người tạo:** Development Team
+**Người tạo:** Phúc Hậu
