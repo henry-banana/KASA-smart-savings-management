@@ -78,8 +78,8 @@ export async function login(req, res) {
     const token = jwt.sign(
       {
         userId: userData.useraccount.userid, // id duy nhất
-        username: userData.useraccount.userid, // username
-        role: roleName, // role: admin, teller...
+        userName: userData.useraccount.userid, // username
+        roleName: roleName, // role: admin, teller...
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES || "1d" }
