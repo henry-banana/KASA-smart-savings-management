@@ -26,7 +26,8 @@ router.put("/me", verifyToken, updateMe);
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOTPController);
 router.post("/reset-password", resetPassword);
-router.get("/", getAllEmployees);
+router.get("/",  getAllEmployees);
+
 // Các route có params (như :id) phải nằm dưới cùng
 router.put("/:id", updateUserAccount);
 router.patch("/:id", updateUserAccount);
