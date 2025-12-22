@@ -1,4 +1,4 @@
-
+// Hàm này kiểm tra vai trò của người dùng dựa trên JWT đã xác thực
 import {userAccountRepository} from '../repositories/UserAccount/UserAccountRepository.js';
 
 const checkRole = (allowedRoles) => {
