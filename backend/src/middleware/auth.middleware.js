@@ -63,9 +63,8 @@ export function verifyToken(req, res, next) {
 
     req.user = {
       userId: decoded.userId,
-      username: decoded.username,
-      role: decoded.role,
-      fullName: decoded.fullName
+      userName: decoded.userName,
+      roleName: decoded.roleName
     };
 
     next();
