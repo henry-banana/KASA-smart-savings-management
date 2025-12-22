@@ -8,24 +8,26 @@ import {
   closeSavingBook
 } from "../controllers/SavingBook/savingBook.controller.js";
 
+import { verifyToken } from "../middleware/auth.middleware.js";
+
 const router = express.Router();
 
 // Thêm sổ tiết kiệm mới
-router.post("/", addSavingBook);
+router.post("/", verifyToken, addSavingBook);
 
 // Cập nhật thông tin sổ tiết kiệm
-router.put("/:id", updateSavingBook);
+router.put("/:id", verifyToken, updateSavingBook);
 
 // Xóa sổ tiết kiệm
-router.delete("/:id", deleteSavingBook);
+router.delete("/:id", verifyToken, deleteSavingBook);
 
 // Search theo từ khóa là mã sổ, tên của khách hàng, số căn cước
-router.get("/search", searchSavingBook);
+router.get("/search", verifyToken, searchSavingBook);
 
 // Lấy thông tin sổ tiết kiệm theo ID
-router.get("/:id", getSavingBookById);
+router.get("/:id", verifyToken, getSavingBookById);
 
 //Tất toán sổ
-router.post("/:id/close", closeSavingBook);
+router.post("/:id/close", verifyToken, closeSavingBook);
 
 export default router;

@@ -7,26 +7,26 @@ import {
   deleteTypeSaving,
 } from "../controllers/TypeSaving/typeSaving.controller.js";
 
+import { verifyToken } from "../middleware/auth.middleware.js";
+
 const router = express.Router();
 
 // Thêm loại sổ tiết kiệm mới
 // POST /api/typesaving
-router.post("/", createTypeSaving);
+router.post("/", verifyToken, createTypeSaving);
 
 // Lấy danh sách tất cả loại sổ tiết kiệm
 // GET /api/typesaving
-router.get("/", getAllTypeSavings);
-
+router.get("/", verifyToken, getAllTypeSavings);
 // Lấy thông tin loại sổ tiết kiệm theo ID
 // GET /api/typesaving/:id
-router.get("/:id", getTypeSavingById);
+router.get("/:id", verifyToken, getTypeSavingById);
 
 // Cập nhật loại sổ tiết kiệm
 // PUT /api/typesaving/:id
-router.put("/:id", updateTypeSaving);
-
+router.put("/:id", verifyToken, updateTypeSaving);
 // Xóa loại sổ tiết kiệm
 // DELETE /api/typesaving/:id
-router.delete("/:id", deleteTypeSaving);
+router.delete("/:id", verifyToken, deleteTypeSaving);
 
 export default router;

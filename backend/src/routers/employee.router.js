@@ -199,10 +199,10 @@ import { verifyToken } from "../middleware/auth.middleware.js";
 
 
 router.post("/add", verifyToken, addEmployee); //Token khi tạo
-router.post("/", addEmployee);
-router.get("/", getAllEmployees);
-router.get("/:id", getEmployeeById);
-router.put("/:id", updateEmployee);
-router.delete("/:id", deleteEmployee);
+router.post("/", verifyToken, addEmployee);
+router.get("/", verifyToken, getAllEmployees);
+router.get("/:id", verifyToken, getEmployeeById);
+router.put("/:id", verifyToken, updateEmployee);
+router.delete("/:id", verifyToken, deleteEmployee);
 
 export default router;

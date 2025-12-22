@@ -9,27 +9,29 @@ import {
   withdrawTransaction,
 } from "../controllers/Transaction/transaction.controller.js";
 
+import { verifyToken } from "../middleware/auth.middleware.js";
+
 const router = express.Router();
 
 //Lấy danh sách tất cả giao dịch
-router.get("/", getAllTransactions);
+router.get("/", verifyToken, getAllTransactions);
 
 //Lấy thông tin 1 giao dịch theo ID
-router.get("/:id", getTransactionById);
+router.get("/:id", verifyToken, getTransactionById);
 
 //Thêm giao dịch mới
-router.post("/add", addTransaction);
+router.post("/add", verifyToken, addTransaction);
 
 //Cập nhật thông tin giao dịch
-router.put("/:id", updateTransaction);
+router.put("/:id", verifyToken, updateTransaction);
 
 //Xóa giao dịch
-router.delete("/:id", deleteTransaction);
+router.delete("/:id", verifyToken, deleteTransaction);
 
 //Gửi tiền
-router.post("/deposit", depositTransaction);
+router.post("/deposit", verifyToken, depositTransaction);
 
 //Rút tiền
-router.post("/withdraw", withdrawTransaction);
+router.post("/withdraw", verifyToken, withdrawTransaction);
 
 export default router;
