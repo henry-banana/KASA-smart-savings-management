@@ -1,24 +1,35 @@
 // Hàm này kiểm tra vai trò của người dùng dựa trên JWT đã xác thực
-import {userAccountRepository} from '../repositories/UserAccount/UserAccountRepository.js';
+// Middleware này phải được sử dụng sau verifyToken
 
 const checkRole = (allowedRoles) => {
-  return async (req, res, next) => {
+  return (req, res, next) => {
     try {
-      const user = await userAccountRepository.findById(req.userId);
-      if (!user || !user.role) {
-        return res.status(403).json({ message: 'Forbidden: No role assigned' });
+      // Lấy roleName từ req.user (đã được set bởi verifyToken middleware)
+      if (!req.user || !req.user.roleName) {
+        return res.status(403).json({ 
+          message: 'Forbidden: No role assigned',
+          success: false 
+        });
       }
 
-      const userRole = user.role.roleName;
+      const userRole = req.user.roleName;
+      
       if (allowedRoles.includes(userRole)) {
         next();
       } else {
-        res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+        return res.status(403).json({ 
+          message: `Forbidden: Insufficient permissions. Required roles: ${allowedRoles.join(', ')}`,
+          success: false 
+        });
       }
     } catch (error) {
-      res.status(500).json({ message: 'Internal server error' });
+      console.error('Error in checkRole middleware:', error);
+      return res.status(500).json({ 
+        message: 'Internal server error',
+        success: false 
+      });
     }
   };
 };
 
-module.exports = checkRole;
+export default checkRole;

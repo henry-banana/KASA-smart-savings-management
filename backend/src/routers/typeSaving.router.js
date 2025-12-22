@@ -8,25 +8,30 @@ import {
 } from "../controllers/TypeSaving/typeSaving.controller.js";
 
 import { verifyToken } from "../middleware/auth.middleware.js";
+import checkRole from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
-// Thêm loại sổ tiết kiệm mới
+// Role definitions
+const accountantOrAdmin = checkRole(['accountant', 'admin']);
+const allRoles = checkRole(['teller', 'accountant', 'admin']);
+
+// Thêm loại sổ tiết kiệm mới - accountant và admin
 // POST /api/typesaving
-router.post("/", verifyToken, createTypeSaving);
+router.post("/", verifyToken, accountantOrAdmin, createTypeSaving);
 
-// Lấy danh sách tất cả loại sổ tiết kiệm
+// Lấy danh sách tất cả loại sổ tiết kiệm - tất cả role
 // GET /api/typesaving
-router.get("/", verifyToken, getAllTypeSavings);
-// Lấy thông tin loại sổ tiết kiệm theo ID
+router.get("/", verifyToken, allRoles, getAllTypeSavings);
+// Lấy thông tin loại sổ tiết kiệm theo ID - tất cả role
 // GET /api/typesaving/:id
-router.get("/:id", verifyToken, getTypeSavingById);
+router.get("/:id", verifyToken, allRoles, getTypeSavingById);
 
-// Cập nhật loại sổ tiết kiệm
+// Cập nhật loại sổ tiết kiệm - accountant và admin
 // PUT /api/typesaving/:id
-router.put("/:id", verifyToken, updateTypeSaving);
-// Xóa loại sổ tiết kiệm
+router.put("/:id", verifyToken, accountantOrAdmin, updateTypeSaving);
+// Xóa loại sổ tiết kiệm - accountant và admin
 // DELETE /api/typesaving/:id
-router.delete("/:id", verifyToken, deleteTypeSaving);
+router.delete("/:id", verifyToken, accountantOrAdmin, deleteTypeSaving);
 
 export default router;

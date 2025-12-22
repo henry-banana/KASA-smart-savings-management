@@ -9,25 +9,30 @@ import {
 } from "../controllers/SavingBook/savingBook.controller.js";
 
 import { verifyToken } from "../middleware/auth.middleware.js";
+import checkRole from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
-// Thêm sổ tiết kiệm mới
-router.post("/", verifyToken, addSavingBook);
+// Role definitions
+const tellerOrAdmin = checkRole(['teller', 'admin']);
+const allRoles = checkRole(['teller', 'accountant', 'admin']);
 
-// Cập nhật thông tin sổ tiết kiệm
-router.put("/:id", verifyToken, updateSavingBook);
+// Thêm sổ tiết kiệm mới - chỉ teller và admin
+router.post("/", verifyToken, tellerOrAdmin, addSavingBook);
 
-// Xóa sổ tiết kiệm
-router.delete("/:id", verifyToken, deleteSavingBook);
+// Cập nhật thông tin sổ tiết kiệm - chỉ teller và admin
+router.put("/:id", verifyToken, tellerOrAdmin, updateSavingBook);
 
-// Search theo từ khóa là mã sổ, tên của khách hàng, số căn cước
-router.get("/search", verifyToken, searchSavingBook);
+// Xóa sổ tiết kiệm - chỉ teller và admin
+router.delete("/:id", verifyToken, tellerOrAdmin, deleteSavingBook);
 
-// Lấy thông tin sổ tiết kiệm theo ID
-router.get("/:id", verifyToken, getSavingBookById);
+// Search theo từ khóa là mã sổ, tên của khách hàng, số căn cước - tất cả role
+router.get("/search", verifyToken, allRoles, searchSavingBook);
 
-//Tất toán sổ
-router.post("/:id/close", verifyToken, closeSavingBook);
+// Lấy thông tin sổ tiết kiệm theo ID - tất cả role
+router.get("/:id", verifyToken, allRoles, getSavingBookById);
+
+// Tất toán sổ - chỉ teller và admin
+router.post("/:id/close", verifyToken, tellerOrAdmin, closeSavingBook);
 
 export default router;
