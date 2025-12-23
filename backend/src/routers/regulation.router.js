@@ -7,7 +7,7 @@ import checkRole from "../middleware/role.middleware.js";
 const router = express.Router();
 
 // Role definitions
-const allRoles = checkRole(['accountant', 'admin', 'teller']);
+const allRoles = checkRole(['accountant', 'administrator', 'teller']);
 
 
 router.get("/", verifyToken, allRoles, getAllRegulations); 

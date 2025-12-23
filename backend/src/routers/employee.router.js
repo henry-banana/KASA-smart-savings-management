@@ -12,7 +12,7 @@ import checkRole from "../middleware/role.middleware.js";
 const router = express.Router();
 
 // Role definitions - only admin can manage employees
-const adminOnly = checkRole(['admin']);
+const adminOnly = checkRole(['administrator']);
 
 /**
  * @swagger
