@@ -73,9 +73,16 @@ apiClient.interceptors.response.use(
     }
 
     const { status, data } = error.response;
-    logger.error("API Error", { status, message: data.message });
+    logger.error("API Error", { status, message: data?.message, data });
 
     switch (status) {
+      case 400:
+        return Promise.reject({
+          ...data,
+          message: data?.message || ERROR_MESSAGES.SERVER_ERROR,
+          type: "BAD_REQUEST",
+        });
+
       case 401:
         localStorage.removeItem("user");
         localStorage.removeItem("authToken");
@@ -93,13 +100,14 @@ apiClient.interceptors.response.use(
 
       case 404:
         return Promise.reject({
-          message: data.message || ERROR_MESSAGES.NOT_FOUND,
+          message: data?.message || ERROR_MESSAGES.NOT_FOUND,
           type: "NOT_FOUND",
         });
 
       default:
         return Promise.reject({
-          message: data.message || ERROR_MESSAGES.SERVER_ERROR,
+          ...data,
+          message: data?.message || ERROR_MESSAGES.SERVER_ERROR,
           type: "SERVER_ERROR",
         });
     }
