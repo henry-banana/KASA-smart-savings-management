@@ -10,6 +10,15 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = () => {
       try {
+        const legacyToken = localStorage.getItem("token");
+        const authToken = localStorage.getItem("authToken");
+
+        // Migrate old token key so API client picks it up
+        if (legacyToken && !authToken) {
+          localStorage.setItem("authToken", legacyToken);
+          localStorage.removeItem("token");
+        }
+
         const savedUser = localStorage.getItem("user");
         if (savedUser) {
           setUser(JSON.parse(savedUser));
@@ -36,6 +45,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("user");
     localStorage.removeItem("authToken");
+    localStorage.removeItem("token");
   };
 
   const updateUser = (updates) => {

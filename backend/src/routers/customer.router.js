@@ -6,10 +6,15 @@ import {
   updateCustomer,
   deleteCustomer,
   searchCustomer,
-  getCustomerByCitizenId,
 } from "../controllers/Customer/customer.controller.js";
+import { verifyToken } from "../middleware/auth.middleware.js";
+import checkRole from "../middleware/role.middleware.js";
 
 const router = express.Router();
+
+// Role definitions
+const teller = checkRole(['teller']);
+const tellerOrAccountant = checkRole(['teller', 'accountant']);
 
 /**
  * @swagger
@@ -35,7 +40,7 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Customer'
  */
-router.get("/search", searchCustomer);
+router.get("/search", verifyToken, tellerOrAccountant, searchCustomer);
 
 /**
  * @swagger
@@ -80,26 +85,19 @@ router.get("/search", searchCustomer);
  *             schema:
  *               $ref: '#/components/schemas/Customer'
  */
-router.post("/", addCustomer);
+router.post("/", verifyToken, teller, addCustomer);
 
 
 /**
  * @swagger
  * /api/customer:
  *   get:
- *     summary: Get all customers OR get customer by citizenId
+ *     summary: Get all customers
  *     tags:
  *       - Customer
- *     parameters:
- *       - in: query
- *         name: citizenId
- *         schema:
- *           type: string
- *         required: false
- *         description: Filter by citizen ID (if provided)
  *     responses:
  *       200:
- *         description: List of customers or single customer
+ *         description: List of customers
  *         content:
  *           application/json:
  *             schema:
@@ -107,15 +105,24 @@ router.post("/", addCustomer);
  *               items:
  *                 $ref: '#/components/schemas/Customer'
  */
-router.get("/", (req, res, next) => {
-  // Nếu có query param citizenId, gọi getCustomerByCitizenId
-  if (req.query.citizenId) {
-    return getCustomerByCitizenId(req, res, next);
-  }
-  // Nếu không, trả về tất cả customers
-  return getAllCustomers(req, res, next);
-});
+//router.get("/", verifyToken, tellerOrAccountant, getAllCustomers);
 
+// Route: GET /
+// Description: Lấy danh sách khách hàng HOẶC tìm theo CitizenId
+// Auth: Yêu cầu Token hợp lệ + Role là (Teller hoặc Accountant)
+  router.get("/", 
+    verifyToken, 
+    tellerOrAccountant, 
+    (req, res, next) => {
+      // 1. Logic ưu tiên: Tìm kiếm cụ thể
+      if (req.query.citizenId) {
+          // Có thể thêm log audit tại đây nếu cần thiết
+          return getCustomerByCitizenId(req, res, next);
+      }
+      
+      // 2. Logic mặc định: Lấy danh sách tổng
+      return getAllCustomers(req, res, next);
+  });
 /**
  * @swagger
  * /api/customer/{id}:
@@ -140,7 +147,7 @@ router.get("/", (req, res, next) => {
  *       404:
  *         description: Customer not found
  */
-router.get("/:id", getCustomerById);
+router.get("/:id", verifyToken, tellerOrAccountant, getCustomerById);
 
 /**
  * @swagger
@@ -172,7 +179,7 @@ router.get("/:id", getCustomerById);
  *       404:
  *         description: Customer not found
  */
-router.put("/:id", updateCustomer);
+router.put("/:id", verifyToken, teller, updateCustomer);
 
 /**
  * @swagger
@@ -194,9 +201,7 @@ router.put("/:id", updateCustomer);
  *       404:
  *         description: Customer not found
  */
-
-
-router.delete("/:id", deleteCustomer);
+router.delete("/:id", verifyToken, tellerOrAccountant, deleteCustomer);
 
 export default router;
 

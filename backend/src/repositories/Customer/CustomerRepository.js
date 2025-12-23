@@ -36,9 +36,6 @@ export class CustomerRepository {
       cust.fullname?.toLowerCase().includes(normalizedKeyword)
     );
   }
-
-
-
 }
 
 export const customerRepository = new CustomerRepository();

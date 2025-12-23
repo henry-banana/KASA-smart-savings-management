@@ -407,7 +407,19 @@ export default function RegulationSettings() {
                         id="minDeposit"
                         type="number"
                         value={minBalance}
-                        onChange={(e) => setMinBalance(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const numValue = Number(value);
+
+                          // Prevent entering negative amounts
+                          if (numValue < 0) {
+                            setMinBalance("");
+                            return;
+                          }
+
+                          setMinBalance(value);
+                        }}
+                        min="0"
                         className="border-gray-200 h-11 rounded-sm"
                       />
                       <p className="text-xs text-gray-500">
@@ -426,7 +438,19 @@ export default function RegulationSettings() {
                         id="minWithdrawalDays"
                         type="number"
                         value={minWithdrawalDays}
-                        onChange={(e) => setMinWithdrawalDays(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const numValue = Number(value);
+
+                          // Prevent entering negative amounts
+                          if (numValue < 0) {
+                            setMinWithdrawalDays("");
+                            return;
+                          }
+
+                          setMinWithdrawalDays(value);
+                        }}
+                        min="0"
                         className="border-gray-200 h-11 rounded-sm"
                       />
                       <p className="text-xs text-gray-500">
@@ -536,13 +560,22 @@ export default function RegulationSettings() {
                                   step="1"
                                   value={item.term ?? 0}
                                   onChange={(e) => {
+                                    const value = e.target.value;
+                                    const numValue = Number(value);
+
+                                    // Prevent entering negative amounts
+                                    if (numValue < 0) {
+                                      return;
+                                    }
+
                                     const updated = [...interestRates];
                                     updated[index] = {
                                       ...updated[index],
-                                      term: Number(e.target.value),
+                                      term: numValue,
                                     };
                                     setInterestRates(updated);
                                   }}
+                                  min="0"
                                   className="w-28 h-10 border-gray-200 rounded-sm"
                                 />
                               </TableCell>
@@ -551,9 +584,18 @@ export default function RegulationSettings() {
                                   type="number"
                                   step="0.1"
                                   value={item.rate}
-                                  onChange={(e) =>
-                                    handleUpdateRate(index, e.target.value)
-                                  }
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    const numValue = Number(value);
+
+                                    // Prevent entering negative amounts
+                                    if (numValue < 0) {
+                                      return;
+                                    }
+
+                                    handleUpdateRate(index, value);
+                                  }}
+                                  min="0"
                                   className="w-32 h-10 border-gray-200 rounded-sm"
                                 />
                               </TableCell>
@@ -1050,12 +1092,25 @@ export default function RegulationSettings() {
                   id="term"
                   type="number"
                   value={typeSavingForm.term}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numValue = Number(value);
+
+                    // Prevent entering negative amounts
+                    if (numValue < 0) {
+                      setTypeSavingForm({
+                        ...typeSavingForm,
+                        term: "",
+                      });
+                      return;
+                    }
+
                     setTypeSavingForm({
                       ...typeSavingForm,
-                      term: e.target.value,
-                    })
-                  }
+                      term: value,
+                    });
+                  }}
+                  min="0"
                   placeholder="0 for No term, or number of months"
                   className="border-gray-200 h-11 rounded-sm"
                 />
@@ -1073,12 +1128,25 @@ export default function RegulationSettings() {
                   type="number"
                   step="0.01"
                   value={typeSavingForm.interestRate}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numValue = Number(value);
+
+                    // Prevent entering negative amounts
+                    if (numValue < 0) {
+                      setTypeSavingForm({
+                        ...typeSavingForm,
+                        interestRate: "",
+                      });
+                      return;
+                    }
+
                     setTypeSavingForm({
                       ...typeSavingForm,
-                      interestRate: e.target.value,
-                    })
-                  }
+                      interestRate: value,
+                    });
+                  }}
+                  min="0"
                   placeholder="e.g., 0.5 for 0.5%"
                   className="border-gray-200 h-11 rounded-sm"
                 />
