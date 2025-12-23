@@ -6,7 +6,7 @@ import checkRole from "../middleware/role.middleware.js";
 const router = express.Router();
 
 // Role definitions - all roles can view branches
-const adminRole = checkRole(['admin']);
+const adminRole = checkRole(['administrator']);
 
 router.get("/name", verifyToken, adminRole, getAllBranchName)
 
