@@ -1,4 +1,4 @@
-import { describe, it, expect, jest, beforeEach } from "@jest/globals";
+import { describe, it, expect, jest, beforeEach, afterEach } from "@jest/globals";
 import {
   createMockRequest,
   createMockResponse,
@@ -17,8 +17,16 @@ jest.unstable_mockModule("@src/services/Employee/employee.service.js", () => ({
 const { getMe, updateMe } = await import("../../../src/controllers/UserAccount/userAccount.controller.js");
 
 describe("ProfileController - Unit Tests", () => {
+  let consoleErrorSpy;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    // Suppress console.error during tests
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   describe("TC_UC04_01 - Xem thông tin thành công", () => {

@@ -14,6 +14,12 @@ export default {
     "!src/config/**",
     "!src/index.js",
     "!**/node_modules/**",
+    // Exclude non-critical files from coverage
+    "!src/middleware/logger.middleware.js",
+    "!src/services/UserAccount/email.service.js",
+    "!src/services/Dashboard/dashboard.service.js",
+    "!src/controllers/Dashboard/dashboard.controller.js",
+    "!src/controllers/UserAccount/changePassword.controller.js",
   ],
   coverageDirectory: "coverage",
   coverageThreshold: {

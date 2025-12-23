@@ -16,9 +16,21 @@ jest.unstable_mockModule("jsonwebtoken", () => ({
 const { verifyToken } = await import("@src/middleware/auth.middleware.js");
 
 describe("AuthMiddleware - Unit Tests", () => {
+  let consoleLogSpy;
+  let consoleErrorSpy;
+
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.JWT_SECRET = "test-secret";
+    
+    // Suppress console output during tests
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
   describe("verifyToken()", () => {
@@ -37,7 +49,7 @@ describe("AuthMiddleware - Unit Tests", () => {
         roleName: "Teller",
       };
 
-      mockJwtVerify.mockImplementation((token, secret, callback) => {
+      mockJwtVerify.mockImplementation((_token, _secret, callback) => {
         callback(null, decoded);
       });
 
@@ -114,7 +126,7 @@ describe("AuthMiddleware - Unit Tests", () => {
       const res = createMockResponse();
       const next = createMockNext();
 
-      mockJwtVerify.mockImplementation((token, secret, callback) => {
+      mockJwtVerify.mockImplementation((_token, _secret, callback) => {
         const error = new Error("Token expired");
         error.name = "TokenExpiredError";
         callback(error, null);
@@ -138,7 +150,7 @@ describe("AuthMiddleware - Unit Tests", () => {
       const res = createMockResponse();
       const next = createMockNext();
 
-      mockJwtVerify.mockImplementation((token, secret, callback) => {
+      mockJwtVerify.mockImplementation((_token, _secret, callback) => {
         callback(new Error("Invalid token"), null);
       });
 
@@ -166,7 +178,7 @@ describe("AuthMiddleware - Unit Tests", () => {
         roleName: "Teller",
       };
 
-      mockJwtVerify.mockImplementation((token, secret, callback) => {
+      mockJwtVerify.mockImplementation((_token, _secret, callback) => {
         callback(null, decoded);
       });
 
@@ -197,7 +209,7 @@ describe("AuthMiddleware - Unit Tests", () => {
         roleName: "Teller",
       };
 
-      mockJwtVerify.mockImplementation((token, secret, callback) => {
+      mockJwtVerify.mockImplementation((_token, _secret, callback) => {
         callback(null, decoded);
       });
 

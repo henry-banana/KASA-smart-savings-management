@@ -620,6 +620,348 @@ describe("TransactionService - Unit Tests", () => {
         })
       ).rejects.toThrow("Account not found");
     });
+
+    it("should throw error when teller not found", async () => {
+      const mockSavingBook = createMockSavingBook({ bookid: 1 });
+      mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
+      mockEmployeeRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        transactionService.addTransaction({
+          bookID: 1,
+          amount: 1000000,
+          type: "Deposit",
+          tellerid: "EMP999",
+        })
+      ).rejects.toThrow("Teller ID is not exists");
+    });
+
+    it("should create transaction with transactionDate when provided", async () => {
+      const inputData = {
+        bookID: 1,
+        amount: 1000000,
+        type: "Deposit",
+        tellerid: "EMP001",
+        transactionDate: "2024-01-01",
+      };
+
+      const mockSavingBook = createMockSavingBook({ bookid: 1 });
+      const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
+      const mockTransaction = createMockTransaction();
+
+      mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
+      mockEmployeeRepository.findById.mockResolvedValue(mockEmployee);
+      mockTransactionRepository.create.mockResolvedValue(mockTransaction);
+
+      await transactionService.addTransaction(inputData);
+
+      expect(mockTransactionRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transactiondate: "2024-01-01",
+        })
+      );
+    });
+
+    it("should create transaction without transactionDate when not provided", async () => {
+      const inputData = {
+        bookID: 1,
+        amount: 1000000,
+        type: "WithDraw",
+        tellerid: "EMP001",
+      };
+
+      const mockSavingBook = createMockSavingBook({ bookid: 1 });
+      const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
+      const mockTransaction = createMockTransaction();
+
+      mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
+      mockEmployeeRepository.findById.mockResolvedValue(mockEmployee);
+      mockTransactionRepository.create.mockResolvedValue(mockTransaction);
+
+      await transactionService.addTransaction(inputData);
+
+      expect(mockTransactionRepository.create).toHaveBeenCalledWith(
+        expect.not.objectContaining({
+          transactiondate: expect.anything(),
+        })
+      );
+    });
+  });
+
+  describe("getAllTransactions()", () => {
+    it("should return all transactions with nested data", async () => {
+      const mockTransactions = [
+        {
+          transactionid: 1,
+          bookid: 1,
+          transactiontype: "Deposit",
+          amount: 1000000,
+          transactiondate: "2024-01-01",
+          savingbook: {
+            bookid: 1,
+            customer: {
+              customerid: "CUST001",
+              fullname: "John Doe",
+              citizenid: "123456789",
+            },
+            typesaving: {
+              typename: "Term 6 months",
+              interest: 5.5,
+            },
+          },
+          employee: {
+            employeeid: "EMP001",
+            fullname: "Jane Smith",
+          },
+        },
+      ];
+
+      mockTransactionRepository.findAll.mockResolvedValue(mockTransactions);
+
+      const result = await transactionService.getAllTransactions();
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty("transactionId", 1);
+      expect(result[0].savingBook.customer).toHaveProperty("fullName", "John Doe");
+      expect(result[0].employee).toHaveProperty("role", "teller");
+    });
+
+    it("should handle transactions without nested data", async () => {
+      const mockTransactions = [
+        {
+          transactionid: 1,
+          bookid: 1,
+          transactiontype: "Deposit",
+          amount: 1000000,
+          transactiondate: "2024-01-01",
+          savingbook: null,
+          employee: null,
+        },
+      ];
+
+      mockTransactionRepository.findAll.mockResolvedValue(mockTransactions);
+
+      const result = await transactionService.getAllTransactions();
+
+      expect(result[0].savingBook).toBeNull();
+      expect(result[0].employee).toBeNull();
+    });
+
+    it("should handle null data from repository", async () => {
+      mockTransactionRepository.findAll.mockResolvedValue(null);
+
+      const result = await transactionService.getAllTransactions();
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe("getTransactionById()", () => {
+    it("should return transaction by id", async () => {
+      const mockTransaction = createMockTransaction({ transactionid: 1 });
+      mockTransactionRepository.findById.mockResolvedValue(mockTransaction);
+
+      const result = await transactionService.getTransactionById(1);
+
+      expect(mockTransactionRepository.findById).toHaveBeenCalledWith(1);
+      expect(result).toEqual(mockTransaction);
+    });
+
+    it("should throw error when transaction not found", async () => {
+      mockTransactionRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        transactionService.getTransactionById(999)
+      ).rejects.toThrow("Transaction not found");
+    });
+  });
+
+  describe("updateTransaction()", () => {
+    it("should update transaction successfully", async () => {
+      const mockTransaction = createMockTransaction({ transactionid: 1 });
+      const mockUpdated = createMockTransaction({ transactionid: 1, amount: 2000000 });
+
+      mockTransactionRepository.findById.mockResolvedValue(mockTransaction);
+      mockTransactionRepository.update.mockResolvedValue(mockUpdated);
+
+      const result = await transactionService.updateTransaction(1, { amount: 2000000 });
+
+      expect(result).toHaveProperty("message", "Transaction updated successfully.");
+      expect(result.transaction).toEqual(mockUpdated);
+    });
+
+    it("should throw error when transaction to update not found", async () => {
+      mockTransactionRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        transactionService.updateTransaction(999, { amount: 2000000 })
+      ).rejects.toThrow("Transaction not found");
+    });
+  });
+
+  describe("deleteTransaction()", () => {
+    it("should delete transaction successfully", async () => {
+      const mockTransaction = createMockTransaction({ transactionid: 1 });
+      mockTransactionRepository.findById.mockResolvedValue(mockTransaction);
+      mockTransactionRepository.delete.mockResolvedValue(true);
+
+      const result = await transactionService.deleteTransaction(1);
+
+      expect(mockTransactionRepository.delete).toHaveBeenCalledWith(1);
+      expect(result).toHaveProperty("message", "Transaction deleted successfully.");
+    });
+
+    it("should throw error when transaction to delete not found", async () => {
+      mockTransactionRepository.findById.mockResolvedValue(null);
+
+      await expect(
+        transactionService.deleteTransaction(999)
+      ).rejects.toThrow("Transaction not found");
+    });
+  });
+
+  describe("depositTransaction() - Additional Coverage", () => {
+    it("should throw error when deposit fails to update book", async () => {
+      const inputData = {
+        bookId: 1,
+        amount: 1000000,
+        employeeId: "EMP001",
+      };
+
+      const mockSavingBook = createMockSavingBook({ 
+        bookid: 1, 
+        status: "Active",
+        currentbalance: 0 
+      });
+      const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
+
+      mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
+      mockEmployeeRepository.findById.mockResolvedValue(mockEmployee);
+      mockSavingBookRepository.update.mockResolvedValue(null);
+
+      await expect(
+        transactionService.depositTransaction(inputData)
+      ).rejects.toThrow("Failed to deposit money");
+    });
+
+    it("should throw error when transaction creation fails after deposit", async () => {
+      const inputData = {
+        bookId: 1,
+        amount: 1000000,
+        employeeId: "EMP001",
+      };
+
+      const mockSavingBook = createMockSavingBook({ 
+        bookid: 1, 
+        status: "Active",
+        currentbalance: 0,
+        customerid: "CUST001"
+      });
+      const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
+      const mockUpdatedBook = createMockSavingBook({ 
+        bookid: 1, 
+        currentbalance: 1000000 
+      });
+      const mockCustomer = {
+        customerid: "CUST001",
+        fullname: "John Doe",
+      };
+
+      mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
+      mockEmployeeRepository.findById.mockResolvedValue(mockEmployee);
+      mockSavingBookRepository.update.mockResolvedValue(mockUpdatedBook);
+      mockTransactionRepository.create.mockResolvedValue(null);
+      mockCustomerRepository.findById.mockResolvedValue(mockCustomer);
+
+      await expect(
+        transactionService.depositTransaction(inputData)
+      ).rejects.toThrow("Failed to make transaction but deposit successfully");
+    });
+  });
+
+  describe("withdrawTransaction() - Additional Coverage", () => {
+    it("should throw error when withdraw before 1 month", async () => {
+      const inputData = {
+        bookId: 1,
+        amount: 100000,
+        employeeId: "EMP001",
+      };
+
+      const registerDate = new Date();
+      registerDate.setDate(registerDate.getDate() - 20); // 20 days ago
+
+      const mockSavingBook = createMockSavingBook({
+        bookid: 1,
+        registertime: registerDate.toISOString(),
+        currentbalance: 1000000,
+      });
+
+      mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
+
+      await expect(
+        transactionService.withdrawTransaction(inputData)
+      ).rejects.toThrow("Cannot withdraw before 1 month to earn interest");
+    });
+
+    it("should throw error when withdraw fails to update book", async () => {
+      const inputData = {
+        bookId: 1,
+        amount: 100000,
+        employeeId: "EMP001",
+      };
+
+      const registerDate = new Date();
+      registerDate.setDate(registerDate.getDate() - 60); // 60 days ago
+
+      const mockSavingBook = createMockSavingBook({
+        bookid: 1,
+        registertime: registerDate.toISOString(),
+        currentbalance: 1000000,
+      });
+      const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
+
+      mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
+      mockEmployeeRepository.findById.mockResolvedValue(mockEmployee);
+      mockSavingBookRepository.update.mockResolvedValue(null);
+
+      await expect(
+        transactionService.withdrawTransaction(inputData)
+      ).rejects.toThrow("Failed to withdraw money");
+    });
+
+    it("should throw error when transaction creation fails after withdrawal", async () => {
+      const inputData = {
+        bookId: 1,
+        amount: 100000,
+        employeeId: "EMP001",
+      };
+
+      const registerDate = new Date();
+      registerDate.setDate(registerDate.getDate() - 60);
+
+      const mockSavingBook = createMockSavingBook({
+        bookid: 1,
+        registertime: registerDate.toISOString(),
+        currentbalance: 1000000,
+        customerid: "CUST001",
+      });
+      const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
+      const mockUpdatedBook = createMockSavingBook({ bookid: 1 });
+      const mockCustomer = {
+        customerid: "CUST001",
+        fullname: "John Doe",
+      };
+
+      mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
+      mockEmployeeRepository.findById.mockResolvedValue(mockEmployee);
+      mockSavingBookRepository.update.mockResolvedValue(mockUpdatedBook);
+      mockTransactionRepository.create.mockResolvedValue(null);
+      mockCustomerRepository.findById.mockResolvedValue(mockCustomer);
+
+      await expect(
+        transactionService.withdrawTransaction(inputData)
+      ).rejects.toThrow("Failed to make transaction but withdrawal succeeded");
+    });
   });
 });
 

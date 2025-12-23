@@ -1,4 +1,4 @@
-import { describe, it, expect, jest, beforeEach } from "@jest/globals";
+import { describe, it, expect, jest, beforeEach, afterEach } from "@jest/globals";
 import {
   createMockRequest,
   createMockResponse,
@@ -10,8 +10,16 @@ const { validatePositiveNumbers } = await import(
 );
 
 describe("ValidationMiddleware - Unit Tests", () => {
+  let consoleErrorSpy;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    // Suppress console.error during tests
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   describe("validatePositiveNumbers()", () => {

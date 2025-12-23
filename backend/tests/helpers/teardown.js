@@ -3,8 +3,8 @@
  * Chạy 1 lần sau tất cả test suites
  */
 afterAll(() => {
-  console.log('');
-  console.log('✅ Unit Tests Completed');
+  // console.log('');
+  // console.log('✅ Unit Tests Completed');
 });
 
 export default {};

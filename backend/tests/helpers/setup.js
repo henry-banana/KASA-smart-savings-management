@@ -5,8 +5,8 @@ import { jest } from '@jest/globals';
  * Chạy 1 lần trước tất cả test suites
  */
 beforeAll(() => {
-  console.log("🧪 Starting Unit Tests...");
-  console.log("");
+  // console.log("🧪 Starting Unit Tests...");
+  // console.log("");
 });
 
 /**
