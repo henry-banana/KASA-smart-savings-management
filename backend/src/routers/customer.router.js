@@ -7,8 +7,14 @@ import {
   deleteCustomer,
   searchCustomer,
 } from "../controllers/Customer/customer.controller.js";
+import { verifyToken } from "../middleware/auth.middleware.js";
+import checkRole from "../middleware/role.middleware.js";
 
 const router = express.Router();
+
+// Role definitions
+const tellerOrAdmin = checkRole(['teller', 'admin']);
+const allRoles = checkRole(['teller', 'accountant', 'admin']);
 
 /**
  * @swagger
@@ -34,7 +40,7 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Customer'
  */
-router.get("/search", searchCustomer);
+router.get("/search", verifyToken, allRoles, searchCustomer);
 
 /**
  * @swagger
@@ -79,7 +85,7 @@ router.get("/search", searchCustomer);
  *             schema:
  *               $ref: '#/components/schemas/Customer'
  */
-router.post("/", addCustomer);
+router.post("/", verifyToken, tellerOrAdmin, addCustomer);
 
 
 /**
@@ -99,7 +105,7 @@ router.post("/", addCustomer);
  *               items:
  *                 $ref: '#/components/schemas/Customer'
  */
-router.get("/", getAllCustomers);
+router.get("/", verifyToken, allRoles, getAllCustomers);
 
 /**
  * @swagger
@@ -125,7 +131,7 @@ router.get("/", getAllCustomers);
  *       404:
  *         description: Customer not found
  */
-router.get("/:id", getCustomerById);
+router.get("/:id", verifyToken, allRoles, getCustomerById);
 
 /**
  * @swagger
@@ -157,7 +163,7 @@ router.get("/:id", getCustomerById);
  *       404:
  *         description: Customer not found
  */
-router.put("/:id", updateCustomer);
+router.put("/:id", verifyToken, tellerOrAdmin, updateCustomer);
 
 /**
  * @swagger
@@ -179,7 +185,7 @@ router.put("/:id", updateCustomer);
  *       404:
  *         description: Customer not found
  */
-router.delete("/:id", deleteCustomer);
+router.delete("/:id", verifyToken, tellerOrAdmin, deleteCustomer);
 
 export default router;
 
