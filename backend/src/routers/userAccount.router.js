@@ -5,6 +5,7 @@ import { forgotPassword } from "../controllers/UserAccount/forgotPassword.contro
 import { verifyOTPController } from "../controllers/UserAccount/verifyOTP.controller.js";
 import { resetPassword } from "../controllers/UserAccount/resetPassword.controller.js";
 import { getAllEmployees } from "../controllers/Employee/employee.controller.js";
+import { changePassword } from "../controllers/UserAccount/changePassword.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
 import {
   createUserAccount,
@@ -24,6 +25,7 @@ router.get("/me", verifyToken, getMe);
 router.put("/me", verifyToken, updateMe);
 
 router.post("/forgot-password", forgotPassword);
+router.post("/change-password", changePassword);
 router.post("/verify-otp", verifyOTPController);
 router.post("/reset-password", resetPassword);
 router.get("/",  getAllEmployees);
