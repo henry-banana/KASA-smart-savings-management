@@ -14,9 +14,9 @@ export class SavingBook extends BaseModel {
         `
         bookid,
         registertime,
+        maturitydate,
         status,
         currentbalance,
-        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -42,7 +42,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
-      updatetime: item.updatetime,
+      maturityDate: item.maturitydate,
     }));
 
     return result;
@@ -57,9 +57,10 @@ export class SavingBook extends BaseModel {
         `
         bookid,
         registertime,
+        maturitydate,
         status,
         currentbalance,
-        updatetime,
+
         customer:customerid!inner (
           fullname,
           citizenid
@@ -86,7 +87,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
-      updatetime: item.updatetime,
+      maturityDate: item.maturitydate,
     }));
 
     return result;
@@ -100,8 +101,8 @@ export class SavingBook extends BaseModel {
         bookid,
         registertime,
         status,
+        maturitydate,
         currentbalance,
-        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -128,7 +129,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
-      updatetime: item.updatetime,
+      maturityDate: item.maturitydate,
     }));
 
     return result;
@@ -141,9 +142,10 @@ export class SavingBook extends BaseModel {
         `
         bookid,
         registertime,
+        maturitydate,
         status,
         currentbalance,
-        updatetime,
+        
         customer:customerid!inner (
           fullname,
           citizenid
@@ -172,7 +174,7 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
-      updatetime: item.updatetime,
+      maturityDate: item.maturitydate,
     }));
 
     return result;
