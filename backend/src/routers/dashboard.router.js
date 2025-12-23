@@ -10,12 +10,12 @@ import checkRole from "../middleware/role.middleware.js";
 const router = express.Router();
 
 // Role definitions - all roles can view dashboard
-const allRoles = checkRole(['teller', 'accountant', 'admin']);
+const tellerOrAccountant = checkRole(['teller', 'accountant']);
 
 // GET /api/dashboard/stats — Lấy thống kê tổng quan Dashboard
-router.get("/stats", verifyToken, allRoles, getDashboardStats);
+router.get("/stats", verifyToken, tellerOrAccountant, getDashboardStats);
 
 //GET /api/dashboard/recent-transactions — Lấy 5 giao dịch gần đây
-router.get("/recent-transactions", verifyToken, allRoles, getRecentTransactions); 
+router.get("/recent-transactions", verifyToken, tellerOrAccountant, getRecentTransactions); 
 
 export default router;

@@ -13,8 +13,8 @@ import checkRole from "../middleware/role.middleware.js";
 const router = express.Router();
 
 // Role definitions
-const tellerOrAdmin = checkRole(['teller', 'admin']);
-const allRoles = checkRole(['teller', 'accountant', 'admin']);
+const teller = checkRole(['teller']);
+const tellerOrAccountant = checkRole(['teller', 'accountant']);
 
 /**
  * @swagger
@@ -40,7 +40,7 @@ const allRoles = checkRole(['teller', 'accountant', 'admin']);
  *               items:
  *                 $ref: '#/components/schemas/Customer'
  */
-router.get("/search", verifyToken, allRoles, searchCustomer);
+router.get("/search", verifyToken, tellerOrAccountant, searchCustomer);
 
 /**
  * @swagger
@@ -85,7 +85,7 @@ router.get("/search", verifyToken, allRoles, searchCustomer);
  *             schema:
  *               $ref: '#/components/schemas/Customer'
  */
-router.post("/", verifyToken, tellerOrAdmin, addCustomer);
+router.post("/", verifyToken, teller, addCustomer);
 
 
 /**
@@ -105,7 +105,7 @@ router.post("/", verifyToken, tellerOrAdmin, addCustomer);
  *               items:
  *                 $ref: '#/components/schemas/Customer'
  */
-router.get("/", verifyToken, allRoles, getAllCustomers);
+router.get("/", verifyToken, tellerOrAccountant, getAllCustomers);
 
 /**
  * @swagger
@@ -131,7 +131,7 @@ router.get("/", verifyToken, allRoles, getAllCustomers);
  *       404:
  *         description: Customer not found
  */
-router.get("/:id", verifyToken, allRoles, getCustomerById);
+router.get("/:id", verifyToken, tellerOrAccountant, getCustomerById);
 
 /**
  * @swagger
@@ -163,7 +163,7 @@ router.get("/:id", verifyToken, allRoles, getCustomerById);
  *       404:
  *         description: Customer not found
  */
-router.put("/:id", verifyToken, tellerOrAdmin, updateCustomer);
+router.put("/:id", verifyToken, teller, updateCustomer);
 
 /**
  * @swagger
@@ -185,7 +185,7 @@ router.put("/:id", verifyToken, tellerOrAdmin, updateCustomer);
  *       404:
  *         description: Customer not found
  */
-router.delete("/:id", verifyToken, tellerOrAdmin, deleteCustomer);
+router.delete("/:id", verifyToken, tellerOrAccountant, deleteCustomer);
 
 export default router;
 
