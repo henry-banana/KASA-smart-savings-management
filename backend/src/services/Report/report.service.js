@@ -43,8 +43,10 @@ class ReportService {
     }
 
     async getMonthlyReport(typeSavingId, month, year) {
+      const isAll = typeSavingId == 'all';
+      const reportTypeId = isAll ? null : typeSavingId;
       // 1. Lấy dữ liệu từ Repo (Thông tin loại sổ, List sổ mở, List sổ đóng)
-      const { typeInfo, newBooks, closedBooks } = await reportRepository.getMonthlyData(typeSavingId, month, year);
+      const { typeInfo, newBooks, closedBooks } = await reportRepository.getMonthlyData(reportTypeId, month, year);
 
       // 2. Tính số ngày trong tháng (ví dụ tháng 2 năm 2025 có 28 ngày)
       const daysInMonth = new Date(year, month, 0).getDate();
