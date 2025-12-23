@@ -226,8 +226,9 @@ class SavingBookService {
 
     for (let i = 0; i < paginatedResults.length; i++) {
       // Giả sử typeId == 1 là loại sổ cần tự động gia hạn lãi (No term)
+
       if (paginatedResults[i].typeId == 1) {
-        let maturityDate = new Date(paginatedResults[i].maturitydate);
+        let maturityDate = new Date(paginatedResults[i].maturityDate);
         let currentBalance = parseFloat(paginatedResults[i].balance);
         let isUpdated = false;
 
@@ -251,7 +252,7 @@ class SavingBookService {
 
           // Cập nhật lại dữ liệu trong mảng kết quả để trả về cho Client hiển thị đúng ngay lập tức
           paginatedResults[i].balance = currentBalance;
-          paginatedResults[i].maturitydate = maturityDate.toISOString();
+          paginatedResults[i].maturityDate = maturityDate.toISOString();
         }
       }
     }
