@@ -308,35 +308,61 @@ class SavingBookService {
      const monthlyInterestRate = 0.0015; // Lãi suất 0.15%
 
     //Cũ
+    // for (let i = 0; i < paginatedResults.length; i++) {
+    //   // Giả sử typeId == 1 là loại sổ cần tự động gia hạn lãi (No term)
+
+    //   if (paginatedResults[i].typeId == 1) {
+    //     let maturityDate = new Date(paginatedResults[i].maturityDate);
+    //     let currentBalance = parseFloat(paginatedResults[i].balance);
+    //     let isUpdated = false;
+
+    //     // Vòng lặp: Nếu ngày đáo hạn đã qua hoặc là hôm nay
+    //     while (maturityDate <= currentDate) {
+    //       // 1. Cộng lãi nhập vốn
+    //       currentBalance += currentBalance * monthlyInterestRate;
+          
+    //       // 2. Tăng maturityDate lên 1 tháng
+    //       maturityDate.setMonth(maturityDate.getMonth() + 1);
+          
+    //       isUpdated = true;
+    //     }
+
+    //     // Nếu có cập nhật (tức là đã qua ngày đáo hạn cũ)
+    //     if (isUpdated) {
+    //       await savingBookRepository.update(paginatedResults[i].bookId, {
+    //         currentbalance: currentBalance,
+    //         maturitydate: maturityDate.toISOString(), // Cập nhật ngày đáo hạn mới (tương lai)
+    //       });
+
+    //       // Cập nhật lại dữ liệu trong mảng kết quả để trả về cho Client hiển thị đúng ngay lập tức
+    //       paginatedResults[i].balance = currentBalance;
+    //       paginatedResults[i].maturityDate = maturityDate.toISOString();
+    //     }
+    //   }
+    // }
+    // C. LAZY LOADING (TÍNH LÃI)
     for (let i = 0; i < paginatedResults.length; i++) {
-      // Giả sử typeId == 1 là loại sổ cần tự động gia hạn lãi (No term)
+      const book = paginatedResults[i];
 
-      if (paginatedResults[i].typeId == 1) {
-        let maturityDate = new Date(paginatedResults[i].maturityDate);
-        let currentBalance = parseFloat(paginatedResults[i].balance);
-        let isUpdated = false;
+      // Check trạng thái (Dựa vào log của bạn, status là 'Open')
+      if (book.status === 'Active' || book.status === 'Open') { 
+        try {
+          // Lấy TypeID (Xử lý cả CamelCase và Lowercase)
+          const typeID = book.typeId || book.typeid; 
 
-        // Vòng lặp: Nếu ngày đáo hạn đã qua hoặc là hôm nay
-        while (maturityDate <= currentDate) {
-          // 1. Cộng lãi nhập vốn
-          currentBalance += currentBalance * monthlyInterestRate;
-          
-          // 2. Tăng maturityDate lên 1 tháng
-          maturityDate.setMonth(maturityDate.getMonth() + 1);
-          
-          isUpdated = true;
-        }
-
-        // Nếu có cập nhật (tức là đã qua ngày đáo hạn cũ)
-        if (isUpdated) {
-          await savingBookRepository.update(paginatedResults[i].bookId, {
-            currentbalance: currentBalance,
-            maturitydate: maturityDate.toISOString(), // Cập nhật ngày đáo hạn mới (tương lai)
-          });
-
-          // Cập nhật lại dữ liệu trong mảng kết quả để trả về cho Client hiển thị đúng ngay lập tức
-          paginatedResults[i].balance = currentBalance;
-          paginatedResults[i].maturityDate = maturityDate.toISOString();
+          if (typeID) {
+            const typeSaving = await typeSavingRepository.findById(typeID);
+            
+            if (typeSaving) {
+              // Gọi hàm private
+              const updatedBook = await this._performRollover(book, typeSaving);
+              
+              // Gán lại kết quả
+              paginatedResults[i] = updatedBook; 
+            }
+          }
+        } catch (err) {
+          console.error(`Error calculating rollover for book:`, err);
         }
       }
     }
@@ -351,7 +377,7 @@ class SavingBookService {
   // Tất toán sổ tiết kiệm
   async closeSavingBook(bookID, employeeID) {
     // 1. Lấy thông tin sổ tiết kiệm và kiểm tra trạng thái
-    const savingBook = await savingBookRepository.findById(bookID);
+    let savingBook = await savingBookRepository.findById(bookID);
     if (!savingBook || savingBook.status === "Close") {
       // Nếu không tìm thấy hoặc đã đóng, trả về null
       return null;
@@ -364,6 +390,7 @@ class SavingBookService {
     // Kiểm tra 15 ngày
     const registerDate = new Date(savingBook.registertime);
     const currentDate = new Date();
+    const closeDate = new Date(); // Ngày đóng sổ = hôm nay
     const diffTime = Math.abs(currentDate - registerDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
 
