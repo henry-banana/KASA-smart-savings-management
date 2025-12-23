@@ -6,6 +6,7 @@ import {
   updateCustomer,
   deleteCustomer,
   searchCustomer,
+  getCustomerByCitizenId,
 } from "../controllers/Customer/customer.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
 import checkRole from "../middleware/role.middleware.js";
