@@ -79,7 +79,7 @@ describe("UserAccountService - Unit Tests", () => {
   });
 
   describe("createUserAccount()", () => {
-    it("TC_UC01_08 - should hash password when creating account", async () => {
+    it("TC_UC01_08 - Kiểm tra mã hóa mật khẩu", async () => {
       // === ARRANGE ===
       const inputData = {
         fullName: "Nguyen Van A",
@@ -242,7 +242,7 @@ describe("UserAccountService - Unit Tests", () => {
   });
 
   describe("getUserAccountById()", () => {
-    it("TC_UC04_05 - should return user account when found", async () => {
+    it("TC_UC04_05 - Kiểm soát truy cập", async () => {
       // === ARRANGE ===
       const userId = "EMP001";
       const mockAccount = {
@@ -261,7 +261,7 @@ describe("UserAccountService - Unit Tests", () => {
       expect(result).toEqual(mockAccount);
     });
 
-    it("TC_UC04_05 - should throw error when user not found", async () => {
+    it("TC_UC04_05 - Kiểm soát truy cập - User not found", async () => {
       // === ARRANGE ===
       mockUserAccountRepository.findById.mockResolvedValue(null);
 
@@ -370,7 +370,7 @@ describe("UserAccountService - Unit Tests", () => {
   });
 
   describe("login() - Password Verification", () => {
-    it("TC_UC02_03 - should verify password correctly on login", async () => {
+    it("TC_UC02_03 - Đăng nhập thất bại (Sai Username hoặc Password) - Verify password", async () => {
       // === ARRANGE ===
       const loginData = {
         email: "test@gmail.com",
@@ -403,7 +403,7 @@ describe("UserAccountService - Unit Tests", () => {
       expect(result.user.id).toBe("EMP001");
     });
 
-    it("TC_UC02_03 - should throw error with wrong password", async () => {
+    it("TC_UC02_03 - Đăng nhập thất bại (Sai Username hoặc Password) - Wrong password", async () => {
       // === ARRANGE ===
       const loginData = {
         email: "test@gmail.com",

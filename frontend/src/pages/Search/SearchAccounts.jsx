@@ -39,6 +39,10 @@ import {
   Sparkles,
   Filter,
   PiggyBank,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import { StarDecor, CuteEmptyState } from "../../components/CuteComponents";
 import { TableSkeleton } from "../../components/ui/loading-skeleton";
@@ -59,6 +63,12 @@ export default function SearchAccounts() {
   const [accountTypeOptions, setAccountTypeOptions] = useState([
     { value: "all", label: "All" },
   ]);
+
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10); // Fixed at 10
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Fetch account type options on mount
   useEffect(() => {
@@ -85,7 +95,7 @@ export default function SearchAccounts() {
     fetchAccountTypes();
   }, []);
 
-  // Fetch accounts when filters change
+  // Fetch accounts when filters or page changes
   useEffect(() => {
     const fetchAccounts = async () => {
       setLoading(true);
@@ -93,12 +103,18 @@ export default function SearchAccounts() {
         const response = await searchSavingBooks(
           searchTerm,
           typeFilter,
-          statusFilter
+          statusFilter,
+          page,
+          pageSize
         );
         setAccounts(response.data || []);
+        setTotal(response.total || 0);
+        setTotalPages(response.totalPages || 1);
       } catch (err) {
         console.error("Search error:", err);
         setAccounts([]);
+        setTotal(0);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
@@ -110,6 +126,11 @@ export default function SearchAccounts() {
     }, 300);
 
     return () => clearTimeout(timeoutId);
+  }, [searchTerm, typeFilter, statusFilter, page, pageSize]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setPage(1);
   }, [searchTerm, typeFilter, statusFilter]);
 
   const filteredAccounts = accounts;
@@ -126,6 +147,30 @@ export default function SearchAccounts() {
         filteredAccounts.length
       } accounts to ${format.toUpperCase()}...`
     );
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  const handleFirstPage = () => {
+    if (page > 1) {
+      setPage(1);
+    }
+  };
+
+  const handleLastPage = () => {
+    if (page < totalPages) {
+      setPage(totalPages);
+    }
   };
 
   // Use shared utilities for consistent color mapping across app
@@ -236,9 +281,9 @@ export default function SearchAccounts() {
                 <p className="text-sm text-gray-600">
                   Found{" "}
                   <span className="font-semibold text-[#8B5CF6]">
-                    {formatVnNumber(filteredAccounts.length || 0)}
+                    {formatVnNumber(total)}
                   </span>{" "}
-                  savings accounts
+                  savings accounts • Page {page} of {totalPages}
                 </p>
                 <Button
                   variant="outline"
@@ -334,6 +379,64 @@ export default function SearchAccounts() {
                 </Table>
               )}
             </div>
+
+            {/* Pagination Controls */}
+            {!loading && filteredAccounts.length > 0 && (
+              <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                <div className="text-sm text-gray-600">
+                  Showing {total === 0 ? 0 : (page - 1) * pageSize + 1} to{" "}
+                  {Math.min(page * pageSize, total)} of {formatVnNumber(total)}{" "}
+                  results
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleFirstPage}
+                    disabled={page === 1 || loading}
+                    aria-label="First page"
+                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronsLeft size={16} />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePreviousPage}
+                    disabled={page === 1 || loading}
+                    aria-label="Previous page"
+                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft size={16} className="mr-1" />
+                    Prev
+                  </Button>
+                  <span className="text-sm font-medium text-gray-700 px-3">
+                    Page {page} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleNextPage}
+                    disabled={page === totalPages || loading}
+                    aria-label="Next page"
+                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                    <ChevronRight size={16} className="ml-1" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLastPage}
+                    disabled={page === totalPages || loading}
+                    aria-label="Last page"
+                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <ChevronsRight size={16} />
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

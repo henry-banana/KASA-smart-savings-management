@@ -233,7 +233,7 @@ export default function Deposit() {
                       setAccountInfo(null);
                       setError("");
                     }}
-                    placeholder="Enter account code (e.g., SA12345)"
+                    placeholder="Enter account code (e.g., 12345)"
                     className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()

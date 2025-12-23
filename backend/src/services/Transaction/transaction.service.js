@@ -142,7 +142,7 @@ class TransactionService {
     return { message: "Transaction deleted successfully." };
   }
 
-  async depositTransaction({amount, bookId, employeeId}) {
+  async depositTransaction({ amount, bookId, employeeId }) {
     const savingBook = await savingBookRepository.findById(bookId);
     if (!savingBook) throw new Error("Account not found.");
 
@@ -206,7 +206,7 @@ class TransactionService {
     return result;
   }
 
-  async withdrawTransaction({bookId, amount, employeeId}) {
+  async withdrawTransaction({ bookId, amount, employeeId }) {
     const savingBook = await savingBookRepository.findById(bookId);
     if (!savingBook) throw new Error("Account not found.");
 
@@ -238,17 +238,21 @@ class TransactionService {
     //Kiểm tra số tiền rút không được lớn hơn số dư hiện có
     const balanceBefore = Number(savingBook.currentbalance);
 
-    if (balanceBefore < Number(amount)*1.15) {
+    if (balanceBefore < Number(amount) * 1.15) {
       throw new Error("Insufficient balance.");
     }
 
     //Tính số dư sau khi rút
-    const balanceAfter = balanceBefore - Number(amount)*1.15;
+    const balanceAfter = balanceBefore - Number(amount) * 1.15;
+
+    // Fix: Check if balance is effectively 0 (within 1 VND)
+    const isBalanceZero = Math.abs(balanceAfter) < 1;
+    const finalBalance = isBalanceZero ? 0 : balanceAfter;
 
     //Cập nhật số dư sau khi rút, đóng sở nếu số dư = 0
     const updatedBook = await savingBookRepository.update(bookId, {
-      currentbalance: balanceAfter,
-      status: balanceAfter === 0 ? "Close" : savingBook.status,
+      currentbalance: finalBalance,
+      status: isBalanceZero ? "Close" : savingBook.status,
     });
 
     const newTransaction = await transactionRepository.create({
@@ -256,7 +260,7 @@ class TransactionService {
       amount: amount,
       transactiontype: "WithDraw",
       tellerid: employeeId,
-      note: balanceAfter === 0 ? `Tất toán sổ. Số dư gốc: ${balanceBefore}.` : "",
+      note: isBalanceZero ? `Tất toán sổ. Số dư gốc: ${balanceBefore}.` : "",
     });
 
     if (!updatedBook) {
@@ -275,7 +279,7 @@ class TransactionService {
       type: "withdraw",
       amount: newTransaction.amount,
       balanceBefore: balanceBefore,
-      balanceAfter: balanceAfter,
+      balanceAfter: finalBalance,
       transactionDate: newTransaction.transactiondate,
       savingBook: {
         bookId: updatedBook.bookid,

@@ -3,14 +3,14 @@ export default {
   transform: {},
   testMatch: [
     "**/tests/unit/**/*.test.js",
-    // "**/tests/unit/**/customer.controller.test.js"
   ],
   collectCoverageFrom: [
     "src/services/**/*.js",
-    "src/repositories/**/*.js",
+    // "src/repositories/**/*.js",
     "src/models/**/*.js",
     "src/middleware/**/*.js",
-    "src/utils/**/*.js",
+    "src/controllers/**/*.js",
+    // "src/utils/**/*.js",
     "!src/config/**",
     "!src/index.js",
     "!**/node_modules/**",

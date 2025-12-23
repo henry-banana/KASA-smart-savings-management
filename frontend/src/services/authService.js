@@ -23,7 +23,7 @@ export const authService = {
 
     // Save token to localStorage if present
     if (userData.token) {
-      localStorage.setItem("token", userData.token);
+      localStorage.setItem("authToken", userData.token);
     }
 
     return this.transformUser(userData);

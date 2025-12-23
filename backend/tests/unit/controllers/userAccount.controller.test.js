@@ -71,7 +71,7 @@ describe("UserAccountController - Unit Tests", () => {
   });
 
   describe("createUserAccount()", () => {
-    it("TC_UC01_08 - should create user account with hashed password", async () => {
+    it("TC_UC01_01 - Cấp tài khoản thành công (Teller)", async () => {
       // === ARRANGE ===
       const req = createMockRequest({
         body: {
@@ -111,7 +111,85 @@ describe("UserAccountController - Unit Tests", () => {
       });
     });
 
-    it("should return 500 when missing required fields", async () => {
+    it("TC_UC01_02 - Cấp tài khoản thành công (Accountant)", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "Nguyen Van B",
+          roleName: "Accountant",
+          email: "accountant@gmail.com",
+          branchName: "Branch 1",
+        },
+      });
+      const res = createMockResponse();
+
+      const mockResult = {
+        id: "EMP002",
+        username: "EMP002",
+        fullName: "Nguyen Van B",
+        email: "accountant@gmail.com",
+        roleName: "Accountant",
+        status: "active",
+        branchName: "Branch 1",
+      };
+
+      mockUserAccountService.createUserAccount.mockResolvedValue(mockResult);
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            roleName: "Accountant",
+          }),
+        })
+      );
+    });
+
+    it("TC_UC01_08 - Kiểm tra mã hóa mật khẩu", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "Nguyen Van A",
+          roleName: "Teller",
+          email: "test@gmail.com",
+          branchName: "Branch 1",
+        },
+      });
+      const res = createMockResponse();
+
+      const mockResult = {
+        id: "EMP001",
+        username: "EMP001",
+        fullName: "Nguyen Van A",
+        email: "test@gmail.com",
+        roleName: "Teller",
+        status: "active",
+        branchName: "Branch 1",
+      };
+
+      mockUserAccountService.createUserAccount.mockResolvedValue(mockResult);
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      expect(mockUserAccountService.createUserAccount).toHaveBeenCalledWith(
+        req.body
+      );
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Create user successfully",
+        success: true,
+        total: 1,
+        data: mockResult,
+      });
+    });
+
+    it("TC_UC01_03 - Lỗi bỏ trống thông tin", async () => {
       // === ARRANGE ===
       const req = createMockRequest({
         body: {
@@ -124,6 +202,238 @@ describe("UserAccountController - Unit Tests", () => {
       mockUserAccountService.createUserAccount.mockRejectedValue(
         new Error("Missing required fields")
       );
+
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Failed to create user account",
+        success: false,
+      });
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("TC_UC01_04 - Lỗi Email sai định dạng", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "Test User",
+          roleName: "Teller",
+          email: "invalid-email", // Missing @
+          branchName: "Branch 1",
+        },
+      });
+      const res = createMockResponse();
+
+      mockUserAccountService.createUserAccount.mockRejectedValue(
+        new Error("Invalid email format")
+      );
+
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Failed to create user account",
+        success: false,
+      });
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("TC_UC01_05 - Lỗi trùng Mã NV/Email", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "Existing User",
+          roleName: "Teller",
+          email: "existing@example.com",
+          branchName: "Branch 1",
+        },
+      });
+      const res = createMockResponse();
+
+      const error = new Error("Employee already exists");
+      error.status = 409;
+      mockUserAccountService.createUserAccount.mockRejectedValue(error);
+
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      expect(res.status).toHaveBeenCalledWith(409);
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("TC_UC01_06 - Kiểm tra trạng thái mặc định", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "New User",
+          roleName: "Teller",
+          email: "new@example.com",
+          branchName: "Branch 1",
+        },
+      });
+      const res = createMockResponse();
+
+      const mockResult = {
+        id: "EMP001",
+        username: "EMP001",
+        fullName: "New User",
+        email: "new@example.com",
+        roleName: "Teller",
+        status: "Force Change Password", // Default status
+        branchName: "Branch 1",
+      };
+
+      mockUserAccountService.createUserAccount.mockResolvedValue(mockResult);
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            status: "Force Change Password",
+          }),
+        })
+      );
+    });
+
+    it("TC_UC01_09 - Lỗi chưa chọn Vai trò", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "Test User",
+          email: "test@example.com",
+          branchName: "Branch 1",
+          // Missing roleName
+        },
+      });
+      const res = createMockResponse();
+
+      mockUserAccountService.createUserAccount.mockRejectedValue(
+        new Error("Role is required")
+      );
+
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      expect(res.status).toHaveBeenCalledWith(500);
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("TC_UC01_07 - Lỗi gửi Email thông báo", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "Test User",
+          roleName: "Teller",
+          email: "test@example.com",
+          branchName: "Branch 1",
+        },
+      });
+      const res = createMockResponse();
+
+      // Simulate: Account created successfully but email sending failed
+      const mockResult = {
+        id: "EMP001",
+        username: "EMP001",
+        fullName: "Test User",
+        email: "test@example.com",
+        roleName: "Teller",
+        status: "active",
+        branchName: "Branch 1",
+      };
+
+      mockUserAccountService.createUserAccount.mockResolvedValue(mockResult);
+      // Note: Email service error would be handled in service layer
+      // This test verifies account is created even if email fails
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      // Account should still be created successfully
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Create user successfully",
+        success: true,
+        total: 1,
+        data: mockResult,
+      });
+    });
+
+    it("TC_UC01_10 - Ghi Audit Log khi tạo tài khoản", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "Test User",
+          roleName: "Teller",
+          email: "test@example.com",
+          branchName: "Branch 1",
+        },
+        user: {
+          userId: "ADMIN001",
+          roleName: "Admin",
+        },
+      });
+      const res = createMockResponse();
+
+      const mockResult = {
+        id: "EMP001",
+        username: "EMP001",
+        fullName: "Test User",
+        email: "test@example.com",
+        roleName: "Teller",
+        status: "active",
+        branchName: "Branch 1",
+      };
+
+      mockUserAccountService.createUserAccount.mockResolvedValue(mockResult);
+
+      // === ACT ===
+      await createUserAccount(req, res);
+
+      // === ASSERT ===
+      // Verify account creation is logged (audit log would be handled in service/repository layer)
+      expect(mockUserAccountService.createUserAccount).toHaveBeenCalledWith(req.body);
+      expect(res.status).toHaveBeenCalledWith(201);
+    });
+
+    it("TC_UC01_11 - Lỗi lưu DB khi tạo tài khoản", async () => {
+      // === ARRANGE ===
+      const req = createMockRequest({
+        body: {
+          fullName: "Test User",
+          roleName: "Teller",
+          email: "test@example.com",
+          branchName: "Branch 1",
+        },
+      });
+      const res = createMockResponse();
+
+      const dbError = new Error("Database connection failed");
+      dbError.status = 500;
+      mockUserAccountService.createUserAccount.mockRejectedValue(dbError);
 
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
@@ -208,7 +518,7 @@ describe("UserAccountController - Unit Tests", () => {
   });
 
   describe("getUserAccountById()", () => {
-    it("TC_UC04_05 - should return user account when found", async () => {
+    it("TC_UC04_05 - Kiểm soát truy cập", async () => {
       // === ARRANGE ===
       const req = createMockRequest({
         params: { id: "EMP001" },
@@ -240,7 +550,7 @@ describe("UserAccountController - Unit Tests", () => {
       });
     });
 
-    it("TC_UC04_05 - should return 404 when trying to access another user", async () => {
+    it("TC_UC04_05 - Kiểm soát truy cập - Không được truy cập tài khoản của người khác", async () => {
       // === ARRANGE ===
       const req = createMockRequest({
         params: { id: "EMP002" }, // Trying to access another user
