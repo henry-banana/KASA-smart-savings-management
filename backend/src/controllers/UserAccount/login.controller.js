@@ -16,20 +16,6 @@ export async function login(req, res) {
         .json({ message: "Username and password are required" });
     }
 
-    // const { data: userData, error } = await supabase
-    //   .from("useraccount")
-    //   .select(`
-    //     userid,
-    //     password,
-    //     employee:employee (
-    //       fullname,
-    //       role:role (
-    //         rolename
-    //       )
-    //     )
-    //   `)
-    //   .eq("userid", username)
-    //   .single();
 
     // JOIN 3 bảng để lấy roleName thông qua Employee
     const { data: userData, error } = await supabase
@@ -53,8 +39,6 @@ export async function login(req, res) {
       .eq("email", username)
       .single();
 
-    console.log("Error:", error);
-    console.log("User data:", userData);
 
     if (error || !userData) {
       return res.status(401).json({
@@ -94,8 +78,8 @@ export async function login(req, res) {
     const token = jwt.sign(
       {
         userId: userData.useraccount.userid, // id duy nhất
-        username: userData.useraccount.userid, // username
-        role: roleName, // role: admin, teller...
+        userName: userData.useraccount.userid, // username
+        roleName: roleName, // role: admin, teller...
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES || "1d" }

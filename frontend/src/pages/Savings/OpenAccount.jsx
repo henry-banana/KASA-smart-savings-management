@@ -651,18 +651,31 @@ export default function OpenAccount() {
                         id="initialDeposit"
                         type="number"
                         value={formData.initialDeposit}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const numValue = Number(value);
+
+                          // Prevent entering negative amounts
+                          if (numValue < 0) {
+                            setFormData({
+                              ...formData,
+                              initialDeposit: "",
+                            });
+                            return;
+                          }
+
                           setFormData({
                             ...formData,
-                            initialDeposit: e.target.value,
-                          })
-                        }
+                            initialDeposit: value,
+                          });
+                        }}
                         placeholder={
                           minBalance
                             ? `Minimum: ${formatVnNumber(minBalance)}`
                             : "Enter amount"
                         }
                         disabled={!!regulationsError || loadingRegulations}
+                        min="0"
                         className="pl-7 sm:pl-8 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                       />
                       <span className="absolute text-sm font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2 sm:text-base">

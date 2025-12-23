@@ -6,8 +6,13 @@ import {
   updateEmployee,
   deleteEmployee,
 } from "../controllers/Employee/employee.controller.js";
+import { verifyToken } from "../middleware/auth.middleware.js";
+import checkRole from "../middleware/role.middleware.js";
 
 const router = express.Router();
+
+// Role definitions - only admin can manage employees
+const adminOnly = checkRole(['administrator']);
 
 /**
  * @swagger
@@ -195,14 +200,11 @@ const router = express.Router();
  *           type: integer
  */
 
-import { verifyToken } from "../middleware/auth.middleware.js";
-
-
-// router.post("/add", verifyToken, addEmployee); //Token khi tạo
-router.post("/", addEmployee);
-router.get("/", getAllEmployees);
-router.get("/:id", getEmployeeById);
-router.put("/:id", updateEmployee);
-router.delete("/:id", deleteEmployee);
+router.post("/add", verifyToken, adminOnly, addEmployee); //Token khi tạo
+router.post("/", verifyToken, adminOnly, addEmployee);
+router.get("/", verifyToken, adminOnly, getAllEmployees);
+router.get("/:id", verifyToken, adminOnly, getEmployeeById);
+router.put("/:id", verifyToken, adminOnly, updateEmployee);
+router.delete("/:id", verifyToken, adminOnly, deleteEmployee);
 
 export default router;

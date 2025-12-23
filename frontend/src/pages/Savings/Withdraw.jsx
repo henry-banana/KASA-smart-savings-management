@@ -45,7 +45,6 @@ export default function Withdraw() {
   const [accountInfo, setAccountInfo] = useState(null);
   const [error, setError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
-  const [calculatedInterest, setCalculatedInterest] = useState(0);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [minWithdrawalDays, setMinWithdrawalDays] = useState(15);
@@ -122,12 +121,8 @@ export default function Withdraw() {
       // Auto-fill withdrawal amount for fixed-term accounts
       if (account.accountTypeName !== "No term") {
         setWithdrawAmount(account.balance.toString());
-        const interest =
-          account.balance * account.interestRate * (daysSinceOpen / 365);
-        setCalculatedInterest(Math.round(interest));
       } else {
         setWithdrawAmount("");
-        setCalculatedInterest(0);
       }
     } catch (err) {
       console.error("Account lookup error:", err);
@@ -135,17 +130,6 @@ export default function Withdraw() {
     } finally {
       setIsLookingUp(false);
     }
-  };
-
-  const calculateInterest = (amount) => {
-    if (!accountInfo) return 0;
-
-    const days = accountInfo.daysSinceOpen;
-    const rate = accountInfo.interestRate;
-
-    // Simple interest calculation)
-    const interest = amount * rate * (days / 365);
-    return Math.round(interest);
   };
 
   const handleSubmit = async (e) => {
@@ -194,29 +178,20 @@ export default function Withdraw() {
     setError("");
 
     try {
-      let response;
-
       if (isClosingAccount) {
         // Use close account API for fixed-term matured accounts
-        response = await closeSavingAccount(accountId);
+        await closeSavingAccount(accountId);
       } else {
         // Use regular withdraw API for no-term accounts
-        response = await withdrawMoney(accountId, amount, false);
+        await withdrawMoney(accountId, amount, false);
       }
-
-      // Extract interest and final balance from response
-      const interest = response.data?.interest || calculateInterest(amount);
-      const finalBalance = response.data?.finalBalance || amount + interest;
 
       // Store snapshot for modal display
       setReceiptData({
         accountId,
         customerName: accountInfo.customerName,
-        withdrawalAmount: amount,
-        interestEarned: interest,
-        totalPayout: finalBalance,
+        totalPayout: amount,
       });
-      setCalculatedInterest(interest);
       setShowSuccess(true);
 
       // Reset form (keep receipt data & calculated values)
@@ -321,7 +296,7 @@ export default function Withdraw() {
                       setAccountInfo(null);
                       setError("");
                     }}
-                    placeholder="Enter account ID (e.g., SA12345)"
+                    placeholder="Enter account ID (e.g., 12345)"
                     className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
@@ -466,22 +441,22 @@ export default function Withdraw() {
                         const value = e.target.value;
                         const numValue = Number(value);
 
+                        // Prevent entering negative amounts
+                        if (numValue < 0) {
+                          setWithdrawAmount("");
+                          return;
+                        }
+
                         // Prevent entering amount greater than balance
                         if (accountInfo && numValue > accountInfo.balance) {
                           setWithdrawAmount(accountInfo.balance.toString());
-                          setCalculatedInterest(
-                            calculateInterest(accountInfo.balance)
-                          );
                         } else {
                           setWithdrawAmount(value);
-                          if (accountInfo && value) {
-                            const interest = calculateInterest(numValue);
-                            setCalculatedInterest(interest);
-                          }
                         }
                       }}
                       placeholder="Enter amount"
                       disabled={!accountInfo || isFixedTermAccount()}
+                      min="0"
                       max={accountInfo?.balance || undefined}
                       className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
                     />
@@ -498,23 +473,12 @@ export default function Withdraw() {
                         borderColor: "#F59E0B20",
                       }}
                     >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-600">
-                          Estimated Interest:
-                        </span>
-                        <span className="font-semibold text-green-600">
-                          {formatVnNumber(calculatedInterest)}₫
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between pt-2 border-t border-amber-200">
+                      <div className="flex items-center justify-between pt-2">
                         <span className="font-medium text-gray-700">
                           Total Payout:
                         </span>
                         <span className="text-xl font-bold text-green-600">
-                          {formatVnNumber(
-                            Number(withdrawAmount) + calculatedInterest
-                          )}
-                          ₫
+                          {formatVnNumber(Number(withdrawAmount))}₫
                         </span>
                       </div>
                     </div>
@@ -530,12 +494,12 @@ export default function Withdraw() {
                     (isFixedTermAccount() && !isFixedTermMatured()) ||
                     isSubmitting
                   }
-                  className="flex-1 h-12 text-white rounded-md font-medium border border-gray-200 hover:border border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="flex-1 h-12 text-white rounded-md font-medium border border-gray-200 hover:border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   style={{
                     background:
                       isFixedTermAccount() && !isFixedTermMatured()
                         ? "linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)"
-                        : "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100())",
+                        : "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
                   }}
                 >
                   <CheckCircle2 size={18} className="mr-2" />
@@ -552,7 +516,6 @@ export default function Withdraw() {
                     setWithdrawAmount("");
                     setAccountInfo(null);
                     setError("");
-                    setCalculatedInterest(0);
                   }}
                 >
                   Reset
@@ -572,9 +535,6 @@ export default function Withdraw() {
                 <li>Fixed-Term accounts: Can only withdraw at maturity date</li>
                 <li>
                   Fixed-Term accounts: Must withdraw full balance at maturity
-                </li>
-                <li>
-                  Interest is calculated based on days held and account type
                 </li>
               </ul>
             </div>
@@ -635,22 +595,6 @@ export default function Withdraw() {
                     {receiptData?.customerName}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">
-                    Withdrawal Amount:
-                  </span>
-                  <span className="font-semibold">
-                    {formatVnNumber(receiptData?.withdrawalAmount || 0)}₫
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">
-                    Interest Earned:
-                  </span>
-                  <span className="font-semibold text-green-600">
-                    +{formatVnNumber(receiptData?.interestEarned || 0)}₫
-                  </span>
-                </div>
                 <div className="flex justify-between pt-3 border-t border-gray-200">
                   <span className="font-medium text-gray-700">
                     Total Payout:
@@ -664,7 +608,7 @@ export default function Withdraw() {
 
             <Button
               onClick={() => setShowSuccess(false)}
-              className="w-full h-12 text-white rounded-md font-medium border border-gray-200 hover:border border-gray-200 hover: transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full h-12 text-white rounded-md font-medium border border-gray-200 hover:border-gray-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 background: "linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)",
               }}
