@@ -2,8 +2,8 @@ export default {
   testEnvironment: "node",
   transform: {},
   testMatch: [
-    // "**/tests/unit/**/*.test.js",
-    "**/tests/unit/**/customer.controller.test.js"
+    "**/tests/unit/**/*.test.js",
+    // "**/tests/unit/**/customer.controller.test.js"
   ],
   collectCoverageFrom: [
     "src/services/**/*.js",
