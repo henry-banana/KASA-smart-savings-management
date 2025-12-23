@@ -12,7 +12,7 @@ const checkRole = (allowedRoles) => {
         });
       }
 
-      const userRole = req.user.roleName;
+      const userRole = req.user.roleName.toLowerCase();
       
       if (allowedRoles.includes(userRole)) {
         next();

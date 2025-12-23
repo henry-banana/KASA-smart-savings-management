@@ -7,12 +7,12 @@ import checkRole from "../middleware/role.middleware.js";
 const router = express.Router();
 
 // Role definitions
-const accountantOrAdmin = checkRole(['accountant', 'admin']);
+const allRoles = checkRole(['accountant', 'admin', 'teller']);
 
 
-router.get("/", verifyToken, accountantOrAdmin, getAllRegulations); 
-router.put("/", verifyToken, accountantOrAdmin, validatePositiveNumbers, updateRegulations);
-router.get("/interest-rates", verifyToken, accountantOrAdmin, getRegulationRates);
-router.put("/interest-rates", verifyToken, accountantOrAdmin, updateSomeRegulation);
-router.get("/history", verifyToken, accountantOrAdmin, getHistoryRegulations);
+router.get("/", verifyToken, allRoles, getAllRegulations); 
+router.put("/", verifyToken, allRoles, validatePositiveNumbers, updateRegulations);
+router.get("/interest-rates", verifyToken, allRoles, getRegulationRates);
+router.put("/interest-rates", verifyToken, allRoles, updateSomeRegulation);
+router.get("/history", verifyToken, allRoles, getHistoryRegulations);
 export default router;

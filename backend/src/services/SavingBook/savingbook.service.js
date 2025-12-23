@@ -125,29 +125,42 @@ class SavingBookService {
     // 4. Lấy danh sách giao dịch
     const transactions = await transactionRepository.findById(bookID);
 
-    //5. Kiểm tra nếu là sổ không kì hạn thì cộng lãi suất hàng tháng
-    if (typeSaving.typename === "No term") {
-      const updateTime = new Date(savingBook.updatetime);
+    // 5. Xử lý cập nhật lãi suất và ngày đáo hạn (cho sổ không kỳ hạn hoặc tự động gia hạn)
+    // Lưu ý: Logic này áp dụng khi bạn muốn tự động cộng dồn lãi và dời ngày đáo hạn
+    if (typeSaving.typename === "No term") { // Hoặc check logic khác tùy nhu cầu
+      let maturityDate = new Date(savingBook.maturitydate);
       const currentDate = new Date();
-      let daysHeld =
-        (currentDate.getFullYear() - updateTime.getFullYear()) * 365 +
-        (currentDate.getMonth() - updateTime.getMonth()) * 30 +
-        (currentDate.getDate() - updateTime.getDate());
+      let currentBalance = parseFloat(savingBook.currentbalance); // Đảm bảo là số thực
+      let isUpdated = false;
 
-      let currentBalance = savingBook.currentbalance;
-      while (daysHeld >= 30) {
-        currentBalance += currentBalance * 0.0015;
-        daysHeld -= 30;
+      // Lãi suất hàng tháng (User đang để cứng 0.0015, tức 0.15%/tháng)
+      // Nếu trong DB typeSaving.interest là lãi năm (ví dụ 6%), công thức nên là: typeSaving.interest / 100 / 12
+      const monthlyInterestRate = 0.0015; 
+
+      // Vòng lặp: Nếu ngày đáo hạn <= ngày hiện tại thì thực hiện tất toán tháng đó
+      while (maturityDate <= currentDate) {
+        // A. Cộng lãi nhập vốn
+        currentBalance += currentBalance * monthlyInterestRate;
+
+        // B. Cập nhật maturityDate lên 1 tháng tiếp theo
+        // setMonth tự động xử lý việc chuyển năm (vd: tháng 12 -> tháng 1 năm sau)
+        maturityDate.setMonth(maturityDate.getMonth() + 1);
+
+        isUpdated = true;
       }
 
-      await savingBookRepository.update(bookID, {
-        currentbalance: currentBalance,
-        updatetime: new Date(
-          currentDate - daysHeld * 24 * 60 * 60 * 1000
-        ).toISOString(),
-      });
+      // Nếu có sự thay đổi, cập nhật vào Database
+      if (isUpdated) {
+        await savingBookRepository.update(bookID, {
+          currentbalance: currentBalance,
+          // Chuyển về string ISO để lưu DB
+          maturitydate: maturityDate.toISOString(), 
+        });
 
-      savingBook.currentbalance = currentBalance;
+        // Cập nhật lại biến local để trả về kết quả mới nhất cho client
+        savingBook.currentbalance = currentBalance;
+        savingBook.maturitydate = maturityDate.toISOString(); 
+      }
     }
 
     return {
@@ -156,8 +169,8 @@ class SavingBookService {
       customerName: customer.fullname,
       typeSavingId: typeSaving.typeid,
       openDate: savingBook.registertime,
-      maturityDate: savingBook.maturitydate,
-      balance: savingBook.currentbalance,
+      maturityDate: savingBook.maturitydate, // Ngày này đã được cập nhật thành tương lai
+      balance: savingBook.currentbalance,    // Số dư này đã bao gồm lãi
       status: savingBook.status,
 
       typeSaving: {
@@ -171,6 +184,7 @@ class SavingBookService {
     };
   }
 
+  // Tìm kiếm sổ tiết kiệm
   // Tìm kiếm sổ tiết kiệm
   async searchSavingBook(keyword, pageSize = 10, pageNumber = 1) {
     // Nếu không có keyword hoặc keyword rỗng, lấy tất cả
@@ -191,7 +205,6 @@ class SavingBookService {
         );
       } else if (isOnlyDigits) {
         // Tìm kiếm theo Book ID
-        // Do cần join bảng để in dữ liệu theo format nên sẽ tạo hàm riêng
         results = await savingBookRepository.findByBookID(trimmedKeyword);
       } else if (isOnlyLettersAndSpaces) {
         // Tìm kiếm theo tên khách hàng
@@ -208,34 +221,44 @@ class SavingBookService {
     const paginatedResults = results.slice(startIndex, endIndex);
 
     // Kiểm tra và cộng lãi suất cho sổ không kì hạn (chỉ tính cho trang hiện tại)
+    const currentDate = new Date(); // Lấy ngày hiện tại một lần dùng chung
+    const monthlyInterestRate = 0.0015; // Lãi suất 0.15%
+
     for (let i = 0; i < paginatedResults.length; i++) {
+      // Giả sử typeId == 1 là loại sổ cần tự động gia hạn lãi (No term)
       if (paginatedResults[i].typeId == 1) {
-        const updateTime = new Date(paginatedResults[i].updatetime);
-        const currentDate = new Date();
-        let daysHeld =
-          (currentDate.getFullYear() - updateTime.getFullYear()) * 365 +
-          (currentDate.getMonth() - updateTime.getMonth()) * 30 +
-          (currentDate.getDate() - updateTime.getDate());
-        let currentBalance = paginatedResults[i].balance;
-        while (daysHeld >= 30) {
-          currentBalance += currentBalance * 0.0015;
-          daysHeld -= 30;
+        let maturityDate = new Date(paginatedResults[i].maturitydate);
+        let currentBalance = parseFloat(paginatedResults[i].balance);
+        let isUpdated = false;
+
+        // Vòng lặp: Nếu ngày đáo hạn đã qua hoặc là hôm nay
+        while (maturityDate <= currentDate) {
+          // 1. Cộng lãi nhập vốn
+          currentBalance += currentBalance * monthlyInterestRate;
+          
+          // 2. Tăng maturityDate lên 1 tháng
+          maturityDate.setMonth(maturityDate.getMonth() + 1);
+          
+          isUpdated = true;
         }
 
-        await savingBookRepository.update(paginatedResults[i].bookId, {
-          currentbalance: currentBalance,
-          updatetime: new Date(
-            currentDate - daysHeld * 24 * 60 * 60 * 1000
-          ).toISOString(),
-        });
+        // Nếu có cập nhật (tức là đã qua ngày đáo hạn cũ)
+        if (isUpdated) {
+          await savingBookRepository.update(paginatedResults[i].bookId, {
+            currentbalance: currentBalance,
+            maturitydate: maturityDate.toISOString(), // Cập nhật ngày đáo hạn mới (tương lai)
+          });
 
-        paginatedResults[i].balance = currentBalance;
+          // Cập nhật lại dữ liệu trong mảng kết quả để trả về cho Client hiển thị đúng ngay lập tức
+          paginatedResults[i].balance = currentBalance;
+          paginatedResults[i].maturitydate = maturityDate.toISOString();
+        }
       }
     }
 
     return {
       total: total,
-      data: paginatedResults, 
+      data: paginatedResults,
     };
   }
 
