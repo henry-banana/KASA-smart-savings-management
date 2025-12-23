@@ -1,4 +1,4 @@
-import { savingBookService } from "../../services/SavingBook/savingBook.service.js";
+import { savingBookService } from "../../services/SavingBook/savingbook.service.js";
 
 // Thêm sổ tiết kiệm mới
 export async function addSavingBook(req, res) {

@@ -8,6 +8,77 @@ import {
 import { raw } from "express";
 
 class SavingBookService {
+
+ // =========================================================================
+  // PRIVATE HELPER: XỬ LÝ LAZY LOADING (Phiên bản Fix Mapping)
+  // =========================================================================
+  async _performRollover(savingBook, typeSaving) {
+    // 1. CHUẨN HÓA DỮ LIỆU ĐẦU VÀO (Mapping)
+    // Log cho thấy object dùng CamelCase, nhưng DB trả về Lowercase.
+    // Ta lấy giá trị linh hoạt từ cả 2 trường hợp.
+    
+    const bookId = savingBook.bookId || savingBook.bookid;
+    const currentMaturityDateStr = savingBook.maturityDate || savingBook.maturitydate;
+    const currentBalanceRaw = 
+        savingBook.balance !== undefined ? savingBook.balance : savingBook.currentbalance;
+    if (!bookId) {
+        console.error("❌ Rollover Error: Missing Book ID");
+        return savingBook;
+    }
+
+    let maturityDate = new Date(currentMaturityDateStr);
+    const currentDate = new Date();
+    let currentBalance = parseFloat(currentBalanceRaw);
+    let isUpdated = false;
+
+    // Lấy thông tin kỳ hạn và lãi suất
+    const isNoTerm = typeSaving.typename === "No term" || typeSaving.termperiod === 0;
+    const termMonths = isNoTerm ? 1 : typeSaving.termperiod;
+    const interestRatePercent = parseFloat(typeSaving.interest); 
+
+    // 2. VÒNG LẶP TÍNH LÃI
+    while (maturityDate <= currentDate) {
+      // Nếu loại sổ bị vô hiệu hóa -> Dừng tái tục
+      if (typeSaving.isactive === false) {
+        break; 
+      }
+
+      // Tính lãi: Gốc * (Lãi%/100) * Số tháng
+      const interestAmount = currentBalance * (interestRatePercent / 100) * termMonths;
+      
+      // Lãi nhập vốn
+      currentBalance += interestAmount;
+      
+      // Gia hạn ngày đáo hạn
+      maturityDate.setMonth(maturityDate.getMonth() + termMonths);
+      
+      isUpdated = true;
+    }
+
+    // 3. CẬP NHẬT DATABASE & OBJECT TRẢ VỀ
+    if (isUpdated) {
+      console.log(`✅ Saving changes for Book [${bookId}] - New Balance: ${currentBalance}`);
+      
+      // A. Update Database (Repo thường yêu cầu đúng tên cột trong DB - Lowercase)
+      await savingBookRepository.update(bookId, {
+        currentbalance: currentBalance,       // Tên cột trong DB
+        maturitydate: maturityDate.toISOString(), // Tên cột trong DB
+      });
+    }
+
+    // B. LUÔN cập nhật object trả về (cho dù có isUpdated hay không)
+    // Cần cập nhật để đảm bảo dữ liệu mới nhất được trả về
+    if (savingBook.balance !== undefined) savingBook.balance = currentBalance;
+    if (savingBook.currentbalance !== undefined) savingBook.currentbalance = currentBalance;
+
+    if (savingBook.maturityDate !== undefined) savingBook.maturityDate = maturityDate.toISOString();
+    if (savingBook.maturitydate !== undefined) savingBook.maturitydate = maturityDate.toISOString();
+
+    return savingBook;
+  }
+
+
+
   // Thêm sổ tiết kiệm mới
   async addSavingBook({ typeSavingID, initialDeposit, employeeID, citizenID }) {
     if (!typeSavingID || !initialDeposit || !employeeID || !citizenID) {
@@ -24,6 +95,14 @@ class SavingBookService {
     if (!typeSaving) {
       throw new Error("TypeSaving not found: " + typeSavingID);
     }
+
+    const minimumDeposit = typeSaving.minimumdeposit ?? 100000;
+
+    // Validate tiền gửi tối thiểu
+    if (initialDeposit < minimumDeposit) {
+      throw new Error(`Minimum deposit amount is ${minimumDeposit} VND`);
+    }
+
 
     // 3. Tính ngày mở và ngày đáo hạn
     const maturityDate = new Date();
@@ -111,7 +190,7 @@ class SavingBookService {
   // Lấy thông tin sổ tiết kiệm theo ID
   async getSavingBookById(bookID) {
     // 1. Lấy thông tin sổ tiết kiệm
-    const savingBook = await savingBookRepository.findById(bookID);
+    let savingBook = await savingBookRepository.findById(bookID);
     if (!savingBook) throw new Error("Saving book not found");
 
     // 2. Lấy khách hàng theo customerid
@@ -125,44 +204,48 @@ class SavingBookService {
     // 4. Lấy danh sách giao dịch
     const transactions = await transactionRepository.findById(bookID);
 
-    // 5. Xử lý cập nhật lãi suất và ngày đáo hạn (cho sổ không kỳ hạn hoặc tự động gia hạn)
+    // Cũ: 5. Xử lý cập nhật lãi suất và ngày đáo hạn (cho sổ không kỳ hạn hoặc tự động gia hạn)
     // Lưu ý: Logic này áp dụng khi bạn muốn tự động cộng dồn lãi và dời ngày đáo hạn
-    if (typeSaving.typename === "No term") { // Hoặc check logic khác tùy nhu cầu
-      let maturityDate = new Date(savingBook.maturitydate);
-      const currentDate = new Date();
-      let currentBalance = parseFloat(savingBook.currentbalance); // Đảm bảo là số thực
-      let isUpdated = false;
+    // if (typeSaving.typename === "No term") { // Hoặc check logic khác tùy nhu cầu
+    //   let maturityDate = new Date(savingBook.maturitydate);
+    //   const currentDate = new Date();
+    //   let currentBalance = parseFloat(savingBook.currentbalance); // Đảm bảo là số thực
+    //   let isUpdated = false;
 
-      // Lãi suất hàng tháng (User đang để cứng 0.0015, tức 0.15%/tháng)
-      // Nếu trong DB typeSaving.interest là lãi năm (ví dụ 6%), công thức nên là: typeSaving.interest / 100 / 12
-      const monthlyInterestRate = 0.0015; 
+    //   // Lãi suất hàng tháng (User đang để cứng 0.0015, tức 0.15%/tháng)
+    //   // Nếu trong DB typeSaving.interest là lãi năm (ví dụ 6%), công thức nên là: typeSaving.interest / 100 / 12
+    //   const monthlyInterestRate = 0.0015; 
 
-      // Vòng lặp: Nếu ngày đáo hạn <= ngày hiện tại thì thực hiện tất toán tháng đó
-      while (maturityDate <= currentDate) {
-        // A. Cộng lãi nhập vốn
-        currentBalance += currentBalance * monthlyInterestRate;
+    //   // Vòng lặp: Nếu ngày đáo hạn <= ngày hiện tại thì thực hiện tất toán tháng đó
+    //   while (maturityDate <= currentDate) {
+    //     // A. Cộng lãi nhập vốn
+    //     currentBalance += currentBalance * monthlyInterestRate;
 
-        // B. Cập nhật maturityDate lên 1 tháng tiếp theo
-        // setMonth tự động xử lý việc chuyển năm (vd: tháng 12 -> tháng 1 năm sau)
-        maturityDate.setMonth(maturityDate.getMonth() + 1);
+    //     // B. Cập nhật maturityDate lên 1 tháng tiếp theo
+    //     // setMonth tự động xử lý việc chuyển năm (vd: tháng 12 -> tháng 1 năm sau)
+    //     maturityDate.setMonth(maturityDate.getMonth() + 1);
 
-        isUpdated = true;
-      }
+    //     isUpdated = true;
+    //   }
 
-      // Nếu có sự thay đổi, cập nhật vào Database
-      if (isUpdated) {
-        await savingBookRepository.update(bookID, {
-          currentbalance: currentBalance,
-          // Chuyển về string ISO để lưu DB
-          maturitydate: maturityDate.toISOString(), 
-        });
+    //   // Nếu có sự thay đổi, cập nhật vào Database
+    //   if (isUpdated) {
+    //     await savingBookRepository.update(bookID, {
+    //       currentbalance: currentBalance,
+    //       // Chuyển về string ISO để lưu DB
+    //       maturitydate: maturityDate.toISOString(), 
+    //     });
 
-        // Cập nhật lại biến local để trả về kết quả mới nhất cho client
-        savingBook.currentbalance = currentBalance;
-        savingBook.maturitydate = maturityDate.toISOString(); 
-      }
+    //     // Cập nhật lại biến local để trả về kết quả mới nhất cho client
+    //     savingBook.currentbalance = currentBalance;
+    //     savingBook.maturitydate = maturityDate.toISOString(); 
+    //   }
+    // }
+    
+    // [LAZY LOADING]: Gọi hàm private để tính toán lãi và cập nhật ngày đáo hạn mới nhất
+    if (savingBook.status === 'Open') {
+        savingBook = await this._performRollover(savingBook, typeSaving);
     }
-
     return {
       bookId: savingBook.bookid,
       citizenId: customer.citizenid,
@@ -178,13 +261,13 @@ class SavingBookService {
         typeName: typeSaving.typename,
         term: typeSaving.termperiod,
         interestRate: typeSaving.interest,
+        isActive: typeSaving.isactive // Trả về để FE biết gói này còn hoạt động ko
       },
 
       transactions: transactions || [],
     };
   }
 
-  // Tìm kiếm sổ tiết kiệm
   // Tìm kiếm sổ tiết kiệm
   async searchSavingBook(keyword, pageSize = 10, pageNumber = 1) {
     // Nếu không có keyword hoặc keyword rỗng, lấy tất cả
@@ -221,9 +304,10 @@ class SavingBookService {
     const paginatedResults = results.slice(startIndex, endIndex);
 
     // Kiểm tra và cộng lãi suất cho sổ không kì hạn (chỉ tính cho trang hiện tại)
-    const currentDate = new Date(); // Lấy ngày hiện tại một lần dùng chung
-    const monthlyInterestRate = 0.0015; // Lãi suất 0.15%
+     const currentDate = new Date(); // Lấy ngày hiện tại một lần dùng chung
+     const monthlyInterestRate = 0.0015; // Lãi suất 0.15%
 
+    //Cũ
     for (let i = 0; i < paginatedResults.length; i++) {
       // Giả sử typeId == 1 là loại sổ cần tự động gia hạn lãi (No term)
 
@@ -257,6 +341,7 @@ class SavingBookService {
       }
     }
 
+    
     return {
       total: total,
       data: paginatedResults,
@@ -276,22 +361,73 @@ class SavingBookService {
     const typeSaving = await typeSavingRepository.findById(savingBook.typeid);
     if (!typeSaving) throw new Error("TypeSaving not found for this book");
 
+    // Kiểm tra 15 ngày
+    const registerDate = new Date(savingBook.registertime);
+    const currentDate = new Date();
+    const diffTime = Math.abs(currentDate - registerDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+    if (diffDays < 15) {
+      throw new Error(`Cannot close saving book. It must be open for at least 15 days. Current: ${diffDays} days.`);
+    }
+
+
     const customer = await customerRepository.findById(savingBook.customerid);
     if (!customer) throw new Error("Customer not found for this book");
 
-    // 3. Tính toán tiền lãi
-    const openDate = new Date(savingBook.registertime);
-    const closeDate = new Date();
-    const timeDiff = closeDate.getTime() - openDate.getTime();
-    const daysHeld = Math.floor(timeDiff / (1000 * 3600 * 24));
+    // // 3. Tính toán tiền lãi
+    // const openDate = new Date(savingBook.registertime);
+    // const closeDate = new Date();
+    // const timeDiff = closeDate.getTime() - openDate.getTime();
+    // const daysHeld = Math.floor(timeDiff / (1000 * 3600 * 24));
 
-    // Giả sử lãi suất được tính theo năm (365 ngày)
-    // Logic này có thể cần phức tạp hơn tùy theo quy định (rút trước hạn, đúng hạn,...)
-    const interestEarned =
-      savingBook.currentbalance *
-      (typeSaving.interest / 100) *
-      (daysHeld / 365);
-    const finalAmount = savingBook.currentbalance + interestEarned;
+    // // Giả sử lãi suất được tính theo năm (365 ngày)
+    // // Logic này có thể cần phức tạp hơn tùy theo quy định (rút trước hạn, đúng hạn,...)
+    // const interestEarned =
+    //   savingBook.currentbalance *
+    //   (typeSaving.interest / 100) *
+    //   (daysHeld / 365);
+    // const finalAmount = savingBook.currentbalance + interestEarned;
+
+
+    // C. [LOGIC]: Lazy Loading - Cập nhật lãi/tái tục lần cuối
+    savingBook = await this._performRollover(savingBook, typeSaving);
+    
+    // D. Tính toán tiền lãi phát sinh (interestEarned) và tổng tiền (finalAmount)
+    let finalAmount = parseFloat(savingBook.currentbalance);
+    let interestEarned = 0; // Biến này lưu phần lãi phát sinh thêm (nếu rút trước hạn)
+    const maturityDate = new Date(savingBook.maturitydate);
+
+    // Chỉ tính toán phức tạp nếu là Sổ Có Kỳ Hạn
+    if (typeSaving.typename !== "No term" && typeSaving.termperiod > 0) {
+      
+      // Nếu ngày hiện tại nhỏ hơn ngày đáo hạn kế tiếp => RÚT TRƯỚC HẠN
+      if (currentDate < maturityDate) {
+        
+        // 1. Tìm ngày đáo hạn gần nhất (Last Maturity)
+        const lastMaturityDate = new Date(maturityDate);
+        lastMaturityDate.setMonth(lastMaturityDate.getMonth() - typeSaving.termperiod);
+        
+        // 2. Tính số tháng dư ra (Surplus) - Bỏ qua ngày lẻ
+        let surplusMonths = 0;
+        let monthsDiff = (currentDate.getFullYear() - lastMaturityDate.getFullYear()) * 12;
+        monthsDiff -= lastMaturityDate.getMonth();
+        monthsDiff += currentDate.getMonth();
+        
+        if (currentDate.getDate() < lastMaturityDate.getDate()) {
+            monthsDiff--;
+        }
+        surplusMonths = Math.max(0, monthsDiff);
+
+        // 3. Tính lãi phần dư (0.15%)
+        const demandInterestRate = 0.0015; 
+        interestEarned = finalAmount * demandInterestRate * surplusMonths;
+        
+        // Cộng lãi dư vào tổng tiền
+        finalAmount += interestEarned;
+      }
+    }
+
 
     // 4. Tạo giao dịch tất toán
     const settlementTransaction = await transactionRepository.create({
