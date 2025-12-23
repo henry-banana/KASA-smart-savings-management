@@ -9,10 +9,9 @@ import checkRole from "../middleware/role.middleware.js";
 const router = express.Router();
 
 // Role definitions - only accountant and admin can view reports
-const accountantOrAdmin = checkRole(['accountant', 'admin']);
+const accountantRole = checkRole(['accountant']);
 
 
-router.get("/daily", verifyToken, accountantOrAdmin, getDailyReport);
-router.get("/monthly", verifyToken, accountantOrAdmin, getMonthlyReport);
-
+router.get("/daily", verifyToken, accountantRole, getDailyReport);
+router.get("/monthly", verifyToken, accountantRole, getMonthlyReport);
 export default router;

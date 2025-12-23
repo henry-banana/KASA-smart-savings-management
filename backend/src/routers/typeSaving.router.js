@@ -13,8 +13,8 @@ import checkRole from "../middleware/role.middleware.js";
 const router = express.Router();
 
 // Role definitions
-const accountantOrAdmin = checkRole(['accountant', 'admin']);
-const allRoles = checkRole(['teller', 'accountant', 'admin']);
+const accountantOrAdmin = checkRole(['accountant', 'administrator']);
+const allRoles = checkRole(['teller', 'accountant', 'administrator']);
 
 // Thêm loại sổ tiết kiệm mới - accountant và admin
 // POST /api/typesaving
