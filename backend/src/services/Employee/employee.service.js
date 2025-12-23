@@ -102,41 +102,61 @@ class EmployeeService {
    * Cập nhật thông tin cá nhân (Có bảo mật White-list)
    */
   async updateMyProfile(userId, updateData) {
-    // 1. MAPPING: camelCase (from client) -> lowercase (database column)
-    const fieldMapping = {
-      fullName: "fullname",
-      email: "email",
-      phone: "phone",
+    // 1. INPUT MAPPING: camelCase -> lowercase (DB columns)
+    // Chỉ map những field được phép update để tránh Mass Assignment
+    const inputMapping = {
+        fullName: "fullname",
+        email: "email",
+        phone: "phone",
     };
 
     const cleanData = {};
-
-    // 2. Convert và validate fields
     Object.keys(updateData).forEach((key) => {
-      const dbColumn = fieldMapping[key];
-      
-      if (dbColumn) {
-        cleanData[dbColumn] = updateData[key];
-      }
+        if (inputMapping[key]) {
+            cleanData[inputMapping[key]] = updateData[key];
+        }
     });
 
-    // Nếu không có trường nào hợp lệ để update
     if (Object.keys(cleanData).length === 0) {
-      throw new Error("No valid fields to update. Allowed: fullName, email, phone.");
+        throw new Error("No valid fields to update. Allowed: fullName, email, phone.");
     }
 
-    // 3. Gọi Repository để update
-    // Lưu ý: userId của UserAccount chính là employeeid trong bảng Employee
     try {
-      const updatedRecord = await employeeRepository.update(userId, cleanData);
-      return updatedRecord;
+        // 2. Gọi Repository
+        // Đảm bảo hàm này trả về Full Record sau khi update (Postgres: RETURNING *)
+        const updatedRecord = await employeeRepository.update(userId, cleanData);
+        
+        if (!updatedRecord) throw new Error("Update failed or record not found.");
+
+        // 3. OUTPUT MAPPING: lowercase -> camelCase
+        // Tách biệt logic này ra (có thể dùng chung cho GetProfile)
+        return this.mapToResponse(updatedRecord);
+
     } catch (error) {
-      if (error.code === '23505') { // Mã lỗi unique constraint (trùng email)
-         throw new Error("Email already exists.");
-      }
-      throw error;
+        if (error.code === '23505') { 
+            throw new Error("Email already exists.");
+        }
+        throw error;
     }
-  }
+}
+
+// Helper function: Single Responsibility Principle
+// Chuyển đổi Database Model -> Response Model
+mapToResponse(record) {
+    // Xử lý null/undefined
+    if (!record) return null;
+
+    return {
+        // Explicitly mapping: Kiểm soát hoàn toàn những gì trả về
+        id: record.employeeid || record.id, // Map thêm ID nếu cần
+        fullName: record.fullname,          // Map ngược lại
+        email: record.email,
+        phone: record.phone,
+        // Có thể map thêm các trường read-only khác nếu DB trả về
+        // role: record.role, 
+        // joinedAt: record.created_at
+  };
+}
 
   // Xóa nhân viên
   async deleteEmployee(id) {
