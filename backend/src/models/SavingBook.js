@@ -16,7 +16,6 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
-        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -42,7 +41,6 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
-      updatetime: item.updatetime,
     }));
 
     return result;
@@ -59,7 +57,6 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
-        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -86,7 +83,6 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
-      updatetime: item.updatetime,
     }));
 
     return result;
@@ -101,7 +97,6 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
-        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -128,7 +123,6 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
-      updatetime: item.updatetime,
     }));
 
     return result;
@@ -143,7 +137,6 @@ export class SavingBook extends BaseModel {
         registertime,
         status,
         currentbalance,
-        updatetime,
         customer:customerid!inner (
           fullname,
           citizenid
@@ -172,7 +165,6 @@ export class SavingBook extends BaseModel {
       openDate: item.registertime.split("T")[0],
       status: item.status,
       balance: item.currentbalance,
-      updatetime: item.updatetime,
     }));
 
     return result;
