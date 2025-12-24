@@ -597,7 +597,7 @@ export default function RegulationSettings() {
                               <TableCell>
                                 <Input
                                   type="number"
-                                  step="0.1"
+                                  step="0.01"
                                   value={item.rate}
                                   onChange={(e) => {
                                     const value = e.target.value;
