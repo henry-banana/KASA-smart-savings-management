@@ -350,14 +350,18 @@ export default function Login() {
             {loginError && (
               <div
                 className={`p-3 rounded-sm border-l-4 flex items-start gap-3 animate-in slide-in-from-top-2 ${
-                  loginError.isSessionExpired
+                  loginError.isWarning
+                    ? "border-amber-400 bg-amber-50"
+                    : loginError.isSessionExpired
                     ? "border-orange-400 bg-orange-50"
                     : "border-red-400 bg-red-50"
                 }`}
               >
                 <AlertCircle
                   className={`flex-shrink-0 mt-0.5 ${
-                    loginError.isSessionExpired
+                    loginError.isWarning
+                      ? "text-amber-600"
+                      : loginError.isSessionExpired
                       ? "text-orange-600"
                       : "text-red-600"
                   }`}
@@ -366,7 +370,9 @@ export default function Login() {
                 <div className="flex-1 min-w-0">
                   <h3
                     className={`font-semibold text-sm mb-1 ${
-                      loginError.isSessionExpired
+                      loginError.isWarning
+                        ? "text-amber-800"
+                        : loginError.isSessionExpired
                         ? "text-orange-800"
                         : "text-red-800"
                     }`}
@@ -375,7 +381,9 @@ export default function Login() {
                   </h3>
                   <p
                     className={`text-sm ${
-                      loginError.isSessionExpired
+                      loginError.isWarning
+                        ? "text-amber-700"
+                        : loginError.isSessionExpired
                         ? "text-orange-700"
                         : "text-red-700"
                     }`}
