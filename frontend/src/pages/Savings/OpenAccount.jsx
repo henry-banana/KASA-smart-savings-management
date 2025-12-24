@@ -104,6 +104,16 @@ export default function OpenAccount() {
       return;
     }
 
+    // Validate citizenId format - must be exactly 12 digits
+    const citizenIdPattern = /^\d{12}$/;
+    if (!citizenIdPattern.test(formData.idCard.trim())) {
+      setErrors((prev) => ({
+        ...prev,
+        idCard: "Invalid citizen ID format. It should be 12 digits.",
+      }));
+      return;
+    }
+
     setIsLookingUpCustomer(true);
     setLookupStatus("idle");
 
@@ -215,7 +225,8 @@ export default function OpenAccount() {
 
       setFormData((prev) => ({
         ...prev,
-        customerName: created?.fullname || prev.customerName,
+        customerName:
+          created?.fullName || created?.fullname || prev.customerName,
         address: composedAddress || prev.address,
       }));
       setLookupStatus("found");
