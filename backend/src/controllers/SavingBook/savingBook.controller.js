@@ -97,12 +97,31 @@ export async function getSavingBookById(req, res) {
       data: result,
     });
   } catch (err) {
-    console.error("❌ Error getting saving book:", err);
+    switch (err.message) {
+      case "Saving book not found":
+        return res.status(404).json({
+          message: err.message,
+          success: false,
+        });    
+      
+      case "Customer not found":
+        return res.status(404).json({
+          message: err.message,
+          success: false,
+        });
 
-    return res.status(err.status || 500).json({
-      message: "Failed to retrieve saving book",
-      success: false,
-    });
+      case "TypeSaving not found":
+        return res.status(404).json({
+          message: err.message,
+          success: false,
+        });
+
+      default:
+        return res.status(err.status || 500).json({
+          message: "Failed to retrieve saving book",
+          success: false,
+        });
+    }
   }
 }
 
