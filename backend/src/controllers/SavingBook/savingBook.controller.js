@@ -128,7 +128,7 @@ export async function getSavingBookById(req, res) {
 // Tìm kiếm sổ tiết kiệm theo keyword
 export async function searchSavingBook(req, res) {
   try {
-    const { keyword, pageSize, pageNumber } = req.query;
+    const { keyword, pageSize, pageNumber, typeId, status } = req.query;
 
     // Parse pageSize và pageNumber, set giá trị mặc định
     const parsedPageSize = parseInt(pageSize) || 10;
@@ -137,6 +137,8 @@ export async function searchSavingBook(req, res) {
     // Gọi service - nếu không có keyword thì lấy tất cả
     const result = await savingBookService.searchSavingBook(
       keyword,
+      typeId,
+      status,
       parsedPageSize,
       parsedPageNumber
     );
