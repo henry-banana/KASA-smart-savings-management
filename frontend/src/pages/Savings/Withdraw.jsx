@@ -38,6 +38,8 @@ import {
 import { formatVnNumber, formatPercentText } from "../../utils/numberFormatter";
 import { getRegulations } from "@/services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
 export default function Withdraw() {
   const [accountId, setAccountId] = useState("");
@@ -55,6 +57,8 @@ export default function Withdraw() {
   // Regulations loading state
   const [regulationsError, setRegulationsError] = useState("");
   const [loadingRegulations, setLoadingRegulations] = useState(true);
+  const [serverUnavailable, setServerUnavailable] = useState(false);
+  const [retryingServer, setRetryingServer] = useState(false);
 
   // Load regulations (minimum withdrawal days)
   useEffect(() => {
@@ -72,7 +76,12 @@ export default function Withdraw() {
         }
       } catch (err) {
         console.error("Fetch regulations error:", err);
-        setRegulationsError(err.message || "Failed to load regulations");
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerUnavailable(true);
+        } else {
+          setRegulationsError(err.message || "Failed to load regulations");
+        }
       } finally {
         setLoadingRegulations(false);
       }
@@ -203,7 +212,11 @@ export default function Withdraw() {
       }, 500);
     } catch (err) {
       console.error("Withdraw error:", err);
-      setError(err.message);
+      if (isServerUnavailable(err)) {
+        setServerUnavailable(true);
+      } else {
+        setError(err.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -219,6 +232,35 @@ export default function Withdraw() {
   const isFixedTermAccount = () => {
     return accountInfo && accountInfo.accountTypeName !== "No term";
   };
+
+  // Show full-page error state if server unavailable
+  if (serverUnavailable) {
+    return (
+      <RoleGuard allow={["teller"]}>
+        <ServiceUnavailableState
+          variant="page"
+          loading={retryingServer}
+          onRetry={() => {
+            setRetryingServer(true);
+            setServerUnavailable(false);
+            const checkServer = async () => {
+              try {
+                await getRegulations();
+                window.location.reload();
+              } catch (err) {
+                if (isServerUnavailable(err)) {
+                  setServerUnavailable(true);
+                }
+              } finally {
+                setRetryingServer(false);
+              }
+            };
+            checkServer();
+          }}
+        />
+      </RoleGuard>
+    );
+  }
 
   return (
     <RoleGuard allow={["teller"]}>
@@ -259,25 +301,6 @@ export default function Withdraw() {
           </CardHeader>
 
           <CardContent className="p-4 space-y-4 sm:p-6 lg:p-8 sm:space-y-6">
-            {/* Regulations Error */}
-            {regulationsError && (
-              <div className="flex items-start gap-3 p-4 border-2 border-red-200 bg-red-50 rounded-sm">
-                <AlertCircle
-                  size={20}
-                  className="text-red-500 shrink-0 mt-0.5"
-                />
-                <div>
-                  <p className="font-medium text-red-700">
-                    Unable to load regulations
-                  </p>
-                  <p className="text-sm text-red-600">{regulationsError}</p>
-                  <p className="text-xs text-red-500 mt-1">
-                    Withdrawal form is disabled until regulations are loaded.
-                  </p>
-                </div>
-              </div>
-            )}
-
             {/* Account Lookup Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-3 sm:mb-4">
@@ -492,7 +515,8 @@ export default function Withdraw() {
                   disabled={
                     !accountInfo ||
                     (isFixedTermAccount() && !isFixedTermMatured()) ||
-                    isSubmitting
+                    isSubmitting ||
+                    serverUnavailable
                   }
                   className="flex-1 h-12 text-white rounded-md font-medium border border-gray-200 hover:border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   style={{

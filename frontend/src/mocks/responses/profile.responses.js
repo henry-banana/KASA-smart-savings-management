@@ -3,7 +3,7 @@
  * Build consistent API responses for profile endpoints
  */
 
-import { getCurrentProfile } from '../data/profile.js';
+import { getCurrentProfile } from "../data/profile.js";
 
 /**
  * Build response for GET /api/users/me
@@ -11,26 +11,19 @@ import { getCurrentProfile } from '../data/profile.js';
  * @returns {Object} API response
  */
 export const buildGetProfileResponse = (profile = getCurrentProfile()) => {
-  // Map to canonical OpenAPI shape, never expose password
+  // Map to canonical OpenAPI shape (5 core fields only), never expose password
   const canonicalProfile = {
     id: profile.id,
-    username: profile.username,
     fullName: profile.fullName,
     email: profile.email,
     roleName: profile.roleName,
-    status: profile.status,
-    createdAt: profile.createdDate || profile.createdAt,
-    // Extended profile fields
-    phone: profile.phone,
-    address: profile.address,
-    dateOfBirth: profile.dateOfBirth,
-    avatarUrl: profile.avatarUrl
+    branchName: profile.branchName,
   };
-  
+
   return {
     message: "Get profile successfully",
     success: true,
-    data: canonicalProfile
+    data: canonicalProfile,
   };
 };
 
@@ -40,26 +33,19 @@ export const buildGetProfileResponse = (profile = getCurrentProfile()) => {
  * @returns {Object} API response
  */
 export const buildUpdateProfileResponse = (profile) => {
-  // Map to canonical OpenAPI shape, never expose password
+  // Map to canonical OpenAPI shape (5 core fields only), never expose password
   const canonicalProfile = {
     id: profile.id,
-    username: profile.username,
     fullName: profile.fullName,
     email: profile.email,
     roleName: profile.roleName,
-    status: profile.status,
-    createdAt: profile.createdDate || profile.createdAt,
-    // Extended profile fields
-    phone: profile.phone,
-    address: profile.address,
-    dateOfBirth: profile.dateOfBirth,
-    avatarUrl: profile.avatarUrl
+    branchName: profile.branchName,
   };
-  
+
   return {
     message: "Update profile successfully",
     success: true,
-    data: canonicalProfile
+    data: canonicalProfile,
   };
 };
 
@@ -71,7 +57,7 @@ export const buildUpdateProfileResponse = (profile) => {
 export const buildChangePasswordSuccessResponse = (userId) => ({
   message: "Password changed successfully",
   success: true,
-  data: userId ? { userId } : {}
+  data: userId ? { userId } : {},
 });
 
 /**
@@ -81,7 +67,7 @@ export const buildChangePasswordSuccessResponse = (userId) => ({
  */
 export const buildProfileErrorResponse = (message) => ({
   message,
-  success: false
+  success: false,
 });
 
 // Default export with all builders
@@ -89,7 +75,7 @@ const profileResponses = {
   buildGetProfileResponse,
   buildUpdateProfileResponse,
   buildChangePasswordSuccessResponse,
-  buildProfileErrorResponse
+  buildProfileErrorResponse,
 };
 
 export default profileResponses;

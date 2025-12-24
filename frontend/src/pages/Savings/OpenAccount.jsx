@@ -48,6 +48,8 @@ import { getInterestRates, getRegulations } from "@/services/regulationService";
 import { customerService } from "../../services/customerService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { useAuthContext } from "../../contexts/AuthContext";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
 export default function OpenAccount() {
   const { user } = useAuthContext();
@@ -93,6 +95,10 @@ export default function OpenAccount() {
   const [lookupStatus, setLookupStatus] = useState("idle"); // 'idle' | 'found' | 'not_found' | 'error'
   const idCardInputRef = useRef(null);
 
+  // Server availability state
+  const [serverUnavailable, setServerUnavailable] = useState(false);
+  const [retryingServer, setRetryingServer] = useState(false);
+
   // Handle customer lookup by ID
   const handleLookupCustomer = async () => {
     // Validate citizenId is not empty
@@ -100,6 +106,16 @@ export default function OpenAccount() {
       setErrors((prev) => ({
         ...prev,
         idCard: "Please enter ID citizen number first",
+      }));
+      return;
+    }
+
+    // Validate citizenId format - must be exactly 12 digits
+    const citizenIdPattern = /^\d{12}$/;
+    if (!citizenIdPattern.test(formData.idCard.trim())) {
+      setErrors((prev) => ({
+        ...prev,
+        idCard: "Invalid citizen ID format. It should be 12 digits.",
       }));
       return;
     }
@@ -215,7 +231,8 @@ export default function OpenAccount() {
 
       setFormData((prev) => ({
         ...prev,
-        customerName: created?.fullname || prev.customerName,
+        customerName:
+          created?.fullName || created?.fullname || prev.customerName,
         address: composedAddress || prev.address,
       }));
       setLookupStatus("found");
@@ -275,9 +292,14 @@ export default function OpenAccount() {
         }, 500);
       } catch (err) {
         console.error("Create saving book error:", err);
-        setErrorMessage(err.message || "Failed to open account.");
-        setShowError(true);
-        setErrors({ submit: err.message });
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerUnavailable(true);
+        } else {
+          setErrorMessage(err.message || "Failed to open account.");
+          setShowError(true);
+          setErrors({ submit: err.message });
+        }
       } finally {
         setIsSubmitting(false);
       }
@@ -314,7 +336,14 @@ export default function OpenAccount() {
         }
       } catch (err) {
         console.error("Fetch regulations error:", err);
-        setRegulationsError(err.message || "Cannot load minimum balance rule");
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerUnavailable(true);
+        } else {
+          setRegulationsError(
+            err.message || "Cannot load minimum balance rule"
+          );
+        }
       } finally {
         setLoadingRegulations(false);
       }
@@ -366,6 +395,35 @@ export default function OpenAccount() {
     };
     fetchTypes();
   }, []);
+
+  // Show full-page error state if server unavailable
+  if (serverUnavailable) {
+    return (
+      <RoleGuard allow={["teller"]}>
+        <ServiceUnavailableState
+          variant="page"
+          loading={retryingServer}
+          onRetry={() => {
+            setRetryingServer(true);
+            setServerUnavailable(false);
+            const checkServer = async () => {
+              try {
+                await getRegulations();
+                window.location.reload();
+              } catch (err) {
+                if (isServerUnavailable(err)) {
+                  setServerUnavailable(true);
+                }
+              } finally {
+                setRetryingServer(false);
+              }
+            };
+            checkServer();
+          }}
+        />
+      </RoleGuard>
+    );
+  }
 
   return (
     <RoleGuard allow={["teller"]}>
@@ -731,8 +789,13 @@ export default function OpenAccount() {
               <div className="flex flex-col gap-3 pt-4 border-t border-gray-100 sm:flex-row sm:gap-4 sm:pt-6">
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !minBalance || !!regulationsError}
-                  className="flex-1 h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
+                  disabled={
+                    isSubmitting ||
+                    !minBalance ||
+                    !!regulationsError ||
+                    serverUnavailable
+                  }
+                  className="flex-1 h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     background:
                       "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
@@ -982,7 +1045,8 @@ export default function OpenAccount() {
                 <Input
                   value={registerCustomerForm.citizenId}
                   readOnly
-                  className="h-11 sm:h-12 rounded-sm border-gray-200 bg-gray-50 text-gray-700"
+                  disabled
+                  className="h-11 sm:h-12 rounded-sm border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed opacity-70"
                 />
               </div>
               <div className="space-y-2">
