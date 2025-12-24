@@ -69,11 +69,16 @@ apiClient.interceptors.response.use(
       return Promise.reject({
         message: ERROR_MESSAGES.NETWORK_ERROR,
         type: "NETWORK_ERROR",
+        status: 0,
       });
     }
 
-    const { status, data } = error.response;
+    const { status, data, config } = error.response;
     logger.error("API Error", { status, message: data?.message, data });
+
+    const isLoginEndpoint =
+      config?.url?.includes("/api/auth/login") ||
+      config?.url?.includes("/auth/login");
 
     switch (status) {
       case 400:
@@ -81,15 +86,29 @@ apiClient.interceptors.response.use(
           ...data,
           message: data?.message || ERROR_MESSAGES.SERVER_ERROR,
           type: "BAD_REQUEST",
+          status: 400,
         });
 
       case 401:
+        // For login endpoint, return error to let component handle it
+        // For other endpoints, clear auth and redirect
+        if (isLoginEndpoint) {
+          return Promise.reject({
+            ...data,
+            message: data?.message || "Incorrect username or password",
+            type: "AUTH_ERROR",
+            status: 401,
+          });
+        }
+
+        // For protected routes, clear session and redirect
         localStorage.removeItem("user");
         localStorage.removeItem("authToken");
         window.location.href = "/login";
         return Promise.reject({
           message: ERROR_MESSAGES.AUTH_ERROR,
           type: "AUTH_ERROR",
+          status: 401,
         });
 
       case 403:

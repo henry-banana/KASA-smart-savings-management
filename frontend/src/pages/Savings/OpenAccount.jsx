@@ -993,7 +993,8 @@ export default function OpenAccount() {
                 <Input
                   value={registerCustomerForm.citizenId}
                   readOnly
-                  className="h-11 sm:h-12 rounded-sm border-gray-200 bg-gray-50 text-gray-700"
+                  disabled
+                  className="h-11 sm:h-12 rounded-sm border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed opacity-70"
                 />
               </div>
               <div className="space-y-2">
