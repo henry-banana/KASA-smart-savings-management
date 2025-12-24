@@ -1,5 +1,6 @@
 import { USE_MOCK } from "@/config/app.config";
 import { accountApi } from "@/api/accountApi";
+import { reportApi } from "@/api/reportApi";
 import { mockTransactionAdapter } from "@/mocks/adapters/transactionAdapter";
 
 /**
@@ -128,11 +129,19 @@ export const getDepositTransactionStats = async (date) => {
   if (USE_MOCK) {
     return mockTransactionAdapter.getDepositTransactionStats(date);
   }
-  // Fallback to mock until real API is wired
-  console.warn(
-    "Fallback to mock: deposit transaction stats API not implemented; using mock adapter"
-  );
-  return mockTransactionAdapter.getDepositTransactionStats(date);
+  // Call real API: GET /api/report/daily/transactions?date=YYYY-MM-DD
+  try {
+    const response = await reportApi.getDailyTransactionStatistics(date);
+    // Extract deposits from response
+    return {
+      message: response.message,
+      success: response.success,
+      data: response.data?.deposits || { items: [], total: { count: 0 } },
+    };
+  } catch (error) {
+    console.error("Error fetching deposit transaction stats:", error);
+    throw error;
+  }
 };
 
 /**
@@ -144,11 +153,19 @@ export const getWithdrawalTransactionStats = async (date) => {
   if (USE_MOCK) {
     return mockTransactionAdapter.getWithdrawalTransactionStats(date);
   }
-  // Fallback to mock until real API is wired
-  console.warn(
-    "Fallback to mock: withdrawal transaction stats API not implemented; using mock adapter"
-  );
-  return mockTransactionAdapter.getWithdrawalTransactionStats(date);
+  // Call real API: GET /api/report/daily/transactions?date=YYYY-MM-DD
+  try {
+    const response = await reportApi.getDailyTransactionStatistics(date);
+    // Extract withdrawals from response
+    return {
+      message: response.message,
+      success: response.success,
+      data: response.data?.withdrawals || { items: [], total: { count: 0 } },
+    };
+  } catch (error) {
+    console.error("Error fetching withdrawal transaction stats:", error);
+    throw error;
+  }
 };
 
 // Attempt to derive current user/employee ID from localStorage

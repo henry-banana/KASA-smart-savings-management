@@ -104,6 +104,16 @@ export default function OpenAccount() {
       return;
     }
 
+    // Validate citizenId format - must be exactly 12 digits
+    const citizenIdPattern = /^\d{12}$/;
+    if (!citizenIdPattern.test(formData.idCard.trim())) {
+      setErrors((prev) => ({
+        ...prev,
+        idCard: "Invalid citizen ID format. It should be 12 digits.",
+      }));
+      return;
+    }
+
     setIsLookingUpCustomer(true);
     setLookupStatus("idle");
 
@@ -215,7 +225,8 @@ export default function OpenAccount() {
 
       setFormData((prev) => ({
         ...prev,
-        customerName: created?.fullname || prev.customerName,
+        customerName:
+          created?.fullName || created?.fullname || prev.customerName,
         address: composedAddress || prev.address,
       }));
       setLookupStatus("found");
@@ -982,7 +993,8 @@ export default function OpenAccount() {
                 <Input
                   value={registerCustomerForm.citizenId}
                   readOnly
-                  className="h-11 sm:h-12 rounded-sm border-gray-200 bg-gray-50 text-gray-700"
+                  disabled
+                  className="h-11 sm:h-12 rounded-sm border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed opacity-70"
                 />
               </div>
               <div className="space-y-2">

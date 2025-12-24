@@ -497,18 +497,20 @@ export default function DailyReport() {
                       ))}
                     </TableBody>
                     <TableFooter className="font-bold bg-linear-to-r from-purple-100 to-pink-100">
-                      <TableCell className="font-bold text-gray-800">
-                        Total
-                      </TableCell>
-                      <TableCell className="font-bold text-right text-green-700">
-                        {formatVnNumber(totals.deposits ?? 0)}₫
-                      </TableCell>
-                      <TableCell className="font-bold text-right text-red-700">
-                        {formatVnNumber(totals.withdrawals ?? 0)}₫
-                      </TableCell>
-                      <TableCell className="font-bold text-right text-blue-700">
-                        {formatVnNumber(totals.difference ?? 0)}₫
-                      </TableCell>
+                      <TableRow>
+                        <TableCell className="font-bold text-gray-800">
+                          Total
+                        </TableCell>
+                        <TableCell className="font-bold text-right text-green-700">
+                          {formatVnNumber(totals.deposits ?? 0)}₫
+                        </TableCell>
+                        <TableCell className="font-bold text-right text-red-700">
+                          {formatVnNumber(totals.withdrawals ?? 0)}₫
+                        </TableCell>
+                        <TableCell className="font-bold text-right text-blue-700">
+                          {formatVnNumber(totals.difference ?? 0)}₫
+                        </TableCell>
+                      </TableRow>
                     </TableFooter>
                   </Table>
                 </div>

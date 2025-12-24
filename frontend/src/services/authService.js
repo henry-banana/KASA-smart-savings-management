@@ -22,8 +22,14 @@ export const authService = {
     const userData = response?.data?.data || response?.data || response;
 
     // Save token to localStorage if present
-    if (userData.token) {
+    if (userData?.token) {
       localStorage.setItem("authToken", userData.token);
+      console.log(
+        "✅ Token saved to localStorage:",
+        userData.token.substring(0, 20) + "..."
+      );
+    } else {
+      console.error("❌ No token in response:", userData);
     }
 
     return this.transformUser(userData);

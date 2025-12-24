@@ -8,7 +8,7 @@ import { logger } from "@/utils/logger";
  */
 export const customerApi = {
   /**
-   * GET /api/customers/{citizenId}
+   * GET /api/customer/{citizenId}
    * Lấy thông tin khách hàng theo citizenId
    *
    * @param {string|number} citizenId - The citizen ID to search for
@@ -34,7 +34,7 @@ export const customerApi = {
     try {
       logger.info("🌐 API Search Customer by Citizen ID", { citizenId });
 
-      const response = await apiClient.get(`/api/customers/${citizenId}`);
+      const response = await apiClient.get(`/api/customer/?citizenId=${citizenId}`);
 
       // API returns: { message, success, data: { customer: {...} } }
       // Pass through the entire response for service layer to handle mapping
@@ -74,7 +74,7 @@ export const customerApi = {
   },
 
   /**
-   * GET /api/customers/id/{customerId}
+   * GET /api/customer/id/{customerId}
    * Lấy thông tin khách hàng theo customerId
    *
    * @param {string} customerId - The customer ID
@@ -84,7 +84,7 @@ export const customerApi = {
     try {
       logger.info("🌐 API Get Customer by ID", { customerId });
 
-      const response = await apiClient.get(`/api/customers/id/${customerId}`);
+      const response = await apiClient.get(`/api/customer/id/${customerId}`);
 
       return {
         message: response.data.message || "Customer retrieved successfully",
@@ -119,7 +119,7 @@ export const customerApi = {
   },
 
   /**
-   * GET /api/customers
+   * GET /api/customer
    * Lấy danh sách tất cả khách hàng
    *
    * @returns {Promise<Object>} Response with all customers
@@ -128,7 +128,7 @@ export const customerApi = {
     try {
       logger.info("🌐 API Get All Customers");
 
-      const response = await apiClient.get("/api/customers");
+      const response = await apiClient.get("/api/customer");
 
       return {
         message: response.data.message || "Get customers successfully",
@@ -156,7 +156,7 @@ export const customerApi = {
   },
 
   /**
-   * POST /api/customers
+   * POST /api/customer
    * Thêm khách hàng mới
    *
    * @param {Object} body - The request body
@@ -198,7 +198,7 @@ export const customerApi = {
     try {
       logger.info("🌐 API Create Customer", { body });
 
-      const response = await apiClient.post("/api/customers", body);
+      const response = await apiClient.post("/api/customer", body);
 
       return {
         message: response.data.message || "Customer added successfully",
