@@ -80,7 +80,13 @@ class CustomerService {
 
     return result;
   }
-
+  async findCustomerByCitizenId(citizenId) {
+    //Kiểm tra citizenId hợp lệ, 12 số, nếu không hợp lệ thì throw lỗi
+    if (!/^\d{12}$/.test(citizenId)) {
+      throw new Error("Invalid citizen ID format. It should be 12 digits.");
+    }
+    return await customerRepository.findByCitizenID(citizenId);
+  }
 }
 
 export const customerService = new CustomerService();

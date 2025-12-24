@@ -6,6 +6,7 @@ import {
   updateCustomer,
   deleteCustomer,
   searchCustomer,
+  getCustomerByCitizenId,
 } from "../controllers/Customer/customer.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
 import checkRole from "../middleware/role.middleware.js";
@@ -105,8 +106,24 @@ router.post("/", verifyToken, teller, addCustomer);
  *               items:
  *                 $ref: '#/components/schemas/Customer'
  */
-router.get("/", verifyToken, tellerOrAccountant, getAllCustomers);
+//router.get("/", verifyToken, tellerOrAccountant, getAllCustomers);
 
+// Route: GET /
+// Description: Lấy danh sách khách hàng HOẶC tìm theo CitizenId
+// Auth: Yêu cầu Token hợp lệ + Role là (Teller hoặc Accountant)
+  router.get("/", 
+    verifyToken, 
+    tellerOrAccountant, 
+    (req, res, next) => {
+      // 1. Logic ưu tiên: Tìm kiếm cụ thể
+      if (req.query.citizenId) {
+          // Có thể thêm log audit tại đây nếu cần thiết
+          return getCustomerByCitizenId(req, res, next);
+      }
+      
+      // 2. Logic mặc định: Lấy danh sách tổng
+      return getAllCustomers(req, res, next);
+  });
 /**
  * @swagger
  * /api/customer/{id}:
