@@ -11,7 +11,6 @@ export async function addCustomer(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error adding customer:", err);
 
@@ -33,7 +32,6 @@ export async function getAllCustomers(req, res) {
       total: result.length,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error getting customers:", err);
 
@@ -63,7 +61,6 @@ export async function getCustomerById(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error getting customer by ID:", err);
 
@@ -93,7 +90,6 @@ export async function updateCustomer(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error updating customer:", err);
 
@@ -123,7 +119,6 @@ export async function deleteCustomer(req, res) {
       total: 1,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error deleting customer:", err);
 
@@ -146,7 +141,6 @@ export async function searchCustomer(req, res) {
       total: result.length,
       data: result,
     });
-
   } catch (err) {
     console.error("❌ Error searching customers:", err);
 
