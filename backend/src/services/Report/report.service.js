@@ -112,8 +112,15 @@ class ReportService {
       await reportRepository.getMonthlyData(reportTypeId, month, year);
 
     // 2. Tính số ngày trong tháng (ví dụ tháng 2 năm 2025 có 28 ngày)
-    const daysInMonth = new Date(year, month, 0).getDate();
+    let daysInMonth = new Date(year, month, 0).getDate();
     const byDay = [];
+
+    //Không lấy dư ngày nếu chưa tới
+    if (year == new Date().getFullYear() && month == (new Date().getMonth() +1)) {
+      const today = new Date();
+      daysInMonth = today.getDate();
+    }
+
 
     // Biến để tính tổng summary
     let totalNew = 0;
