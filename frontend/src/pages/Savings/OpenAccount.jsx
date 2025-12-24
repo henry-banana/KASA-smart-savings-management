@@ -48,6 +48,8 @@ import { getInterestRates, getRegulations } from "@/services/regulationService";
 import { customerService } from "../../services/customerService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { useAuthContext } from "../../contexts/AuthContext";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
 export default function OpenAccount() {
   const { user } = useAuthContext();
@@ -92,6 +94,10 @@ export default function OpenAccount() {
   const [isLookingUpCustomer, setIsLookingUpCustomer] = useState(false);
   const [lookupStatus, setLookupStatus] = useState("idle"); // 'idle' | 'found' | 'not_found' | 'error'
   const idCardInputRef = useRef(null);
+
+  // Server availability state
+  const [serverUnavailable, setServerUnavailable] = useState(false);
+  const [retryingServer, setRetryingServer] = useState(false);
 
   // Handle customer lookup by ID
   const handleLookupCustomer = async () => {
@@ -286,9 +292,14 @@ export default function OpenAccount() {
         }, 500);
       } catch (err) {
         console.error("Create saving book error:", err);
-        setErrorMessage(err.message || "Failed to open account.");
-        setShowError(true);
-        setErrors({ submit: err.message });
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerUnavailable(true);
+        } else {
+          setErrorMessage(err.message || "Failed to open account.");
+          setShowError(true);
+          setErrors({ submit: err.message });
+        }
       } finally {
         setIsSubmitting(false);
       }
@@ -325,7 +336,14 @@ export default function OpenAccount() {
         }
       } catch (err) {
         console.error("Fetch regulations error:", err);
-        setRegulationsError(err.message || "Cannot load minimum balance rule");
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerUnavailable(true);
+        } else {
+          setRegulationsError(
+            err.message || "Cannot load minimum balance rule"
+          );
+        }
       } finally {
         setLoadingRegulations(false);
       }
@@ -377,6 +395,35 @@ export default function OpenAccount() {
     };
     fetchTypes();
   }, []);
+
+  // Show full-page error state if server unavailable
+  if (serverUnavailable) {
+    return (
+      <RoleGuard allow={["teller"]}>
+        <ServiceUnavailableState
+          variant="page"
+          loading={retryingServer}
+          onRetry={() => {
+            setRetryingServer(true);
+            setServerUnavailable(false);
+            const checkServer = async () => {
+              try {
+                await getRegulations();
+                window.location.reload();
+              } catch (err) {
+                if (isServerUnavailable(err)) {
+                  setServerUnavailable(true);
+                }
+              } finally {
+                setRetryingServer(false);
+              }
+            };
+            checkServer();
+          }}
+        />
+      </RoleGuard>
+    );
+  }
 
   return (
     <RoleGuard allow={["teller"]}>
@@ -742,8 +789,13 @@ export default function OpenAccount() {
               <div className="flex flex-col gap-3 pt-4 border-t border-gray-100 sm:flex-row sm:gap-4 sm:pt-6">
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !minBalance || !!regulationsError}
-                  className="flex-1 h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base"
+                  disabled={
+                    isSubmitting ||
+                    !minBalance ||
+                    !!regulationsError ||
+                    serverUnavailable
+                  }
+                  className="flex-1 h-11 sm:h-12 text-white rounded-md font-medium border border-gray-200 transition-all duration-300 hover:scale-[1.02] text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     background:
                       "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",

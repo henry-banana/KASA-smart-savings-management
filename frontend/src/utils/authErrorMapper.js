@@ -20,18 +20,21 @@ export function mapAuthErrorToMessage(error) {
   const errorType = error.type?.toUpperCase() || "";
   const status = error.status || error.response?.status;
 
-  // Network error - can't reach server
+  // Network error - can't reach server (ECONNREFUSED, timeout, etc.)
   if (
     errorType === "NETWORK_ERROR" ||
     errorMessage.includes("network") ||
     errorMessage.includes("timeout") ||
-    errorMessage.includes("cannot connect")
+    errorMessage.includes("cannot connect") ||
+    errorMessage.includes("econnrefused") ||
+    errorMessage.includes("unreachable")
   ) {
     return {
-      title: "Connection Error",
+      title: "Service Unavailable",
       message:
-        "Cannot connect to server. Please check your internet connection and try again.",
+        "Cannot connect to server. The service is temporarily unavailable. Please try again later.",
       isSessionExpired: false,
+      isWarning: true,
     };
   }
 
@@ -110,11 +113,20 @@ export function mapAuthErrorToMessage(error) {
     };
   }
 
+  // Account not found (404)
+  if (status === 404 || errorType === "NOT_FOUND") {
+    return {
+      title: "Account Not Found",
+      message: "Account not found. Please check your username and try again.",
+      isSessionExpired: false,
+    };
+  }
+
   // Server error (5xx)
   if (status >= 500) {
     return {
       title: "Server Error",
-      message: "Something went wrong on the server. Please try again later.",
+      message: "Something went wrong. Please try again later.",
       isSessionExpired: false,
     };
   }

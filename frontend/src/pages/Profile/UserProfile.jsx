@@ -34,6 +34,8 @@ import {
 } from "lucide-react";
 import { StarDecor } from "../../components/CuteComponents";
 import { Skeleton } from "../../components/ui/skeleton";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
 export default function UserProfile() {
   const { user, updateUser } = useAuth();
@@ -43,6 +45,7 @@ export default function UserProfile() {
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [serverError, setServerError] = useState(null);
 
   // Profile data from API
   const [profileData, setProfileData] = useState(null);
@@ -56,6 +59,7 @@ export default function UserProfile() {
     const fetchProfile = async () => {
       try {
         setLoading(true);
+        setServerError(null);
         const response = await getProfile();
         if (response.success && response.data) {
           setProfileData(response.data);
@@ -65,7 +69,12 @@ export default function UserProfile() {
         }
       } catch (err) {
         console.error("Failed to fetch profile:", err);
-        setError("Failed to load profile");
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerError(err);
+        } else {
+          setError("Failed to load profile");
+        }
       } finally {
         setLoading(false);
       }
@@ -304,6 +313,42 @@ export default function UserProfile() {
           </div>
         </div>
       </div>
+    );
+  }
+
+  // Show full-page error state if server unavailable
+  if (serverError) {
+    return (
+      <ServiceUnavailableState
+        variant="page"
+        onRetry={() => {
+          setServerError(null);
+          setError(null);
+          // Retry fetching profile
+          const fetchProfile = async () => {
+            try {
+              setLoading(true);
+              const response = await getProfile();
+              if (response.success && response.data) {
+                setProfileData(response.data);
+                setPersonalInfo({
+                  fullName: response.data.fullName || "",
+                });
+              }
+            } catch (err) {
+              console.error("Failed to fetch profile:", err);
+              if (isServerUnavailable(err)) {
+                setServerError(err);
+              } else {
+                setError("Failed to load profile");
+              }
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchProfile();
+        }}
+      />
     );
   }
 
@@ -614,7 +659,10 @@ export default function UserProfile() {
                 type="text"
                 value={personalInfo.fullName}
                 onChange={(e) =>
-                  setPersonalInfo({ ...personalInfo, fullName: e.target.value })
+                  setPersonalInfo({
+                    ...personalInfo,
+                    fullName: e.target.value,
+                  })
                 }
                 placeholder="Enter your full name"
                 className="h-11 rounded-smborder-gray-200"

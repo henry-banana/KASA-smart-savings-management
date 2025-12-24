@@ -51,6 +51,8 @@ import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
 import { formatVnNumber } from "../../utils/numberFormatter";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
 export default function SearchAccounts() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,6 +65,7 @@ export default function SearchAccounts() {
   const [accountTypeOptions, setAccountTypeOptions] = useState([
     { value: "all", label: "All" },
   ]);
+  const [serverError, setServerError] = useState(null);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -99,6 +102,7 @@ export default function SearchAccounts() {
   useEffect(() => {
     const fetchAccounts = async () => {
       setLoading(true);
+      setServerError(null);
       try {
         const response = await searchSavingBooks(
           searchTerm,
@@ -112,6 +116,10 @@ export default function SearchAccounts() {
         setTotalPages(response.totalPages || 1);
       } catch (err) {
         console.error("Search error:", err);
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerError(err);
+        }
         setAccounts([]);
         setTotal(0);
         setTotalPages(1);
@@ -132,6 +140,23 @@ export default function SearchAccounts() {
   useEffect(() => {
     setPage(1);
   }, [searchTerm, typeFilter, statusFilter]);
+
+  // Show full-page error state if server unavailable
+  if (serverError) {
+    return (
+      <RoleGuard allowedRoles={["manager", "employee"]}>
+        <ServiceUnavailableState
+          variant="page"
+          onRetry={() => {
+            setServerError(null);
+            setAccounts([]);
+            setTotal(0);
+            setTotalPages(1);
+          }}
+        />
+      </RoleGuard>
+    );
+  }
 
   const filteredAccounts = accounts;
 
@@ -440,7 +465,6 @@ export default function SearchAccounts() {
           </CardContent>
         </Card>
 
-        {/* Account Details Modal */}
         <Dialog open={showDetails} onOpenChange={setShowDetails}>
           <DialogContent className="max-w-md rounded-sm">
             <DialogHeader>

@@ -23,6 +23,8 @@ import { getMonthlyOpenCloseReport } from "../../services/reportService";
 import { getAllTypeSavings } from "../../services/typeSavingService";
 import { Skeleton } from "../../components/ui/skeleton";
 import { formatVnNumber } from "../../utils/numberFormatter";
+import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
 
 export default function MonthlyReport() {
   const { user } = useAuthContext();
@@ -48,12 +50,18 @@ export default function MonthlyReport() {
         // Use canonical 'items' field from response
         setReportData(response.data.items || response.data.byDay);
       } else {
-        setError(response.message || "Failed to generate report");
+        setError("NO_DATA");
         setReportData(null);
       }
     } catch (err) {
       console.error("Report generation error:", err);
-      setError(err.message || "An error occurred while generating the report");
+      if (isServerUnavailable(err)) {
+        setError("SERVER_UNAVAILABLE");
+      } else {
+        setError(
+          err.message || "An error occurred while generating the report"
+        );
+      }
       setReportData(null);
     } finally {
       setLoading(false);
@@ -100,6 +108,18 @@ export default function MonthlyReport() {
   const handleExport = () => {
     window.print();
   };
+
+  // Show server unavailable state for connection errors
+  if (error === "SERVER_UNAVAILABLE") {
+    return (
+      <RoleGuard allow={["accountant"]}>
+        <ServiceUnavailablePageState
+          onRetry={() => window.location.reload()}
+          loading={loading}
+        />
+      </RoleGuard>
+    );
+  }
 
   return (
     <RoleGuard allow={["accountant"]}>
@@ -161,9 +181,15 @@ export default function MonthlyReport() {
                 </>
               )}
             </Button>
-            {error && (
+            {error && error !== "NO_DATA" && (
               <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-sm text-red-700 text-sm">
                 {error}
+              </div>
+            )}
+            {error === "NO_DATA" && (
+              <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-sm text-amber-700 text-sm">
+                No data found for the selected month. Please try another month
+                or savings type.
               </div>
             )}
           </CardContent>
