@@ -438,7 +438,7 @@ export default function RegulationSettings() {
                         className="border-gray-200 h-11 rounded-sm"
                       />
                       <p className="text-xs text-gray-500">
-                        Minimum amount to open account or deposit
+                        Minimum amount to open saving book or deposit
                       </p>
                     </div>
 

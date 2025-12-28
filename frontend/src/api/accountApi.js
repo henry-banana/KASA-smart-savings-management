@@ -71,7 +71,7 @@ export const accountApi = {
       keyword,
       typeId: typeFilter,
       status: statusFilter,
-      page,
+      pageNumber: page,
       pageSize,
     };
     return this.searchAccounts(params);

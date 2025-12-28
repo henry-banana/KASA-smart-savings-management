@@ -265,7 +265,7 @@ export default function Dashboard() {
 
   const quickActions = [
     {
-      label: "Open Account",
+      label: "Open Saving Book",
       path: "/savings/open",
       gradient: "linear-gradient(135deg, #1A4D8F 0%, #2563A8 100%)",
       icon: <PiggyBank size={32} />,
@@ -641,7 +641,7 @@ export default function Dashboard() {
                       if (isOpenAccount) {
                         emoji = "🏦";
                         color = "#1A4D8F";
-                        typeLabel = "Open Account";
+                        typeLabel = "Open Saving Book";
                       }
 
                       const amountDisplay = isDeposit

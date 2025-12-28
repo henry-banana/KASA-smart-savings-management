@@ -296,7 +296,7 @@ export default function OpenAccount() {
         if (isServerUnavailable(err)) {
           setServerUnavailable(true);
         } else {
-          setErrorMessage(err.message || "Failed to open account.");
+          setErrorMessage(err.message || "Failed to open saving book.");
           setShowError(true);
           setErrors({ submit: err.message });
         }
@@ -453,11 +453,11 @@ export default function OpenAccount() {
               </div>
               <div className="flex-1 min-w-0">
                 <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
-                  <span className="truncate">Open New Savings Account</span>
+                  <span className="truncate">Open New Saving Book</span>
                   <span className="shrink-0 text-xl sm:text-2xl">🏦</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Create a new savings account for customer (Form BM1)
+                  Create a new saving book for customer (Form BM1)
                 </CardDescription>
               </div>
             </div>
@@ -618,13 +618,13 @@ export default function OpenAccount() {
                 <div className="flex items-center gap-2 mb-3 sm:mb-4">
                   <Coins size={18} className="sm:w-5 sm:h-5 text-[#00AEEF]" />
                   <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                    Savings Account Details
+                    Saving Book Details
                   </h3>
                 </div>
 
                 <div className="space-y-3">
                   <Label className="text-sm text-gray-700 sm:text-base">
-                    Savings Type * (Select one)
+                    Saving Book Type * (Select one)
                   </Label>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
                     {loadingTypes && (
@@ -805,7 +805,7 @@ export default function OpenAccount() {
                     size={16}
                     className="sm:w-[18px] sm:h-[18px] mr-2"
                   />
-                  {isSubmitting ? "Processing..." : "Confirm Open Account"}
+                  {isSubmitting ? "Processing..." : "Confirm Open Saving Book"}
                 </Button>
                 <Button
                   type="button"
@@ -861,10 +861,10 @@ export default function OpenAccount() {
                 <PiggyBankIllustration size={60} className="sm:w-20" />
               </div>
               <DialogTitle className="text-xl text-center sm:text-2xl">
-                Account Opened Successfully! 🎉
+                Saving Book Opened Successfully! 🎉
               </DialogTitle>
               <DialogDescription className="text-sm text-center sm:text-base">
-                Your new savings account has been created
+                Your new saving book has been created
               </DialogDescription>
             </DialogHeader>
 
@@ -879,7 +879,7 @@ export default function OpenAccount() {
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs text-gray-600 sm:text-sm">
-                    Account Code:
+                    Saving Book Code:
                   </span>
                   <span className="font-semibold text-base sm:text-lg text-[#1A4D8F] truncate">
                     {accountCode}
@@ -953,7 +953,7 @@ export default function OpenAccount() {
                 <PiggyBankIllustration size={60} className="sm:w-20" />
               </div>
               <DialogTitle className="text-xl text-center sm:text-2xl text-red-600">
-                Failed to Open Account
+                Failed to Open saving book
               </DialogTitle>
               <DialogDescription className="text-sm text-center sm:text-base text-red-500">
                 {errorMessage}
