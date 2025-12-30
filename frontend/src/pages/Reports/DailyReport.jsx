@@ -52,6 +52,8 @@ import {
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
 import { formatVnNumber } from "../../utils/numberFormatter";
+import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
 
 export default function DailyReport() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -92,9 +94,7 @@ export default function DailyReport() {
         ]);
 
       if (!reportResponse.success || !reportResponse.data) {
-        setError(
-          "No data found for the selected date. Please try another date."
-        );
+        setError("NO_DATA");
         setReportData(null);
         setDepositStats(null);
         setWithdrawalStats(null);
@@ -108,9 +108,13 @@ export default function DailyReport() {
       );
     } catch (err) {
       console.error("Report error:", err);
-      setError(
-        "Failed to generate report. Please try again or select a different date."
-      );
+      if (isServerUnavailable(err)) {
+        setError("SERVER_UNAVAILABLE");
+      } else {
+        setError(
+          "Failed to generate report. Please try again or select a different date."
+        );
+      }
       setReportData(null);
       setDepositStats(null);
       setWithdrawalStats(null);
@@ -159,6 +163,18 @@ export default function DailyReport() {
       )} to PDF...`
     );
   };
+
+  // Show server unavailable state for connection errors
+  if (error === "SERVER_UNAVAILABLE") {
+    return (
+      <RoleGuard allow={["accountant"]}>
+        <ServiceUnavailablePageState
+          onRetry={() => window.location.reload()}
+          loading={loading}
+        />
+      </RoleGuard>
+    );
+  }
 
   return (
     <RoleGuard allow={["accountant"]}>
@@ -223,7 +239,7 @@ export default function DailyReport() {
         </Card>
 
         {/* Error Message */}
-        {error && (
+        {error && error !== "NO_DATA" && (
           <Card className="border-2 border-red-200 bg-red-50 rounded-sm">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
@@ -231,8 +247,30 @@ export default function DailyReport() {
                   <span className="text-2xl">⚠️</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-red-900">No Data Found</h4>
+                  <h4 className="font-semibold text-red-900">Error</h4>
                   <p className="text-sm text-red-700">{error}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* No Data Message */}
+        {error === "NO_DATA" && (
+          <Card className="border-2 border-amber-200 bg-amber-50 rounded-sm">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-12 h-12 bg-amber-100 rounded-md">
+                  <span className="text-2xl">📭</span>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-amber-900">
+                    No Data Found
+                  </h4>
+                  <p className="text-sm text-amber-700">
+                    No data found for the selected date. Please try another
+                    date.
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -497,18 +535,20 @@ export default function DailyReport() {
                       ))}
                     </TableBody>
                     <TableFooter className="font-bold bg-linear-to-r from-purple-100 to-pink-100">
-                      <TableCell className="font-bold text-gray-800">
-                        Total
-                      </TableCell>
-                      <TableCell className="font-bold text-right text-green-700">
-                        {formatVnNumber(totals.deposits ?? 0)}₫
-                      </TableCell>
-                      <TableCell className="font-bold text-right text-red-700">
-                        {formatVnNumber(totals.withdrawals ?? 0)}₫
-                      </TableCell>
-                      <TableCell className="font-bold text-right text-blue-700">
-                        {formatVnNumber(totals.difference ?? 0)}₫
-                      </TableCell>
+                      <TableRow>
+                        <TableCell className="font-bold text-gray-800">
+                          Total
+                        </TableCell>
+                        <TableCell className="font-bold text-right text-green-700">
+                          {formatVnNumber(totals.deposits ?? 0)}₫
+                        </TableCell>
+                        <TableCell className="font-bold text-right text-red-700">
+                          {formatVnNumber(totals.withdrawals ?? 0)}₫
+                        </TableCell>
+                        <TableCell className="font-bold text-right text-blue-700">
+                          {formatVnNumber(totals.difference ?? 0)}₫
+                        </TableCell>
+                      </TableRow>
                     </TableFooter>
                   </Table>
                 </div>

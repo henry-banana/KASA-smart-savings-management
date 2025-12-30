@@ -99,6 +99,46 @@ export async function updateCustomer(req, res) {
     });
   }
 }
+//find by cizizenId
+export async function getCustomerByCitizenId(req, res) {
+  try {
+    // Lấy citizenId từ Query String (?citizenId=...)
+    const { citizenId } = req.query;
+
+    if (!citizenId) {
+      return res.status(400).json({
+        success: false,
+        message: "Citizen ID is required in query parameters"
+      });
+    }
+
+    const customerFound = await customerService.findCustomerByCitizenId(citizenId);
+
+    if (!customerFound) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer not found"
+      });
+    }
+
+    return res.status(200).json({ 
+      message: "Customer retrieved successfully",
+      success: true,
+      data: {
+        customer:{
+          "fullName": customerFound.fullname, //Tên biến trong customerFound phải là lowercase vì database trả về. 
+          "citizenId": customerFound.citizenid,
+          "street": customerFound.street,
+          "district": customerFound.district,
+          "province": customerFound.province
+        }
+      }
+      });
+  } catch (error) {
+    console.error("Controller Error:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+}
 
 // Xóa khách hàng
 export async function deleteCustomer(req, res) {

@@ -8,6 +8,8 @@ import {
 import { getAllTypeSavings } from "@/services/typeSavingService";
 import { getTypeChartColor } from "@/utils/typeColorUtils";
 import { mockSavingBooks } from "@/mocks/data/savingBooks";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 import {
   Card,
   CardContent,
@@ -106,12 +108,15 @@ export default function Dashboard() {
   const [recentTransactions, setRecentTransactions] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [serverError, setServerError] = useState(null);
+  const [retrying, setRetrying] = useState(false);
 
   // Fetch dashboard data on mount
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
+        setServerError(null);
         const response = await getDashboardStats();
 
         // Also fetch configured saving types to determine legend/skeleton length
@@ -233,6 +238,10 @@ export default function Dashboard() {
         }
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);
+        // Check if error is server unavailable
+        if (isServerUnavailable(err)) {
+          setServerError(err);
+        }
       } finally {
         setLoading(false);
       }
@@ -241,9 +250,22 @@ export default function Dashboard() {
     fetchDashboardData();
   }, []);
 
+  // Show full-page error state if server unavailable
+  if (serverError) {
+    return (
+      <ServiceUnavailableState
+        variant="page"
+        loading={retrying}
+        onRetry={() => {
+          window.location.reload();
+        }}
+      />
+    );
+  }
+
   const quickActions = [
     {
-      label: "Open Account",
+      label: "Open Saving Book",
       path: "/savings/open",
       gradient: "linear-gradient(135deg, #1A4D8F 0%, #2563A8 100%)",
       icon: <PiggyBank size={32} />,
@@ -299,339 +321,375 @@ export default function Dashboard() {
   return (
     <RoleGuard allow={["teller", "accountant"]}>
       <div className="space-y-8">
-        {/* 📊 Stats Grid - Cute Cards */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {loading ? (
-            <>
-              <StatCardSkeleton />
-              <StatCardSkeleton />
-              <StatCardSkeleton />
-            </>
-          ) : (
-            stats.map((stat, index) => <CuteStatCard key={index} {...stat} />)
-          )}
-        </div>
+        {/* Show service unavailable state if server is down */}
+        {serverError && (
+          <ServiceUnavailableState
+            variant="page"
+            loading={retrying}
+            onRetry={() => {
+              setRetrying(true);
+              setServerError(null);
+              const fetchDashboardData = async () => {
+                try {
+                  const response = await getDashboardStats();
+                  if (response.success && response.data) {
+                    // For simplicity, reload to restore all state
+                    window.location.reload();
+                  }
+                } catch (err) {
+                  if (isServerUnavailable(err)) {
+                    setServerError(err);
+                  }
+                } finally {
+                  setRetrying(false);
+                }
+              };
+              fetchDashboardData();
+            }}
+          />
+        )}
 
-        {/* 🎯 Quick Actions - Cute Menu Cards */}
-        <Card className="overflow-hidden border border-gray-200">
-          <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-md bg-white/50" />
-            <StarDecor className="top-4 right-8" />
-            <CardTitle className="relative z-10 flex items-center gap-2">
-              Quick Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {!serverError && (
+          <>
+            {/* 📊 Stats Grid - Cute Cards */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {loading ? (
                 <>
-                  {Array.from({ length: 6 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="relative p-6 overflow-hidden rounded-sm bg-white border border-gray-100 animate-pulse"
-                    >
-                      <div className="space-y-3">
-                        <div className="flex items-start justify-between">
-                          <Skeleton className="w-14 h-14 rounded-sm bg-gray-200" />
-                          <Skeleton className="w-8 h-8 rounded-md bg-gray-200" />
-                        </div>
-                        <Skeleton className="h-5 w-32 bg-gray-200" />
-                        <Skeleton className="h-4 w-24 bg-gray-200" />
-                      </div>
-                    </div>
-                  ))}
+                  <StatCardSkeleton />
+                  <StatCardSkeleton />
+                  <StatCardSkeleton />
                 </>
               ) : (
-                visibleActions.map((action, index) => (
-                  <button
-                    key={index}
-                    onClick={() => navigate(action.path)}
-                    className="relative p-6 overflow-hidden text-left transition-all cursor-pointer duration-300 border-2 border-transparent group rounded-sm hover:scale-105 hover:border hover:border-white"
-                    style={{ background: action.gradient }}
-                  >
-                    {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-24 h-24 -mt-12 -mr-12 transition-transform duration-500 rounded-md bg-white/10 group-hover:scale-150" />
-                    <StarDecor className="top-2 right-2" />
-
-                    <div className="relative z-10">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center justify-center transition-transform duration-300 w-14 h-14 rounded-sm bg-white/20 backdrop-blur-sm group-hover:scale-110">
-                          <div className="text-white">{action.icon}</div>
-                        </div>
-                        <span className="text-3xl">{action.emoji}</span>
-                      </div>
-                      <h4 className="text-lg font-semibold text-white">
-                        {action.label}
-                      </h4>
-                      <p className="mt-1 text-sm text-white/80">
-                        Click to access
-                      </p>
-                    </div>
-                  </button>
+                stats.map((stat, index) => (
+                  <CuteStatCard key={index} {...stat} />
                 ))
               )}
             </div>
-          </CardContent>
-        </Card>
 
-        {/* 📈 Charts Row */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Bar Chart */}
-          <Card className="overflow-hidden border border-gray-200 lg:col-span-2 rounded-sm">
-            <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
-              <CardTitle className="flex items-center gap-2">
-                Deposits & Withdrawals This Week
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              {loading ? (
-                <div className="space-y-4">
-                  <div className="flex justify-between items-end h-[300px] px-4">
-                    {Array.from({ length: 7 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex flex-col items-center gap-2 flex-1"
-                      >
-                        <Skeleton
-                          className={`w-12 bg-gray-300 animate-pulse`}
-                          style={{ height: `${Math.random() * 200 + 50}px` }}
-                        />
-                        <Skeleton className="w-8 h-3 bg-gray-200" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={depositWithdrawalData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                    <XAxis dataKey="name" stroke="#64748B" />
-                    <YAxis
-                      label={{
-                        value: "(Million VND)",
-                        angle: -90,
-                        position: "insideLeft",
-                        style: { fill: "#64748B" },
-                      }}
-                      stroke="#64748B"
-                    />
-                    <Tooltip
-                      formatter={(value) =>
-                        `${formatVnNumber(Number(value), {
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 2,
-                        })}M₫`
-                      }
-                      contentStyle={{
-                        borderRadius: "12px",
-                        border: "1px solid #E5E7EB",
-                      }}
-                    />
-                    <Legend />
-                    <Bar
-                      dataKey="deposits"
-                      fill="#1A4D8F"
-                      name="Deposits"
-                      radius={[8, 8, 0, 0]}
-                    />
-                    <Bar
-                      dataKey="withdrawals"
-                      fill="#00AEEF"
-                      name="Withdrawals"
-                      radius={[8, 8, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Pie Chart */}
-          <Card className="overflow-hidden border border-gray-200 rounded-sm">
-            <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
-              <CardTitle className="flex items-center gap-2">
-                Account Type
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              {loading ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-center h-[300px]">
-                    <Skeleton className="w-48 h-48 rounded-md bg-gray-300 animate-pulse" />
-                  </div>
-                  <div className="space-y-2">
-                    {Array.from({ length: typeCount || 3 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Skeleton className="w-3 h-3 rounded-md bg-gray-300" />
-                          <Skeleton className="h-4 w-24 bg-gray-200" />
-                        </div>
-                        <Skeleton className="h-4 w-20 bg-gray-200" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={accountTypeData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ value }) => `${formatVnNumber(value)}`}
-                        outerRadius={90}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {accountTypeData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          borderRadius: "12px",
-                          border: "1px solid #E5E7EB",
-                        }}
-                        formatter={(value) => formatVnNumber(value)}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="mt-4 space-y-2">
-                    {accountTypeData.map((item, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div
-                            className="w-3 h-3 rounded-md"
-                            style={{ backgroundColor: item.color }}
-                          />
-                          <span className="text-sm text-gray-600">
-                            {item.name}
-                          </span>
-                        </div>
-                        <span className="text-sm font-semibold text-gray-900">
-                          {formatVnNumber(item.value)} accounts
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* 🔔 Recent Transactions */}
-        <Card className="overflow-hidden border border-gray-200 rounded-sm">
-          <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-md bg-white/50" />
-            <CardTitle className="relative z-10 flex items-center gap-2">
-              Recent Transactions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            {loading ? (
-              <div className="space-y-3">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-sm animate-pulse"
-                  >
-                    <div className="flex items-center gap-4">
-                      <Skeleton className="w-12 h-12 rounded-sm bg-gray-300" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-32 bg-gray-300" />
-                        <Skeleton className="h-3 w-40 bg-gray-200" />
-                      </div>
-                    </div>
-                    <div className="text-right space-y-2">
-                      <Skeleton className="h-4 w-24 bg-gray-300" />
-                      <Skeleton className="h-3 w-16 bg-gray-200" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : recentTransactions.length === 0 ? (
-              <div className="py-8 text-center text-gray-500">
-                <p>No recent transactions</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {recentTransactions.map((transaction, index) => {
-                  // Format raw data for display
-                  const isDeposit = transaction.type === "deposit";
-
-                  // Detect if this is an opening deposit by checking if transaction date matches saving book open date
-                  const savingBook = mockSavingBooks.find(
-                    (sb) => sb.bookId === transaction.bookId
-                  );
-                  const isOpenAccount = Boolean(
-                    savingBook &&
-                      transaction.type === "deposit" &&
-                      savingBook.openDate === transaction.date
-                  );
-
-                  let emoji = isDeposit ? "💰" : "💵";
-                  let color = isDeposit ? "#00AEEF" : "#F59E0B";
-                  let typeLabel = isDeposit ? "Deposit" : "Withdrawal";
-
-                  if (isOpenAccount) {
-                    emoji = "🏦";
-                    color = "#1A4D8F";
-                    typeLabel = "Open Account";
-                  }
-
-                  const amountDisplay = isDeposit
-                    ? `+${formatVnNumber(transaction.amount)}₫`
-                    : `-${formatVnNumber(transaction.amount)}₫`;
-
-                  return (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-sm hover:border-gray-200 hover:border"
-                    >
-                      <div className="flex items-center gap-4">
+            {/* 🎯 Quick Actions - Cute Menu Cards */}
+            <Card className="overflow-hidden border border-gray-200">
+              <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-md bg-white/50" />
+                <StarDecor className="top-4 right-8" />
+                <CardTitle className="relative z-10 flex items-center gap-2">
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {loading ? (
+                    <>
+                      {Array.from({ length: 6 }).map((_, index) => (
                         <div
-                          className="flex items-center justify-center w-12 h-12 text-2xl border border-gray-100 rounded-sm"
-                          style={{ backgroundColor: `${color}15` }}
+                          key={index}
+                          className="relative p-6 overflow-hidden rounded-sm bg-white border border-gray-100 animate-pulse"
                         >
-                          {emoji}
+                          <div className="space-y-3">
+                            <div className="flex items-start justify-between">
+                              <Skeleton className="w-14 h-14 rounded-sm bg-gray-200" />
+                              <Skeleton className="w-8 h-8 rounded-md bg-gray-200" />
+                            </div>
+                            <Skeleton className="h-5 w-32 bg-gray-200" />
+                            <Skeleton className="h-4 w-24 bg-gray-200" />
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {transaction.customerName}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {transaction.bookId} • {typeLabel}
+                      ))}
+                    </>
+                  ) : (
+                    visibleActions.map((action, index) => (
+                      <button
+                        key={index}
+                        onClick={() => navigate(action.path)}
+                        className="relative p-6 overflow-hidden text-left transition-all cursor-pointer duration-300 border-2 border-transparent group rounded-sm hover:scale-105 hover:border hover:border-white"
+                        style={{ background: action.gradient }}
+                      >
+                        {/* Decorative elements */}
+                        <div className="absolute top-0 right-0 w-24 h-24 -mt-12 -mr-12 transition-transform duration-500 rounded-md bg-white/10 group-hover:scale-150" />
+                        <StarDecor className="top-2 right-2" />
+
+                        <div className="relative z-10">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center justify-center transition-transform duration-300 w-14 h-14 rounded-sm bg-white/20 backdrop-blur-sm group-hover:scale-110">
+                              <div className="text-white">{action.icon}</div>
+                            </div>
+                            <span className="text-3xl">{action.emoji}</span>
+                          </div>
+                          <h4 className="text-lg font-semibold text-white">
+                            {action.label}
+                          </h4>
+                          <p className="mt-1 text-sm text-white/80">
+                            Click to access
                           </p>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <p
-                          className={`font-semibold ${
-                            isDeposit ? "text-green-600" : "text-red-600"
-                          }`}
-                        >
-                          {amountDisplay}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {transaction.time}
-                        </p>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 📈 Charts Row */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              {/* Bar Chart */}
+              <Card className="overflow-hidden border border-gray-200 lg:col-span-2 rounded-sm">
+                <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+                  <CardTitle className="flex items-center gap-2">
+                    Deposits & Withdrawals This Week
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  {loading ? (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-end h-[300px] px-4">
+                        {Array.from({ length: 7 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="flex flex-col items-center gap-2 flex-1"
+                          >
+                            <Skeleton
+                              className={`w-12 bg-gray-300 animate-pulse`}
+                              style={{
+                                height: `${Math.random() * 200 + 50}px`,
+                              }}
+                            />
+                            <Skeleton className="w-8 h-3 bg-gray-200" />
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={depositWithdrawalData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                        <XAxis dataKey="name" stroke="#64748B" />
+                        <YAxis
+                          label={{
+                            value: "(Million VND)",
+                            angle: -90,
+                            position: "insideLeft",
+                            style: { fill: "#64748B" },
+                          }}
+                          stroke="#64748B"
+                        />
+                        <Tooltip
+                          formatter={(value) =>
+                            `${formatVnNumber(Number(value), {
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 2,
+                            })}M₫`
+                          }
+                          contentStyle={{
+                            borderRadius: "12px",
+                            border: "1px solid #E5E7EB",
+                          }}
+                        />
+                        <Legend />
+                        <Bar
+                          dataKey="deposits"
+                          fill="#1A4D8F"
+                          name="Deposits"
+                          radius={[8, 8, 0, 0]}
+                        />
+                        <Bar
+                          dataKey="withdrawals"
+                          fill="#00AEEF"
+                          name="Withdrawals"
+                          radius={[8, 8, 0, 0]}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Pie Chart */}
+              <Card className="overflow-hidden border border-gray-200 rounded-sm">
+                <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
+                  <CardTitle className="flex items-center gap-2">
+                    Account Type
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  {loading ? (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-center h-[300px]">
+                        <Skeleton className="w-48 h-48 rounded-md bg-gray-300 animate-pulse" />
+                      </div>
+                      <div className="space-y-2">
+                        {Array.from({ length: typeCount || 3 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="flex items-center justify-between"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Skeleton className="w-3 h-3 rounded-md bg-gray-300" />
+                              <Skeleton className="h-4 w-24 bg-gray-200" />
+                            </div>
+                            <Skeleton className="h-4 w-20 bg-gray-200" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                          <Pie
+                            data={accountTypeData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={({ value }) => `${formatVnNumber(value)}`}
+                            outerRadius={90}
+                            fill="#8884d8"
+                            dataKey="value"
+                          >
+                            {accountTypeData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip
+                            contentStyle={{
+                              borderRadius: "12px",
+                              border: "1px solid #E5E7EB",
+                            }}
+                            formatter={(value) => formatVnNumber(value)}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className="mt-4 space-y-2">
+                        {accountTypeData.map((item, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between"
+                          >
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-3 h-3 rounded-md"
+                                style={{ backgroundColor: item.color }}
+                              />
+                              <span className="text-sm text-gray-600">
+                                {item.name}
+                              </span>
+                            </div>
+                            <span className="text-sm font-semibold text-gray-900">
+                              {formatVnNumber(item.value)} accounts
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 🔔 Recent Transactions */}
+            <Card className="overflow-hidden border border-gray-200 rounded-sm">
+              <CardHeader className="bg-linear-to-r from-[#E8F6FF] to-[#DFF9F4] border-b border-gray-100 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-40 h-40 -mt-20 -mr-20 rounded-md bg-white/50" />
+                <CardTitle className="relative z-10 flex items-center gap-2">
+                  Recent Transactions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                {loading ? (
+                  <div className="space-y-3">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-sm animate-pulse"
+                      >
+                        <div className="flex items-center gap-4">
+                          <Skeleton className="w-12 h-12 rounded-sm bg-gray-300" />
+                          <div className="space-y-2">
+                            <Skeleton className="h-4 w-32 bg-gray-300" />
+                            <Skeleton className="h-3 w-40 bg-gray-200" />
+                          </div>
+                        </div>
+                        <div className="text-right space-y-2">
+                          <Skeleton className="h-4 w-24 bg-gray-300" />
+                          <Skeleton className="h-3 w-16 bg-gray-200" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : recentTransactions.length === 0 ? (
+                  <div className="py-8 text-center text-gray-500">
+                    <p>No recent transactions</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {recentTransactions.map((transaction, index) => {
+                      // Format raw data for display
+                      const isDeposit = transaction.type === "deposit";
+
+                      // Detect if this is an opening deposit by checking if transaction date matches saving book open date
+                      const savingBook = mockSavingBooks.find(
+                        (sb) => sb.bookId === transaction.bookId
+                      );
+                      const isOpenAccount = Boolean(
+                        savingBook &&
+                          transaction.type === "deposit" &&
+                          savingBook.openDate === transaction.date
+                      );
+
+                      let emoji = isDeposit ? "💰" : "💵";
+                      let color = isDeposit ? "#00AEEF" : "#F59E0B";
+                      let typeLabel = isDeposit ? "Deposit" : "Withdrawal";
+
+                      if (isOpenAccount) {
+                        emoji = "🏦";
+                        color = "#1A4D8F";
+                        typeLabel = "Open Saving Book";
+                      }
+
+                      const amountDisplay = isDeposit
+                        ? `+${formatVnNumber(transaction.amount)}₫`
+                        : `-${formatVnNumber(transaction.amount)}₫`;
+
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-4 transition-all duration-200 bg-white border border-gray-100 rounded-sm hover:border-gray-200 hover:border"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div
+                              className="flex items-center justify-center w-12 h-12 text-2xl border border-gray-100 rounded-sm"
+                              style={{ backgroundColor: `${color}15` }}
+                            >
+                              {emoji}
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900">
+                                {transaction.customerName}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {transaction.bookId} • {typeLabel}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p
+                              className={`font-semibold ${
+                                isDeposit ? "text-green-600" : "text-red-600"
+                              }`}
+                            >
+                              {amountDisplay}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {transaction.time}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </RoleGuard>
   );

@@ -57,7 +57,7 @@ export default function Layout() {
     },
     {
       path: "/savings/open",
-      label: "Open Account",
+      label: "Open Saving Book",
       icon: UserPlus,
       roles: ["teller"],
     },
@@ -240,7 +240,7 @@ export default function Layout() {
                   onClick={() => handleNavigate(item.path)}
                   className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xs transition-all duration-200 group relative overflow-hidden ${
                     isActive
-                      ? "bg-white/15 text-white border border-gray-200 backdrop-blur-sm scale-[1.02]"
+                      ? "bg-white/15 text-white backdrop-blur-sm"
                       : "text-white/80 hover:bg-white/10 hover:text-white hover:scale-[1.01]"
                   } ${!isMobile && isSidebarCollapsed ? "justify-center" : ""}`}
                   style={{

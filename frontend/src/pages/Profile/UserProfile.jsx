@@ -34,25 +34,24 @@ import {
 } from "lucide-react";
 import { StarDecor } from "../../components/CuteComponents";
 import { Skeleton } from "../../components/ui/skeleton";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
 export default function UserProfile() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showEditContact, setShowEditContact] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [serverError, setServerError] = useState(null);
 
   // Profile data from API
   const [profileData, setProfileData] = useState(null);
 
-  const [contactInfo, setContactInfo] = useState({
-    email: `${user.username}@kasa.com`,
-    phone: "+84 123 456 789",
-    address: "123 Main Street, District 1, Ho Chi Minh City",
-    dateOfBirth: "2004-01-01",
-    avatarUrl: "",
+  const [personalInfo, setPersonalInfo] = useState({
+    fullName: "",
   });
 
   // Fetch profile on mount
@@ -60,20 +59,22 @@ export default function UserProfile() {
     const fetchProfile = async () => {
       try {
         setLoading(true);
+        setServerError(null);
         const response = await getProfile();
         if (response.success && response.data) {
           setProfileData(response.data);
-          setContactInfo({
-            email: response.data.email || "",
-            phone: response.data.phone || "",
-            address: response.data.address || "",
-            dateOfBirth: response.data.dateOfBirth || "2004-01-01",
-            avatarUrl: response.data.avatarUrl || "",
+          setPersonalInfo({
+            fullName: response.data.fullName || "",
           });
         }
       } catch (err) {
         console.error("Failed to fetch profile:", err);
-        setError("Failed to load profile");
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerError(err);
+        } else {
+          setError("Failed to load profile");
+        }
       } finally {
         setLoading(false);
       }
@@ -110,10 +111,22 @@ export default function UserProfile() {
 
     try {
       setLoading(true);
+      console.log("📤 Sending change password request with:", {
+        userId: user?.id,
+        oldPassword: "***",
+        newPassword: "***",
+      });
+
       const response = await changePassword({
+        userId: user?.id,
         oldPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
       });
+
+      console.log("📥 Full change password response:", response);
+      console.log("📥 response.success:", response.success);
+      console.log("📥 response.message:", response.message);
+      console.log("📥 response.data:", response.data);
 
       if (response.success) {
         setShowChangePassword(false);
@@ -125,49 +138,69 @@ export default function UserProfile() {
         setSuccessMessage("Password changed successfully");
         setShowSuccess(true);
       } else {
+        console.error("❌ Change password failed:", response.message);
         alert(response.message || "Failed to change password");
       }
     } catch (err) {
-      console.error("Failed to change password:", err);
-      alert("Failed to change password. Please try again.");
+      console.error("❌ Exception changing password:", err);
+      console.error("📥 Full error object:", err);
+      console.error("📥 Error message:", err.message);
+      console.error("📥 Error type:", err.type);
+      console.error("📥 Error response:", err.response);
+      alert(err.message || "Failed to change password. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdateContact = async () => {
-    if (!contactInfo.email || !contactInfo.phone) {
-      alert("Email and phone are required");
+  const handleUpdatePersonalInfo = async () => {
+    if (!personalInfo.fullName || !personalInfo.fullName.trim()) {
+      alert("Full name is required");
       return;
     }
 
     try {
       setLoading(true);
-      const response = await updateProfile({
-        fullName: profileData?.fullName,
-        phone: contactInfo.phone,
-        address: contactInfo.address,
-        dateOfBirth: contactInfo.dateOfBirth,
-        avatarUrl: contactInfo.avatarUrl,
+      console.log("📤 Sending update request with:", {
+        fullName: personalInfo.fullName,
       });
 
-      if (response.success && response.data) {
-        setProfileData(response.data);
-        setContactInfo({
-          email: response.data.email,
-          phone: response.data.phone,
-          address: response.data.address,
-          dateOfBirth: response.data.dateOfBirth,
-          avatarUrl: response.data.avatarUrl,
-        });
+      const response = await updateProfile({
+        fullName: personalInfo.fullName,
+      });
+
+      console.log("📥 Full response object:", response);
+      console.log("📥 response.success:", response.success);
+      console.log("📥 response.data:", response.data);
+      console.log("📥 response.data?.fullName:", response.data?.fullName);
+
+      if (response.success) {
+        console.log("✅ Update successful, response.data:", response.data);
         setShowEditContact(false);
-        setSuccessMessage("Contact information updated successfully");
+        setSuccessMessage("Personal information updated successfully");
         setShowSuccess(true);
+        // Update profile data from response
+        if (response.data) {
+          // Handle both camelCase and lowercase field names from server
+          const fullNameValue =
+            response.data.fullName || response.data.fullname || "";
+          console.log("🔄 Updating profile state with:", response.data);
+          setProfileData(response.data);
+          setPersonalInfo({
+            fullName: fullNameValue,
+          });
+          // Update user in context - only update fullName
+          console.log("🔄 Updating user context with fullName:", fullNameValue);
+          updateUser({
+            fullName: fullNameValue,
+          });
+        }
       } else {
+        console.error("❌ Update failed:", response.message);
         alert(response.message || "Failed to update profile");
       }
     } catch (err) {
-      console.error("Failed to update profile:", err);
+      console.error("❌ Error updating profile:", err);
       alert("Failed to update profile. Please try again.");
     } finally {
       setLoading(false);
@@ -283,6 +316,42 @@ export default function UserProfile() {
     );
   }
 
+  // Show full-page error state if server unavailable
+  if (serverError) {
+    return (
+      <ServiceUnavailableState
+        variant="page"
+        onRetry={() => {
+          setServerError(null);
+          setError(null);
+          // Retry fetching profile
+          const fetchProfile = async () => {
+            try {
+              setLoading(true);
+              const response = await getProfile();
+              if (response.success && response.data) {
+                setProfileData(response.data);
+                setPersonalInfo({
+                  fullName: response.data.fullName || "",
+                });
+              }
+            } catch (err) {
+              console.error("Failed to fetch profile:", err);
+              if (isServerUnavailable(err)) {
+                setServerError(err);
+              } else {
+                setError("Failed to load profile");
+              }
+            } finally {
+              setLoading(false);
+            }
+          };
+          fetchProfile();
+        }}
+      />
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
       {/* Error Message */}
@@ -308,15 +377,7 @@ export default function UserProfile() {
                 background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
               }}
             >
-              {profileData?.avatarUrl ? (
-                <img
-                  src={profileData.avatarUrl}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
-              )}
+              <UserCircle size={48} className="sm:w-16 sm:h-16 text-white" />
             </div>
             <div className="flex-1 text-center sm:text-left min-w-0">
               <h2 className="mb-2 text-2xl sm:text-3xl font-bold text-gray-900 truncate">
@@ -334,11 +395,7 @@ export default function UserProfile() {
                     ? "💼 Accountant"
                     : "💰 Teller"}
                 </Badge>
-                <Badge className="text-green-700 bg-green-100 border-green-200 border font-medium">
-                  ✓ Active
-                </Badge>
               </div>
-              <p className="text-sm text-gray-700">@{user.username}</p>
             </div>
           </div>
         </CardContent>
@@ -375,41 +432,7 @@ export default function UserProfile() {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-700">Email</p>
-                <p className="text-sm text-gray-900">{contactInfo.email}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 p-4 rounded-xs bg-green-50 border border-green-100">
-              <div
-                className="flex items-center justify-center w-12 h-12 rounded-xs border border-gray-100"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
-                }}
-              >
-                <Phone size={20} className="text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  Phone Number
-                </p>
-                <p className="text-sm text-gray-900">{contactInfo.phone}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 p-4 rounded-xs bg-purple-50 border border-purple-100">
-              <div
-                className="flex items-center justify-center w-12 h-12 rounded-xs border border-gray-100"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
-                }}
-              >
-                <MapPin size={20} className="text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-700">Address</p>
-                <p className="text-sm text-gray-900">{contactInfo.address}</p>
+                <p className="text-sm text-gray-900">{profileData?.email}</p>
               </div>
             </div>
           </div>
@@ -458,13 +481,7 @@ export default function UserProfile() {
           <CardTitle className="text-xl">Account Details</CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Username</p>
-              <p className="text-sm font-semibold text-gray-900">
-                {user.username}
-              </p>
-            </div>
+          <div className="flex flex-col gap-6">
             <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
               <p className="mb-1 text-sm font-medium text-gray-600">
                 Employee ID
@@ -486,10 +503,10 @@ export default function UserProfile() {
               </p>
             </div>
             <div className="p-4 rounded-xs bg-gray-50 border border-gray-100">
-              <p className="mb-1 text-sm font-medium text-gray-600">Status</p>
-              <Badge className="text-green-700 bg-green-100 border-green-200 border">
-                ✓ Active
-              </Badge>
+              <p className="mb-1 text-sm font-medium text-gray-600">Branch</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {profileData?.branchName || "N/A"}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -608,7 +625,7 @@ export default function UserProfile() {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Contact Dialog */}
+      {/* Edit Personal Information Dialog */}
       <Dialog open={showEditContact} onOpenChange={setShowEditContact}>
         <DialogContent className="rounded-sm">
           <DialogHeader>
@@ -620,100 +637,41 @@ export default function UserProfile() {
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
                 }}
               >
-                <Mail size={24} className="text-white" />
+                <UserCircle size={24} className="text-white" />
               </div>
               <div>
                 <DialogTitle className="text-xl">
-                  Edit Contact Information
+                  Edit Personal Information
                 </DialogTitle>
                 <DialogDescription>
-                  Update your contact details
+                  Update your personal details
                 </DialogDescription>
               </div>
             </div>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700">
-                Email Address
+              <Label htmlFor="fullName" className="text-gray-700">
+                Full Name
               </Label>
               <Input
-                id="email"
-                type="email"
-                value={contactInfo.email}
+                id="fullName"
+                type="text"
+                value={personalInfo.fullName}
                 onChange={(e) =>
-                  setContactInfo({ ...contactInfo, email: e.target.value })
-                }
-                className="h-11 rounded-smborder-gray-200"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-gray-700">
-                Phone Number
-              </Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={contactInfo.phone}
-                onChange={(e) =>
-                  setContactInfo({ ...contactInfo, phone: e.target.value })
-                }
-                className="h-11 rounded-smborder-gray-200"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="address" className="text-gray-700">
-                Address
-              </Label>
-              <Input
-                id="address"
-                value={contactInfo.address}
-                onChange={(e) =>
-                  setContactInfo({ ...contactInfo, address: e.target.value })
-                }
-                className="h-11 rounded-smborder-gray-200"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="dateOfBirth" className="text-gray-700">
-                Date of Birth
-              </Label>
-              <Input
-                id="dateOfBirth"
-                type="date"
-                value={contactInfo.dateOfBirth}
-                onChange={(e) =>
-                  setContactInfo({
-                    ...contactInfo,
-                    dateOfBirth: e.target.value,
+                  setPersonalInfo({
+                    ...personalInfo,
+                    fullName: e.target.value,
                   })
                 }
+                placeholder="Enter your full name"
                 className="h-11 rounded-smborder-gray-200"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="avatarUrl" className="text-gray-700">
-                Avatar URL
-              </Label>
-              <Input
-                id="avatarUrl"
-                type="url"
-                value={contactInfo.avatarUrl}
-                onChange={(e) =>
-                  setContactInfo({ ...contactInfo, avatarUrl: e.target.value })
-                }
-                className="h-11 rounded-smborder-gray-200"
-                placeholder="https://example.com/avatar.png"
               />
             </div>
           </div>
           <div className="flex gap-4">
             <Button
-              onClick={handleUpdateContact}
+              onClick={handleUpdatePersonalInfo}
               disabled={loading}
               className="flex-1 h-12 text-white rounded-smborder border-gray-200 font-medium"
               style={{

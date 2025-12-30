@@ -52,6 +52,8 @@ import { StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
 import { formatPercentText, formatVnNumber } from "@/utils/numberFormatter";
+import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
 
 export default function RegulationSettings() {
   // const { user } = useAuth();
@@ -144,7 +146,11 @@ export default function RegulationSettings() {
         // }
       } catch (err) {
         console.error("Failed to fetch regulations:", err);
-        setError("Failed to load regulations");
+        if (isServerUnavailable(err)) {
+          setError("SERVER_UNAVAILABLE");
+        } else {
+          setError("Failed to load regulations");
+        }
       } finally {
         setLoading(false);
       }
@@ -278,6 +284,15 @@ export default function RegulationSettings() {
       setLoading(false);
     }
   };
+
+  // Show server unavailable state for connection errors
+  if (error === "SERVER_UNAVAILABLE") {
+    return (
+      <RoleGuard allow={["admin"]}>
+        <ServiceUnavailablePageState loading={loading} />
+      </RoleGuard>
+    );
+  }
 
   return (
     <RoleGuard allow={["admin"]}>
@@ -423,7 +438,7 @@ export default function RegulationSettings() {
                         className="border-gray-200 h-11 rounded-sm"
                       />
                       <p className="text-xs text-gray-500">
-                        Minimum amount to open account or deposit
+                        Minimum amount to open saving book or deposit
                       </p>
                     </div>
 
@@ -582,7 +597,7 @@ export default function RegulationSettings() {
                               <TableCell>
                                 <Input
                                   type="number"
-                                  step="0.1"
+                                  step="0.01"
                                   value={item.rate}
                                   onChange={(e) => {
                                     const value = e.target.value;

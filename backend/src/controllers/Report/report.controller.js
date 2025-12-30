@@ -1,5 +1,44 @@
 import { reportService } from "../../services/Report/report.service.js";
 
+// 20.1 Thống kê giao dịch theo ngày (Transaction Statistics)
+export async function getDailyTransactionStatistics(req, res) {
+  try {
+    const { date } = req.query;
+    if (!date) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing query parameter: date (YYYY-MM-DD)",
+      });
+    }
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid date format. Expected YYYY-MM-DD",
+      });
+    }
+    const parsed = new Date(date);
+    if (isNaN(parsed.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid date value",
+      });
+    }
+    const data = await reportService.getDailyTransactionStatistics(date);
+    return res.status(200).json({
+      message: "Get daily transaction statistics successfully",
+      success: true,
+      data,
+    });
+  } catch (err) {
+    console.error("❌ Error generating daily transaction statistics:", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
 export async function getDailyReport(req, res) {
   try {
     const { date } = req.query;
@@ -34,7 +73,6 @@ export async function getDailyReport(req, res) {
       success: true,
       data: report,
     });
-
   } catch (err) {
     console.error("❌ Error generating daily report:", err);
     res.status(500).json({
@@ -75,7 +113,6 @@ export async function getMonthlyReport(req, res) {
       success: true,
       data: reportData,
     });
-
   } catch (err) {
     console.error("❌ Error generating monthly report:", err);
     res.status(500).json({
@@ -84,4 +121,3 @@ export async function getMonthlyReport(req, res) {
     });
   }
 }
-

@@ -6,7 +6,7 @@
 
 export const mockSavingBooks = [
   {
-    bookId: "1233",
+    bookId: "123",
     citizenId: "079012345678",
     customerName: "Nguyễn Văn A",
     typeSavingId: "TS02",

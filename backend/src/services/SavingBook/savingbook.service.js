@@ -269,7 +269,8 @@ class SavingBookService {
   }
 
   // Tìm kiếm sổ tiết kiệm
-  async searchSavingBook(keyword, pageSize = 10, pageNumber = 1) {
+  // Tìm kiếm sổ tiết kiệm
+  async searchSavingBook(keyword, typeId, status, pageSize = 10, pageNumber = 1) {
     // Nếu không có keyword hoặc keyword rỗng, lấy tất cả
     let results = [];
     if (!keyword || keyword.trim() === "") {
@@ -296,6 +297,22 @@ class SavingBookService {
         throw new Error("Keyword is only contain number or letter");
       }
     }
+
+
+    if (typeId == 'all' || !typeId) {
+      //Lấy hết
+    } else {
+      results = results.filter(
+        (book) => String(book.typeId) === String(typeId)
+      );
+    }
+
+    if (status == 'all' || !status) {
+      //Lấy hết
+    } else {
+      results = results.filter((book) => book.status.toLowerCase() === status);
+    }
+
 
     // Áp dụng phân trang trước khi tính lãi
     const total = results.length;

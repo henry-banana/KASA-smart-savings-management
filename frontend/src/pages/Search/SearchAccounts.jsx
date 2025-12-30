@@ -34,7 +34,6 @@ import {
 } from "../../components/ui/dialog";
 import {
   Search,
-  FileDown,
   Eye,
   Sparkles,
   Filter,
@@ -51,6 +50,8 @@ import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
 import { formatVnNumber } from "../../utils/numberFormatter";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
 export default function SearchAccounts() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,6 +64,7 @@ export default function SearchAccounts() {
   const [accountTypeOptions, setAccountTypeOptions] = useState([
     { value: "all", label: "All" },
   ]);
+  const [serverError, setServerError] = useState(null);
 
   // Pagination state
   const [page, setPage] = useState(1);
@@ -99,6 +101,7 @@ export default function SearchAccounts() {
   useEffect(() => {
     const fetchAccounts = async () => {
       setLoading(true);
+      setServerError(null);
       try {
         const response = await searchSavingBooks(
           searchTerm,
@@ -112,6 +115,10 @@ export default function SearchAccounts() {
         setTotalPages(response.totalPages || 1);
       } catch (err) {
         console.error("Search error:", err);
+        // Check if server is unavailable
+        if (isServerUnavailable(err)) {
+          setServerError(err);
+        }
         setAccounts([]);
         setTotal(0);
         setTotalPages(1);
@@ -133,20 +140,28 @@ export default function SearchAccounts() {
     setPage(1);
   }, [searchTerm, typeFilter, statusFilter]);
 
+  // Show full-page error state if server unavailable
+  if (serverError) {
+    return (
+      <RoleGuard allowedRoles={["manager", "employee"]}>
+        <ServiceUnavailableState
+          variant="page"
+          onRetry={() => {
+            setServerError(null);
+            setAccounts([]);
+            setTotal(0);
+            setTotalPages(1);
+          }}
+        />
+      </RoleGuard>
+    );
+  }
+
   const filteredAccounts = accounts;
 
   const handleViewDetails = (account) => {
     setSelectedAccount(account);
     setShowDetails(true);
-  };
-
-  const handleExport = (format) => {
-    // Mock export functionality
-    alert(
-      `Exporting ${
-        filteredAccounts.length
-      } accounts to ${format.toUpperCase()}...`
-    );
   };
 
   const handlePreviousPage = () => {
@@ -285,15 +300,6 @@ export default function SearchAccounts() {
                   </span>{" "}
                   savings accounts • Page {page} of {totalPages}
                 </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
-                  onClick={() => handleExport("excel")}
-                >
-                  <FileDown size={16} className="mr-2" />
-                  Xuất Excel
-                </Button>
               </div>
             </div>
 
@@ -395,7 +401,7 @@ export default function SearchAccounts() {
                     onClick={handleFirstPage}
                     disabled={page === 1 || loading}
                     aria-label="First page"
-                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05] hover:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <ChevronsLeft size={16} />
                   </Button>
@@ -405,7 +411,7 @@ export default function SearchAccounts() {
                     onClick={handlePreviousPage}
                     disabled={page === 1 || loading}
                     aria-label="Previous page"
-                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05] hover:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft size={16} className="mr-1" />
                     Prev
@@ -419,7 +425,7 @@ export default function SearchAccounts() {
                     onClick={handleNextPage}
                     disabled={page === totalPages || loading}
                     aria-label="Next page"
-                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05] hover:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     Next
                     <ChevronRight size={16} className="ml-1" />
@@ -430,7 +436,7 @@ export default function SearchAccounts() {
                     onClick={handleLastPage}
                     disabled={page === totalPages || loading}
                     aria-label="Last page"
-                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05] hover:bg-gray-100 disabled:cursor-not-allowed"
                   >
                     <ChevronsRight size={16} />
                   </Button>
@@ -440,7 +446,6 @@ export default function SearchAccounts() {
           </CardContent>
         </Card>
 
-        {/* Account Details Modal */}
         <Dialog open={showDetails} onOpenChange={setShowDetails}>
           <DialogContent className="max-w-md rounded-sm">
             <DialogHeader>

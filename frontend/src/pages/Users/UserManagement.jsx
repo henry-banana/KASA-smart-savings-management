@@ -58,6 +58,8 @@ import { StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
 import { formatVnNumber } from "@/utils/numberFormatter";
+import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
+import { isServerUnavailable } from "@/utils/serverStatusUtils";
 
 export default function UserManagement() {
   const { user } = useAuth();
@@ -93,7 +95,11 @@ export default function UserManagement() {
       const data = await userService.getAllUsers();
       setUsers(data);
     } catch (err) {
-      setError(err.message || "Failed to fetch users");
+      if (isServerUnavailable(err)) {
+        setError("SERVER_UNAVAILABLE");
+      } else {
+        setError(err.message || "Failed to fetch users");
+      }
       console.error("Error fetching users:", err);
     } finally {
       setLoading(false);
@@ -272,6 +278,15 @@ export default function UserManagement() {
   //     </Card>
   //   );
   // }
+
+  // Show server unavailable state for connection errors
+  if (error === "SERVER_UNAVAILABLE") {
+    return (
+      <RoleGuard allow={["admin"]}>
+        <ServiceUnavailablePageState onRetry={fetchUsers} loading={loading} />
+      </RoleGuard>
+    );
+  }
 
   return (
     <RoleGuard allow={["admin"]}>

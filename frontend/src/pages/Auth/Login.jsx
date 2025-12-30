@@ -1,5 +1,5 @@
 import "./Login.css";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -11,12 +11,20 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import { Lock, User, Sparkles, Star, Heart } from "lucide-react";
-import eyeOpenIcon from "../../assets/eyeopen.png";
-import eyeCloseIcon from "../../assets/eyeclose.png";
+import {
+  Lock,
+  User,
+  Sparkles,
+  Star,
+  Heart,
+  AlertCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useConfig } from "@/contexts/ConfigContext";
 import { useAuth } from "@/hooks/useAuth";
 import { logger } from "@/utils/logger";
+import { mapAuthErrorToMessage } from "@/utils/authErrorMapper";
 
 // Spinner thuần CSS/Tailwind (giữ size động)
 function Spinner({ size = 16, light = true }) {
@@ -30,12 +38,42 @@ function Spinner({ size = 16, light = true }) {
   );
 }
 
+// Validation utility functions
+function validateEmail(email) {
+  if (!email || !email.trim()) {
+    return "Email is required";
+  }
+
+  // Standard email regex pattern
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email.trim())) {
+    return "Invalid email format";
+  }
+
+  return null; // No error
+}
+
+function validatePassword(password) {
+  if (!password) {
+    return "Password is required";
+  }
+
+  if (password.length < 6) {
+    return "Password must be at least 6 characters";
+  }
+
+  return null; // No error
+}
+
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [loginError, setLoginError] = useState(null);
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const passwordInputRef = useRef(null);
 
   // ✅ Use new hooks
   const { devMode } = useConfig();
@@ -44,15 +82,34 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
-      setError("Please enter username and password");
+
+    // Clear previous errors
+    setLoginError(null);
+    setUsernameError("");
+    setPasswordError("");
+
+    // Validate username (email)
+    const usernameValidationError = validateEmail(username);
+    if (usernameValidationError) {
+      setUsernameError(usernameValidationError);
       return;
     }
+
+    // Validate password
+    const passwordValidationError = validatePassword(password);
+    if (passwordValidationError) {
+      setPasswordError(passwordValidationError);
+      return;
+    }
+
     setLoading(true);
-    setError("");
+
     try {
-      // ✅ Use new authService through context
-      const userData = await authLogin({ username, password });
+      // ✅ Use new authService through context (trim email before submit)
+      const userData = await authLogin({
+        username: username.trim(),
+        password,
+      });
 
       // userData.role đã là: 'admin' | 'teller' | 'accountant'
       if (userData?.role === "admin") {
@@ -62,7 +119,18 @@ export default function Login() {
       }
     } catch (err) {
       logger.error("Login failed", err);
-      setError(err.message || "Failed to login");
+
+      // Map error to user-friendly message
+      const mappedError = mapAuthErrorToMessage(err);
+      setLoginError(mappedError);
+
+      // Focus password field for user convenience
+      setTimeout(() => {
+        passwordInputRef.current?.focus();
+      }, 100);
+
+      // Keep username field for user to retry
+      // Password is kept too - user can clear if they want
     } finally {
       setLoading(false);
     }
@@ -77,7 +145,8 @@ export default function Login() {
 
     const creds = roleCredentials[role];
     setLoading(true);
-    setError("");
+    setLoginError(null);
+
     try {
       const userData = await authLogin(creds);
 
@@ -88,7 +157,8 @@ export default function Login() {
       }
     } catch (err) {
       console.error("Quick role login error:", err);
-      setError(err.message || "Quick login failed");
+      const mappedError = mapAuthErrorToMessage(err);
+      setLoginError(mappedError);
     } finally {
       setLoading(false);
     }
@@ -212,12 +282,23 @@ export default function Login() {
                   value={username}
                   onChange={(e) => {
                     setUsername(e.target.value);
-                    setError("");
+                    // Clear errors when user starts typing
+                    if (usernameError) setUsernameError("");
+                    if (loginError) setLoginError(null);
                   }}
                   disabled={loading}
-                  className="pl-10 h-12 rounded-xs border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  className={`pl-10 h-12 rounded-xs border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all ${
+                    usernameError
+                      ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                      : ""
+                  }`}
                 />
               </div>
+              {usernameError && (
+                <p className="flex items-center gap-1 text-xs text-red-600 sm:text-sm">
+                  <span className="text-xs">⚠️</span> {usernameError}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -230,37 +311,86 @@ export default function Login() {
                   size={18}
                 />
                 <Input
+                  ref={passwordInputRef}
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    setError("");
+                    // Clear errors when user starts typing
+                    if (passwordError) setPasswordError("");
+                    if (loginError) setLoginError(null);
                   }}
                   disabled={loading}
-                  className="pl-10 pr-10 h-12 rounded-xs border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
+                  className={`pl-10 pr-10 h-12 rounded-xs border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all ${
+                    passwordError
+                      ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                      : ""
+                  }`}
                 />
                 <button
                   type="button"
                   onClick={toggleShowPassword}
                   disabled={loading}
-                  className="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-full text-gray-500 cursor-pointer rounded-r-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute inset-y-0 right-0 flex items-center justify-center w-10 h-full text-gray-500 cursor-pointer rounded-r-md hover:text-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label={showPassword ? "Show password" : "Hide password"}
                   tabIndex={-1}
                 >
-                  <img
-                    src={showPassword ? eyeOpenIcon : eyeCloseIcon}
-                    alt="Toggle password visibility"
-                    className="w-5 h-5"
-                  />
+                  {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </button>
               </div>
+              {passwordError && (
+                <p className="flex items-center gap-1 text-xs text-red-600 sm:text-sm">
+                  <span className="text-xs">⚠️</span> {passwordError}
+                </p>
+              )}
             </div>
 
-            {error && (
-              <div className="p-3 border border-red-200 bg-red-50 rounded-sm">
-                <p className="text-sm text-red-600">{error}</p>
+            {loginError && (
+              <div
+                className={`p-3 rounded-sm border-l-4 flex items-start gap-3 animate-in slide-in-from-top-2 ${
+                  loginError.isWarning
+                    ? "border-amber-400 bg-amber-50"
+                    : loginError.isSessionExpired
+                    ? "border-orange-400 bg-orange-50"
+                    : "border-red-400 bg-red-50"
+                }`}
+              >
+                <AlertCircle
+                  className={`flex-shrink-0 mt-0.5 ${
+                    loginError.isWarning
+                      ? "text-amber-600"
+                      : loginError.isSessionExpired
+                      ? "text-orange-600"
+                      : "text-red-600"
+                  }`}
+                  size={18}
+                />
+                <div className="flex-1 min-w-0">
+                  <h3
+                    className={`font-semibold text-sm mb-1 ${
+                      loginError.isWarning
+                        ? "text-amber-800"
+                        : loginError.isSessionExpired
+                        ? "text-orange-800"
+                        : "text-red-800"
+                    }`}
+                  >
+                    {loginError.title}
+                  </h3>
+                  <p
+                    className={`text-sm ${
+                      loginError.isWarning
+                        ? "text-amber-700"
+                        : loginError.isSessionExpired
+                        ? "text-orange-700"
+                        : "text-red-700"
+                    }`}
+                  >
+                    {loginError.message}
+                  </p>
+                </div>
               </div>
             )}
 
