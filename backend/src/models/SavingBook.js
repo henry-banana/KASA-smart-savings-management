@@ -60,7 +60,6 @@ export class SavingBook extends BaseModel {
         maturitydate,
         status,
         currentbalance,
-
         customer:customerid!inner (
           fullname,
           citizenid
