@@ -83,7 +83,9 @@ class CustomerService {
   async findCustomerByCitizenId(citizenId) {
     //Kiểm tra citizenId hợp lệ, 12 số, nếu không hợp lệ thì throw lỗi
     if (!/^\d{12}$/.test(citizenId)) {
-      throw new Error("Invalid citizen ID format. It should be 12 digits.");
+      const err = new Error("Invalid citizen ID format. It should be 12 digits.");
+        err.status = 400; // Đánh dấu đây là lỗi Bad Request
+        throw err;
     }
     return await customerRepository.findByCitizenID(citizenId);
   }
