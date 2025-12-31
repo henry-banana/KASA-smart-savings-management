@@ -50,10 +50,14 @@ export function MonthPicker({
     const currentMonth = today.getMonth();
     const currentYearNow = today.getFullYear();
 
-    return (
-      currentYear > currentYearNow ||
-      (currentYear === currentYearNow && monthIndex >= currentMonth)
-    );
+    // Disable future years only
+    if (currentYear > currentYearNow) return true;
+
+    // For current year, disable months after current month
+    if (currentYear === currentYearNow && monthIndex > currentMonth)
+      return true;
+
+    return false;
   };
 
   return (

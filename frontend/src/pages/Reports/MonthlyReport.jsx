@@ -158,6 +158,7 @@ export default function MonthlyReport() {
                   date={selectedDate}
                   onSelect={(date) => date && setSelectedDate(date)}
                   placeholder="Pick a month"
+                  maxDate={new Date()}
                 />
               </div>
             </div>
@@ -313,7 +314,10 @@ export default function MonthlyReport() {
             </div>
 
             {/* Main Report Container - Printable */}
-            <div className="bg-white rounded-sm border border-gray-200 p-8 print:shadow-none print:rounded-none print:p-12">
+            <div
+              id="print-report"
+              className="bg-white rounded-sm border border-gray-200 p-8 print:shadow-none print:rounded-none print:p-12"
+            >
               {/* Report Header */}
               <div className="mb-8 space-y-4">
                 <h1 className="text-2xl font-bold text-[#1A4D8F] text-center tracking-tight">
@@ -552,17 +556,81 @@ export default function MonthlyReport() {
             {/* Print Styles */}
             <style>{`
         @media print {
-          body {
-            print-color-adjust: exact;
-            -webkit-print-color-adjust: exact;
+          /* ===== HIDE EVERYTHING, SHOW ONLY REPORT ===== */
+          body * {
+            visibility: hidden !important;
           }
-          @page { size: A4; margin: 15mm; }
-          .print\\:hidden { display: none !important; }
-          .print\\:block { display: block !important; }
-          table { page-break-inside: auto; }
-          tr { page-break-inside: avoid; page-break-after: auto; }
-          thead { display: table-header-group; }
-          tfoot { display: table-footer-group; }
+
+          #print-report,
+          #print-report * {
+            visibility: visible !important;
+          }
+
+          /* ===== POSITION REPORT AT TOP-LEFT (BYPASS SIDEBAR OFFSET) ===== */
+          #print-report {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            box-shadow: none !important;
+            border: none !important;
+          }
+
+          /* ===== PAGE LAYOUT ===== */
+          @page {
+            size: A4;
+            margin: 15mm;
+          }
+
+          /* ===== PRESERVE COLORS ===== */
+          body,
+          table,
+          thead,
+          tbody,
+          tr,
+          td,
+          th {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          /* ===== TABLE HEADER REPEAT ===== */
+          thead {
+            display: table-header-group !important;
+          }
+
+          tfoot {
+            display: table-footer-group !important;
+          }
+
+          /* ===== PREVENT ROW SPLITTING ===== */
+          tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+
+          /* ===== TABLE LAYOUT ===== */
+          table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+          }
+
+          /* ===== PREVENT SECTION SPLITTING ===== */
+          h1,
+          h2,
+          h3 {
+            break-after: avoid !important;
+            page-break-after: avoid !important;
+          }
+
+          /* Signature and summary sections */
+          .grid {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
         }
       `}</style>
           </>
