@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import { RoleGuard } from "../../components/RoleGuard";
 import { useAuthContext } from "@/contexts/AuthContext";
 import {
@@ -25,6 +26,7 @@ import { Skeleton } from "../../components/ui/skeleton";
 import { formatVnNumber } from "../../utils/numberFormatter";
 import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { MonthlyReportPrint } from "./MonthlyReportPrint";
 
 export default function MonthlyReport() {
   const { user } = useAuthContext();
@@ -33,6 +35,9 @@ export default function MonthlyReport() {
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Reference for the printable component
+  const printComponentRef = useRef(null);
 
   const handleGenerateReport = async () => {
     setLoading(true);
@@ -105,9 +110,12 @@ export default function MonthlyReport() {
     fetchSavingsTypes();
   }, []);
 
-  const handleExport = () => {
-    window.print();
-  };
+  const handleExport = useReactToPrint({
+    contentRef: printComponentRef,
+    documentTitle: `Monthly-Report-${selectedDate.getFullYear()}-${String(
+      selectedDate.getMonth() + 1
+    ).padStart(2, "0")}`,
+  });
 
   // Show server unavailable state for connection errors
   if (error === "SERVER_UNAVAILABLE") {
@@ -294,8 +302,8 @@ export default function MonthlyReport() {
         {/* Show results only after generate */}
         {reportData && !loading && (
           <>
-            {/* Print Actions - Hidden on Print */}
-            <div className="flex justify-end gap-3 print:hidden">
+            {/* Print/Export Actions */}
+            <div className="flex justify-end gap-3">
               <Button
                 onClick={handleExport}
                 variant="outline"
@@ -313,11 +321,8 @@ export default function MonthlyReport() {
               </Button>
             </div>
 
-            {/* Main Report Container - Printable */}
-            <div
-              id="print-report"
-              className="bg-white rounded-sm border border-gray-200 p-8 print:shadow-none print:rounded-none print:p-12"
-            >
+            {/* Screen Display - Interactive Version with Print Styles */}
+            <div className="bg-white rounded-sm border border-gray-200 p-8">
               {/* Report Header */}
               <div className="mb-8 space-y-4">
                 <h1 className="text-2xl font-bold text-[#1A4D8F] text-center tracking-tight">
@@ -501,7 +506,7 @@ export default function MonthlyReport() {
               </div>
 
               {/* Report Signature Section */}
-              <div className="mt-12 pt-8 border-t-2 border-gray-200 print:block">
+              <div className="mt-12 pt-8 border-t-2 border-gray-200">
                 <div className="grid grid-cols-2 gap-12">
                   <div className="text-center space-y-16">
                     <div>
@@ -538,7 +543,7 @@ export default function MonthlyReport() {
               </div>
 
               {/* Report Generation Info */}
-              <div className="mt-8 text-center text-xs text-gray-400 print:block">
+              <div className="mt-8 text-center text-xs text-gray-400">
                 <p>
                   Generated on{" "}
                   {new Date().toLocaleDateString("en-US", {
@@ -553,86 +558,26 @@ export default function MonthlyReport() {
               </div>
             </div>
 
-            {/* Print Styles */}
-            <style>{`
-        @media print {
-          /* ===== HIDE EVERYTHING, SHOW ONLY REPORT ===== */
-          body * {
-            visibility: hidden !important;
-          }
-
-          #print-report,
-          #print-report * {
-            visibility: visible !important;
-          }
-
-          /* ===== POSITION REPORT AT TOP-LEFT (BYPASS SIDEBAR OFFSET) ===== */
-          #print-report {
-            position: fixed !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            background: white !important;
-            box-shadow: none !important;
-            border: none !important;
-          }
-
-          /* ===== PAGE LAYOUT ===== */
-          @page {
-            size: A4;
-            margin: 15mm;
-          }
-
-          /* ===== PRESERVE COLORS ===== */
-          body,
-          table,
-          thead,
-          tbody,
-          tr,
-          td,
-          th {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-
-          /* ===== TABLE HEADER REPEAT ===== */
-          thead {
-            display: table-header-group !important;
-          }
-
-          tfoot {
-            display: table-footer-group !important;
-          }
-
-          /* ===== PREVENT ROW SPLITTING ===== */
-          tr {
-            break-inside: avoid !important;
-            page-break-inside: avoid !important;
-          }
-
-          /* ===== TABLE LAYOUT ===== */
-          table {
-            width: 100% !important;
-            border-collapse: collapse !important;
-          }
-
-          /* ===== PREVENT SECTION SPLITTING ===== */
-          h1,
-          h2,
-          h3 {
-            break-after: avoid !important;
-            page-break-after: avoid !important;
-          }
-
-          /* Signature and summary sections */
-          .grid {
-            break-inside: avoid !important;
-            page-break-inside: avoid !important;
-          }
-        }
-      `}</style>
+            {/* Hidden Printable Component - Positioned off-screen */}
+            <div
+              style={{
+                position: "fixed",
+                left: "-10000px",
+                top: "0",
+                width: "100%",
+                pointerEvents: "none",
+              }}
+            >
+              <MonthlyReportPrint
+                ref={printComponentRef}
+                reportData={reportData}
+                totals={totals}
+                selectedDate={selectedDate}
+                savingsType={savingsType}
+                savingsTypes={savingsTypes}
+                user={user}
+              />
+            </div>
           </>
         )}
       </div>
