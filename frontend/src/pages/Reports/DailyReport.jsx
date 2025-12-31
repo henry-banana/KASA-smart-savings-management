@@ -63,20 +63,22 @@ export default function DailyReport() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Check if selected date is today or in the future
+  // Check if selected date is in the future (allow today, block tomorrow onwards)
   const isDateInvalid = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
     const selected = new Date(selectedDate);
     selected.setHours(0, 0, 0, 0);
-    return selected >= today;
+    return selected > today;
   };
 
   // Generate report function - only called when user clicks button
   const handleGenerateReport = async () => {
     if (isDateInvalid()) {
       setError(
-        "Cannot generate report for today or future dates. Please select a past date."
+        "Cannot generate report for future dates. You can select today or any past date."
       );
       return;
     }
@@ -214,7 +216,7 @@ export default function DailyReport() {
                   disabled={(date) => {
                     const today = new Date();
                     today.setHours(0, 0, 0, 0);
-                    return date >= today;
+                    return date > today;
                   }}
                 />
               </div>
