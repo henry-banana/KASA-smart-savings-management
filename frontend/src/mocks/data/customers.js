@@ -6,7 +6,7 @@ export const mockCustomers = [
   {
     customerid: "CUST001",
     fullname: "Nguyễn Văn A",
-    citizenid: "1",
+    citizenid: "000000000001",
     address: "123 Nguyễn Huệ, Q1, TP.HCM",
     street: "123 Nguyễn Huệ",
     district: "Q1",
@@ -18,7 +18,7 @@ export const mockCustomers = [
   {
     customerid: "CUST002",
     fullname: "Trần Thị B",
-    citizenid: "2",
+    citizenid: "000000000002",
     address: "456 Lê Lợi, Q1, TP.HCM",
     phone: "0907654321",
     email: "tranthib@email.com",
@@ -27,7 +27,7 @@ export const mockCustomers = [
   {
     customerid: "CUST003",
     fullname: "Lê Văn C",
-    citizenid: "3",
+    citizenid: "000000000003",
     address: "789 Hai Bà Trưng, Q3, TP.HCM",
     phone: "0901111111",
     email: "levanc@email.com",
@@ -36,7 +36,7 @@ export const mockCustomers = [
   {
     customerid: "CUST004",
     fullname: "Phạm Thị D",
-    citizenid: "4",
+    citizenid: "000000000004",
     address: "321 Pasteur, Q3, TP.HCM",
     phone: "0902222222",
     email: "phamthid@email.com",
@@ -45,7 +45,7 @@ export const mockCustomers = [
   {
     customerid: "CUST005",
     fullname: "Hoàng Văn E",
-    citizenid: "5",
+    citizenid: "000000000005",
     address: "654 Điện Biên Phủ, Q10, TP.HCM",
     phone: "0903333333",
     email: "hoangvane@email.com",
@@ -54,7 +54,7 @@ export const mockCustomers = [
   {
     customerid: "CUST006",
     fullname: "Nguyễn Thị F",
-    citizenid: "6",
+    citizenid: "000000000006",
     address: "987 Cách Mạng Tháng 8, Q10, TP.HCM",
     phone: "0904444444",
     email: "nguyenthif@email.com",
@@ -63,7 +63,7 @@ export const mockCustomers = [
   {
     customerid: "CUST007",
     fullname: "Vũ Văn G",
-    citizenid: "7",
+    citizenid: "000000000007",
     address: "147 Nguyễn Trãi, Q5, TP.HCM",
     phone: "0905555555",
     email: "vuvang@email.com",
@@ -72,7 +72,7 @@ export const mockCustomers = [
   {
     customerid: "CUST008",
     fullname: "Đỗ Thị H",
-    citizenid: "8",
+    citizenid: "000000000008",
     address: "258 Lý Thường Kiệt, Q5, TP.HCM",
     phone: "0906666666",
     email: "dothih@email.com",
@@ -81,7 +81,7 @@ export const mockCustomers = [
   {
     customerid: "CUST009",
     fullname: "Nguyễn Thị I",
-    citizenid: "9",
+    citizenid: "000000000009",
     address: "369 Võ Văn Tần, Q3, TP.HCM",
     phone: "0907777777",
     email: "nguyenthii@email.com",
@@ -90,7 +90,7 @@ export const mockCustomers = [
   {
     customerid: "CUST010",
     fullname: "Lê Văn J",
-    citizenid: "10",
+    citizenid: "000000000010",
     address: "741 Trần Hưng Đạo, Q1, TP.HCM",
     phone: "0908888888",
     email: "levanj@email.com",
@@ -99,7 +99,7 @@ export const mockCustomers = [
   {
     customerid: "CUST011",
     fullname: "Phạm Văn K",
-    citizenid: "11",
+    citizenid: "000000000011",
     address: "852 Nguyễn Văn Cừ, Q5, TP.HCM",
     phone: "0909999999",
     email: "phamvank@email.com",
@@ -108,7 +108,7 @@ export const mockCustomers = [
   {
     customerid: "CUST012",
     fullname: "Trần Thị L",
-    citizenid: "12",
+    citizenid: "000000000012",
     address: "963 Bà Huyện Thanh Quan, Q3, TP.HCM",
     phone: "0901010101",
     email: "tranthil@email.com",
@@ -117,7 +117,7 @@ export const mockCustomers = [
   {
     customerid: "CUST013",
     fullname: "Hoàng Văn M",
-    citizenid: "13",
+    citizenid: "000000000013",
     address: "159 Phạm Ngũ Lão, Q1, TP.HCM",
     phone: "0902020202",
     email: "hoangvanm@email.com",
@@ -126,7 +126,7 @@ export const mockCustomers = [
   {
     customerid: "CUST014",
     fullname: "Vũ Thị N",
-    citizenid: "14",
+    citizenid: "000000000014",
     address: "357 Lê Duẩn, Q1, TP.HCM",
     phone: "0903030303",
     email: "vuthin@email.com",
@@ -135,7 +135,7 @@ export const mockCustomers = [
   {
     customerid: "CUST015",
     fullname: "Đỗ Văn O",
-    citizenid: "15",
+    citizenid: "000000000015",
     address: "456 Cộng Hòa, Tân Bình, TP.HCM",
     phone: "0904040404",
     email: "dovano@email.com",
@@ -144,7 +144,7 @@ export const mockCustomers = [
   {
     customerid: "CUST016",
     fullname: "Nguyễn Văn P",
-    citizenid: "16",
+    citizenid: "000000000016",
     address: "789 Hoàng Văn Thụ, Tân Bình, TP.HCM",
     phone: "0905050505",
     email: "nguyenvanp@email.com",
@@ -153,7 +153,7 @@ export const mockCustomers = [
   {
     customerid: "CUST017",
     fullname: "Lê Thị Q",
-    citizenid: "17",
+    citizenid: "000000000017",
     address: "321 Lý Chính Thắng, Q3, TP.HCM",
     phone: "0906060606",
     email: "lethiq@email.com",
@@ -162,7 +162,7 @@ export const mockCustomers = [
   {
     customerid: "CUST018",
     fullname: "Phạm Văn R",
-    citizenid: "18",
+    citizenid: "000000000018",
     address: "654 Nguyễn Thị Minh Khai, Q1, TP.HCM",
     phone: "0907070707",
     email: "phamvanr@email.com",
@@ -171,7 +171,7 @@ export const mockCustomers = [
   {
     customerid: "CUST019",
     fullname: "Trần Văn S",
-    citizenid: "19",
+    citizenid: "000000000019",
     address: "987 Đinh Tiên Hoàng, Q1, TP.HCM",
     phone: "0908080808",
     email: "tranvans@email.com",
@@ -180,7 +180,7 @@ export const mockCustomers = [
   {
     customerid: "CUST020",
     fullname: "Hoàng Thị T",
-    citizenid: "20",
+    citizenid: "000000000020",
     address: "147 Võ Thị Sáu, Q3, TP.HCM",
     phone: "0909090909",
     email: "hoangthit@email.com",
@@ -189,7 +189,7 @@ export const mockCustomers = [
   {
     customerid: "CUST021",
     fullname: "Vũ Văn U",
-    citizenid: "21",
+    citizenid: "000000000021",
     address: "258 Nam Kỳ Khởi Nghĩa, Q3, TP.HCM",
     phone: "0901111222",
     email: "vuvanu@email.com",
@@ -198,7 +198,7 @@ export const mockCustomers = [
   {
     customerid: "CUST022",
     fullname: "Đỗ Thị V",
-    citizenid: "22",
+    citizenid: "000000000022",
     address: "369 Trường Sơn, Tân Bình, TP.HCM",
     phone: "0902222333",
     email: "dothiv@email.com",
@@ -207,7 +207,7 @@ export const mockCustomers = [
   {
     customerid: "CUST023",
     fullname: "Nguyễn Văn W",
-    citizenid: "23",
+    citizenid: "000000000023",
     address: "741 Bạch Đằng, Tân Bình, TP.HCM",
     phone: "0903333444",
     email: "nguyenvanw@email.com",
@@ -216,7 +216,7 @@ export const mockCustomers = [
   {
     customerid: "CUST024",
     fullname: "Lê Văn X",
-    citizenid: "24",
+    citizenid: "000000000024",
     address: "852 Âu Cơ, Tân Phú, TP.HCM",
     phone: "0904444555",
     email: "levanx@email.com",
@@ -225,7 +225,7 @@ export const mockCustomers = [
   {
     customerid: "CUST025",
     fullname: "Phạm Thị Y",
-    citizenid: "25",
+    citizenid: "000000000025",
     address: "963 Lũy Bán Bích, Tân Phú, TP.HCM",
     phone: "0905555666",
     email: "phamthiy@email.com",
@@ -234,7 +234,7 @@ export const mockCustomers = [
   {
     customerid: "CUST026",
     fullname: "Trần Văn Z",
-    citizenid: "26",
+    citizenid: "000000000026",
     address: "159 Hòa Bình, Tân Phú, TP.HCM",
     phone: "0906666777",
     email: "tranvanz@email.com",
@@ -243,7 +243,7 @@ export const mockCustomers = [
   {
     customerid: "CUST027",
     fullname: "Hoàng Văn AA",
-    citizenid: "27",
+    citizenid: "000000000027",
     address: "357 Phạm Văn Hai, Tân Bình, TP.HCM",
     phone: "0907777888",
     email: "hoangvanaa@email.com",
@@ -252,7 +252,7 @@ export const mockCustomers = [
   {
     customerid: "CUST028",
     fullname: "Vũ Thị AB",
-    citizenid: "28",
+    citizenid: "000000000028",
     address: "456 Trần Quang Khải, Q1, TP.HCM",
     phone: "0908888999",
     email: "vuthiab@email.com",
@@ -261,7 +261,7 @@ export const mockCustomers = [
   {
     customerid: "CUST029",
     fullname: "Đỗ Văn AC",
-    citizenid: "29",
+    citizenid: "000000000029",
     address: "789 Võ Văn Kiệt, Q5, TP.HCM",
     phone: "0909999000",
     email: "dovanac@email.com",
@@ -270,7 +270,7 @@ export const mockCustomers = [
   {
     customerid: "CUST030",
     fullname: "Nguyễn Thị AD",
-    citizenid: "30",
+    citizenid: "000000000030",
     address: "321 An Dương Vương, Q5, TP.HCM",
     phone: "0901020304",
     email: "nguyenthiad@email.com",
@@ -279,7 +279,7 @@ export const mockCustomers = [
   {
     customerid: "CUST031",
     fullname: "Lê Văn AE",
-    citizenid: "31",
+    citizenid: "000000000031",
     address: "654 Nguyễn Chí Thanh, Q5, TP.HCM",
     phone: "0902030405",
     email: "levanae@email.com",
@@ -288,7 +288,7 @@ export const mockCustomers = [
   {
     customerid: "CUST032",
     fullname: "Phạm Văn AF",
-    citizenid: "32",
+    citizenid: "000000000032",
     address: "987 Hùng Vương, Q5, TP.HCM",
     phone: "0903040506",
     email: "phamvanaf@email.com",
@@ -297,7 +297,7 @@ export const mockCustomers = [
   {
     customerid: "CUST033",
     fullname: "Trần Thị AG",
-    citizenid: "33",
+    citizenid: "000000000033",
     address: "147 Trần Bình Trọng, Q5, TP.HCM",
     phone: "0904050607",
     email: "tranthiag@email.com",
@@ -306,7 +306,7 @@ export const mockCustomers = [
   {
     customerid: "CUST034",
     fullname: "Hoàng Văn AH",
-    citizenid: "34",
+    citizenid: "000000000034",
     address: "258 Lê Hồng Phong, Q10, TP.HCM",
     phone: "0905060708",
     email: "hoangvanah@email.com",
@@ -315,7 +315,7 @@ export const mockCustomers = [
   {
     customerid: "CUST035",
     fullname: "Vũ Văn AI",
-    citizenid: "35",
+    citizenid: "000000000035",
     address: "369 3 Tháng 2, Q10, TP.HCM",
     phone: "0906070809",
     email: "vuvanai@email.com",
@@ -324,7 +324,7 @@ export const mockCustomers = [
   {
     customerid: "CUST036",
     fullname: "Đỗ Thị AJ",
-    citizenid: "36",
+    citizenid: "000000000036",
     address: "741 Nguyễn Tri Phương, Q10, TP.HCM",
     phone: "0907080900",
     email: "dothiaj@email.com",
@@ -333,7 +333,7 @@ export const mockCustomers = [
   {
     customerid: "CUST037",
     fullname: "Nguyễn Văn AK",
-    citizenid: "37",
+    citizenid: "000000000037",
     address: "852 Sư Vạn Hạnh, Q10, TP.HCM",
     phone: "0908090001",
     email: "nguyenvanak@email.com",
@@ -342,7 +342,7 @@ export const mockCustomers = [
   {
     customerid: "CUST038",
     fullname: "Lê Thị AL",
-    citizenid: "38",
+    citizenid: "000000000038",
     address: "963 Lạc Long Quân, Q11, TP.HCM",
     phone: "0909000102",
     email: "lethial@email.com",
@@ -351,7 +351,7 @@ export const mockCustomers = [
   {
     customerid: "CUST039",
     fullname: "Phạm Văn AM",
-    citizenid: "39",
+    citizenid: "000000000039",
     address: "159 Đề Thám, Q1, TP.HCM",
     phone: "0900010203",
     email: "phamvanam@email.com",
@@ -360,7 +360,7 @@ export const mockCustomers = [
   {
     customerid: "CUST040",
     fullname: "Trần Văn AN",
-    citizenid: "40",
+    citizenid: "000000000040",
     address: "357 Tôn Đức Thắng, Q1, TP.HCM",
     phone: "0900102030",
     email: "tranvanan@email.com",
@@ -369,7 +369,7 @@ export const mockCustomers = [
   {
     customerid: "CUST041",
     fullname: "Hoàng Thị AO",
-    citizenid: "41",
+    citizenid: "000000000041",
     address: "456 Ký Con, Q1, TP.HCM",
     phone: "0900203040",
     email: "hoangthiao@email.com",
@@ -378,7 +378,7 @@ export const mockCustomers = [
   {
     customerid: "CUST042",
     fullname: "Vũ Văn AP",
-    citizenid: "42",
+    citizenid: "000000000042",
     address: "789 Trần Quý Khoách, Q1, TP.HCM",
     phone: "0900304050",
     email: "vuvanap@email.com",
@@ -387,7 +387,7 @@ export const mockCustomers = [
   {
     customerid: "CUST043",
     fullname: "Đỗ Văn AQ",
-    citizenid: "43",
+    citizenid: "000000000043",
     address: "321 Tôn Thất Đạm, Q1, TP.HCM",
     phone: "0900405060",
     email: "dovanaq@email.com",

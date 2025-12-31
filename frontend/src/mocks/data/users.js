@@ -93,8 +93,13 @@ export const findUserByCredentials = (userid, password) => {
   // For mock purposes, we'll use plain text comparison
   // Note: user.password field stores the actual password (would be hashed in production)
 
-  const user = mockUserAccounts.find((u) => u.userid === userid);
-  if (user && user.password === password) {
+  // Support both userid and email as login identifier
+  const user = mockUserAccounts.find(
+    (u) =>
+      (u.userid === userid || u.email === userid) && u.password === password
+  );
+
+  if (user) {
     return user;
   }
   return null;
