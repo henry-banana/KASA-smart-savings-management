@@ -303,22 +303,28 @@ export default function MonthlyReport() {
         {reportData && !loading && (
           <>
             {/* Print/Export Actions */}
-            <div className="flex justify-end gap-3">
-              <Button
-                onClick={handleExport}
-                variant="outline"
-                className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
-              >
-                <Printer size={18} className="mr-2" />
-                Print Report
-              </Button>
-              <Button
-                onClick={handleExport}
-                className="rounded-sm border border-gray-300 bg-linear-to-r from-green-600 to-green-500 text-white hover:bg-green-700 hover:border-green-700 hover:scale-[1.05]"
-              >
-                <FileDown size={18} className="mr-2" />
-                Export PDF
-              </Button>
+            <div className="space-y-2">
+              <div className="flex justify-end gap-3">
+                <Button
+                  onClick={handleExport}
+                  variant="outline"
+                  className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
+                >
+                  <Printer size={18} className="mr-2" />
+                  Print Report
+                </Button>
+                <Button
+                  onClick={handleExport}
+                  className="rounded-sm border border-gray-300 bg-linear-to-r from-green-600 to-green-500 text-white hover:bg-green-700 hover:border-green-700 hover:scale-[1.05]"
+                >
+                  <FileDown size={18} className="mr-2" />
+                  Export PDF
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500 text-right">
+                💡 Tip: For best results, disable browser headers & footers in
+                Print settings.
+              </p>
             </div>
 
             {/* Screen Display - Interactive Version with Print Styles */}
@@ -561,11 +567,13 @@ export default function MonthlyReport() {
             {/* Hidden Printable Component - Positioned off-screen */}
             <div
               style={{
-                position: "fixed",
+                position: "absolute",
                 left: "-10000px",
                 top: "0",
-                width: "100%",
+                width: "210mm",
                 pointerEvents: "none",
+                backgroundColor: "white",
+                boxSizing: "border-box",
               }}
             >
               <MonthlyReportPrint
