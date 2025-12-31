@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import { format } from "date-fns";
 import {
   Card,
@@ -38,6 +39,7 @@ import {
   Sparkles,
   ArrowUpRight,
   ArrowDownRight,
+  Printer,
 } from "lucide-react";
 import {
   CuteStatCard,
@@ -54,6 +56,7 @@ import { Skeleton } from "../../components/ui/skeleton";
 import { formatVnNumber } from "../../utils/numberFormatter";
 import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { DailyReportPrint } from "./DailyReportPrint";
 
 export default function DailyReport() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -62,6 +65,14 @@ export default function DailyReport() {
   const [withdrawalStats, setWithdrawalStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Reference for the printable component
+  const printComponentRef = useRef(null);
+
+  const handleExport = useReactToPrint({
+    contentRef: printComponentRef,
+    documentTitle: `Daily-Report-${format(selectedDate, "yyyy-MM-dd")}`,
+  });
 
   // Check if selected date is in the future (allow today, block tomorrow onwards)
   const isDateInvalid = () => {
@@ -154,16 +165,6 @@ export default function DailyReport() {
     difference:
       summary.difference ??
       typeBreakdown.reduce((sum, item) => sum + (item.difference || 0), 0),
-  };
-
-  const _handleExport = () => {
-    // TODO: Implement PDF export when backend provides endpoint
-    alert(
-      `Exporting Daily Report for ${format(
-        selectedDate,
-        "yyyy-MM-dd"
-      )} to PDF...`
-    );
   };
 
   // Show server unavailable state for connection errors
@@ -379,6 +380,31 @@ export default function DailyReport() {
 
         {reportData && !loading && (
           <>
+            {/* Print/Export Actions */}
+            <div className="space-y-2">
+              <div className="flex justify-end gap-3">
+                <Button
+                  onClick={handleExport}
+                  variant="outline"
+                  className="rounded-sm border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
+                >
+                  <Printer size={18} className="mr-2" />
+                  Print Report
+                </Button>
+                <Button
+                  onClick={handleExport}
+                  className="rounded-sm border border-gray-300 bg-linear-to-r from-green-600 to-green-500 text-white hover:bg-green-700 hover:border-green-700 hover:scale-[1.05]"
+                >
+                  <FileDown size={18} className="mr-2" />
+                  Save as PDF
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500 text-right">
+                💡 Tip: For best results, disable browser headers & footers in
+                Print settings.
+              </p>
+            </div>
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="relative p-6 overflow-hidden transition-all duration-300 bg-white border border-gray-200 rounded-sm hover:border">
@@ -734,6 +760,29 @@ export default function DailyReport() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Hidden Printable Component - Positioned off-screen */}
+            <div
+              style={{
+                position: "absolute",
+                left: "-10000px",
+                top: "0",
+                width: "100%",
+                pointerEvents: "none",
+                backgroundColor: "white",
+                boxSizing: "border-box",
+              }}
+            >
+              <DailyReportPrint
+                ref={printComponentRef}
+                reportData={reportData}
+                selectedDate={selectedDate}
+                totals={totals}
+                depositStats={depositStats}
+                withdrawalStats={withdrawalStats}
+                user={{ fullName: "User" }}
+              />
+            </div>
           </>
         )}
       </div>
