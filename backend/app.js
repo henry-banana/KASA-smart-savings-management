@@ -22,7 +22,7 @@ setupSwagger(app);
 // CORS: cho phép frontend từ domain/port khác gọi API
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.URL || "*",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true, // nếu cần gửi cookie
   })

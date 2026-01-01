@@ -16,22 +16,121 @@ const router = express.Router();
 const accountantOrAdmin = checkRole(['accountant', 'administrator']);
 const allRoles = checkRole(['teller', 'accountant', 'administrator']);
 
-// Thêm loại sổ tiết kiệm mới - accountant và admin
-// POST /api/typesaving
+/**
+ * @swagger
+ * /api/typesaving:
+ *   post:
+ *     summary: Thêm loại sổ tiết kiệm mới
+ *     tags:
+ *       - TypeSaving
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               interestRate:
+ *                 type: number
+ *     responses:
+ *       201:
+ *         description: Tạo loại sổ thành công
+ *   get:
+ *     summary: Lấy danh sách tất cả loại sổ tiết kiệm
+ *     tags:
+ *       - TypeSaving
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Danh sách loại sổ tiết kiệm
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   typeSavingId:
+ *                     type: integer
+ *                   name:
+ *                     type: string
+ *                   interestRate:
+ *                     type: number
+ */
+
+/**
+ * @swagger
+ * /api/typesaving/{id}:
+ *   get:
+ *     summary: Lấy thông tin loại sổ tiết kiệm theo ID
+ *     tags:
+ *       - TypeSaving
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID loại sổ tiết kiệm
+ *     responses:
+ *       200:
+ *         description: Thông tin loại sổ tiết kiệm
+ *   put:
+ *     summary: Cập nhật loại sổ tiết kiệm
+ *     tags:
+ *       - TypeSaving
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID loại sổ tiết kiệm
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               interestRate:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Cập nhật thành công
+ *   delete:
+ *     summary: Xóa loại sổ tiết kiệm
+ *     tags:
+ *       - TypeSaving
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID loại sổ tiết kiệm
+ *     responses:
+ *       200:
+ *         description: Xóa thành công
+ */
+
 router.post("/", verifyToken, accountantOrAdmin, createTypeSaving);
-
-// Lấy danh sách tất cả loại sổ tiết kiệm - tất cả role
-// GET /api/typesaving
 router.get("/", verifyToken, allRoles, getAllTypeSavings);
-// Lấy thông tin loại sổ tiết kiệm theo ID - tất cả role
-// GET /api/typesaving/:id
 router.get("/:id", verifyToken, allRoles, getTypeSavingById);
-
-// Cập nhật loại sổ tiết kiệm - accountant và admin
-// PUT /api/typesaving/:id
 router.put("/:id", verifyToken, accountantOrAdmin, updateTypeSaving);
-// Xóa loại sổ tiết kiệm - accountant và admin
-// DELETE /api/typesaving/:id
 router.delete("/:id", verifyToken, accountantOrAdmin, deleteTypeSaving);
 
 export default router;
