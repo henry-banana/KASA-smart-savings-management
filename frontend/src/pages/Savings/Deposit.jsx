@@ -256,7 +256,7 @@ export default function Deposit() {
                       setAccountInfo(null);
                       setError("");
                     }}
-                    placeholder="Enter account code (e.g., 12345)"
+                    placeholder="Enter saving book code (e.g., 12345)"
                     className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
@@ -313,7 +313,7 @@ export default function Deposit() {
                 >
                   <StarDecor className="top-2 right-2" />
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Account ID:</span>
+                    <span className="text-sm text-gray-600">Saving Book ID:</span>
                     <span className="font-semibold text-[#1A4D8F]">
                       {accountInfo.bookId}
                     </span>
@@ -327,7 +327,7 @@ export default function Deposit() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Account Type:</span>
+                    <span className="text-sm text-gray-600">Saving Book Type:</span>
                     <Badge className="text-blue-700 bg-blue-100 border-blue-200">
                       No term
                     </Badge>
@@ -502,7 +502,7 @@ export default function Deposit() {
                 }}
               >
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Account ID:</span>
+                  <span className="text-sm text-gray-600">Saving Book ID:</span>
                   <span className="font-semibold text-[#1A4D8F]">
                     {receiptData?.accountId}
                   </span>

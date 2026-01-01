@@ -142,7 +142,7 @@ export function generateColorPreview() {
 </head>
 <body>
   <div class="container">
-    <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">Account Type Color Preview</h1>
+    <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 20px;">Saving Book Type Color Preview</h1>
     
     <div class="section">
       <h2 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Badge Colors</h2>

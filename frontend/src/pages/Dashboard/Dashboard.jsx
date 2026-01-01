@@ -289,7 +289,7 @@ export default function Dashboard() {
       roles: ["teller"],
     },
     {
-      label: "Search Accounts",
+      label: "Search Saving Books",
       path: "/search",
       gradient: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
       icon: <Search size={32} />,
@@ -506,7 +506,7 @@ export default function Dashboard() {
               <Card className="overflow-hidden border border-gray-200 rounded-sm">
                 <CardHeader className="bg-linear-to-r from-[#F8F9FC] to-white border-b border-gray-100">
                   <CardTitle className="flex items-center gap-2">
-                    Account Type
+                    Saving Book Type
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">

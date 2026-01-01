@@ -481,7 +481,7 @@ export default function RegulationSettings() {
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 bg-purple-500 rounded-md"></div>
                       <h4 className="font-semibold text-gray-900">
-                        Interest Rates by Account Type
+                        Interest Rates by Saving Book Type
                       </h4>
                     </div>
                     {selectedTypeSavings.length > 0 && (
@@ -528,7 +528,7 @@ export default function RegulationSettings() {
                             />
                           </TableHead>
                           <TableHead className="font-semibold">
-                            Savings Account Type
+                            Savings Book Type
                           </TableHead>
                           <TableHead className="font-semibold">
                             Term (months)
@@ -1075,7 +1075,7 @@ export default function RegulationSettings() {
                     Create New Savings Type
                   </DialogTitle>
                   <DialogDescription>
-                    Add a new savings account type to the system
+                    Add a new savings book type to the system
                   </DialogDescription>
                 </div>
               </div>
