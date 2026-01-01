@@ -426,7 +426,7 @@ export default function DailyReport() {
                     <div className="flex items-center gap-1">
                       <ArrowUpRight size={14} className="text-green-600" />
                       <span className="text-xs text-gray-500">
-                        All account types
+                        All saving book types
                       </span>
                     </div>
                   </div>
@@ -463,7 +463,7 @@ export default function DailyReport() {
                     <div className="flex items-center gap-1">
                       <ArrowDownRight size={14} className="text-red-600" />
                       <span className="text-xs text-gray-500">
-                        All account types
+                        All saving book types
                       </span>
                     </div>
                   </div>
@@ -590,7 +590,7 @@ export default function DailyReport() {
                   Visual Comparison
                 </CardTitle>
                 <CardDescription className="text-gray-600">
-                  Deposit/Withdrawal Chart by Account Type (million VND)
+                  Deposit/Withdrawal Chart by Saving Book Type (million VND)
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">

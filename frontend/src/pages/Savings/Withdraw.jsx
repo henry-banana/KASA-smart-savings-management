@@ -319,7 +319,7 @@ export default function Withdraw() {
                       setAccountInfo(null);
                       setError("");
                     }}
-                    placeholder="Enter account ID (e.g., 12345)"
+                    placeholder="Enter Saving Book ID (e.g., 12345)"
                     className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
@@ -383,7 +383,7 @@ export default function Withdraw() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Account Type</p>
+                      <p className="text-xs text-gray-500">Saving Book Type</p>
                       <Badge className="bg-amber-100 text-amber-700 border-amber-200">
                         {accountInfo.accountTypeName}
                       </Badge>
@@ -608,7 +608,7 @@ export default function Withdraw() {
                 }}
               >
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Account ID:</span>
+                  <span className="text-sm text-gray-600">Saving Book ID:</span>
                   <span className="font-semibold text-[#F59E0B]">
                     {receiptData?.accountId}
                   </span>

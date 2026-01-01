@@ -72,7 +72,7 @@ export default function SearchAccounts() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Fetch account type options on mount
+  // Fetch Saving Book type options on mount
   useEffect(() => {
     const fetchAccountTypes = async () => {
       try {
@@ -91,7 +91,7 @@ export default function SearchAccounts() {
           setAccountTypeOptions(options);
         }
       } catch (err) {
-        console.error("Failed to fetch account types:", err);
+        console.error("Failed to fetch Saving Book types:", err);
       }
     };
     fetchAccountTypes();
@@ -218,7 +218,7 @@ export default function SearchAccounts() {
               </div>
               <div className="flex-1 min-w-0">
                 <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
-                  <span className="truncate">Search Accounts</span>
+                  <span className="truncate">Search Saving Books</span>
                   <span className="shrink-0-xl sm:text-2xl">🔍</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
@@ -251,7 +251,7 @@ export default function SearchAccounts() {
                     <Input
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      placeholder="Account code or customer name..."
+                      placeholder="Saving Book code or customer name..."
                       className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all text-sm sm:text-base"
                     />
                   </div>
@@ -259,7 +259,7 @@ export default function SearchAccounts() {
 
                 <div className="space-y-2">
                   <Label className="text-sm text-gray-700 sm:text-base">
-                    Account Type
+                    Saving Book type
                   </Label>
                   <Select value={typeFilter} onValueChange={setTypeFilter}>
                     <SelectTrigger className="w-full">
@@ -320,7 +320,7 @@ export default function SearchAccounts() {
                   <TableHeader>
                     <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
                       <TableHead className="font-semibold">
-                        Account Code
+                        Saving Book code
                       </TableHead>
                       <TableHead className="font-semibold">Customer</TableHead>
                       <TableHead className="font-semibold">Type</TableHead>
@@ -481,7 +481,7 @@ export default function SearchAccounts() {
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Account Code:</span>
+                    <span className="text-sm text-gray-600">Saving Book code:</span>
                     <span className="font-semibold text-lg text-[#8B5CF6]">
                       {selectedAccount.accountCode || selectedAccount.bookId}
                     </span>
@@ -493,7 +493,7 @@ export default function SearchAccounts() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Account Type:</span>
+                    <span className="text-sm text-gray-600">Saving Book type:</span>
                     <Badge
                       className={`${getTypeBadgeColor(
                         selectedAccount.accountTypeName
