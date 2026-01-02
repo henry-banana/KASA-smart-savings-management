@@ -124,7 +124,7 @@ router.put("/me", verifyToken, updateMe);
  *           schema:
  *             type: object
  *             properties:
- *               email:
+ *               emailOrUsername:
  *                 type: string
  *     responses:
  *       200:
