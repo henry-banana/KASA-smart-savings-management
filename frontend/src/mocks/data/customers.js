@@ -1,0 +1,457 @@
+/**
+ * Mock data for Customers (Khách hàng)
+ */
+
+export const mockCustomers = [
+  {
+    customerid: "CUST001",
+    fullname: "Nguyễn Văn A",
+    citizenid: "000000000001",
+    address: "123 Nguyễn Huệ, Q1, TP.HCM",
+    street: "123 Nguyễn Huệ",
+    district: "Q1",
+    province: "TP.HCM",
+    phone: "0901234567",
+    email: "nguyenvana@email.com",
+    dateofbirth: "1990-01-15",
+  },
+  {
+    customerid: "CUST002",
+    fullname: "Trần Thị B",
+    citizenid: "000000000002",
+    address: "456 Lê Lợi, Q1, TP.HCM",
+    phone: "0907654321",
+    email: "tranthib@email.com",
+    dateofbirth: "1985-05-20",
+  },
+  {
+    customerid: "CUST003",
+    fullname: "Lê Văn C",
+    citizenid: "000000000003",
+    address: "789 Hai Bà Trưng, Q3, TP.HCM",
+    phone: "0901111111",
+    email: "levanc@email.com",
+    dateofbirth: "1992-03-10",
+  },
+  {
+    customerid: "CUST004",
+    fullname: "Phạm Thị D",
+    citizenid: "000000000004",
+    address: "321 Pasteur, Q3, TP.HCM",
+    phone: "0902222222",
+    email: "phamthid@email.com",
+    dateofbirth: "1988-07-25",
+  },
+  {
+    customerid: "CUST005",
+    fullname: "Hoàng Văn E",
+    citizenid: "000000000005",
+    address: "654 Điện Biên Phủ, Q10, TP.HCM",
+    phone: "0903333333",
+    email: "hoangvane@email.com",
+    dateofbirth: "1995-11-30",
+  },
+  {
+    customerid: "CUST006",
+    fullname: "Nguyễn Thị F",
+    citizenid: "000000000006",
+    address: "987 Cách Mạng Tháng 8, Q10, TP.HCM",
+    phone: "0904444444",
+    email: "nguyenthif@email.com",
+    dateofbirth: "1991-09-12",
+  },
+  {
+    customerid: "CUST007",
+    fullname: "Vũ Văn G",
+    citizenid: "000000000007",
+    address: "147 Nguyễn Trãi, Q5, TP.HCM",
+    phone: "0905555555",
+    email: "vuvang@email.com",
+    dateofbirth: "1987-02-28",
+  },
+  {
+    customerid: "CUST008",
+    fullname: "Đỗ Thị H",
+    citizenid: "000000000008",
+    address: "258 Lý Thường Kiệt, Q5, TP.HCM",
+    phone: "0906666666",
+    email: "dothih@email.com",
+    dateofbirth: "1993-06-18",
+  },
+  {
+    customerid: "CUST009",
+    fullname: "Nguyễn Thị I",
+    citizenid: "000000000009",
+    address: "369 Võ Văn Tần, Q3, TP.HCM",
+    phone: "0907777777",
+    email: "nguyenthii@email.com",
+    dateofbirth: "1989-04-22",
+  },
+  {
+    customerid: "CUST010",
+    fullname: "Lê Văn J",
+    citizenid: "000000000010",
+    address: "741 Trần Hưng Đạo, Q1, TP.HCM",
+    phone: "0908888888",
+    email: "levanj@email.com",
+    dateofbirth: "1994-08-14",
+  },
+  {
+    customerid: "CUST011",
+    fullname: "Phạm Văn K",
+    citizenid: "000000000011",
+    address: "852 Nguyễn Văn Cừ, Q5, TP.HCM",
+    phone: "0909999999",
+    email: "phamvank@email.com",
+    dateofbirth: "1986-12-05",
+  },
+  {
+    customerid: "CUST012",
+    fullname: "Trần Thị L",
+    citizenid: "000000000012",
+    address: "963 Bà Huyện Thanh Quan, Q3, TP.HCM",
+    phone: "0901010101",
+    email: "tranthil@email.com",
+    dateofbirth: "1996-01-27",
+  },
+  {
+    customerid: "CUST013",
+    fullname: "Hoàng Văn M",
+    citizenid: "000000000013",
+    address: "159 Phạm Ngũ Lão, Q1, TP.HCM",
+    phone: "0902020202",
+    email: "hoangvanm@email.com",
+    dateofbirth: "1990-10-09",
+  },
+  {
+    customerid: "CUST014",
+    fullname: "Vũ Thị N",
+    citizenid: "000000000014",
+    address: "357 Lê Duẩn, Q1, TP.HCM",
+    phone: "0903030303",
+    email: "vuthin@email.com",
+    dateofbirth: "1992-05-16",
+  },
+  {
+    customerid: "CUST015",
+    fullname: "Đỗ Văn O",
+    citizenid: "000000000015",
+    address: "456 Cộng Hòa, Tân Bình, TP.HCM",
+    phone: "0904040404",
+    email: "dovano@email.com",
+    dateofbirth: "1988-03-31",
+  },
+  {
+    customerid: "CUST016",
+    fullname: "Nguyễn Văn P",
+    citizenid: "000000000016",
+    address: "789 Hoàng Văn Thụ, Tân Bình, TP.HCM",
+    phone: "0905050505",
+    email: "nguyenvanp@email.com",
+    dateofbirth: "1995-07-19",
+  },
+  {
+    customerid: "CUST017",
+    fullname: "Lê Thị Q",
+    citizenid: "000000000017",
+    address: "321 Lý Chính Thắng, Q3, TP.HCM",
+    phone: "0906060606",
+    email: "lethiq@email.com",
+    dateofbirth: "1991-11-23",
+  },
+  {
+    customerid: "CUST018",
+    fullname: "Phạm Văn R",
+    citizenid: "000000000018",
+    address: "654 Nguyễn Thị Minh Khai, Q1, TP.HCM",
+    phone: "0907070707",
+    email: "phamvanr@email.com",
+    dateofbirth: "1987-02-14",
+  },
+  {
+    customerid: "CUST019",
+    fullname: "Trần Văn S",
+    citizenid: "000000000019",
+    address: "987 Đinh Tiên Hoàng, Q1, TP.HCM",
+    phone: "0908080808",
+    email: "tranvans@email.com",
+    dateofbirth: "1993-08-06",
+  },
+  {
+    customerid: "CUST020",
+    fullname: "Hoàng Thị T",
+    citizenid: "000000000020",
+    address: "147 Võ Thị Sáu, Q3, TP.HCM",
+    phone: "0909090909",
+    email: "hoangthit@email.com",
+    dateofbirth: "1989-12-28",
+  },
+  {
+    customerid: "CUST021",
+    fullname: "Vũ Văn U",
+    citizenid: "000000000021",
+    address: "258 Nam Kỳ Khởi Nghĩa, Q3, TP.HCM",
+    phone: "0901111222",
+    email: "vuvanu@email.com",
+    dateofbirth: "1994-04-11",
+  },
+  {
+    customerid: "CUST022",
+    fullname: "Đỗ Thị V",
+    citizenid: "000000000022",
+    address: "369 Trường Sơn, Tân Bình, TP.HCM",
+    phone: "0902222333",
+    email: "dothiv@email.com",
+    dateofbirth: "1986-06-25",
+  },
+  {
+    customerid: "CUST023",
+    fullname: "Nguyễn Văn W",
+    citizenid: "000000000023",
+    address: "741 Bạch Đằng, Tân Bình, TP.HCM",
+    phone: "0903333444",
+    email: "nguyenvanw@email.com",
+    dateofbirth: "1996-09-17",
+  },
+  {
+    customerid: "CUST024",
+    fullname: "Lê Văn X",
+    citizenid: "000000000024",
+    address: "852 Âu Cơ, Tân Phú, TP.HCM",
+    phone: "0904444555",
+    email: "levanx@email.com",
+    dateofbirth: "1990-01-08",
+  },
+  {
+    customerid: "CUST025",
+    fullname: "Phạm Thị Y",
+    citizenid: "000000000025",
+    address: "963 Lũy Bán Bích, Tân Phú, TP.HCM",
+    phone: "0905555666",
+    email: "phamthiy@email.com",
+    dateofbirth: "1992-03-29",
+  },
+  {
+    customerid: "CUST026",
+    fullname: "Trần Văn Z",
+    citizenid: "000000000026",
+    address: "159 Hòa Bình, Tân Phú, TP.HCM",
+    phone: "0906666777",
+    email: "tranvanz@email.com",
+    dateofbirth: "1988-05-13",
+  },
+  {
+    customerid: "CUST027",
+    fullname: "Hoàng Văn AA",
+    citizenid: "000000000027",
+    address: "357 Phạm Văn Hai, Tân Bình, TP.HCM",
+    phone: "0907777888",
+    email: "hoangvanaa@email.com",
+    dateofbirth: "1995-07-04",
+  },
+  {
+    customerid: "CUST028",
+    fullname: "Vũ Thị AB",
+    citizenid: "000000000028",
+    address: "456 Trần Quang Khải, Q1, TP.HCM",
+    phone: "0908888999",
+    email: "vuthiab@email.com",
+    dateofbirth: "1991-10-21",
+  },
+  {
+    customerid: "CUST029",
+    fullname: "Đỗ Văn AC",
+    citizenid: "000000000029",
+    address: "789 Võ Văn Kiệt, Q5, TP.HCM",
+    phone: "0909999000",
+    email: "dovanac@email.com",
+    dateofbirth: "1987-12-15",
+  },
+  {
+    customerid: "CUST030",
+    fullname: "Nguyễn Thị AD",
+    citizenid: "000000000030",
+    address: "321 An Dương Vương, Q5, TP.HCM",
+    phone: "0901020304",
+    email: "nguyenthiad@email.com",
+    dateofbirth: "1993-02-07",
+  },
+  {
+    customerid: "CUST031",
+    fullname: "Lê Văn AE",
+    citizenid: "000000000031",
+    address: "654 Nguyễn Chí Thanh, Q5, TP.HCM",
+    phone: "0902030405",
+    email: "levanae@email.com",
+    dateofbirth: "1989-04-26",
+  },
+  {
+    customerid: "CUST032",
+    fullname: "Phạm Văn AF",
+    citizenid: "000000000032",
+    address: "987 Hùng Vương, Q5, TP.HCM",
+    phone: "0903040506",
+    email: "phamvanaf@email.com",
+    dateofbirth: "1994-06-18",
+  },
+  {
+    customerid: "CUST033",
+    fullname: "Trần Thị AG",
+    citizenid: "000000000033",
+    address: "147 Trần Bình Trọng, Q5, TP.HCM",
+    phone: "0904050607",
+    email: "tranthiag@email.com",
+    dateofbirth: "1986-08-09",
+  },
+  {
+    customerid: "CUST034",
+    fullname: "Hoàng Văn AH",
+    citizenid: "000000000034",
+    address: "258 Lê Hồng Phong, Q10, TP.HCM",
+    phone: "0905060708",
+    email: "hoangvanah@email.com",
+    dateofbirth: "1996-10-31",
+  },
+  {
+    customerid: "CUST035",
+    fullname: "Vũ Văn AI",
+    citizenid: "000000000035",
+    address: "369 3 Tháng 2, Q10, TP.HCM",
+    phone: "0906070809",
+    email: "vuvanai@email.com",
+    dateofbirth: "1990-12-22",
+  },
+  {
+    customerid: "CUST036",
+    fullname: "Đỗ Thị AJ",
+    citizenid: "000000000036",
+    address: "741 Nguyễn Tri Phương, Q10, TP.HCM",
+    phone: "0907080900",
+    email: "dothiaj@email.com",
+    dateofbirth: "1992-01-14",
+  },
+  {
+    customerid: "CUST037",
+    fullname: "Nguyễn Văn AK",
+    citizenid: "000000000037",
+    address: "852 Sư Vạn Hạnh, Q10, TP.HCM",
+    phone: "0908090001",
+    email: "nguyenvanak@email.com",
+    dateofbirth: "1988-03-05",
+  },
+  {
+    customerid: "CUST038",
+    fullname: "Lê Thị AL",
+    citizenid: "000000000038",
+    address: "963 Lạc Long Quân, Q11, TP.HCM",
+    phone: "0909000102",
+    email: "lethial@email.com",
+    dateofbirth: "1995-05-27",
+  },
+  {
+    customerid: "CUST039",
+    fullname: "Phạm Văn AM",
+    citizenid: "000000000039",
+    address: "159 Đề Thám, Q1, TP.HCM",
+    phone: "0900010203",
+    email: "phamvanam@email.com",
+    dateofbirth: "1991-07-19",
+  },
+  {
+    customerid: "CUST040",
+    fullname: "Trần Văn AN",
+    citizenid: "000000000040",
+    address: "357 Tôn Đức Thắng, Q1, TP.HCM",
+    phone: "0900102030",
+    email: "tranvanan@email.com",
+    dateofbirth: "1987-09-10",
+  },
+  {
+    customerid: "CUST041",
+    fullname: "Hoàng Thị AO",
+    citizenid: "000000000041",
+    address: "456 Ký Con, Q1, TP.HCM",
+    phone: "0900203040",
+    email: "hoangthiao@email.com",
+    dateofbirth: "1993-11-02",
+  },
+  {
+    customerid: "CUST042",
+    fullname: "Vũ Văn AP",
+    citizenid: "000000000042",
+    address: "789 Trần Quý Khoách, Q1, TP.HCM",
+    phone: "0900304050",
+    email: "vuvanap@email.com",
+    dateofbirth: "1989-01-24",
+  },
+  {
+    customerid: "CUST043",
+    fullname: "Đỗ Văn AQ",
+    citizenid: "000000000043",
+    address: "321 Tôn Thất Đạm, Q1, TP.HCM",
+    phone: "0900405060",
+    email: "dovanaq@email.com",
+    dateofbirth: "1994-03-16",
+  },
+];
+
+// Normalize customer records: ensure all required fields are present
+for (const c of mockCustomers) {
+  // Ensure lowercase field names (handle camelCase if present)
+  if (c.fullName && !c.fullname) c.fullname = String(c.fullName);
+  if (c.citizenId && !c.citizenid) c.citizenid = String(c.citizenId);
+
+  // Ensure fullname and citizenid are always strings
+  if (!c.fullname) c.fullname = "";
+  if (!c.citizenid) c.citizenid = "";
+
+  // If street, district, province are missing, parse them from address
+  const hasAllParts = c.street && c.district && c.province;
+  if (!hasAllParts && c.address) {
+    const parts = c.address.split(",").map((s) => s.trim());
+    if (!c.street) c.street = parts[0] || "";
+    if (!c.district) c.district = parts[1] || "";
+    if (!c.province) c.province = parts[2] || "";
+  }
+
+  // Ensure all address parts exist and are strings
+  c.street = String(c.street || "").trim();
+  c.district = String(c.district || "").trim();
+  c.province = String(c.province || "").trim();
+}
+
+/**
+ * Helper functions for customer data
+ */
+export const findCustomerById = (customerid) => {
+  return mockCustomers.find((c) => c.customerid === customerid);
+};
+
+export const findCustomerByCitizenId = (citizenid) => {
+  return mockCustomers.find((c) => String(c.citizenid) === String(citizenid));
+};
+
+export const addCustomer = (customer) => {
+  mockCustomers.push(customer);
+  return customer;
+};
+
+export const updateCustomer = (customerid, updates) => {
+  const index = mockCustomers.findIndex((c) => c.customerid === customerid);
+  if (index !== -1) {
+    mockCustomers[index] = { ...mockCustomers[index], ...updates };
+    return mockCustomers[index];
+  }
+  return null;
+};
+
+export const deleteCustomer = (customerid) => {
+  const index = mockCustomers.findIndex((c) => c.customerid === customerid);
+  if (index !== -1) {
+    const deleted = mockCustomers.splice(index, 1)[0];
+    return deleted;
+  }
+  return null;
+};
+
+export default mockCustomers;

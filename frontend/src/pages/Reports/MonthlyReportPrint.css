@@ -1,0 +1,422 @@
+/**
+ * MonthlyReportPrint.css
+ * 
+ * Optimized print styles for react-to-print integration.
+ * Handles A4 pagination, page breaks, and print-specific layout.
+ */
+
+.monthly-report-print {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #1a1a1a;
+  background: white;
+  padding: 0;
+  margin: 0;
+}
+
+/* ===== REPORT HEADER ===== */
+.print-header {
+  margin-bottom: 24px;
+  text-align: center;
+  page-break-after: avoid;
+  break-after: avoid;
+  padding: 0;
+}
+
+.print-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a4d8f;
+  letter-spacing: 0.5px;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  page-break-after: avoid;
+  break-after: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.print-metadata {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+.metadata-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.metadata-label {
+  color: #666666;
+  font-weight: 500;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.metadata-value {
+  color: #1a4d8f;
+  font-weight: 600;
+  border-bottom: 2px dotted #cccccc;
+  padding: 0 8px;
+  min-width: 120px;
+  text-align: center;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ===== TABLE CONTAINER AND LAYOUT ===== */
+.print-table-container {
+  margin-bottom: 24px;
+  border: 2px solid #e5e5e5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Table Header */
+.table-header-row {
+  background-color: #1a4d8f;
+  color: white;
+  font-weight: 600;
+  text-align: left;
+  page-break-after: avoid;
+}
+
+.table-header-row th {
+  padding: 12px;
+  border-right: 1px solid #2563a8;
+  font-weight: 600;
+}
+
+.table-header-row th:last-child {
+  border-right: none;
+}
+
+/* Column widths */
+.col-no {
+  width: 8%;
+  text-align: center;
+}
+
+.col-date {
+  width: 25%;
+  text-align: left;
+}
+
+.col-opened {
+  width: 20%;
+  text-align: right;
+}
+
+.col-closed {
+  width: 20%;
+  text-align: right;
+}
+
+.col-difference {
+  width: 27%;
+  text-align: right;
+}
+
+/* Table Body Rows */
+.table-row {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.table-row.even {
+  background-color: #ffffff;
+}
+
+.table-row.odd {
+  background-color: #f5f7fa;
+}
+
+.table-row td {
+  padding: 10px 12px;
+  border-right: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.table-row td:last-child {
+  border-right: none;
+}
+
+.table-row .col-no {
+  text-align: center;
+  color: #555555;
+}
+
+.table-row .col-date {
+  font-weight: 500;
+  color: #333333;
+}
+
+.table-row .col-opened {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.table-row .col-closed {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.table-row .col-difference {
+  font-weight: 500;
+}
+
+.table-row .col-difference.positive {
+  color: #2563eb;
+}
+
+.table-row .col-difference.negative {
+  color: #dc2626;
+}
+
+/* Total Row */
+.table-total-row {
+  background-color: #f0f3f7;
+  border-top: 2px solid #1a4d8f;
+  font-weight: 600;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.table-total-row td {
+  padding: 12px;
+  border-right: 1px solid #d0d0d0;
+}
+
+.table-total-row td:last-child {
+  border-right: none;
+}
+
+.table-total-row .total-label {
+  color: #1a4d8f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 13px;
+}
+
+.table-total-row .col-opened.total {
+  color: #16a34a;
+  font-size: 13px;
+}
+
+.table-total-row .col-closed.total {
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.table-total-row .col-difference.total {
+  font-size: 13px;
+}
+
+.table-total-row .col-difference.total.positive {
+  color: #2563eb;
+}
+
+.table-total-row .col-difference.total.negative {
+  color: #dc2626;
+}
+
+/* ===== SUMMARY STATS ===== */
+.print-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+  page-break-inside: avoid;
+}
+
+.summary-stat {
+  padding: 16px;
+  border-left: 4px solid #999;
+  background-color: #fafafa;
+  page-break-inside: avoid;
+}
+
+.summary-stat.opened {
+  border-left-color: #16a34a;
+  background-color: #f0fdf4;
+}
+
+.summary-stat.closed {
+  border-left-color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.summary-stat.difference {
+  border-left-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.summary-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555555;
+  margin: 0 0 4px 0;
+}
+
+.summary-value {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.summary-stat.opened .summary-value {
+  color: #16a34a;
+}
+
+.summary-stat.closed .summary-value {
+  color: #dc2626;
+}
+
+.summary-stat.difference .summary-value {
+  color: #2563eb;
+}
+
+.summary-note {
+  font-size: 11px;
+  color: #888888;
+  margin: 0;
+}
+
+/* ===== SIGNATURE SECTION ===== */
+.print-signature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e5e5e5;
+  page-break-inside: avoid;
+}
+
+.signature-block {
+  text-align: center;
+  page-break-inside: avoid;
+}
+
+.signature-info {
+  margin-bottom: 64px;
+}
+
+.signature-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666666;
+  margin: 0 0 4px 0;
+}
+
+.signature-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a4d8f;
+  margin: 0 0 2px 0;
+}
+
+.signature-role {
+  font-size: 11px;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.signature-line {
+  padding-top: 8px;
+  border-top: 1px solid #cccccc;
+}
+
+.signature-placeholder {
+  font-size: 11px;
+  color: #888888;
+  margin: 0;
+}
+
+/* ===== FOOTER ===== */
+.print-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 11px;
+  color: #aaaaaa;
+  page-break-inside: avoid;
+}
+
+.print-footer p {
+  margin: 0 0 4px 0;
+}
+
+.print-footer p:last-child {
+  margin: 0;
+}
+
+/* ===== PAGE BREAK RULES ===== */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .monthly-report-print {
+    margin: 0;
+    padding: 0;
+    page-break-after: auto;
+    width: 100%;
+  }
+
+  /* Ensure table header repeats on each page */
+  thead {
+    display: table-header-group;
+  }
+
+  /* Prevent page breaks within content */
+  .summary-stat,
+  .signature-block {
+    page-break-inside: avoid;
+  }
+
+  /* Allow page breaks between major sections if needed */
+  .print-summary {
+    page-break-before: auto;
+  }
+
+  /* Ensure table rows don't split across pages */
+  .table-row,
+  .table-total-row {
+    page-break-inside: avoid;
+  }
+
+  /* Set page size and margins */
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+  }
+}

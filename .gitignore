@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+#zip
+*.zip
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -19,7 +22,7 @@ pids
 lib-cov
 
 .vscode
-frontend/docs-temp
+frontend/docs
 
 # Coverage directory used by tools like istanbul
 coverage
@@ -141,4 +144,4 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-frontend/
+.DS_Store
