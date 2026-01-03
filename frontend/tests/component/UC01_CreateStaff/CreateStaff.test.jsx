@@ -288,8 +288,7 @@ describe("UC01 - Create Staff Account", () => {
     it("should not allow submission with empty required fields", async () => {
       const user = userEvent.setup();
       const validationError = "Full name is required";
-      mockCreateUser.mockRejectedValueOnce(new Error(validationError));
-      // Setup getAllUsers call for error state
+      // Don't mock createUser - validation should prevent the call
       mockGetAllUsers.mockResolvedValueOnce([]);
 
       render(<UserManagement />);
@@ -301,20 +300,32 @@ describe("UC01 - Create Staff Account", () => {
       const addButton = screen.getByRole("button", { name: /add/i });
       await user.click(addButton);
 
+      // Verify dialog is open
+      await waitFor(() => {
+        expect(screen.getByText(/add new user/i)).toBeInTheDocument();
+      });
+
       // Try to submit without filling any fields
       const createButton = screen.getByRole("button", { name: /create user/i });
       await user.click(createButton);
 
-      // Verify error message appears (component shows validation error)
-      await waitFor(() => {
-        expect(screen.getByText(validationError)).toBeInTheDocument();
-      });
+      // Verify error message appears (component shows validation error in error box)
+      // Use regex to find text in nested elements
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Full name is required/)).toBeInTheDocument();
+        },
+        { timeout: 2000 }
+      );
 
       // Verify dialog remains open for user to correct
       expect(screen.getByText(/add new user/i)).toBeInTheDocument();
 
-      // Verify getAllUsers was NOT called (no refresh on validation error)
-      expect(mockGetAllUsers).toHaveBeenCalledTimes(1); // Only on mount
+      // Verify createUser was NOT called (validation prevented it)
+      expect(mockCreateUser).not.toHaveBeenCalled();
+
+      // Verify getAllUsers was only called on mount
+      expect(mockGetAllUsers).toHaveBeenCalledTimes(1);
     });
 
     it("should display error message when email already exists", async () => {
@@ -338,7 +349,7 @@ describe("UC01 - Create Staff Account", () => {
       const createButton = screen.getByRole("button", { name: /create user/i });
       await user.click(createButton);
 
-      // Verify error message appears
+      // Verify error message appears in error box
       await waitFor(() => {
         expect(screen.getByText(errorMessage)).toBeInTheDocument();
       });
@@ -346,7 +357,10 @@ describe("UC01 - Create Staff Account", () => {
       // Verify dialog remains open
       expect(screen.getByText(/add new user/i)).toBeInTheDocument();
 
-      // Verify getAllUsers NOT called on error
+      // Verify createUser was called
+      expect(mockCreateUser).toHaveBeenCalled();
+
+      // Verify getAllUsers NOT called on error (no refresh)
       expect(mockGetAllUsers).toHaveBeenCalledTimes(1); // Only on mount
     });
 
@@ -358,6 +372,7 @@ describe("UC01 - Create Staff Account", () => {
       });
       mockCreateUser.mockReturnValueOnce(createPromise);
       mockGetAllUsers.mockResolvedValueOnce([]);
+      mockGetAllUsers.mockResolvedValueOnce([]); // Second call after create
 
       render(<UserManagement />);
 
@@ -376,13 +391,19 @@ describe("UC01 - Create Staff Account", () => {
       // Verify create was called
       expect(mockCreateUser).toHaveBeenCalled();
 
-      // Resolve the promise
-      resolveCreate({ id: "user2" });
+      // Dialog should still be open while loading
+      expect(screen.getByText(/add new user/i)).toBeInTheDocument();
+
+      // Resolve the promise with success response
+      resolveCreate({ success: true, data: { id: "user2" } });
 
       // After promise resolves, dialog should close
       await waitFor(() => {
         expect(screen.queryByText(/add new user/i)).not.toBeInTheDocument();
       });
+
+      // Verify getAllUsers was called twice (mount + refresh)
+      expect(mockGetAllUsers).toHaveBeenCalledTimes(2);
     });
   });
 });

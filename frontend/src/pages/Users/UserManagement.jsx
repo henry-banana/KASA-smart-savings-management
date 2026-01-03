@@ -74,6 +74,10 @@ export default function UserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [addUserError, setAddUserError] = useState(null);
+  const [editUserError, setEditUserError] = useState(null);
+  const [addUserEmailError, setAddUserEmailError] = useState(null);
+  const [editUserEmailError, setEditUserEmailError] = useState(null);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -122,6 +126,7 @@ export default function UserManagement() {
       role: "teller",
       branchName: branches.length > 0 ? branches[0] : "Thủ Đức",
     });
+    setAddUserError(null);
     setShowAddUser(true);
   };
 
@@ -140,6 +145,7 @@ export default function UserManagement() {
       branchName:
         userData.branchName || (branches.length > 0 ? branches[0] : "Thủ Đức"),
     });
+    setEditUserError(null);
     setShowEditUser(true);
   };
 
@@ -175,6 +181,26 @@ export default function UserManagement() {
 
   const submitAddUser = async () => {
     try {
+      setAddUserError(null);
+      setAddUserEmailError(null);
+
+      // Full name validation
+      if (!formData.fullName || !formData.fullName.trim()) {
+        setAddUserError("Full name is required");
+        return;
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!formData.email) {
+        setAddUserEmailError("Email is required");
+        return;
+      }
+      if (!emailRegex.test(formData.email)) {
+        setAddUserEmailError("Please enter a valid email address");
+        return;
+      }
+
       // Normalize role for backend: admin -> Administrator, teller -> Teller, accountant -> Accountant
       const capitalizeRole = (role) => {
         if (role.toLowerCase() === "admin") return "Administrator";
@@ -192,7 +218,7 @@ export default function UserManagement() {
       setSuccessMessage("User created successfully");
       setShowSuccess(true);
     } catch (err) {
-      setError(err.message || "Failed to create user");
+      setAddUserError(err.message || "Failed to create user account");
       console.error("Error creating user:", err);
     }
   };
@@ -200,6 +226,20 @@ export default function UserManagement() {
   const submitEditUser = async () => {
     if (selectedUser) {
       try {
+        setEditUserError(null);
+        setEditUserEmailError(null);
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email) {
+          setEditUserEmailError("Email is required");
+          return;
+        }
+        if (!emailRegex.test(formData.email)) {
+          setEditUserEmailError("Please enter a valid email address");
+          return;
+        }
+
         // Normalize role for backend: admin -> Administrator, teller -> Teller, accountant -> Accountant
         const capitalizeRole = (role) => {
           if (role.toLowerCase() === "admin") return "Administrator";
@@ -217,7 +257,7 @@ export default function UserManagement() {
         setSuccessMessage("User updated successfully");
         setShowSuccess(true);
       } catch (err) {
-        setError(err.message || "Failed to update user");
+        setEditUserError(err.message || "Failed to update user");
         console.error("Error updating user:", err);
       }
     }
@@ -526,9 +566,10 @@ export default function UserManagement() {
                 <Input
                   id="fullName"
                   value={formData.fullName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setFormData({ ...formData, fullName: e.target.value });
+                    setAddUserError(null);
+                  }}
                   placeholder="Enter full name"
                   className="border-gray-200 h-11 rounded-sm"
                 />
@@ -540,9 +581,10 @@ export default function UserManagement() {
                 </Label>
                 <Select
                   value={formData.role}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, role: value })
-                  }
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, role: value });
+                    setAddUserError(null);
+                  }}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -561,9 +603,10 @@ export default function UserManagement() {
                 </Label>
                 <Select
                   value={formData.branchName}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, branchName: value })
-                  }
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, branchName: value });
+                    setAddUserError(null);
+                  }}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select branch" />
@@ -592,13 +635,35 @@ export default function UserManagement() {
                   id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    setAddUserError(null);
+                    setAddUserEmailError(null);
+                  }}
                   placeholder="Enter email address"
-                  className="border-gray-200 h-11 rounded-sm"
+                  className={`border-gray-200 h-11 rounded-sm ${
+                    addUserEmailError
+                      ? "border-red-500 focus:border-red-500"
+                      : ""
+                  }`}
                 />
+                {addUserEmailError && (
+                  <p className="text-sm text-red-600">{addUserEmailError}</p>
+                )}
               </div>
+
+              {addUserError && (
+                <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-sm">
+                  <AlertTriangle
+                    size={20}
+                    className="text-red-600 shrink-0 mt-0.5"
+                  />
+                  <div>
+                    <p className="font-medium text-red-800">Error</p>
+                    <p className="text-sm text-red-700">{addUserError}</p>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex gap-4">
               <Button
@@ -650,9 +715,10 @@ export default function UserManagement() {
                 <Input
                   id="editFullName"
                   value={formData.fullName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setFormData({ ...formData, fullName: e.target.value });
+                    setEditUserError(null);
+                  }}
                   className="border-gray-200 h-11 rounded-sm"
                 />
               </div>
@@ -663,9 +729,10 @@ export default function UserManagement() {
                 </Label>
                 <Select
                   value={formData.role}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, role: value })
-                  }
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, role: value });
+                    setEditUserError(null);
+                  }}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -684,9 +751,10 @@ export default function UserManagement() {
                 </Label>
                 <Select
                   value={formData.branchName}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, branchName: value })
-                  }
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, branchName: value });
+                    setEditUserError(null);
+                  }}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select branch" />
@@ -715,12 +783,29 @@ export default function UserManagement() {
                   id="editEmail"
                   type="email"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setFormData({ ...formData, email: e.target.value });
+                    setEditUserError(null);
+                    setEditUserEmailError(null);
+                  }}
                   className="border-gray-200 h-11 rounded-sm"
+                  disabled
+                  readOnly
                 />
               </div>
+
+              {editUserError && (
+                <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-sm">
+                  <AlertTriangle
+                    size={20}
+                    className="text-red-600 shrink-0 mt-0.5"
+                  />
+                  <div>
+                    <p className="font-medium text-red-800">Error</p>
+                    <p className="text-sm text-red-700">{editUserError}</p>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex gap-4">
               <Button

@@ -127,7 +127,7 @@ export default function Deposit() {
       }
 
       if (account.accountTypeName !== "No term") {
-        setError("Deposits are only allowed for No term savings accounts");
+        setError("Deposits are only allowed for No term savings books");
         return;
       }
 

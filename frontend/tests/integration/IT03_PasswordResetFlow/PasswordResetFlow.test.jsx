@@ -110,7 +110,7 @@ describe("Integration: IT03 - Password Reset Flow", () => {
     expect(emailInput).toBeInTheDocument();
 
     const submitButton = screen.getByRole("button", {
-      name: /send reset link/i,
+      name: /send otp code/i,
     });
     expect(submitButton).toBeInTheDocument();
     expect(submitButton).toBeDisabled();
@@ -124,7 +124,7 @@ describe("Integration: IT03 - Password Reset Flow", () => {
       /enter your email or username/i
     );
     const submitButton = screen.getByRole("button", {
-      name: /send reset link/i,
+      name: /send otp code/i,
     });
 
     expect(submitButton).toBeDisabled();
@@ -149,7 +149,7 @@ describe("Integration: IT03 - Password Reset Flow", () => {
       /enter your email or username/i
     );
     const submitButton = screen.getByRole("button", {
-      name: /send reset link/i,
+      name: /send otp code/i,
     });
 
     await user.type(emailInput, testEmail);
@@ -173,7 +173,7 @@ describe("Integration: IT03 - Password Reset Flow", () => {
       /enter your email or username/i
     );
     const submitButton = screen.getByRole("button", {
-      name: /send reset link/i,
+      name: /send otp code/i,
     });
 
     await user.type(emailInput, testEmail);

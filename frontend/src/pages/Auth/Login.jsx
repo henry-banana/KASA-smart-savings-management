@@ -41,7 +41,7 @@ function Spinner({ size = 16, light = true }) {
 // Validation utility functions
 function validateEmail(email) {
   if (!email || !email.trim()) {
-    return "Email is required";
+    return "Username is required";
   }
 
   // Standard email regex pattern

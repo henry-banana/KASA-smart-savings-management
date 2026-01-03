@@ -376,7 +376,12 @@ export default function Layout() {
                       border: `1px solid ${currentRole.border}`,
                     }}
                   >
-                    {(user?.role || user?.roleName)?.toUpperCase() || "USER"}
+                    {(() => {
+                      const role = user?.role || user?.roleName;
+                      if (role?.toLowerCase() === "admin")
+                        return "ADMINISTRATOR";
+                      return role?.toUpperCase() || "USER";
+                    })()}
                   </span>
                 </div>
               </div>
