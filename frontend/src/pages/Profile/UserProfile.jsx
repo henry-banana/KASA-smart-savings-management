@@ -31,6 +31,8 @@ import {
   Lock,
   CheckCircle2,
   Sparkles,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { StarDecor } from "../../components/CuteComponents";
 import { Skeleton } from "../../components/ui/skeleton";
@@ -88,6 +90,10 @@ export default function UserProfile() {
     newPassword: "",
     confirmPassword: "",
   });
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChangePassword = async () => {
     if (
@@ -516,9 +522,9 @@ export default function UserProfile() {
       <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
         <DialogContent className="rounded-sm">
           <DialogHeader>
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex flex-col items-center gap-3 mb-2 text-center">
               <div
-                className="w-12 h-12 rounded-smflex items-center justify-center border border-gray-200"
+                className="w-12 h-12 rounded-sm flex items-center justify-center border border-gray-200"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
@@ -539,38 +545,60 @@ export default function UserProfile() {
               <Label htmlFor="currentPassword" className="text-gray-700">
                 Current Password
               </Label>
-              <Input
-                id="currentPassword"
-                type="password"
-                value={passwordData.currentPassword}
-                onChange={(e) =>
-                  setPasswordData({
-                    ...passwordData,
-                    currentPassword: e.target.value,
-                  })
-                }
-                placeholder="Enter current password"
-                className="h-11 rounded-smborder-gray-200"
-              />
+              <div className="relative">
+                <Input
+                  id="currentPassword"
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={passwordData.currentPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      currentPassword: e.target.value,
+                    })
+                  }
+                  placeholder="Enter current password"
+                  className="h-11 rounded-sm border-gray-200 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showCurrentPassword ? (
+                    <Eye size={18} />
+                  ) : (
+                    <EyeOff size={18} />  
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="newPassword" className="text-gray-700">
                 New Password
               </Label>
-              <Input
-                id="newPassword"
-                type="password"
-                value={passwordData.newPassword}
-                onChange={(e) =>
-                  setPasswordData({
-                    ...passwordData,
-                    newPassword: e.target.value,
-                  })
-                }
-                placeholder="Enter new password"
-                className="h-11 rounded-smborder-gray-200"
-              />
+              <div className="relative">
+                <Input
+                  id="newPassword"
+                  type={showNewPassword ? "text" : "password"}
+                  value={passwordData.newPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      newPassword: e.target.value,
+                    })
+                  }
+                  placeholder="Enter new password"
+                  className="h-11 rounded-sm border-gray-200 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showNewPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+                </button>
+              </div>
               <p className="text-xs text-gray-500">
                 Must be at least 6 characters
               </p>
@@ -580,19 +608,32 @@ export default function UserProfile() {
               <Label htmlFor="confirmPassword" className="text-gray-700">
                 Confirm New Password
               </Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={passwordData.confirmPassword}
-                onChange={(e) =>
-                  setPasswordData({
-                    ...passwordData,
-                    confirmPassword: e.target.value,
-                  })
-                }
-                placeholder="Confirm new password"
-                className="h-11 rounded-smborder-gray-200"
-              />
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={passwordData.confirmPassword}
+                  onChange={(e) =>
+                    setPasswordData({
+                      ...passwordData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  placeholder="Confirm new password"
+                  className="h-11 rounded-sm border-gray-200 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showConfirmPassword ? (
+                    <Eye size={18} />
+                  ) : (
+                    <EyeOff size={18} />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
           <div className="flex gap-4">
@@ -629,9 +670,9 @@ export default function UserProfile() {
       <Dialog open={showEditContact} onOpenChange={setShowEditContact}>
         <DialogContent className="rounded-sm">
           <DialogHeader>
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex flex-col items-center gap-3 mb-2 text-center">
               <div
-                className="w-12 h-12 rounded-smflex items-center justify-center border border-gray-200"
+                className="w-12 h-12 rounded-sm flex items-center justify-center border border-gray-200"
                 style={{
                   background:
                     "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
