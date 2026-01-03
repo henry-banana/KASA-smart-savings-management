@@ -719,6 +719,8 @@ export default function UserManagement() {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   className="border-gray-200 h-11 rounded-sm"
+                  disabled
+                  readOnly
                 />
               </div>
             </div>
