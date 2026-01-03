@@ -184,6 +184,12 @@ export default function UserManagement() {
       setAddUserError(null);
       setAddUserEmailError(null);
 
+      // Full name validation
+      if (!formData.fullName || !formData.fullName.trim()) {
+        setAddUserError("Full name is required");
+        return;
+      }
+
       // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!formData.email) {

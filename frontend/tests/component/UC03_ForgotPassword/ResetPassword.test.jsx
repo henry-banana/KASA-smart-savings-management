@@ -424,8 +424,16 @@ describe("ResetPassword Component (UC03)", () => {
         });
       });
 
+      // Wait for success dialog to appear
       await waitFor(() => {
-        expect(global.alert).toHaveBeenCalled();
+        expect(screen.getByText(/password changed/i)).toBeInTheDocument();
+      });
+
+      // Click OK button to close dialog and trigger onSuccess
+      const okButton = screen.getByRole("button", { name: /ok/i });
+      await user.click(okButton);
+
+      await waitFor(() => {
         expect(mockOnSuccess).toHaveBeenCalled();
       });
     });
@@ -469,6 +477,15 @@ describe("ResetPassword Component (UC03)", () => {
       expect(screen.getByText(/saving/i)).toBeInTheDocument();
 
       resolveReset({ message: "Success" });
+
+      // Wait for success dialog to appear
+      await waitFor(() => {
+        expect(screen.getByText(/password changed/i)).toBeInTheDocument();
+      });
+
+      // Click OK button to close dialog and trigger onSuccess
+      const okButton = screen.getByRole("button", { name: /ok/i });
+      await user.click(okButton);
 
       await waitFor(() => {
         expect(mockOnSuccess).toHaveBeenCalled();

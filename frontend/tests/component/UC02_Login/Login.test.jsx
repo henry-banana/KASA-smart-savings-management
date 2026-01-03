@@ -83,7 +83,7 @@ describe("Login Component (UC02)", () => {
       await user.type(passwordInput, "password123");
       await user.click(submitButton);
 
-      expect(screen.getByText(/email is required/i)).toBeInTheDocument();
+      expect(screen.getByText(/username is required/i)).toBeInTheDocument();
     });
 
     it("should show password required error when submit with empty password", async () => {
