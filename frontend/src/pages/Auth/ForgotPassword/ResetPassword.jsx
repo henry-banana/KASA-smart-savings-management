@@ -11,6 +11,14 @@ import {
   CardTitle,
 } from "../../../components/ui/card";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../../../components/ui/alert-dialog";
+import {
   Lock,
   Eye,
   EyeOff,
@@ -32,6 +40,7 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const passwordRequirements = [
     { label: "At least 6 characters", test: (pwd) => pwd.length >= 6 },
@@ -80,13 +89,8 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
       });
       logger.info("Password reset successful", response);
 
-      // Success notification (using alert for now, will be replaced with toast)
-      setTimeout(() => {
-        alert(
-          "✓ Password Changed\n\nYour password has been successfully reset!"
-        );
-        onSuccess();
-      }, 100);
+      // Show success dialog
+      setShowSuccessDialog(true);
     } catch (err) {
       logger.error("Password reset failed", err);
       setErrors([err.message || "Failed to reset password. Please try again."]);
@@ -366,6 +370,34 @@ function ResetPassword({ email, otp, onSuccess, onBack, onBackToLogin }) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Success Dialog */}
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <AlertDialogContent className="rounded-sm text-center">
+          <AlertDialogHeader className="text-center flex flex-col items-center">
+            <div className="flex justify-center mb-4">
+              <div className="flex items-center justify-center w-16 h-16 rounded-sm bg-green-100 border border-green-200">
+                <CheckCircle2 className="text-green-600" size={32} />
+              </div>
+            </div>
+            <AlertDialogTitle className="text-2xl text-center">
+              Password Changed
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base mt-2 text-center">
+              Your password has been successfully reset!
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogAction
+            onClick={() => {
+              setShowSuccessDialog(false);
+              onSuccess();
+            }}
+            className="bg-green-600 hover:bg-green-700 rounded-sm mt-4 w-full"
+          >
+            OK
+          </AlertDialogAction>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Bottom decoration */}
       <div className="absolute bottom-0 left-0 right-0 h-2 bg-linear-to-r from-[#6366F1] via-[#8B5CF6] to-[#6366F1] opacity-50" />
