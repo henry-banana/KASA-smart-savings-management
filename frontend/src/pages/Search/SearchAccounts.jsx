@@ -322,6 +322,9 @@ export default function SearchAccounts() {
                       <TableHead className="font-semibold">
                         Saving Book code
                       </TableHead>
+                      <TableHead className="font-semibold">
+                        Citizen ID
+                      </TableHead>
                       <TableHead className="font-semibold">Customer</TableHead>
                       <TableHead className="font-semibold">Type</TableHead>
                       <TableHead className="font-semibold">Open Date</TableHead>
@@ -343,6 +346,7 @@ export default function SearchAccounts() {
                         <TableCell className="font-medium text-[#8B5CF6]">
                           {account.accountCode || account.bookId}
                         </TableCell>
+                        <TableCell>{account.citizenId || "-"}</TableCell>
                         <TableCell>{account.customerName}</TableCell>
                         <TableCell>
                           <Badge

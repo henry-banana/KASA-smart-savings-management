@@ -116,7 +116,7 @@ export default function OpenAccount() {
     if (!citizenIdPattern.test(formData.idCard.trim())) {
       setErrors((prev) => ({
         ...prev,
-        idCard: "Invalid citizen ID format. It should be 12 digits.",
+        idCard: "Invalid citizen ID's length. It should be 12 digits.",
       }));
       return;
     }
