@@ -50,6 +50,7 @@ import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
 import { formatVnNumber, formatBalance } from "../../utils/numberFormatter";
+import { formatDateToDDMMYYYY } from "../../utils/dateFormatter";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
@@ -357,7 +358,9 @@ export default function SearchAccounts() {
                             {getTypeLabel(account.accountTypeName)}
                           </Badge>
                         </TableCell>
-                        <TableCell>{account.openDate}</TableCell>
+                        <TableCell>
+                          {formatDateToDDMMYYYY(account.openDate)}
+                        </TableCell>
                         <TableCell className="font-semibold text-right">
                           {formatBalance(account.balance ?? 0)}₫
                         </TableCell>
@@ -493,6 +496,12 @@ export default function SearchAccounts() {
                     </span>
                   </div>
                   <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Citizen ID:</span>
+                    <span className="font-medium">
+                      {selectedAccount.citizenId || "-"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Customer:</span>
                     <span className="font-medium">
                       {selectedAccount.customerName}
@@ -513,7 +522,7 @@ export default function SearchAccounts() {
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Opening Date:</span>
                     <span className="font-medium">
-                      {selectedAccount.openDate}
+                      {formatDateToDDMMYYYY(selectedAccount.openDate)}
                     </span>
                   </div>
                   <div className="flex justify-between">

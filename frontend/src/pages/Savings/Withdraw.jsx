@@ -40,25 +40,11 @@ import {
   formatBalance,
   formatPercentText,
 } from "../../utils/numberFormatter";
+import { formatDateToDDMMYYYY } from "../../utils/dateFormatter";
 import { getRegulations } from "@/services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
-
-// Helper function to format date to DD-MM-YYYY
-const formatDateToDDMMYYYY = (dateString) => {
-  if (!dateString) return "";
-  try {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-  } catch (error) {
-    console.error("Date formatting error:", error);
-    return dateString;
-  }
-};
 
 export default function Withdraw() {
   const [accountId, setAccountId] = useState("");

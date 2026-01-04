@@ -8,6 +8,7 @@ import {
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { formatVnNumber, formatBalance } from "../../utils/numberFormatter";
+import { formatDateToDDMMYYYY } from "../../utils/dateFormatter";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import {
@@ -587,7 +588,7 @@ export default function OpenAccount() {
                         }
                         placeholder="Customer name will appear after lookup"
                         disabled
-                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 bg-gray-50 text-gray-600 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base cursor-not-allowed"
+                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 bg-gray-50 text-gray-600 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base cursor-not-allowed opacity-60"
                       />
                     </div>
                     {errors.customerName && (
@@ -795,16 +796,9 @@ export default function OpenAccount() {
                         className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2"
                         size={16}
                       />
-                      <Input
-                        id="openDate"
-                        type="date"
-                        value={formData.openDate}
-                        onChange={(e) =>
-                          setFormData({ ...formData, openDate: e.target.value })
-                        }
-                        disabled
-                        className="pl-10 text-sm border-gray-200 h-11 sm:h-12 rounded-sm bg-gray-50 sm:text-base"
-                      />
+                      <div className="pl-10 text-sm border border-gray-200 h-11 sm:h-12 rounded-sm bg-gray-50 sm:text-base flex items-center text-gray-700">
+                        {formatDateToDDMMYYYY(formData.openDate)}
+                      </div>
                     </div>
                   </div>
                 </div>
