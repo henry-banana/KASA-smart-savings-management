@@ -48,10 +48,6 @@ export const depositMoney = async (accountCode, amount, employeeIdOverride) => {
     throw new Error("Invalid transaction information");
   }
 
-  if (amount < 100000) {
-    throw new Error("Minimum balance amount is 100,000 VND");
-  }
-
   if (USE_MOCK) {
     return mockTransactionAdapter.depositMoney({ bookId: accountCode, amount });
   }
