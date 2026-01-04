@@ -49,7 +49,7 @@ import { searchSavingBooks } from "../../services/savingBookService";
 import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
-import { formatVnNumber } from "../../utils/numberFormatter";
+import { formatVnNumber, formatBalance } from "../../utils/numberFormatter";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
@@ -355,7 +355,7 @@ export default function SearchAccounts() {
                         </TableCell>
                         <TableCell>{account.openDate}</TableCell>
                         <TableCell className="font-semibold text-right">
-                          {formatVnNumber(account.balance ?? 0)}₫
+                          {formatBalance(account.balance ?? 0)}₫
                         </TableCell>
                         <TableCell>
                           {account.status?.toLowerCase() === "open" ? (
@@ -481,7 +481,9 @@ export default function SearchAccounts() {
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Saving Book code:</span>
+                    <span className="text-sm text-gray-600">
+                      Saving Book code:
+                    </span>
                     <span className="font-semibold text-lg text-[#8B5CF6]">
                       {selectedAccount.accountCode || selectedAccount.bookId}
                     </span>
@@ -493,7 +495,9 @@ export default function SearchAccounts() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Saving Book type:</span>
+                    <span className="text-sm text-gray-600">
+                      Saving Book type:
+                    </span>
                     <Badge
                       className={`${getTypeBadgeColor(
                         selectedAccount.accountTypeName
@@ -523,7 +527,7 @@ export default function SearchAccounts() {
                   <div className="flex justify-between pt-3 border-t border-gray-200">
                     <span className="font-medium text-gray-700">Balance:</span>
                     <span className="text-xl font-bold text-green-600">
-                      {formatVnNumber(selectedAccount.balance ?? 0)}₫
+                      {formatBalance(selectedAccount.balance ?? 0)}₫
                     </span>
                   </div>
                 </div>

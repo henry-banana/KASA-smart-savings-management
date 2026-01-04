@@ -32,7 +32,7 @@ import {
   getAccountInfo,
   depositMoney,
 } from "../../services/transactionService";
-import { formatVnNumber } from "../../utils/numberFormatter";
+import { formatVnNumber, formatBalance } from "../../utils/numberFormatter";
 import { getRegulations } from "../../services/regulationService";
 import { BUSINESS_RULES } from "@/constants/business";
 import { RoleGuard } from "../../components/RoleGuard";
@@ -349,7 +349,7 @@ export default function Deposit() {
                       Current Balance:
                     </span>
                     <span className="text-lg font-bold text-green-600">
-                      {formatVnNumber(accountInfo.balance ?? 0)}₫
+                      {formatBalance(accountInfo.balance ?? 0)}₫
                     </span>
                   </div>
                 </div>
@@ -534,7 +534,7 @@ export default function Deposit() {
                 <div className="flex justify-between pt-3 border-t border-gray-200">
                   <span className="text-sm text-gray-600">New Balance:</span>
                   <span className="text-lg font-bold text-green-600">
-                    {formatVnNumber(receiptData?.newBalance || 0)}₫
+                    {formatBalance(receiptData?.newBalance || 0)}₫
                   </span>
                 </div>
               </div>
