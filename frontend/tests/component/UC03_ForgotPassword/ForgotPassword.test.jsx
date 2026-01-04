@@ -56,7 +56,7 @@ describe("ForgotPassword Component (UC03)", () => {
       expect(emailInput).toBeInTheDocument();
 
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
       expect(submitButton).toBeInTheDocument();
 
@@ -86,7 +86,7 @@ describe("ForgotPassword Component (UC03)", () => {
       );
 
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
       expect(submitButton).toBeDisabled();
     });
@@ -106,7 +106,7 @@ describe("ForgotPassword Component (UC03)", () => {
         /enter your email or username/i
       );
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
 
       expect(submitButton).toBeDisabled();
@@ -129,7 +129,7 @@ describe("ForgotPassword Component (UC03)", () => {
         /enter your email or username/i
       );
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
 
       await user.type(emailInput, "   ");
@@ -157,7 +157,7 @@ describe("ForgotPassword Component (UC03)", () => {
         /enter your email or username/i
       );
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
 
       await user.type(emailInput, "test@example.com");
@@ -185,7 +185,7 @@ describe("ForgotPassword Component (UC03)", () => {
         /enter your email or username/i
       );
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
 
       await user.type(emailInput, "testuser@example.com");
@@ -216,7 +216,7 @@ describe("ForgotPassword Component (UC03)", () => {
         /enter your email or username/i
       );
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
 
       await user.type(emailInput, "test@example.com");
@@ -251,7 +251,7 @@ describe("ForgotPassword Component (UC03)", () => {
         /enter your email or username/i
       );
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
 
       await user.type(emailInput, "nonexistent@example.com");
@@ -281,7 +281,7 @@ describe("ForgotPassword Component (UC03)", () => {
         /enter your email or username/i
       );
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
 
       await user.type(emailInput, "unknown@example.com");
@@ -309,7 +309,7 @@ describe("ForgotPassword Component (UC03)", () => {
         /enter your email or username/i
       );
       const submitButton = screen.getByRole("button", {
-        name: /send reset link/i,
+        name: /send otp code/i,
       });
 
       await user.type(emailInput, "test@example.com");

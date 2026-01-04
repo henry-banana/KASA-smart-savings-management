@@ -13,10 +13,6 @@ export const createSavingBook = async (data) => {
     throw new Error("Missing customer information or amount");
   }
 
-  if (Number(data.initialDeposit) < 100000) {
-    throw new Error("Minimum amount is 100,000 VND");
-  }
-
   if (USE_MOCK) {
     // Use canonical mock adapter directly and alias accountCode for UI compatibility
     const resp = await mockSavingBookAdapter.createSavingBook({

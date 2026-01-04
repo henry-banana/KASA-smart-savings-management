@@ -178,7 +178,7 @@ function ForgotPassword({ onContinue, onBack }) {
                   Processing...
                 </>
               ) : (
-                "Send Reset Link ✨"
+                "Send OTP Code ✨"
               )}
             </Button>
           </form>
