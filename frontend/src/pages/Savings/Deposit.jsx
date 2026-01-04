@@ -264,7 +264,7 @@ export default function Deposit() {
                       setAccountInfo(null);
                       setError("");
                     }}
-                    placeholder="Enter saving book code (e.g., 12345)"
+                    placeholder="Enter saving book ID (e.g., 12345)"
                     className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
