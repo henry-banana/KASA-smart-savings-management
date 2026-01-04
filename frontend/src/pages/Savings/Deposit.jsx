@@ -34,6 +34,7 @@ import {
 } from "../../services/transactionService";
 import { formatVnNumber } from "../../utils/numberFormatter";
 import { getRegulations } from "../../services/regulationService";
+import { BUSINESS_RULES } from "@/constants/business";
 import { RoleGuard } from "../../components/RoleGuard";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
@@ -64,9 +65,14 @@ export default function Deposit() {
       try {
         const resp = await getRegulations();
         if (resp.success && resp.data?.minimumBalance) {
-          setMinDeposit(resp.data.minimumBalance);
+          // Use API value, but ensure it's at least the minimum business rule
+          const apiValue = resp.data.minimumBalance;
+          const minValue = Math.max(apiValue, BUSINESS_RULES.MIN_DEPOSIT);
+          setMinDeposit(minValue);
         } else {
-          setRegulationsError("Failed to load minimum balance regulation");
+          // Fallback to business rule if API fails
+          setMinDeposit(BUSINESS_RULES.MIN_DEPOSIT);
+          setRegulationsError("Using default minimum balance");
         }
       } catch (err) {
         console.error("Fetch regulations error:", err);
@@ -74,6 +80,8 @@ export default function Deposit() {
         if (isServerUnavailable(err)) {
           setServerUnavailable(true);
         } else {
+          // Fallback to business rule
+          setMinDeposit(BUSINESS_RULES.MIN_DEPOSIT);
           setRegulationsError(err.message || "Failed to load regulations");
         }
       } finally {
@@ -313,7 +321,9 @@ export default function Deposit() {
                 >
                   <StarDecor className="top-2 right-2" />
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Saving Book ID:</span>
+                    <span className="text-sm text-gray-600">
+                      Saving Book ID:
+                    </span>
                     <span className="font-semibold text-[#1A4D8F]">
                       {accountInfo.bookId}
                     </span>
@@ -327,7 +337,9 @@ export default function Deposit() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Saving Book Type:</span>
+                    <span className="text-sm text-gray-600">
+                      Saving Book Type:
+                    </span>
                     <Badge className="text-blue-700 bg-blue-100 border-blue-200">
                       No term
                     </Badge>

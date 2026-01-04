@@ -45,6 +45,7 @@ import {
 } from "../../components/CuteComponents";
 import { createSavingBook } from "../../services/savingBookService";
 import { getInterestRates, getRegulations } from "@/services/regulationService";
+import { BUSINESS_RULES } from "@/constants/business";
 import { customerService } from "../../services/customerService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { useAuthContext } from "../../contexts/AuthContext";
@@ -330,9 +331,17 @@ export default function OpenAccount() {
       try {
         const resp = await getRegulations();
         if (resp.success && resp.data?.minimumBalance) {
-          setMinBalance(resp.data.minimumBalance);
+          // Use API value, but ensure it's at least the minimum business rule
+          const apiValue = resp.data.minimumBalance;
+          const minValue = Math.max(
+            apiValue,
+            BUSINESS_RULES.MIN_INITIAL_DEPOSIT
+          );
+          setMinBalance(minValue);
         } else {
-          setRegulationsError("Cannot load minimum balance rule");
+          // Fallback to business rule if API fails
+          setMinBalance(BUSINESS_RULES.MIN_INITIAL_DEPOSIT);
+          setRegulationsError("Using default minimum balance");
         }
       } catch (err) {
         console.error("Fetch regulations error:", err);
@@ -340,6 +349,8 @@ export default function OpenAccount() {
         if (isServerUnavailable(err)) {
           setServerUnavailable(true);
         } else {
+          // Fallback to business rule
+          setMinBalance(BUSINESS_RULES.MIN_INITIAL_DEPOSIT);
           setRegulationsError(
             err.message || "Cannot load minimum balance rule"
           );
