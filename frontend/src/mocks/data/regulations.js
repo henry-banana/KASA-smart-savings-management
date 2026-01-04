@@ -4,7 +4,7 @@
  */
 
 export let mockRegulations = {
-  minimumBalance: 12000, // VND
+  minimumBalance: 100000, // VND
   minimumTermDays: 15, // days
   updatedAt: "2025-11-01T10:00:00Z",
 };

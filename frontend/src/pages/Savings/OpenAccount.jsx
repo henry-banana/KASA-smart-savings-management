@@ -336,15 +336,10 @@ export default function OpenAccount() {
       try {
         const resp = await getRegulations();
         if (resp.success && resp.data?.minimumBalance) {
-          // Use API value, but ensure it's at least the minimum business rule
-          const apiValue = resp.data.minimumBalance;
-          const minValue = Math.max(
-            apiValue,
-            BUSINESS_RULES.MIN_INITIAL_DEPOSIT
-          );
-          setMinBalance(minValue);
+          // Use API value directly - no fallback to business rule
+          setMinBalance(resp.data.minimumBalance);
         } else {
-          // Fallback to business rule if API fails
+          // If API doesn't return data, use fallback
           setMinBalance(BUSINESS_RULES.MIN_INITIAL_DEPOSIT);
           setRegulationsError("Using default minimum balance");
         }
