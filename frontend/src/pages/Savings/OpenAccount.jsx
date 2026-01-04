@@ -139,7 +139,12 @@ export default function OpenAccount() {
           address: customer.address || "",
         }));
         setLookupStatus("found");
-        setErrors((prev) => ({ ...prev, idCard: "" }));
+        setErrors((prev) => ({
+          ...prev,
+          idCard: "",
+          customerName: "",
+          address: "",
+        }));
       } else {
         // Customer not found (should not reach here due to service throwing error)
         setFormData((prev) => ({
@@ -744,6 +749,13 @@ export default function OpenAccount() {
                             ...formData,
                             initialDeposit: value,
                           });
+                          // Clear error when user starts typing
+                          if (errors.initialDeposit) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              initialDeposit: "",
+                            }));
+                          }
                         }}
                         placeholder={
                           minBalance
