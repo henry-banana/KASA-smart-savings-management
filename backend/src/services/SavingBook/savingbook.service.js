@@ -118,13 +118,21 @@ class SavingBookService {
     let newSavingBook;
 
     if (bookID) {
-      newSavingBook = await savingBookRepository.create({
-        bookid: bookID,
-        typeid: typeSavingID,
-        customerid: customer.customerid,
-        currentbalance: initialDeposit,
-        maturitydate: new Date().toISOString(),
-      });
+      try{
+        newSavingBook = await savingBookRepository.create({
+          bookid: bookID,
+          typeid: typeSavingID,
+          customerid: customer.customerid,
+          currentbalance: initialDeposit,
+          maturitydate: new Date().toISOString(),
+        });
+      }catch(err){
+        if(err.message.includes("duplicate key value violates unique constraint")){
+          throw new Error("Book ID already exists: " + bookID);
+        }else{
+          throw err;
+        }
+      }
     }else{
       newSavingBook = await savingBookRepository.create({
         typeid: typeSavingID,
