@@ -7,7 +7,7 @@ import {
   CardDescription,
 } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { formatVnNumber } from "../../utils/numberFormatter";
+import { formatVnNumber, formatBalance } from "../../utils/numberFormatter";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import {

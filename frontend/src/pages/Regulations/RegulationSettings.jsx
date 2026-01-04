@@ -51,7 +51,11 @@ import {
 import { StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
-import { formatPercentText, formatVnNumber } from "@/utils/numberFormatter";
+import {
+  formatPercentText,
+  formatVnNumber,
+  formatBalance,
+} from "@/utils/numberFormatter";
 import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 
@@ -722,7 +726,7 @@ export default function RegulationSettings() {
                         Minimum Balance:
                       </span>
                       <span className="text-sm font-semibold text-blue-900">
-                        {formatVnNumber(minBalance)}₫
+                        {formatBalance(minBalance)}₫
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -915,7 +919,7 @@ export default function RegulationSettings() {
                   Updated regulations:
                 </p>
                 <ul className="space-y-1 text-sm text-gray-600 list-disc list-inside">
-                  <li>Minimum Balance: {formatVnNumber(minBalance)}₫</li>
+                  <li>Minimum Balance: {formatBalance(minBalance)}₫</li>
                   <li>
                     Minimum Withdrawal Period:{" "}
                     {formatVnNumber(minWithdrawalDays)} days
