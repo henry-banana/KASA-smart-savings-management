@@ -87,7 +87,7 @@ class SavingBookService {
   }
 
   // Thêm sổ tiết kiệm mới
-  async addSavingBook({ typeSavingID, initialDeposit, employeeID, citizenID }) {
+  async addSavingBook({bookID, typeSavingID, initialDeposit, employeeID, citizenID }) {
     if (!typeSavingID || !initialDeposit || !employeeID || !citizenID) {
       throw new Error("Missing required information.");
     }
@@ -115,12 +115,24 @@ class SavingBookService {
     maturityDate.setMonth(maturityDate.getMonth() + typeSaving.term);
 
     // Tạo sổ tiết kiệm mới
-    const newSavingBook = await savingBookRepository.create({
-      typeid: typeSavingID,
-      customerid: customer.customerid,
-      currentbalance: initialDeposit,
-      maturitydate: new Date().toISOString(),
-    });
+    let newSavingBook;
+
+    if (bookID) {
+      newSavingBook = await savingBookRepository.create({
+        bookid: bookID,
+        typeid: typeSavingID,
+        customerid: customer.customerid,
+        currentbalance: initialDeposit,
+        maturitydate: new Date().toISOString(),
+      });
+    }else{
+      newSavingBook = await savingBookRepository.create({
+        typeid: typeSavingID,
+        customerid: customer.customerid,
+        currentbalance: initialDeposit,
+        maturitydate: new Date().toISOString(),
+      });
+    }
 
     newSavingBook.citizenid = citizenID;
 
