@@ -35,11 +35,30 @@ import {
   withdrawMoney,
   closeSavingAccount,
 } from "../../services/transactionService";
-import { formatVnNumber, formatPercentText } from "../../utils/numberFormatter";
+import {
+  formatVnNumber,
+  formatBalance,
+  formatPercentText,
+} from "../../utils/numberFormatter";
 import { getRegulations } from "@/services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
+
+// Helper function to format date to DD-MM-YYYY
+const formatDateToDDMMYYYY = (dateString) => {
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  } catch (error) {
+    console.error("Date formatting error:", error);
+    return dateString;
+  }
+};
 
 export default function Withdraw() {
   const [accountId, setAccountId] = useState("");
@@ -391,13 +410,13 @@ export default function Withdraw() {
                     <div>
                       <p className="text-xs text-gray-500">Current Balance</p>
                       <p className="text-sm font-semibold text-green-600">
-                        {formatVnNumber(accountInfo.balance ?? 0)}₫
+                        {formatBalance(accountInfo.balance ?? 0)}₫
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Open Date</p>
                       <p className="text-sm font-medium">
-                        {accountInfo.openDate}
+                        {formatDateToDDMMYYYY(accountInfo.openDate)}
                       </p>
                     </div>
                     <div>
@@ -419,7 +438,7 @@ export default function Withdraw() {
                         <div>
                           <p className="text-xs text-gray-500">Maturity Date</p>
                           <p className="text-sm font-medium">
-                            {accountInfo.maturityDate}
+                            {formatDateToDDMMYYYY(accountInfo.maturityDate)}
                           </p>
                         </div>
                         <div>
@@ -501,7 +520,7 @@ export default function Withdraw() {
                           Total Payout:
                         </span>
                         <span className="text-xl font-bold text-green-600">
-                          {formatVnNumber(Number(withdrawAmount))}₫
+                          {formatBalance(Number(withdrawAmount))}₫
                         </span>
                       </div>
                     </div>
@@ -514,6 +533,8 @@ export default function Withdraw() {
                   type="submit"
                   disabled={
                     !accountInfo ||
+                    !withdrawAmount ||
+                    Number(withdrawAmount) <= 0 ||
                     (isFixedTermAccount() && !isFixedTermMatured()) ||
                     isSubmitting ||
                     serverUnavailable
@@ -556,9 +577,11 @@ export default function Withdraw() {
                   {formatVnNumber(minWithdrawalDays)} days
                 </li>
                 <li>No-Term accounts: Partial withdrawals allowed</li>
-                <li>Fixed-Term accounts: Can only withdraw at maturity date</li>
                 <li>
-                  Fixed-Term accounts: Must withdraw full balance at maturity
+                  Fixed-Term accounts: Can only withdraw after maturity date
+                </li>
+                <li>
+                  Fixed-Term accounts: Must withdraw full balance after maturity
                 </li>
               </ul>
             </div>
