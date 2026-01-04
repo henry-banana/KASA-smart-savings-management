@@ -309,7 +309,7 @@ export default function Withdraw() {
               </div>
               <div className="flex-1 min-w-0">
                 <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
-                  <span className="truncate">Make Withdrawal (BM3)</span>
+                  <span className="truncate">Make Withdrawal</span>
                   <span className="shrink-0 text-xl sm:text-2xl">💵</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">

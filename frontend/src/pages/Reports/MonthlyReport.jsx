@@ -137,7 +137,7 @@ export default function MonthlyReport() {
           <CardHeader className="bg-linear-to-r from-purple-50 to-pink-50 pb-8">
             <CardTitle className="flex items-center gap-2">
               <span className="text-2xl">📊</span>
-              BM5.2 – Monthly Opening/Closing Report
+              Monthly Opening/Closing Report
             </CardTitle>
             <CardDescription>
               Generate monthly savings book opening and closing report
@@ -332,7 +332,7 @@ export default function MonthlyReport() {
               {/* Report Header */}
               <div className="mb-8 space-y-4">
                 <h1 className="text-2xl font-bold text-[#1A4D8F] text-center tracking-tight">
-                  BM5.2 – MONTHLY OPENING/CLOSING SAVINGS BOOKS REPORT
+                  MONTHLY OPENING/CLOSING SAVINGS BOOKS REPORT
                 </h1>
                 {/* Report Metadata */}
                 <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 text-sm">

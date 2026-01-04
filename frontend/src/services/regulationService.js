@@ -1,4 +1,3 @@
-// TODO: replace with real backend API for QĐ6 – Regulations
 import { USE_MOCK } from "@/config/app.config";
 import { regulationApi } from "@/api/regulationApi";
 import { mockRegulationAdapter } from "@/mocks/adapters/regulationAdapter";

@@ -239,7 +239,7 @@ export default function Deposit() {
                   <span className="shrink-0 text-xl sm:text-2xl">💰</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Deposit money to savings account (Form BM2)
+                  Deposit money to savings account
                 </CardDescription>
               </div>
             </div>

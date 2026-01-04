@@ -326,7 +326,7 @@ export default function RegulationSettings() {
               </div>
               <div className="flex-1">
                 <CardTitle className="flex items-center gap-2 mb-2 text-2xl">
-                  Regulation Settings (QĐ6)
+                  Regulation Settings
                   <span className="text-2xl">⚙️</span>
                 </CardTitle>
                 <CardDescription className="text-base">

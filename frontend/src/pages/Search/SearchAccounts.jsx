@@ -222,7 +222,7 @@ export default function SearchAccounts() {
                   <span className="shrink-0-xl sm:text-2xl">🔍</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Search and manage savings accounts (Form BM4)
+                  Search and manage savings accounts
                 </CardDescription>
               </div>
             </div>

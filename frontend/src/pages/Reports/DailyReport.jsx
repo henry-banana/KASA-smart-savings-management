@@ -198,7 +198,7 @@ export default function DailyReport() {
               <div className="flex-1">
                 <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
                   <span>📊</span>
-                  Daily Report (BM5.1)
+                  Daily Report
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
                   View daily deposits and withdrawals by savings type

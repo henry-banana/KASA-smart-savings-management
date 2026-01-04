@@ -473,7 +473,7 @@ export default function OpenAccount() {
                   <span className="shrink-0 text-xl sm:text-2xl">🏦</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Create a new saving book for customer (Form BM1)
+                  Create a new saving book for customer
                 </CardDescription>
               </div>
             </div>
