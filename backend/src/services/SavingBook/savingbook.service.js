@@ -87,7 +87,7 @@ class SavingBookService {
   }
 
   // Thêm sổ tiết kiệm mới
-  async addSavingBook({ typeSavingID, initialDeposit, employeeID, citizenID }) {
+  async addSavingBook({bookID, typeSavingID, initialDeposit, employeeID, citizenID }) {
     if (!typeSavingID || !initialDeposit || !employeeID || !citizenID) {
       throw new Error("Missing required information.");
     }
@@ -114,13 +114,24 @@ class SavingBookService {
     const maturityDate = new Date();
     maturityDate.setMonth(maturityDate.getMonth() + typeSaving.term);
 
-    // Tạo sổ tiết kiệm mới
-    const newSavingBook = await savingBookRepository.create({
-      typeid: typeSavingID,
-      customerid: customer.customerid,
-      currentbalance: initialDeposit,
-      maturitydate: new Date().toISOString(),
-    });
+
+      // Tạo sổ tiết kiệm mới (bắt lỗi chi tiết nếu có violation, ví dụ duplicate key)
+      let newSavingBook;
+      try {
+        newSavingBook = await savingBookRepository.create({
+          typeid: typeSavingID,
+          customerid: customer.customerid,
+          currentbalance: initialDeposit,
+          maturitydate: new Date().toISOString(),
+        });
+      } catch (err) {
+        const msg = err?.message || String(err);
+        const isDuplicate = /duplicate key|unique constraint|already exists|23505|duplicate/i.test(msg);
+        if (isDuplicate) {
+          throw new Error(`Saving book creation failed: duplicate book id or unique constraint violation. ${msg}`);
+        }
+        throw new Error(`Saving book creation failed: ${msg}`);
+      }
 
     newSavingBook.citizenid = citizenID;
 

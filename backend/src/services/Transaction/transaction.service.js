@@ -2,6 +2,7 @@ import { transactionRepository } from "../../repositories/Transaction/Transactio
 import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
 import { employeeRepository } from "../../repositories/Employee/EmployeeRepository.js";
 import { customerRepository } from "../../repositories/Customer/CustomerRepository.js";
+import { typeSavingRepository } from "../../repositories/TypeSaving/TypeSavingRepository.js";
 import { savingBookService } from "../SavingBook/savingbook.service.js";
 
 class TransactionService {
