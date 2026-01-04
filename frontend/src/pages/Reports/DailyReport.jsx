@@ -58,6 +58,16 @@ import { ServiceUnavailablePageState } from "../../components/ServiceUnavailable
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { DailyReportPrint } from "./DailyReportPrint";
 
+// Helper function to get color class for difference value
+const getDifferenceColorClass = (difference) => {
+  if (difference > 0) {
+    return "text-green-600"; // Deposit color (positive)
+  } else if (difference < 0) {
+    return "text-red-600"; // Withdrawal color (negative)
+  }
+  return "text-blue-600"; // Blue for zero
+};
+
 export default function DailyReport() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [reportData, setReportData] = useState(null);
@@ -556,7 +566,11 @@ export default function DailyReport() {
                           <TableCell className="font-semibold text-right text-red-600">
                             {formatVnNumber(row.totalWithdrawals ?? 0)}₫
                           </TableCell>
-                          <TableCell className="font-semibold text-right text-blue-600">
+                          <TableCell
+                            className={`font-semibold text-right ${getDifferenceColorClass(
+                              row.difference
+                            )}`}
+                          >
                             {formatVnNumber(row.difference ?? 0)}₫
                           </TableCell>
                         </TableRow>
@@ -573,7 +587,11 @@ export default function DailyReport() {
                         <TableCell className="font-bold text-right text-red-700">
                           {formatVnNumber(totals.withdrawals ?? 0)}₫
                         </TableCell>
-                        <TableCell className="font-bold text-right text-blue-700">
+                        <TableCell
+                          className={`font-bold text-right ${getDifferenceColorClass(
+                            totals.difference
+                          )}`}
+                        >
                           {formatVnNumber(totals.difference ?? 0)}₫
                         </TableCell>
                       </TableRow>

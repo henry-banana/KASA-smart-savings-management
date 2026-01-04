@@ -28,6 +28,16 @@ import { ServiceUnavailablePageState } from "../../components/ServiceUnavailable
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { MonthlyReportPrint } from "./MonthlyReportPrint";
 
+// Helper function to get color class for difference value
+const getDifferenceColorClass = (difference) => {
+  if (difference > 0) {
+    return "text-green-600"; // Deposit color (positive)
+  } else if (difference < 0) {
+    return "text-red-600"; // Withdrawal color (negative)
+  }
+  return "text-blue-600"; // Blue for zero
+};
+
 export default function MonthlyReport() {
   const { user } = useAuthContext();
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -430,11 +440,9 @@ export default function MonthlyReport() {
                           )}
                         </td>
                         <td
-                          className={`py-3 px-6 text-right font-semibold ${
-                            row.difference >= 0
-                              ? "text-blue-600"
-                              : "text-red-600"
-                          }`}
+                          className={`py-3 px-6 text-right font-semibold ${getDifferenceColorClass(
+                            row.difference
+                          )}`}
                         >
                           {row.difference >= 0 ? "+" : ""}
                           {formatVnNumber(row.difference ?? 0)}
@@ -457,11 +465,9 @@ export default function MonthlyReport() {
                         {formatVnNumber(totals?.closed ?? 0)}
                       </td>
                       <td
-                        className={`py-4 px-6 text-right font-bold text-lg ${
-                          (totals?.difference || 0) >= 0
-                            ? "text-blue-600"
-                            : "text-red-600"
-                        }`}
+                        className={`py-4 px-6 text-right font-bold text-lg ${getDifferenceColorClass(
+                          totals?.difference
+                        )}`}
                       >
                         {(totals?.difference || 0) >= 0 ? "+" : ""}
                         {formatVnNumber(totals?.difference ?? 0)}
