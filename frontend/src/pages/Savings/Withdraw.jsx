@@ -148,7 +148,7 @@ export default function Withdraw() {
 
       // Auto-fill withdrawal amount for fixed-term accounts
       if (account.accountTypeName !== "No term") {
-        setWithdrawAmount(account.balance.toString());
+        setWithdrawAmount(Math.round(account.balance).toString());
       } else {
         setWithdrawAmount("");
       }
@@ -489,17 +489,23 @@ export default function Withdraw() {
                           return;
                         }
 
+                        // Round to nearest integer (no decimal places)
+                        const roundedValue = Math.round(numValue);
+
                         // Prevent entering amount greater than balance
-                        if (accountInfo && numValue > accountInfo.balance) {
-                          setWithdrawAmount(accountInfo.balance.toString());
+                        if (accountInfo && roundedValue > accountInfo.balance) {
+                          setWithdrawAmount(
+                            Math.round(accountInfo.balance).toString()
+                          );
                         } else {
-                          setWithdrawAmount(value);
+                          setWithdrawAmount(roundedValue.toString());
                         }
                       }}
                       placeholder="Enter amount"
                       disabled={!accountInfo || isFixedTermAccount()}
                       min="0"
                       max={accountInfo?.balance || undefined}
+                      step="1"
                       className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
                     />
                     <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
@@ -578,7 +584,8 @@ export default function Withdraw() {
                 </li>
                 <li>No-Term accounts: Partial withdrawals allowed</li>
                 <li>
-                  Fixed-Term accounts: Can only withdraw after maturity date
+                  Fixed-Term accounts: Can only withdraw after the first
+                  maturity date
                 </li>
                 <li>
                   Fixed-Term accounts: Must withdraw full balance after maturity
