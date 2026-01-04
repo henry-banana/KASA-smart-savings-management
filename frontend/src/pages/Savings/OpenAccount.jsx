@@ -506,9 +506,16 @@ export default function OpenAccount() {
                           id="idCard"
                           ref={idCardInputRef}
                           value={formData.idCard}
-                          onChange={(e) =>
-                            setFormData({ ...formData, idCard: e.target.value })
-                          }
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              idCard: e.target.value,
+                            });
+                            // Clear error when user starts typing
+                            if (errors.idCard) {
+                              setErrors((prev) => ({ ...prev, idCard: "" }));
+                            }
+                          }}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               e.preventDefault();
