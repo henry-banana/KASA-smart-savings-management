@@ -556,9 +556,9 @@ export default function Withdraw() {
                   {formatVnNumber(minWithdrawalDays)} days
                 </li>
                 <li>No-Term accounts: Partial withdrawals allowed</li>
-                <li>Fixed-Term accounts: Can only withdraw at maturity date</li>
+                <li>Fixed-Term accounts: Can only withdraw after maturity date</li>
                 <li>
-                  Fixed-Term accounts: Must withdraw full balance at maturity
+                  Fixed-Term accounts: Must withdraw full balance after maturity
                 </li>
               </ul>
             </div>
