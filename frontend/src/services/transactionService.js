@@ -32,6 +32,7 @@ export const getAccountInfo = async (accountCode) => {
         maturityDate: savingBook.maturityDate,
         interestRate: savingBook.typeSaving?.interestRate || 0,
         status: savingBook.status,
+        typeSaving: savingBook.typeSaving,
       },
     };
   }

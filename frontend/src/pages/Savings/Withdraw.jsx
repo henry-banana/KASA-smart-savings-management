@@ -141,10 +141,15 @@ export default function Withdraw() {
         return;
       }
 
-      setAccountInfo({
+      const newAccountInfo = {
         ...account,
         daysSinceOpen,
-      });
+        term: account.typeSaving?.term || 0,
+      };
+
+      console.log("Setting account info:", newAccountInfo);
+
+      setAccountInfo(newAccountInfo);
 
       // Auto-fill withdrawal amount for fixed-term accounts
       if (account.accountTypeName !== "No term") {
@@ -243,8 +248,22 @@ export default function Withdraw() {
 
   const isFixedTermMatured = () => {
     if (!accountInfo || accountInfo.term === 0) return false;
+
     const today = new Date();
-    const maturityDate = new Date(accountInfo.maturityDate);
+    const openDate = new Date(accountInfo.openDate);
+
+    // Calculate maturity date: openDate + term (in months)
+    const maturityDate = new Date(openDate);
+    maturityDate.setMonth(maturityDate.getMonth() + accountInfo.term);
+
+    console.log("Debug isFixedTermMatured:", {
+      today: today.toDateString(),
+      openDate: openDate.toDateString(),
+      maturityDate: maturityDate.toDateString(),
+      term: accountInfo.term,
+      isMatured: today >= maturityDate,
+    });
+
     return today >= maturityDate;
   };
 
