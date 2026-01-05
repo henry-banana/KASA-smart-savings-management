@@ -253,7 +253,7 @@ export default function SearchAccounts() {
                     <Input
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      placeholder="Saving Book code or customer name..."
+                      placeholder="Saving Book ID, Citizen number or Name..."
                       className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all text-sm sm:text-base"
                     />
                   </div>
