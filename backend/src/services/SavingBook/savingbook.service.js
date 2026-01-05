@@ -8,9 +8,7 @@ import {
 import { raw } from "express";
 
 class SavingBookService {
-  // =========================================================================
-  // PRIVATE HELPER: XỬ LÝ LAZY LOADING (Phiên bản Fix Mapping)
-  // =========================================================================
+  // PRIVATE HELPER: XỬ LÝ LAZY LOADING 
   async _performRollover(savingBook, typeSaving) {
     // 1. CHUẨN HÓA DỮ LIỆU ĐẦU VÀO (Mapping)
     // Log cho thấy object dùng CamelCase, nhưng DB trả về Lowercase.
@@ -19,14 +17,11 @@ class SavingBookService {
     const bookId = savingBook.bookId || savingBook.bookid;
     const currentMaturityDateStr =
       savingBook.maturityDate || savingBook.maturitydate;
+    let initialInterestAmount = savingBook.interestamount ?? savingBook.interestAmount;
     const currentBalanceRaw =
       savingBook.balance !== undefined
         ? savingBook.balance
         : savingBook.currentbalance;
-    if (!bookId) {
-      console.error("❌ Rollover Error: Missing Book ID");
-      return savingBook;
-    }
 
     let maturityDate = new Date(currentMaturityDateStr);
     const currentDate = new Date();
@@ -53,6 +48,9 @@ class SavingBookService {
       // Lãi nhập vốn
       currentBalance += interestAmount;
 
+      //Lợi nhuận cộng dồn
+      initialInterestAmount += interestAmount;
+      
       // Gia hạn ngày đáo hạn
       maturityDate.setMonth(maturityDate.getMonth() + termMonths);
 
@@ -62,12 +60,13 @@ class SavingBookService {
     // 3. CẬP NHẬT DATABASE & OBJECT TRẢ VỀ
     if (isUpdated) {
       console.log(
-        `✅ Saving changes for Book [${bookId}] - New Balance: ${currentBalance}`
+        `Saving changes for Book [${bookId}] - New Balance: ${currentBalance}`
       );
 
       // A. Update Database (Repo thường yêu cầu đúng tên cột trong DB - Lowercase)
       await savingBookRepository.update(bookId, {
         currentbalance: currentBalance, // Tên cột trong DB
+        interestamount: initialInterestAmount,
         maturitydate: maturityDate.toISOString(), // Tên cột trong DB
       });
     }
@@ -82,6 +81,11 @@ class SavingBookService {
       savingBook.maturityDate = maturityDate.toISOString();
     if (savingBook.maturitydate !== undefined)
       savingBook.maturitydate = maturityDate.toISOString();
+
+    if (savingBook.interestAmount !== undefined)
+      savingBook.interestAmount = initialInterestAmount;
+    else if (savingBook.interestamount !== undefined)
+      savingBook.interestamount = initialInterestAmount;
 
     return savingBook;
   }
@@ -128,6 +132,9 @@ class SavingBookService {
         customerid: customer.customerid,
         currentbalance: initialDeposit,
         maturitydate: new Date().toISOString(),
+        interestamount: 0,
+        initialbalance: initialDeposit,
+        openrate : typeSaving.interest,
       };
 
       // Nếu caller truyền `bookID`, thì gửi kèm `bookid` khi tạo
@@ -172,6 +179,8 @@ class SavingBookService {
       maturityDate: newSavingBook.maturitydate,
       balance: initialDeposit,
       status: newSavingBook.status,
+      interestAmount: newSavingBook.interestamount,
+      initialBalance: newSavingBook.initialbalance,
       typesaving: {
         typesavingId: typeSavingID,
         typeName: typeSaving.typename,
@@ -290,6 +299,8 @@ class SavingBookService {
       maturityDate: savingBook.maturitydate, // Ngày này đã được cập nhật thành tương lai
       balance: savingBook.currentbalance, // Số dư này đã bao gồm lãi
       status: savingBook.status,
+      interestAmount: savingBook.interestamount,
+      initialBalance: savingBook.initialbalance,
 
       typeSaving: {
         typeSavingId: typeSaving.typeid,
@@ -303,7 +314,6 @@ class SavingBookService {
     };
   }
 
-  // Tìm kiếm sổ tiết kiệm
   // Tìm kiếm sổ tiết kiệm
   async searchSavingBook(
     keyword,
@@ -477,6 +487,7 @@ class SavingBookService {
 
     // D. Tính toán tiền lãi phát sinh (interestEarned) và tổng tiền (finalAmount)
     let finalAmount = parseFloat(savingBook.currentbalance);
+    let initialInterestAmount = parseFloat(savingBook.interestamount);
     let interestEarned = 0; // Biến này lưu phần lãi phát sinh thêm (nếu rút trước hạn)
     const maturityDate = new Date(savingBook.maturitydate);
 
@@ -508,6 +519,7 @@ class SavingBookService {
 
         // Cộng lãi dư vào tổng tiền
         finalAmount += interestEarned;
+        initialInterestAmount += interestEarned;
       }
     }
 
@@ -520,7 +532,7 @@ class SavingBookService {
       transactiontype: "WithDraw", // 'Settlement'
       note: `Tất toán sổ tiết kiệm. Gốc: ${
         savingBook.currentbalance
-      }, Lãi: ${interestEarned.toFixed(2)}`,
+      }, Lãi: ${initialInterestAmount.toFixed(2)}`,
     });
 
     // 5. Cập nhật trạng thái và thời gian đóng sổ tiết kiệm
@@ -534,7 +546,7 @@ class SavingBookService {
     return {
       bookId: bookID,
       finalBalance: finalAmount,
-      interest: interestEarned,
+      interest: initialInterestAmount,
       status: "closed", // Hoặc updatedBook.status.toLowerCase()
     };
   }
