@@ -49,7 +49,11 @@ import { CuteStatCard, StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { StatCardSkeleton } from "../../components/ui/loading-skeleton";
 import { Skeleton } from "../../components/ui/skeleton";
-import { formatVnNumber, formatVnNumberWithDecimals, formatPercentText } from "../../utils/numberFormatter";
+import {
+  formatVnNumber,
+  formatVnNumberWithDecimals,
+  formatPercentText,
+} from "../../utils/numberFormatter";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -573,7 +577,8 @@ export default function Dashboard() {
                               </span>
                             </div>
                             <span className="text-sm font-semibold text-gray-900">
-                              {formatVnNumber(item.value)} saving books
+                              {formatVnNumber(item.value)}{" "}
+                              {item.value <= 1 ? "saving book" : "saving books"}
                             </span>
                           </div>
                         ))}
