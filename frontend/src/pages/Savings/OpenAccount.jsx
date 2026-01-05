@@ -45,7 +45,9 @@ import {
   PiggyBankIllustration,
 } from "../../components/CuteComponents";
 import { createSavingBook } from "../../services/savingBookService";
-import { getInterestRates, getRegulations } from "@/services/regulationService";
+import { getAllTypeSavings } from "@/services/typeSavingService";
+import { getRegulations } from "@/services/regulationService";
+import { sortSavingsTypeItems } from "@/utils/savingsTypeSort";
 import { BUSINESS_RULES } from "@/constants/business";
 import { customerService } from "../../services/customerService";
 import { RoleGuard } from "../../components/RoleGuard";
@@ -60,6 +62,7 @@ export default function OpenAccount() {
     customerName: "",
     idCard: "",
     address: "",
+    savingBookCode: "",
     savingsType: "",
     initialDeposit: "",
     openDate: new Date().toISOString().split("T")[0],
@@ -188,7 +191,12 @@ export default function OpenAccount() {
   const handleCloseRegisterCustomerDialog = () => {
     setShowRegisterCustomerDialog(false);
     // Ensure customer fields stay cleared and return focus to ID input
-    setFormData((prev) => ({ ...prev, customerName: "", address: "" }));
+    setFormData((prev) => ({
+      ...prev,
+      customerName: "",
+      address: "",
+      savingBookCode: "",
+    }));
     setLookupStatus("idle");
     setTimeout(() => {
       idCardInputRef.current?.focus();
@@ -262,6 +270,14 @@ export default function OpenAccount() {
       newErrors.customerName = "Please enter customer name";
     if (!formData.idCard) newErrors.idCard = "Please enter ID card number";
     if (!formData.address) newErrors.address = "Please enter address";
+    // Saving Book Code is optional - if provided, validate format
+    if (formData.savingBookCode) {
+      if (!/^\d+$/.test(formData.savingBookCode)) {
+        newErrors.savingBookCode = "Saving Book ID must contain only numbers";
+      } else if (formData.savingBookCode.length > 10) {
+        newErrors.savingBookCode = "Saving Book ID must not exceed 10 digits";
+      }
+    }
     if (!formData.savingsType)
       newErrors.savingsType = "Please select savings type";
     if (!formData.initialDeposit) {
@@ -292,6 +308,7 @@ export default function OpenAccount() {
             customerName: "",
             idCard: "",
             address: "",
+            savingBookCode: "",
             savingsType: "",
             initialDeposit: "",
             openDate: new Date().toISOString().split("T")[0],
@@ -303,9 +320,26 @@ export default function OpenAccount() {
         if (isServerUnavailable(err)) {
           setServerUnavailable(true);
         } else {
-          setErrorMessage(err.message || "Failed to open saving book.");
+          // Handle duplicate book ID error
+          const isDuplicateBookID =
+            err.message?.includes("duplicate") ||
+            err.message?.includes("unique constraint") ||
+            err.status === 409;
+
+          if (isDuplicateBookID) {
+            const friendlyMsg = formData.savingBookCode
+              ? `⚠️ Saving Book ID "${formData.savingBookCode}" already exists! Please try with a different ID or leave it blank to auto-generate.`
+              : `⚠️ Saving Book ID already exists! Please try again.`;
+            setErrorMessage(friendlyMsg);
+            setErrors({
+              savingBookCode:
+                "This ID is already in use. Try a different one or leave blank for auto-generation.",
+            });
+          } else {
+            setErrorMessage(err.message || "Failed to open saving book.");
+            setErrors({ submit: err.message });
+          }
           setShowError(true);
-          setErrors({ submit: err.message });
         }
       } finally {
         setIsSubmitting(false);
@@ -367,37 +401,43 @@ export default function OpenAccount() {
     const fetchTypes = async () => {
       setLoadingTypes(true);
       try {
-        const resp = await getInterestRates();
+        const resp = await getAllTypeSavings();
         if (resp.success && Array.isArray(resp.data)) {
-          const mapped = resp.data.map((ts) => ({
-            id: ts.typeSavingId,
-            name: ts.typeName,
-            description:
-              ts.term === 0
-                ? "Flexible withdrawal"
-                : `Fixed term ${formatVnNumber(ts.term)} month${
-                    ts.term > 1 ? "s" : ""
-                  }`,
-            interestRate: ts.rate,
-            term: ts.term,
-            emoji:
-              ts.term === 0
-                ? "🔄"
-                : ts.term === 3
-                ? "📅"
-                : ts.term === 6
-                ? "⭐"
-                : "🔥",
-            color:
-              ts.term === 0
-                ? "from-[#1A4D8F] to-[#2563A8]"
-                : ts.term === 3
-                ? "from-[#00AEEF] to-[#33BFF3]"
-                : ts.term === 6
-                ? "from-[#60A5FA] to-[#93C5FD]"
-                : "from-[#10B981] to-[#34D399]",
-          }));
-          setSavingTypes(mapped);
+          const mapped = resp.data
+            .filter((ts) => ts.isActive) // Only show active types
+            .map((ts) => ({
+              id: ts.typeSavingId,
+              name: ts.typeName,
+              typeName: ts.typeName, // Add for sorting compatibility
+              description:
+                ts.term === 1 && ts.typeName === "No term"
+                  ? "Flexible withdrawal"
+                  : `Fixed term ${formatVnNumber(ts.term)} month${
+                      ts.term > 1 ? "s" : ""
+                    }`,
+              interestRate: ts.interestRate,
+              term: ts.term,
+              emoji:
+                ts.typeName === "No term"
+                  ? "🔄"
+                  : ts.term === 3
+                  ? "📅"
+                  : ts.term === 6
+                  ? "⭐"
+                  : "🔥",
+              color:
+                ts.typeName === "No term"
+                  ? "from-[#1A4D8F] to-[#2563A8]"
+                  : ts.term === 3
+                  ? "from-[#00AEEF] to-[#33BFF3]"
+                  : ts.term === 6
+                  ? "from-[#60A5FA] to-[#93C5FD]"
+                  : "from-[#10B981] to-[#34D399]",
+            }));
+
+          // Sort by savings type order
+          const sortedTypes = sortSavingsTypeItems(mapped);
+          setSavingTypes(sortedTypes);
         }
       } catch (e) {
         console.error("Failed to load saving types", e);
@@ -629,6 +669,53 @@ export default function OpenAccount() {
                       </p>
                     )}
                   </div>
+
+                  {/* Saving Book ID */}
+                  <div className="space-y-2 md:col-span-2">
+                    <Label
+                      htmlFor="savingBookCode"
+                      className="text-sm text-gray-700 sm:text-base"
+                    >
+                      Saving Book ID
+                    </Label>
+                    <div className="relative flex-1">
+                      <CreditCard
+                        className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2"
+                        size={16}
+                      />
+                      <Input
+                        id="savingBookCode"
+                        type="text"
+                        placeholder="(Optional) Leave blank to auto-generate"
+                        value={formData.savingBookCode || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Only allow numbers
+                          const numericValue = value
+                            .replace(/\D/g, "")
+                            .slice(0, 10);
+                          setFormData({
+                            ...formData,
+                            savingBookCode: numericValue,
+                          });
+                          // Clear error when user starts typing
+                          if (errors.savingBookCode) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              savingBookCode: "",
+                            }));
+                          }
+                        }}
+                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
+                      />
+                    </div>
+                    {errors.savingBookCode && (
+                      <p className="flex items-center gap-1 text-xs text-red-500 sm:text-sm">
+                        <span className="text-xs">⚠️</span>{" "}
+                        {errors.savingBookCode}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -793,12 +880,17 @@ export default function OpenAccount() {
                     </Label>
                     <div className="relative">
                       <Calendar
-                        className="absolute text-gray-400 -translate-y-1/2 left-3 top-1/2"
+                        className="absolute text-gray-400 left-3 top-3"
                         size={16}
                       />
-                      <div className="pl-10 text-sm border border-gray-200 h-11 sm:h-12 rounded-sm bg-gray-50 sm:text-base flex items-center text-gray-700">
-                        {formatDateToDDMMYYYY(formData.openDate)}
-                      </div>
+                      <Input
+                        id="openDate"
+                        type="text"
+                        value={formatDateToDDMMYYYY(formData.openDate)}
+                        disabled
+                        readOnly
+                        className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 bg-gray-50 text-gray-600 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base cursor-not-allowed"
+                      />
                     </div>
                   </div>
                 </div>
@@ -835,6 +927,7 @@ export default function OpenAccount() {
                       customerName: "",
                       idCard: "",
                       address: "",
+                      savingBookCode: "",
                       savingsType: "",
                       initialDeposit: "",
                       openDate: new Date().toISOString().split("T")[0],
@@ -898,7 +991,7 @@ export default function OpenAccount() {
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs text-gray-600 sm:text-sm">
-                    Saving Book Code:
+                    Saving Book ID:
                   </span>
                   <span className="font-semibold text-base sm:text-lg text-[#1A4D8F] truncate">
                     {accountCode}
@@ -937,7 +1030,7 @@ export default function OpenAccount() {
                     Opening Date:
                   </span>
                   <span className="text-sm font-medium sm:text-base">
-                    {createdAccountData?.openDate}
+                    {formatDateToDDMMYYYY(createdAccountData?.openDate)}
                   </span>
                 </div>
               </div>
