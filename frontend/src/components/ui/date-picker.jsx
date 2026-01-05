@@ -14,6 +14,15 @@ export function DatePicker({
   className,
   disabled,
 }) {
+  const [month, setMonth] = React.useState(date || new Date());
+
+  // Update month when date prop changes
+  React.useEffect(() => {
+    if (date) {
+      setMonth(date);
+    }
+  }, [date]);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -37,6 +46,8 @@ export function DatePicker({
       <PopoverContent className="w-auto p-0 rounded-sm" align="start">
         <Calendar
           mode="single"
+          month={month}
+          onMonthChange={setMonth}
           selected={date}
           onSelect={onSelect}
           disabled={disabled}

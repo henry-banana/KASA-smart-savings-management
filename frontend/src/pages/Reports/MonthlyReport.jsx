@@ -41,13 +41,54 @@ const getDifferenceColorClass = (difference) => {
 export default function MonthlyReport() {
   const { user } = useAuthContext();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedMonth, setSelectedMonth] = useState(
+    (new Date().getMonth() + 1).toString()
+  );
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear().toString()
+  );
   const [savingsType, setSavingsType] = useState("all");
   const [reportData, setReportData] = useState(null);
+  const [reportDate, setReportDate] = useState(null);
+  const [reportSavingsType, setReportSavingsType] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Reference for the printable component
   const printComponentRef = useRef(null);
+
+  // Handler for month/year change
+  const handleMonthYearChange = (month, year) => {
+    const newDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+    setSelectedDate(newDate);
+    setSelectedMonth(month);
+    setSelectedYear(year);
+  };
+
+  // Generate array of years (from 2000 to current year)
+  const generateYears = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let i = currentYear; i >= 2000; i--) {
+      years.push(i.toString());
+    }
+    return years;
+  };
+
+  // Check if selected month/year is in the future
+  const isMonthInvalid = () => {
+    const today = new Date();
+    const selectedMonth = selectedDate.getMonth();
+    const selectedYear = selectedDate.getFullYear();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    
+    // If year is in future, it's invalid
+    if (selectedYear > currentYear) return true;
+    // If same year but month is in future, it's invalid
+    if (selectedYear === currentYear && selectedMonth > currentMonth) return true;
+    return false;
+  };
 
   const handleGenerateReport = async () => {
     setLoading(true);
@@ -64,6 +105,8 @@ export default function MonthlyReport() {
       if (response.success && response.data) {
         // Use canonical 'items' field from response
         setReportData(response.data.items || response.data.byDay);
+        setReportDate(selectedDate);
+        setReportSavingsType(savingsType);
       } else {
         setError("NO_DATA");
         setReportData(null);
@@ -154,7 +197,7 @@ export default function MonthlyReport() {
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="space-y-2">
                 <Label>Savings Type</Label>
                 <Select value={savingsType} onValueChange={setSavingsType}>
@@ -171,10 +214,49 @@ export default function MonthlyReport() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Month</Label>
+                <Label>Select Month & Year</Label>
+                <div className="flex gap-2">
+                  <select
+                    value={selectedMonth}
+                    onChange={(e) =>
+                      handleMonthYearChange(e.target.value, selectedYear)
+                    }
+                    className="flex-1 px-3 py-2 rounded-sm border border-gray-300 focus:border-[#1A4D8F] focus:ring-[#1A4D8F] text-sm"
+                  >
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i + 1} value={String(i + 1)}>
+                        {new Date(2024, i).toLocaleDateString("en-US", {
+                          month: "long",
+                        })}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={selectedYear}
+                    onChange={(e) =>
+                      handleMonthYearChange(selectedMonth, e.target.value)
+                    }
+                    className="flex-1 px-3 py-2 rounded-sm border border-gray-300 focus:border-[#1A4D8F] focus:ring-[#1A4D8F] text-sm"
+                  >
+                    {generateYears().map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Or Pick Month</Label>
                 <MonthPicker
                   date={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
+                  onSelect={(date) => {
+                    if (date) {
+                      setSelectedDate(date);
+                      setSelectedMonth((date.getMonth() + 1).toString());
+                      setSelectedYear(date.getFullYear().toString());
+                    }
+                  }}
                   placeholder="Pick a month"
                   maxDate={new Date()}
                 />
@@ -182,7 +264,7 @@ export default function MonthlyReport() {
             </div>
             <Button
               onClick={handleGenerateReport}
-              disabled={loading}
+              disabled={loading || isMonthInvalid()}
               className="w-full h-12 rounded-sm px-6 text-white border border-gray-200 hover:border border-gray-200 disabled:opacity-50"
               style={{
                 background: "linear-gradient(135deg, #1A4D8F 0%, #00AEEF 100%)",
@@ -192,6 +274,11 @@ export default function MonthlyReport() {
                 <>
                   <Loader2 size={18} className="mr-2 animate-spin" />
                   Generating...
+                </>
+              ) : isMonthInvalid() ? (
+                <>
+                  <Search size={18} className="mr-2" />
+                  Invalid Month
                 </>
               ) : (
                 <>
@@ -351,17 +438,20 @@ export default function MonthlyReport() {
                       Savings Type:
                     </span>
                     <span className="font-semibold text-[#1A4D8F] border-b-2 border-dotted border-gray-300 px-2 min-w-[120px]">
-                      {savingsTypes.find((t) => t.value === savingsType)
-                        ?.label || "All Types"}
+                      {savingsTypes.find(
+                        (t) => t.value === (reportSavingsType ?? savingsType)
+                      )?.label || "All Types"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-600 font-medium">Month:</span>
                     <span className="font-semibold text-[#1A4D8F] border-b-2 border-dotted border-gray-300 px-2 min-w-[120px]">
-                      {selectedDate.toLocaleDateString("en-US", {
-                        month: "long",
-                        year: "numeric",
-                      })}
+                      {reportDate
+                        ? reportDate.toLocaleDateString("en-US", {
+                            month: "long",
+                            year: "numeric",
+                          })
+                        : "No data"}
                     </span>
                   </div>
                 </div>
@@ -419,15 +509,16 @@ export default function MonthlyReport() {
                           {index + 1}
                         </td>
                         <td className="py-3 px-6 text-left text-gray-800 font-medium border-r border-gray-200">
-                          {new Date(
-                            selectedDate.getFullYear(),
-                            selectedDate.getMonth(),
-                            row.day
-                          ).toLocaleDateString("en-US", {
-                            weekday: "short",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {reportDate &&
+                            new Date(
+                              reportDate.getFullYear(),
+                              reportDate.getMonth(),
+                              row.day
+                            ).toLocaleDateString("en-US", {
+                              weekday: "short",
+                              month: "short",
+                              day: "numeric",
+                            })}
                         </td>
                         <td className="py-3 px-6 text-right text-green-600 font-semibold border-r border-gray-200">
                           {formatVnNumber(

@@ -70,7 +70,14 @@ const getDifferenceColorClass = (difference) => {
 
 export default function DailyReport() {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedMonth, setSelectedMonth] = useState(
+    (new Date().getMonth() + 1).toString()
+  );
+  const [selectedYear, setSelectedYear] = useState(
+    new Date().getFullYear().toString()
+  );
   const [reportData, setReportData] = useState(null);
+  const [reportDate, setReportDate] = useState(null);
   const [depositStats, setDepositStats] = useState(null);
   const [withdrawalStats, setWithdrawalStats] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -125,6 +132,7 @@ export default function DailyReport() {
       }
 
       setReportData(reportResponse.data);
+      setReportDate(selectedDate);
       setDepositStats(depositResponse.success ? depositResponse.data : null);
       setWithdrawalStats(
         withdrawalResponse.success ? withdrawalResponse.data : null
@@ -138,12 +146,27 @@ export default function DailyReport() {
           "Failed to generate report. Please try again or select a different date."
         );
       }
-      setReportData(null);
-      setDepositStats(null);
-      setWithdrawalStats(null);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handler for month/year change
+  const handleMonthYearChange = (month, year) => {
+    const newDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+    setSelectedDate(newDate);
+    setSelectedMonth(month);
+    setSelectedYear(year);
+  };
+
+  // Generate array of years (from 2000 to current year)
+  const generateYears = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let i = currentYear; i >= 2000; i--) {
+      years.push(i.toString());
+    }
+    return years;
   };
 
   // Prefer OpenAPI fields; keep fallback for older mock shape
@@ -219,10 +242,49 @@ export default function DailyReport() {
           <CardContent className="pt-6">
             <div className="flex flex-col items-end gap-4 sm:flex-row">
               <div className="flex-1 w-full space-y-2">
+                <Label>Select Month & Year</Label>
+                <div className="flex gap-2">
+                  <select
+                    value={selectedMonth}
+                    onChange={(e) =>
+                      handleMonthYearChange(e.target.value, selectedYear)
+                    }
+                    className="flex-1 px-3 py-2 rounded-sm border border-gray-300 focus:border-[#667eea] focus:ring-[#667eea] text-sm"
+                  >
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i + 1} value={String(i + 1)}>
+                        {new Date(2024, i).toLocaleDateString("en-US", {
+                          month: "long",
+                        })}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={selectedYear}
+                    onChange={(e) =>
+                      handleMonthYearChange(selectedMonth, e.target.value)
+                    }
+                    className="flex-1 px-3 py-2 rounded-sm border border-gray-300 focus:border-[#667eea] focus:ring-[#667eea] text-sm"
+                  >
+                    {generateYears().map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="flex-1 w-full space-y-2">
                 <Label htmlFor="reportDate">Select Date</Label>
                 <DatePicker
                   date={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
+                  onSelect={(date) => {
+                    if (date) {
+                      setSelectedDate(date);
+                      setSelectedMonth((date.getMonth() + 1).toString());
+                      setSelectedYear(date.getFullYear().toString());
+                    }
+                  }}
                   placeholder="Pick a date"
                   disabled={(date) => {
                     const today = new Date();
@@ -529,7 +591,8 @@ export default function DailyReport() {
             <Card className="overflow-hidden border border-gray-200 rounded-sm">
               <CardHeader className="border-b-2 border-purple-100 bg-linear-to-r from-blue-50 to-purple-50">
                 <CardTitle className="text-xl text-gray-800">
-                  Detailed Report - {format(selectedDate, "dd/MM/yyyy")}
+                  Detailed Report -{" "}
+                  {reportDate ? format(reportDate, "dd/MM/yyyy") : "No data"}
                 </CardTitle>
               </CardHeader>
               <CardContent>
