@@ -58,6 +58,7 @@ import {
 } from "@/utils/numberFormatter";
 import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
+import { sortSavingsTypeItems } from "@/utils/savingsTypeSort";
 
 export default function RegulationSettings() {
   // const { user } = useAuth();
@@ -101,7 +102,9 @@ export default function RegulationSettings() {
         try {
           const ratesResponse = await getInterestRates();
           if (ratesResponse.success && ratesResponse.data) {
-            setInterestRates(ratesResponse.data);
+            // Sort by savings type order
+            const sortedRates = sortSavingsTypeItems(ratesResponse.data);
+            setInterestRates(sortedRates);
           } else {
             // Fallback: if getInterestRates fails, try getAllTypeSavings
             const typesResponse = await getAllTypeSavings();
@@ -113,7 +116,9 @@ export default function RegulationSettings() {
                 term: ts.term,
                 editable: true,
               }));
-              setInterestRates(formattedRates);
+              // Sort by savings type order
+              const sortedRates = sortSavingsTypeItems(formattedRates);
+              setInterestRates(sortedRates);
             }
           }
         } catch (err) {
@@ -129,7 +134,9 @@ export default function RegulationSettings() {
                 term: ts.term,
                 editable: true,
               }));
-              setInterestRates(formattedRates);
+              // Sort by savings type order
+              const sortedRates = sortSavingsTypeItems(formattedRates);
+              setInterestRates(sortedRates);
             }
           } catch (fallbackErr) {
             console.error(
