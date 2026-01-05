@@ -38,14 +38,16 @@ class RegulationService {
   // Lấy danh sách lãi suất các loại tiết kiệm
   async getRegulationRates() {
     const allTypeSaving = await typeSavingRepository.findAll();
-    const result = allTypeSaving.map((typeSaving) => ({
-      typeSavingId: typeSaving.typeid,
-      typeName: typeSaving.typename,
-      rate: typeSaving.interest,
-      minimumBalance: typeSaving.minimumbalance,
-      term: typeSaving.termperiod,
-      editable: true,
-    }));
+    const result = allTypeSaving
+      .filter((typeSaving) => typeSaving.isactive !== false) // Exclude inactive types
+      .map((typeSaving) => ({
+        typeSavingId: typeSaving.typeid,
+        typeName: typeSaving.typename,
+        rate: typeSaving.interest,
+        minimumBalance: typeSaving.minimumbalance,
+        term: typeSaving.termperiod,
+        editable: true,
+      }));
 
     return result;
   }
