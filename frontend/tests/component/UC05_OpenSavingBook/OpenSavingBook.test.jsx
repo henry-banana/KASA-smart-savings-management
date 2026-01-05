@@ -7,6 +7,7 @@ const mockCreateSavingBook = jest.fn();
 const mockGetInterestRates = jest.fn();
 const mockGetRegulations = jest.fn();
 const mockSearchCustomerByCitizenId = jest.fn();
+const mockGetAllTypeSavings = jest.fn();
 
 jest.mock("../../../src/services/savingBookService", () => ({
   createSavingBook: (...args) => mockCreateSavingBook(...args),
@@ -15,6 +16,10 @@ jest.mock("../../../src/services/savingBookService", () => ({
 jest.mock("../../../src/services/regulationService", () => ({
   getInterestRates: (...args) => mockGetInterestRates(...args),
   getRegulations: (...args) => mockGetRegulations(...args),
+}));
+
+jest.mock("../../../src/services/typeSavingService", () => ({
+  getAllTypeSavings: (...args) => mockGetAllTypeSavings(...args),
 }));
 
 jest.mock("../../../src/services/customerService", () => ({
@@ -67,16 +72,36 @@ describe("UC05 - Open Saving Book", () => {
     jest.spyOn(console, "log").mockImplementation(() => {});
     localStorage.clear();
 
-    mockGetRegulations.mockResolvedValueOnce({
+    mockGetRegulations.mockResolvedValue({
       success: true,
       data: { minimumBalance: 100000 },
     });
 
-    mockGetInterestRates.mockResolvedValueOnce({
+    mockGetInterestRates.mockResolvedValue({
       success: true,
       data: [
         { typeSavingId: "1", typeName: "Flexible", term: 0, rate: 0.05 },
         { typeSavingId: "2", typeName: "3-Month", term: 3, rate: 0.08 },
+      ],
+    });
+
+    mockGetAllTypeSavings.mockResolvedValue({
+      success: true,
+      data: [
+        {
+          typeSavingId: "1",
+          typeName: "Flexible",
+          term: 1,
+          interestRate: 0.05,
+          isActive: true,
+        },
+        {
+          typeSavingId: "2",
+          typeName: "3-Month",
+          term: 3,
+          interestRate: 0.08,
+          isActive: true,
+        },
       ],
     });
   });
@@ -112,7 +137,7 @@ describe("UC05 - Open Saving Book", () => {
     it("should load saving types on mount", async () => {
       render(<OpenAccount />);
       await waitFor(() => {
-        expect(mockGetInterestRates).toHaveBeenCalled();
+        expect(mockGetAllTypeSavings).toHaveBeenCalled();
       });
     });
 
