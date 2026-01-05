@@ -290,16 +290,56 @@ class SavingBookService {
     if (savingBook.status === "Open") {
       savingBook = await this._performRollover(savingBook, typeSaving);
     }
+    
+     // D. Tính toán tiền lãi phát sinh (interestEarned) và tổng tiền (finalAmount)
+    let finalAmount = parseFloat(savingBook.currentbalance);
+    let finalInterest = parseFloat(savingBook.interestamount);
+    let interestEarned = 0; // Biến này lưu phần lãi phát sinh thêm (nếu rút trước hạn)
+    const maturityDate = new Date(savingBook.maturitydate);
+    const currentDate = new Date();
+    // Chỉ tính toán phức tạp nếu là Sổ Có Kỳ Hạn
+    if (typeSaving.typename !== "No term" && typeSaving.termperiod > 0) {
+      // Nếu ngày hiện tại nhỏ hơn ngày đáo hạn kế tiếp => RÚT TRƯỚC HẠN
+      if (currentDate < maturityDate) {
+        // 1. Tìm ngày đáo hạn gần nhất (Last Maturity)
+        const lastMaturityDate = new Date(maturityDate);
+        lastMaturityDate.setMonth(
+          lastMaturityDate.getMonth() - typeSaving.termperiod
+        );
+
+        // 2. Tính số tháng dư ra (Surplus) - Bỏ qua ngày lẻ
+        let surplusMonths = 0;
+        let monthsDiff =
+          (currentDate.getFullYear() - lastMaturityDate.getFullYear()) * 12;
+        monthsDiff -= lastMaturityDate.getMonth();
+        monthsDiff += currentDate.getMonth();
+
+        if (currentDate.getDate() < lastMaturityDate.getDate()) {
+          monthsDiff--;
+        }
+        surplusMonths = Math.max(0, monthsDiff);
+
+        // 3. Tính lãi phần dư (0.15%)
+        const demandInterestRate = 0.0015;
+        interestEarned = finalAmount * demandInterestRate * surplusMonths;
+
+        // Cộng lãi dư vào tổng tiền
+        finalInterest += interestEarned;
+      }
+    }
+
     return {
       bookId: savingBook.bookid,
       citizenId: customer.citizenid,
       customerName: customer.fullname,
       typeSavingId: typeSaving.typeid,
       openDate: savingBook.registertime,
+      closeDate: savingBook.closetime,
       maturityDate: savingBook.maturitydate, // Ngày này đã được cập nhật thành tương lai
       balance: savingBook.currentbalance, // Số dư này đã bao gồm lãi
       status: savingBook.status,
       interestAmount: savingBook.interestamount,
+      interestAmountWithdraw: finalInterest, // trả về số lãi bao gồm rút trước hạn -- chỉ dành cho mục đích hiển thị ở chức năng tất toán
       initialBalance: savingBook.initialbalance,
 
       typeSaving: {
@@ -545,8 +585,9 @@ class SavingBookService {
     // 6. Trả về kết quả theo định dạng yêu cầu
     return {
       bookId: bookID,
-      finalBalance: finalAmount,
+      finalBalance: finalAmount,  
       interest: initialInterestAmount,
+      initialBalance: savingBook.initialbalance,
       status: "closed", // Hoặc updatedBook.status.toLowerCase()
     };
   }
