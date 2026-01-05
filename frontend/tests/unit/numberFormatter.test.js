@@ -11,12 +11,17 @@ describe("numberFormatter", () => {
     });
 
     it("should format decimal numbers with Vietnamese comma separator", () => {
-      const result = formatVnNumber(1234.5);
+      const result = formatVnNumber(1234.5, {
+        noFloor: true,
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      });
       expect(result).toBe("1.234,5");
     });
 
     it("should respect custom fraction digit options", () => {
       const result = formatVnNumber(1234.567, {
+        noFloor: true,
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       });
@@ -44,7 +49,11 @@ describe("numberFormatter", () => {
     });
 
     it("should format negative numbers with minus sign", () => {
-      const result = formatVnNumber(-1234.5);
+      const result = formatVnNumber(-1234.5, {
+        noFloor: true,
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      });
       expect(result).toBe("-1.234,5");
     });
   });

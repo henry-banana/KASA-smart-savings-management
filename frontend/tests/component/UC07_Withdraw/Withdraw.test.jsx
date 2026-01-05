@@ -615,7 +615,7 @@ describe("UC07 - Make Withdrawal", () => {
 
       // Verify submit button is disabled for non-matured fixed-term accounts
       const submitBtn = screen.getByRole("button", {
-        name: /close savings account/i,
+        name: /close savings book/i,
       });
       expect(submitBtn).toBeDisabled();
     });
@@ -667,10 +667,10 @@ describe("UC07 - Make Withdrawal", () => {
         { timeout: 3000 }
       );
 
-      // For matured fixed-term accounts, the "Close Savings Account" button should be enabled
+      // For matured fixed-term accounts, the "Close Savings Book" button should be enabled
       // Check that the button can be clicked and withdrawal succeeds
       const submitBtn = screen.getByRole("button", {
-        name: /close savings account/i,
+        name: /close savings book/i,
       });
 
       // Wait for button to not be disabled (maturity check should pass)
