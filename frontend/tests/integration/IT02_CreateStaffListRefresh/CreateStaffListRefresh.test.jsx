@@ -169,6 +169,7 @@ describe("Integration: IT02 - Create Staff and List Refresh", () => {
 
   it("should fill form with valid data and submit successfully", async () => {
     const user = userEvent.setup({ delay: null });
+    // First call: initial render
     mockGetAllUsers.mockResolvedValueOnce([
       {
         id: "user-1",
@@ -179,6 +180,33 @@ describe("Integration: IT02 - Create Staff and List Refresh", () => {
         status: "Approved",
       },
     ]);
+    // Second call: after user creation (fetchUsers refresh)
+    mockGetAllUsers.mockResolvedValueOnce([
+      {
+        id: "user-1",
+        fullName: "Alice Smith",
+        email: "alice@example.com",
+        roleName: "Teller",
+        branchName: "Thủ Đức",
+        status: "Approved",
+      },
+      {
+        id: "user-3",
+        fullName: "Carol White",
+        email: "carol@example.com",
+        roleName: "Teller",
+        branchName: "Thủ Đức",
+        status: "Approved",
+      },
+    ]);
+    // Ensure createUser is mocked for this test
+    mockCreateUser.mockResolvedValueOnce({
+      id: "user-3",
+      fullName: "Carol White",
+      email: "carol@example.com",
+      roleName: "Teller",
+      branchName: "Thủ Đức",
+    });
     render(<UserManagement />);
 
     await waitFor(() => {
@@ -210,7 +238,7 @@ describe("Integration: IT02 - Create Staff and List Refresh", () => {
         branchName: expect.any(String),
       });
     });
-  }, 10000); // Increase timeout to 10 seconds for when tests run together with other suites
+  }, 15000); // Increase timeout to 15 seconds for when tests run together with other suites
 
   it("should submit form and close dialog on success", async () => {
     const user = userEvent.setup({ delay: null });
