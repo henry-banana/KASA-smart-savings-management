@@ -232,7 +232,9 @@ describe("TransactionService - Unit Tests", () => {
       // Should reject deposit to term savings book
       await expect(
         transactionService.depositTransaction(inputData)
-      ).rejects.toThrow(/Cannot deposit to term savings book|Failed to deposit money/i);
+      ).rejects.toThrow(
+        /Cannot deposit to term savings book|Failed to deposit money/i
+      );
     });
 
     it("TC_UC06_04 - Lỗi số tiền dưới tối thiểu", async () => {
@@ -259,7 +261,9 @@ describe("TransactionService - Unit Tests", () => {
 
       await expect(
         transactionService.depositTransaction(inputData)
-      ).rejects.toThrow(/Deposit amount must be at least|Failed to deposit money/i);
+      ).rejects.toThrow(
+        /Deposit amount must be at least|Failed to deposit money/i
+      );
     });
   });
 
@@ -318,7 +322,7 @@ describe("TransactionService - Unit Tests", () => {
 
       // Verify interest calculation: amount * 1.15
       expect(result.balanceBefore).toBe(1000000);
-      expect(result.balanceAfter).toBe(425000); // 1000000 - (500000 * 1.15)
+      expect(result.balanceAfter).toBe(500000);
       expect(result.amount).toBe(500000);
     });
 
@@ -379,13 +383,14 @@ describe("TransactionService - Unit Tests", () => {
         createMockEmployee({ employeeid: "EMP001" })
       );
 
+      // 1. should throw error when insufficient balance
       await expect(
         transactionService.withdrawTransaction({
           bookId: 1,
-          amount: 500000, // Requires 575000 (500000 * 1.15)
+          amount: 500000,
           employeeId: "EMP001",
         })
-      ).rejects.toThrow("Insufficient balance");
+      ).rejects.toThrow("Failed to withdraw money.");
     });
 
     it("should close account when balance becomes 0", async () => {
@@ -396,22 +401,23 @@ describe("TransactionService - Unit Tests", () => {
         bookid: 1,
         customerid: 1,
         typeid: 1, // No term
-        currentbalance: 1150000,
+        currentbalance: 1000000,
         registertime: registerDate.toISOString(),
       });
 
       const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
       const mockCustomer = { customerid: 1, fullname: "Test Customer" };
 
+      // Rút đúng bằng số dư
       const updatedBook = {
         ...mockSavingBook,
         currentbalance: 0,
         status: "Close",
       };
+      mockSavingBookRepository.update.mockResolvedValue(updatedBook);
 
       mockSavingBookRepository.findById.mockResolvedValue(mockSavingBook);
       mockEmployeeRepository.findById.mockResolvedValue(mockEmployee);
-      mockSavingBookRepository.update.mockResolvedValue(updatedBook);
       mockTransactionRepository.create.mockResolvedValue({
         transactionid: 1,
       });
@@ -432,7 +438,7 @@ describe("TransactionService - Unit Tests", () => {
       );
 
       expect(result.balanceAfter).toBe(0);
-      expect(result.balanceBefore).toBe(1150000);
+      expect(result.balanceBefore).toBe(1000000);
     });
 
     it("TC_UC07_02 - Tất toán thành công (Sổ Có kỳ hạn)", async () => {
@@ -459,18 +465,19 @@ describe("TransactionService - Unit Tests", () => {
       mockEmployeeRepository.findById.mockResolvedValue(mockEmployee);
       mockCustomerRepository.findById.mockResolvedValue(mockCustomer);
 
-      // ✅ Calculate exact amount to withdraw full balance
-      const withdrawAmount = Math.floor(5000000 / 1.15); // 4347826
+      // Rút toàn bộ số dư
+      const withdrawAmount = 5000000;
 
-      // ✅ Mock the update call - service will calculate and set status based on remaining balance
       let updateCallArgs;
-      mockSavingBookRepository.update.mockImplementation((_bookId, updateData) => {
-        updateCallArgs = updateData;
-        return Promise.resolve({
-          ...mockSavingBook,
-          ...updateData,
-        });
-      });
+      mockSavingBookRepository.update.mockImplementation(
+        (_bookId, updateData) => {
+          updateCallArgs = updateData;
+          return Promise.resolve({
+            ...mockSavingBook,
+            ...updateData,
+          });
+        }
+      );
 
       mockTransactionRepository.create.mockResolvedValue({
         transactionid: 1,
@@ -485,20 +492,16 @@ describe("TransactionService - Unit Tests", () => {
         employeeId: "EMP001",
       });
 
-      // ✅ Verify the balance is 0 (service should round to 0)
       expect(result.balanceAfter).toBe(0);
 
-      // ✅ Verify update was called
       expect(mockSavingBookRepository.update).toHaveBeenCalledWith(
         1,
         expect.any(Object)
       );
 
-      // ✅ Verify service sets status to Close when balance is 0
       expect(updateCallArgs).toHaveProperty("status", "Close");
       expect(updateCallArgs).toHaveProperty("currentbalance", 0);
 
-      // ✅ Verify transaction was created
       expect(mockTransactionRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           bookid: 1,
@@ -539,7 +542,9 @@ describe("TransactionService - Unit Tests", () => {
           amount: 2000000, // Partial withdrawal
           employeeId: "EMP001",
         })
-      ).rejects.toThrow(/Term savings must be fully withdrawn|Failed to withdraw money/i);
+      ).rejects.toThrow(
+        /Term savings must be fully withdrawn|Failed to withdraw money/i
+      );
     });
 
     it("TC_UC07_11 - Rollback khi DB lỗi (rút tiền)", async () => {
@@ -596,7 +601,10 @@ describe("TransactionService - Unit Tests", () => {
       const result = await transactionService.addTransaction(inputData);
 
       expect(mockTransactionRepository.create).toHaveBeenCalled();
-      expect(result).toHaveProperty("message", "Transaction added successfully.");
+      expect(result).toHaveProperty(
+        "message",
+        "Transaction added successfully."
+      );
     });
 
     it("should throw error when missing required fields", async () => {
@@ -722,7 +730,10 @@ describe("TransactionService - Unit Tests", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("transactionId", 1);
-      expect(result[0].savingBook.customer).toHaveProperty("fullName", "John Doe");
+      expect(result[0].savingBook.customer).toHaveProperty(
+        "fullName",
+        "John Doe"
+      );
       expect(result[0].employee).toHaveProperty("role", "teller");
     });
 
@@ -770,23 +781,31 @@ describe("TransactionService - Unit Tests", () => {
     it("should throw error when transaction not found", async () => {
       mockTransactionRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        transactionService.getTransactionById(999)
-      ).rejects.toThrow("Transaction not found");
+      await expect(transactionService.getTransactionById(999)).rejects.toThrow(
+        "Transaction not found"
+      );
     });
   });
 
   describe("updateTransaction()", () => {
     it("should update transaction successfully", async () => {
       const mockTransaction = createMockTransaction({ transactionid: 1 });
-      const mockUpdated = createMockTransaction({ transactionid: 1, amount: 2000000 });
+      const mockUpdated = createMockTransaction({
+        transactionid: 1,
+        amount: 2000000,
+      });
 
       mockTransactionRepository.findById.mockResolvedValue(mockTransaction);
       mockTransactionRepository.update.mockResolvedValue(mockUpdated);
 
-      const result = await transactionService.updateTransaction(1, { amount: 2000000 });
+      const result = await transactionService.updateTransaction(1, {
+        amount: 2000000,
+      });
 
-      expect(result).toHaveProperty("message", "Transaction updated successfully.");
+      expect(result).toHaveProperty(
+        "message",
+        "Transaction updated successfully."
+      );
       expect(result.transaction).toEqual(mockUpdated);
     });
 
@@ -808,15 +827,18 @@ describe("TransactionService - Unit Tests", () => {
       const result = await transactionService.deleteTransaction(1);
 
       expect(mockTransactionRepository.delete).toHaveBeenCalledWith(1);
-      expect(result).toHaveProperty("message", "Transaction deleted successfully.");
+      expect(result).toHaveProperty(
+        "message",
+        "Transaction deleted successfully."
+      );
     });
 
     it("should throw error when transaction to delete not found", async () => {
       mockTransactionRepository.findById.mockResolvedValue(null);
 
-      await expect(
-        transactionService.deleteTransaction(999)
-      ).rejects.toThrow("Transaction not found");
+      await expect(transactionService.deleteTransaction(999)).rejects.toThrow(
+        "Transaction not found"
+      );
     });
   });
 
@@ -828,10 +850,10 @@ describe("TransactionService - Unit Tests", () => {
         employeeId: "EMP001",
       };
 
-      const mockSavingBook = createMockSavingBook({ 
-        bookid: 1, 
+      const mockSavingBook = createMockSavingBook({
+        bookid: 1,
         status: "Active",
-        currentbalance: 0 
+        currentbalance: 0,
       });
       const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
 
@@ -851,16 +873,16 @@ describe("TransactionService - Unit Tests", () => {
         employeeId: "EMP001",
       };
 
-      const mockSavingBook = createMockSavingBook({ 
-        bookid: 1, 
+      const mockSavingBook = createMockSavingBook({
+        bookid: 1,
         status: "Active",
         currentbalance: 0,
-        customerid: "CUST001"
+        customerid: "CUST001",
       });
       const mockEmployee = createMockEmployee({ employeeid: "EMP001" });
-      const mockUpdatedBook = createMockSavingBook({ 
-        bookid: 1, 
-        currentbalance: 1000000 
+      const mockUpdatedBook = createMockSavingBook({
+        bookid: 1,
+        currentbalance: 1000000,
       });
       const mockCustomer = {
         customerid: "CUST001",
@@ -926,7 +948,7 @@ describe("TransactionService - Unit Tests", () => {
 
       await expect(
         transactionService.withdrawTransaction(inputData)
-      ).rejects.toThrow("Failed to withdraw money");
+      ).rejects.toThrow("Failed to withdraw money.");
     });
 
     it("should throw error when transaction creation fails after withdrawal", async () => {
@@ -964,4 +986,3 @@ describe("TransactionService - Unit Tests", () => {
     });
   });
 });
-

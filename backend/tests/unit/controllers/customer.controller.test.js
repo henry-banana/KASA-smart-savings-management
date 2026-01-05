@@ -17,6 +17,7 @@ const {
   updateCustomer,
   deleteCustomer,
   searchCustomer,
+  getCustomerByCitizenId,
 } = await import("../../../src/controllers/Customer/customer.controller.js");
 
 describe("CustomerController - Unit Tests", () => {
@@ -540,6 +541,122 @@ describe("CustomerController - Unit Tests", () => {
           data: mockResult,
         })
       );
+    });
+  });
+
+  describe("getCustomerByCitizenId()", () => {
+    it("should return customer when found by citizenId", async () => {
+      const req = createMockRequest({
+        query: {
+          citizenId: "123456789",
+        },
+      });
+      const res = createMockResponse();
+
+      const mockCustomer = {
+        customerid: 1,
+        fullname: "John Doe",
+        citizenid: "123456789",
+        street: "Main St",
+        district: "Downtown",
+        province: "Province A",
+      };
+
+      mockCustomerService.findCustomerByCitizenId = jest.fn().mockResolvedValue(mockCustomer);
+
+      await getCustomerByCitizenId(req, res);
+
+      expect(mockCustomerService.findCustomerByCitizenId).toHaveBeenCalledWith("123456789");
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Customer retrieved successfully",
+        success: true,
+        data: {
+          customer: {
+            fullName: "John Doe",
+            citizenId: "123456789",
+            street: "Main St",
+            district: "Downtown",
+            province: "Province A",
+          },
+        },
+      });
+    });
+
+    it("should return 400 when citizenId is missing", async () => {
+      const req = createMockRequest({
+        query: {},
+      });
+      const res = createMockResponse();
+
+      await getCustomerByCitizenId(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: "Citizen ID is required in query parameters",
+      });
+    });
+
+    it("should return 404 when customer not found", async () => {
+      const req = createMockRequest({
+        query: {
+          citizenId: "999999999",
+        },
+      });
+      const res = createMockResponse();
+
+      mockCustomerService.findCustomerByCitizenId = jest.fn().mockResolvedValue(null);
+
+      await getCustomerByCitizenId(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: "Customer not found",
+      });
+    });
+
+    it("should return 500 on service error", async () => {
+      const req = createMockRequest({
+        query: {
+          citizenId: "123456789",
+        },
+      });
+      const res = createMockResponse();
+
+      mockCustomerService.findCustomerByCitizenId = jest.fn().mockRejectedValue(
+        new Error("Database error")
+      );
+
+      await getCustomerByCitizenId(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: "Database error",
+      });
+    });
+
+    it("should use error status if provided", async () => {
+      const req = createMockRequest({
+        query: {
+          citizenId: "123456789",
+        },
+      });
+      const res = createMockResponse();
+
+      const error = new Error("Custom error");
+      error.status = 400;
+      mockCustomerService.findCustomerByCitizenId = jest.fn().mockRejectedValue(error);
+
+      await getCustomerByCitizenId(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: "Custom error",
+      });
     });
   });
 });

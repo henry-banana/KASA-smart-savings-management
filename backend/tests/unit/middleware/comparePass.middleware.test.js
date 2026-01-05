@@ -52,6 +52,17 @@ describe("ComparePassMiddleware - Unit Tests", () => {
         comparePassword(plainPassword, hashedPassword)
       ).rejects.toThrow("Comparison failed");
     });
+
+    it("should throw TypeError when plainPassword is not a string", async () => {
+      await expect(comparePassword(null, "$2b$12$hashedpassword")).rejects.toThrow(TypeError);
+      await expect(comparePassword(123, "$2b$12$hashedpassword")).rejects.toThrow(TypeError);
+      await expect(comparePassword(undefined, "$2b$12$hashedpassword")).rejects.toThrow(TypeError);
+    });
+
+    it("should throw TypeError when passwordHash is not a string", async () => {
+      await expect(comparePassword("password", null)).rejects.toThrow(TypeError);
+      await expect(comparePassword("password", 123)).rejects.toThrow(TypeError);
+      await expect(comparePassword("password", undefined)).rejects.toThrow(TypeError);
+    });
   });
 });
-

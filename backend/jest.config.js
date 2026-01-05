@@ -6,11 +6,9 @@ export default {
   ],
   collectCoverageFrom: [
     "src/services/**/*.js",
-    // "src/repositories/**/*.js",
     "src/models/**/*.js",
     "src/middleware/**/*.js",
     "src/controllers/**/*.js",
-    // "src/utils/**/*.js",
     "!src/config/**",
     "!src/index.js",
     "!**/node_modules/**",
