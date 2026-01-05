@@ -385,7 +385,7 @@ export default function Withdraw() {
                       setAccountInfo(null);
                       setError("");
                     }}
-                    placeholder="Enter Saving Book ID, ID citizen number (e.g., 12345)"
+                    placeholder="Enter Saving Book ID (e.g., 12345)"
                     className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
