@@ -1,0 +1,574 @@
+├── backend/
+│   ├── coverage/
+│   │   ├── lcov-report/
+│   │   │   ├── controllers/
+│   │   │   │   ├── Branch/
+│   │   │   │   │   ├── branch.controller.js.html (6.3 KB)
+│   │   │   │   │   └── index.html (4.4 KB)
+│   │   │   │   ├── Customer/
+│   │   │   │   │   ├── customer.controller.js.html (26.2 KB)
+│   │   │   │   │   └── index.html (4.4 KB)
+│   │   │   │   ├── Dashboard/
+│   │   │   │   │   ├── dashboard.controller.js.html (8.7 KB)
+│   │   │   │   │   └── index.html (4.4 KB)
+│   │   │   │   ├── Employee/
+│   │   │   │   │   ├── employee.controller.js.html (18.2 KB)
+│   │   │   │   │   └── index.html (4.4 KB)
+│   │   │   │   ├── Regulation/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── regulation.controller.js.html (18.2 KB)
+│   │   │   │   ├── Report/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── report.controller.js.html (18.3 KB)
+│   │   │   │   ├── SavingBook/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── savingBook.controller.js.html (26.0 KB)
+│   │   │   │   ├── Transaction/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── transaction.controller.js.html (23.4 KB)
+│   │   │   │   ├── TypeSaving/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── typeSaving.controller.js.html (17.8 KB)
+│   │   │   │   └── UserAccount/
+│   │   │   │       ├── changePassword.controller.js.html (13.6 KB)
+│   │   │   │       ├── forgotPassword.controller.js.html (19.4 KB)
+│   │   │   │       ├── index.html (7.3 KB)
+│   │   │   │       ├── login.controller.js.html (15.5 KB)
+│   │   │   │       ├── resetPassword.controller.js.html (12.6 KB)
+│   │   │   │       ├── userAccount.controller.js.html (35.2 KB)
+│   │   │   │       └── verifyOTP.controller.js.html (8.9 KB)
+│   │   │   ├── middleware/
+│   │   │   │   ├── auth.middleware.js.html (11.7 KB)
+│   │   │   │   ├── comparePass.middleware.js.html (6.5 KB)
+│   │   │   │   ├── hashing.middleware.js.html (5.0 KB)
+│   │   │   │   ├── index.html (7.1 KB)
+│   │   │   │   ├── logger.middleware.js.html (12.1 KB)
+│   │   │   │   ├── role.middleware.js.html (7.2 KB)
+│   │   │   │   └── validation.middleware.js.html (7.2 KB)
+│   │   │   ├── models/
+│   │   │   │   ├── BaseModel.js.html (15.7 KB)
+│   │   │   │   ├── Branch.js.html (6.0 KB)
+│   │   │   │   ├── Customer.js.html (5.9 KB)
+│   │   │   │   ├── Employee.js.html (11.2 KB)
+│   │   │   │   ├── index.html (9.5 KB)
+│   │   │   │   ├── Role.js.html (5.9 KB)
+│   │   │   │   ├── SavingBook.js.html (29.0 KB)
+│   │   │   │   ├── Transaction.js.html (20.0 KB)
+│   │   │   │   ├── TypeSaving.js.html (4.1 KB)
+│   │   │   │   └── UserAccount.js.html (4.1 KB)
+│   │   │   ├── repositories/
+│   │   │   │   ├── Branch/
+│   │   │   │   │   ├── BranchRepository.js.html (6.5 KB)
+│   │   │   │   │   └── index.html (4.3 KB)
+│   │   │   │   ├── Customer/
+│   │   │   │   │   ├── CustomerRepository.js.html (9.0 KB)
+│   │   │   │   │   └── index.html (4.3 KB)
+│   │   │   │   ├── Employee/
+│   │   │   │   │   ├── EmployeeRepository.js.html (7.1 KB)
+│   │   │   │   │   └── index.html (4.4 KB)
+│   │   │   │   ├── Report/
+│   │   │   │   │   ├── index.html (4.3 KB)
+│   │   │   │   │   └── ReportRepository.js.html (13.6 KB)
+│   │   │   │   ├── Role/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── RoleRepository.js.html (6.9 KB)
+│   │   │   │   ├── SavingBook/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── SavingBookRepository.js.html (8.6 KB)
+│   │   │   │   ├── Transaction/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── TransactionRepository.js.html (6.6 KB)
+│   │   │   │   ├── TypeSaving/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── TypeSavingRepository.js.html (7.4 KB)
+│   │   │   │   └── UserAccount/
+│   │   │   │       ├── index.html (4.4 KB)
+│   │   │   │       └── UserAccountRepository.js.html (6.6 KB)
+│   │   │   ├── services/
+│   │   │   │   ├── Customer/
+│   │   │   │   │   ├── customer.service.js.html (14.6 KB)
+│   │   │   │   │   └── index.html (4.4 KB)
+│   │   │   │   ├── Dashboard/
+│   │   │   │   │   ├── dashboard.service.js.html (34.2 KB)
+│   │   │   │   │   └── index.html (4.3 KB)
+│   │   │   │   ├── Employee/
+│   │   │   │   │   ├── employee.service.js.html (25.9 KB)
+│   │   │   │   │   └── index.html (4.4 KB)
+│   │   │   │   ├── Regulation/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── regulation.service.js.html (13.6 KB)
+│   │   │   │   ├── Report/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── report.service.js.html (25.5 KB)
+│   │   │   │   ├── SavingBook/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── savingbook.service.js.html (72.3 KB)
+│   │   │   │   ├── Transaction/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── transaction.service.js.html (40.6 KB)
+│   │   │   │   ├── TypeSaving/
+│   │   │   │   │   ├── index.html (4.4 KB)
+│   │   │   │   │   └── typeSaving.service.js.html (13.0 KB)
+│   │   │   │   └── UserAccount/
+│   │   │   │       ├── email.service.js.html (7.2 KB)
+│   │   │   │       ├── index.html (4.4 KB)
+│   │   │   │       └── userAccount.service.js.html (18.3 KB)
+│   │   │   ├── utils/
+│   │   │   │   ├── index.html (4.3 KB)
+│   │   │   │   └── otpStore.js.html (13.3 KB)
+│   │   │   ├── base.css (5.3 KB)
+│   │   │   ├── block-navigation.js (2.6 KB)
+│   │   │   ├── favicon.png (0.4 KB)
+│   │   │   ├── index.html (16.9 KB)
+│   │   │   ├── prettify.css (0.7 KB)
+│   │   │   ├── prettify.js (17.2 KB)
+│   │   │   ├── sort-arrow-sprite.png (0.1 KB)
+│   │   │   └── sorter.js (6.6 KB)
+│   │   ├── clover.xml (70.1 KB)
+│   │   ├── coverage-final.json (203.4 KB)
+│   │   └── lcov.info (28.5 KB)
+│   ├── src/
+│   │   ├── config/
+│   │   │   ├── database.js (1.1 KB)
+│   │   │   └── swagger.js (0.8 KB)
+│   │   ├── controllers/
+│   │   │   ├── Branch/
+│   │   │   │   └── branch.controller.js (0.7 KB)
+│   │   │   ├── Customer/
+│   │   │   │   └── customer.controller.js (4.8 KB)
+│   │   │   ├── Dashboard/
+│   │   │   │   └── dashboard.controller.js (1.1 KB)
+│   │   │   ├── Employee/
+│   │   │   │   └── employee.controller.js (3.0 KB)
+│   │   │   ├── Regulation/
+│   │   │   │   └── regulation.controller.js (3.4 KB)
+│   │   │   ├── Report/
+│   │   │   │   └── report.controller.js (3.2 KB)
+│   │   │   ├── SavingBook/
+│   │   │   │   └── savingBook.controller.js (4.8 KB)
+│   │   │   ├── Transaction/
+│   │   │   │   └── transaction.controller.js (4.1 KB)
+│   │   │   ├── TypeSaving/
+│   │   │   │   └── typeSaving.controller.js (3.1 KB)
+│   │   │   ├── UserAccount/
+│   │   │   │   ├── changePassword.controller.js (2.1 KB)
+│   │   │   │   ├── forgotPassword.controller.js (3.6 KB)
+│   │   │   │   ├── login.controller.js (2.5 KB)
+│   │   │   │   ├── resetPassword.controller.js (2.1 KB)
+│   │   │   │   ├── userAccount.controller.js (6.6 KB)
+│   │   │   │   └── verifyOTP.controller.js (1.2 KB)
+│   │   ├── middleware/
+│   │   │   ├── auth.middleware.js (2.3 KB)
+│   │   │   ├── comparePass.middleware.js (1.1 KB)
+│   │   │   ├── hashing.middleware.js (0.5 KB)
+│   │   │   ├── logger.middleware.js (1.8 KB)
+│   │   │   ├── role.middleware.js (1.0 KB)
+│   │   │   └── validation.middleware.js (1.0 KB)
+│   │   ├── models/
+│   │   │   ├── BaseModel.js (3.1 KB)
+│   │   │   ├── Branch.js (0.6 KB)
+│   │   │   ├── Customer.js (0.6 KB)
+│   │   │   ├── Employee.js (1.5 KB)
+│   │   │   ├── Role.js (0.5 KB)
+│   │   │   ├── SavingBook.js (4.8 KB)
+│   │   │   ├── Transaction.js (3.2 KB)
+│   │   │   ├── TypeSaving.js (0.2 KB)
+│   │   │   └── UserAccount.js (0.2 KB)
+│   │   ├── repositories/
+│   │   │   ├── Branch/
+│   │   │   │   └── BranchRepository.js (0.5 KB)
+│   │   │   ├── Customer/
+│   │   │   │   └── CustomerRepository.js (1.0 KB)
+│   │   │   ├── Employee/
+│   │   │   │   └── EmployeeRepository.js (0.7 KB)
+│   │   │   ├── Report/
+│   │   │   │   └── ReportRepository.js (3.8 KB)
+│   │   │   ├── Role/
+│   │   │   │   └── RoleRepository.js (0.6 KB)
+│   │   │   ├── SavingBook/
+│   │   │   │   └── SavingBookRepository.js (0.9 KB)
+│   │   │   ├── Transaction/
+│   │   │   │   └── TransactionRepository.js (0.6 KB)
+│   │   │   ├── TypeSaving/
+│   │   │   │   └── TypeSavingRepository.js (0.8 KB)
+│   │   │   ├── UserAccount/
+│   │   │   │   └── UserAccountRepository.js (0.6 KB)
+│   │   ├── routers/
+│   │   │   ├── branch.router.js (1.2 KB)
+│   │   │   ├── customer.router.js (6.0 KB)
+│   │   │   ├── dashboard.router.js (2.2 KB)
+│   │   │   ├── employee.router.js (5.2 KB)
+│   │   │   ├── regulation.router.js (4.2 KB)
+│   │   │   ├── report.router.js (3.6 KB)
+│   │   │   ├── savingBook.router.js (4.1 KB)
+│   │   │   ├── transaction.router.js (4.9 KB)
+│   │   │   ├── typeSaving.router.js (3.6 KB)
+│   │   │   └── userAccount.router.js (7.0 KB)
+│   │   ├── services/
+│   │   │   ├── Customer/
+│   │   │   │   └── customer.service.js (2.8 KB)
+│   │   │   ├── Dashboard/
+│   │   │   │   └── dashboard.service.js (7.8 KB)
+│   │   │   ├── Employee/
+│   │   │   │   └── employee.service.js (5.4 KB)
+│   │   │   ├── Regulation/
+│   │   │   │   └── regulation.service.js (2.4 KB)
+│   │   │   ├── Report/
+│   │   │   │   └── report.service.js (5.1 KB)
+│   │   │   ├── SavingBook/
+│   │   │   │   └── savingbook.service.js (19.2 KB)
+│   │   │   ├── Transaction/
+│   │   │   │   └── transaction.service.js (9.4 KB)
+│   │   │   ├── TypeSaving/
+│   │   │   │   └── typeSaving.service.js (2.6 KB)
+│   │   │   ├── UserAccount/
+│   │   │   │   ├── email.service.js (0.8 KB)
+│   │   │   │   └── userAccount.service.js (3.8 KB)
+│   │   ├── utils/
+│   │   │   └── otpStore.js (1.7 KB)
+│   ├── tests/
+│   │   ├── fixtures/
+│   │   │   ├── customers.json (0.5 KB)
+│   │   │   ├── employees.json (0.1 KB)
+│   │   │   └── index.js (2.0 KB)
+│   │   ├── helpers/
+│   │   │   ├── setup.js (0.4 KB)
+│   │   │   ├── teardown.js (0.2 KB)
+│   │   │   └── testHelpers.js (4.8 KB)
+│   │   ├── integration/
+│   │   │   ├── report/
+│   │   │   ├── savingBook/
+│   │   │   └── transaction/
+│   │   ├── mocks/
+│   │   │   ├── repositories.mock.js (1.3 KB)
+│   │   │   ├── services.mock.js (0.4 KB)
+│   │   │   └── supabase.mock.js (4.1 KB)
+│   │   ├── unit/
+│   │   │   ├── controllers/
+│   │   │   │   ├── branch.controller.test.js (3.5 KB)
+│   │   │   │   ├── customer.controller.test.js (14.6 KB)
+│   │   │   │   ├── employee.controller.test.js (17.5 KB)
+│   │   │   │   ├── forgotPassword.controller.test.js (6.2 KB)
+│   │   │   │   ├── login.controller.test.js (9.8 KB)
+│   │   │   │   ├── profile.controller.test.js (11.9 KB)
+│   │   │   │   ├── regulation.controller.rbac.test.js (9.9 KB)
+│   │   │   │   ├── regulation.controller.test.js (7.5 KB)
+│   │   │   │   ├── report.controller.rbac.test.js (12.3 KB)
+│   │   │   │   ├── report.controller.test.js (7.2 KB)
+│   │   │   │   ├── resetPassword.controller.test.js (6.6 KB)
+│   │   │   │   ├── savingBook.controller.test.js (10.7 KB)
+│   │   │   │   ├── transaction.controller.audit.test.js (9.1 KB)
+│   │   │   │   ├── transaction.controller.test.js (9.1 KB)
+│   │   │   │   ├── typeSaving.controller.test.js (8.3 KB)
+│   │   │   │   ├── userAccount.controller.test.js (20.3 KB)
+│   │   │   │   └── verifyOTP.controller.test.js (3.9 KB)
+│   │   │   ├── middleware/
+│   │   │   │   ├── auth.middleware.test.js (6.1 KB)
+│   │   │   │   ├── comparePass.middleware.test.js (1.7 KB)
+│   │   │   │   ├── hashing.middleware.test.js (1.1 KB)
+│   │   │   │   ├── role.middleware.test.js (3.5 KB)
+│   │   │   │   └── validation.middleware.test.js (4.5 KB)
+│   │   │   ├── models/
+│   │   │   │   ├── Branch.test.js (2.8 KB)
+│   │   │   │   ├── Customer.test.js (7.7 KB)
+│   │   │   │   ├── Employee.test.js (12.1 KB)
+│   │   │   │   ├── Role.test.js (2.7 KB)
+│   │   │   │   ├── TypeSaving.test.js (1.2 KB)
+│   │   │   │   └── UserAccount.test.js (6.4 KB)
+│   │   │   ├── services/
+│   │   │   │   ├── customer.service.test.js (16.4 KB)
+│   │   │   │   ├── employee.service.test.js (17.7 KB)
+│   │   │   │   ├── regulation.service.additional.test.js (11.3 KB)
+│   │   │   │   ├── regulation.service.test.js (4.3 KB)
+│   │   │   │   ├── report.service.test.js (6.0 KB)
+│   │   │   │   ├── savingBook.service.test.js (14.4 KB)
+│   │   │   │   ├── transaction.service.test.js (30.6 KB)
+│   │   │   │   ├── typeSaving.service.test.js (11.4 KB)
+│   │   │   │   └── userAccount.service.test.js (13.1 KB)
+│   │   └── TEST_CASES_SUMMARY.md (18.9 KB)
+│   ├── app.js (1.8 KB)
+│   ├── babel.config.cjs (0.2 KB)
+│   ├── jest.config.js (1.4 KB)
+│   ├── package-lock.json (281.9 KB)
+│   └── package.json (1.4 KB)
+├── frontend/
+│   ├── public/
+│   │   └── vite.svg (1.5 KB)
+│   ├── src/
+│   │   ├── api/
+│   │   │   ├── accountApi.js (1.9 KB)
+│   │   │   ├── apiClient.js (3.5 KB)
+│   │   │   ├── authApi.js (1.1 KB)
+│   │   │   ├── branchApi.js (0.3 KB)
+│   │   │   ├── customerApi.js (6.6 KB)
+│   │   │   ├── dashboardApi.js (0.3 KB)
+│   │   │   ├── profileApi.js (1.3 KB)
+│   │   │   ├── regulationApi.js (1.7 KB)
+│   │   │   ├── reportApi.js (1.5 KB)
+│   │   │   ├── typeSavingApi.js (0.7 KB)
+│   │   │   └── userApi.js (1.1 KB)
+│   │   ├── assets/
+│   │   │   ├── image.svg (4.0 KB)
+│   │   │   └── vector.svg (4.0 KB)
+│   │   ├── components/
+│   │   │   ├── ui/
+│   │   │   │   ├── AccessRestrictedCard.jsx (0.8 KB)
+│   │   │   │   ├── accordion.jsx (1.8 KB)
+│   │   │   │   ├── alert-dialog.jsx (3.9 KB)
+│   │   │   │   ├── alert.jsx (1.4 KB)
+│   │   │   │   ├── aspect-ratio.jsx (0.2 KB)
+│   │   │   │   ├── avatar.jsx (0.9 KB)
+│   │   │   │   ├── badge.jsx (1.5 KB)
+│   │   │   │   ├── breadcrumb.jsx (2.1 KB)
+│   │   │   │   ├── button.jsx (2.3 KB)
+│   │   │   │   ├── calendar.jsx (2.3 KB)
+│   │   │   │   ├── card.jsx (1.7 KB)
+│   │   │   │   ├── carousel.jsx (4.5 KB)
+│   │   │   │   ├── chart.jsx (8.5 KB)
+│   │   │   │   ├── checkbox.jsx (1.1 KB)
+│   │   │   │   ├── collapsible.jsx (0.6 KB)
+│   │   │   │   ├── command.jsx (4.0 KB)
+│   │   │   │   ├── context-menu.jsx (7.1 KB)
+│   │   │   │   ├── date-picker.jsx (2.7 KB)
+│   │   │   │   ├── dialog.jsx (3.2 KB)
+│   │   │   │   ├── drawer.jsx (3.5 KB)
+│   │   │   │   ├── dropdown-menu.jsx (7.2 KB)
+│   │   │   │   ├── form.jsx (3.0 KB)
+│   │   │   │   ├── hover-card.jsx (1.3 KB)
+│   │   │   │   ├── input-otp.jsx (2.0 KB)
+│   │   │   │   ├── input.jsx (0.6 KB)
+│   │   │   │   ├── label.jsx (0.5 KB)
+│   │   │   │   ├── loading-skeleton.jsx (3.3 KB)
+│   │   │   │   ├── menubar.jsx (7.3 KB)
+│   │   │   │   ├── month-picker.jsx (4.1 KB)
+│   │   │   │   ├── navigation-menu.jsx (5.8 KB)
+│   │   │   │   ├── pagination.jsx (2.1 KB)
+│   │   │   │   ├── popover.jsx (1.4 KB)
+│   │   │   │   ├── progress.jsx (0.7 KB)
+│   │   │   │   ├── radio-group.jsx (1.0 KB)
+│   │   │   │   ├── resizable.jsx (1.8 KB)
+│   │   │   │   ├── scroll-area.jsx (1.4 KB)
+│   │   │   │   ├── select.jsx (5.5 KB)
+│   │   │   │   ├── separator.jsx (0.6 KB)
+│   │   │   │   ├── sheet.jsx (3.4 KB)
+│   │   │   │   ├── sidebar.jsx (17.9 KB)
+│   │   │   │   ├── skeleton.jsx (0.2 KB)
+│   │   │   │   ├── slider.jsx (1.7 KB)
+│   │   │   │   ├── sonner.jsx (0.5 KB)
+│   │   │   │   ├── switch.jsx (1.0 KB)
+│   │   │   │   ├── table.jsx (2.2 KB)
+│   │   │   │   ├── tabs.jsx (1.6 KB)
+│   │   │   │   ├── textarea.jsx (0.5 KB)
+│   │   │   │   ├── toggle-group.jsx (1.5 KB)
+│   │   │   │   ├── toggle.jsx (1.4 KB)
+│   │   │   │   ├── tooltip.jsx (1.6 KB)
+│   │   │   │   ├── use-mobile.js (0.5 KB)
+│   │   │   │   └── utils.js (0.1 KB)
+│   │   │   ├── CuteComponents.jsx (7.1 KB)
+│   │   │   ├── Layout.jsx (15.6 KB)
+│   │   │   ├── RoleGuard.jsx (0.8 KB)
+│   │   │   ├── ScrollToTop.jsx (0.4 KB)
+│   │   │   └── ServiceUnavailableState.jsx (4.8 KB)
+│   │   ├── config/
+│   │   │   └── app.config.js (0.4 KB)
+│   │   ├── constants/
+│   │   │   ├── business.js (1.7 KB)
+│   │   │   ├── messages.js (0.7 KB)
+│   │   │   └── roles.js (0.5 KB)
+│   │   ├── contexts/
+│   │   │   ├── AuthContext.jsx (2.4 KB)
+│   │   │   └── ConfigContext.jsx (0.5 KB)
+│   │   ├── hooks/
+│   │   │   ├── useApi.js (0.7 KB)
+│   │   │   ├── useApiCall.js (2.3 KB)
+│   │   │   ├── useAuth.js (0.1 KB)
+│   │   │   ├── useDebounce.js (0.4 KB)
+│   │   │   └── useForm.js (1.4 KB)
+│   │   ├── mocks/
+│   │   │   ├── adapters/
+│   │   │   │   ├── accountAdapter.js (6.3 KB)
+│   │   │   │   ├── authAdapter.js (3.6 KB)
+│   │   │   │   ├── branchAdapter.js (0.5 KB)
+│   │   │   │   ├── customerAdapter.js (6.0 KB)
+│   │   │   │   ├── dashboardAdapter.js (1.1 KB)
+│   │   │   │   ├── mockMonthlyReportData.js (0.6 KB)
+│   │   │   │   ├── profileAdapter.js (3.0 KB)
+│   │   │   │   ├── regulationAdapter.js (4.6 KB)
+│   │   │   │   ├── reportAdapter.js (9.6 KB)
+│   │   │   │   ├── savingBookAdapter.js (6.0 KB)
+│   │   │   │   ├── transactionAdapter.js (10.4 KB)
+│   │   │   │   ├── typeSavingAdapter.js (4.1 KB)
+│   │   │   │   └── userAdapter.js (4.2 KB)
+│   │   │   ├── data/
+│   │   │   │   ├── branches.js (0.2 KB)
+│   │   │   │   ├── customers.js (12.0 KB)
+│   │   │   │   ├── dashboard.js (6.2 KB)
+│   │   │   │   ├── employees.js (2.6 KB)
+│   │   │   │   ├── profile.js (3.5 KB)
+│   │   │   │   ├── regulations.js (0.8 KB)
+│   │   │   │   ├── savingBooks_old.js (12.5 KB)
+│   │   │   │   ├── savingBooks.js (11.3 KB)
+│   │   │   │   ├── transactions.js (32.0 KB)
+│   │   │   │   ├── typeSavings.js (1.8 KB)
+│   │   │   │   └── users.js (4.4 KB)
+│   │   │   ├── responses/
+│   │   │   │   ├── auth.responses.js (1.0 KB)
+│   │   │   │   ├── builders.js (2.2 KB)
+│   │   │   │   ├── customer.responses.js (2.2 KB)
+│   │   │   │   ├── customerReport.responses.js (1.2 KB)
+│   │   │   │   ├── dailyReport.responses.js (2.1 KB)
+│   │   │   │   ├── interestReport.responses.js (1.7 KB)
+│   │   │   │   ├── monthlyReport.responses.js (2.3 KB)
+│   │   │   │   ├── profile.responses.js (2.0 KB)
+│   │   │   │   ├── regulation.responses.js (1.2 KB)
+│   │   │   │   ├── savingBook.responses.js (4.2 KB)
+│   │   │   │   ├── transaction.responses.js (5.4 KB)
+│   │   │   │   ├── transactionRangeReport.responses.js (2.0 KB)
+│   │   │   │   ├── typeSaving.responses.js (2.5 KB)
+│   │   │   │   └── user.responses.js (2.7 KB)
+│   │   │   ├── index.js (5.2 KB)
+│   │   │   ├── MIGRATION.md (11.8 KB)
+│   │   │   ├── README.md (10.4 KB)
+│   │   │   ├── SCHEMA_MAPPING.md (4.5 KB)
+│   │   │   └── utils.js (0.4 KB)
+│   │   ├── pages/
+│   │   │   ├── Auth/
+│   │   │   │   ├── ForgotPassword/
+│   │   │   │   │   ├── EnterOTP.jsx (10.7 KB)
+│   │   │   │   │   ├── ForgotPassword.jsx (8.0 KB)
+│   │   │   │   │   └── ResetPassword.jsx (13.6 KB)
+│   │   │   │   ├── Login.css (0.3 KB)
+│   │   │   │   └── Login.jsx (18.5 KB)
+│   │   │   ├── Dashboard/
+│   │   │   │   └── Dashboard.jsx (26.6 KB)
+│   │   │   ├── Errors/
+│   │   │   │   └── NotFound.jsx (4.3 KB)
+│   │   │   ├── Profile/
+│   │   │   │   └── UserProfile.jsx (26.2 KB)
+│   │   │   ├── Regulations/
+│   │   │   │   └── RegulationSettings.jsx (48.8 KB)
+│   │   │   ├── Reports/
+│   │   │   │   ├── DailyReport.jsx (31.5 KB)
+│   │   │   │   ├── DailyReportPrint.css (5.1 KB)
+│   │   │   │   ├── DailyReportPrint.jsx (7.7 KB)
+│   │   │   │   ├── MonthlyReport.jsx (23.8 KB)
+│   │   │   │   ├── MonthlyReportPrint.css (6.7 KB)
+│   │   │   │   └── MonthlyReportPrint.jsx (7.2 KB)
+│   │   │   ├── Savings/
+│   │   │   │   ├── Deposit.jsx (20.7 KB)
+│   │   │   │   ├── OpenAccount.jsx (46.4 KB)
+│   │   │   │   └── Withdraw.jsx (24.0 KB)
+│   │   │   ├── Search/
+│   │   │   │   └── SearchAccounts.jsx (21.0 KB)
+│   │   │   └── Users/
+│   │   │       └── UserManagement.jsx (31.2 KB)
+│   │   ├── services/
+│   │   │   ├── authService.js (3.1 KB)
+│   │   │   ├── branchService.js (0.7 KB)
+│   │   │   ├── customerService.js (5.2 KB)
+│   │   │   ├── dashboardService.js (3.4 KB)
+│   │   │   ├── profileService.js (1.1 KB)
+│   │   │   ├── regulationService.js (1.6 KB)
+│   │   │   ├── reportService.js (2.4 KB)
+│   │   │   ├── savingBookService.js (2.8 KB)
+│   │   │   ├── savingsService.js (3.3 KB)
+│   │   │   ├── transactionService.js (6.1 KB)
+│   │   │   ├── typeSavingService.js (3.4 KB)
+│   │   │   └── userService.js (3.3 KB)
+│   │   ├── styles/
+│   │   │   └── global.css (7.9 KB)
+│   │   ├── utils/
+│   │   │   ├── authErrorMapper.js (4.4 KB)
+│   │   │   ├── logger.js (0.7 KB)
+│   │   │   ├── numberFormatter.js (1.6 KB)
+│   │   │   ├── serverStatusUtils.js (2.7 KB)
+│   │   │   ├── testHashQuick.js (2.3 KB)
+│   │   │   ├── testTypeColors.js (4.9 KB)
+│   │   │   └── typeColorUtils.js (3.4 KB)
+│   │   ├── App.jsx (3.9 KB)
+│   │   ├── index.css (0.1 KB)
+│   │   └── main.jsx (0.5 KB)
+│   ├── tests/
+│   │   ├── component/
+│   │   │   ├── UC01_CreateStaff/
+│   │   │   │   └── CreateStaff.test.jsx (12.0 KB)
+│   │   │   ├── UC02_Login/
+│   │   │   │   └── Login.test.jsx (6.3 KB)
+│   │   │   ├── UC03_ForgotPassword/
+│   │   │   │   ├── ForgotPassword.test.jsx (9.8 KB)
+│   │   │   │   └── ResetPassword.test.jsx (20.5 KB)
+│   │   │   ├── UC04_Profile/
+│   │   │   │   └── Profile.test.jsx (15.6 KB)
+│   │   │   ├── UC05_OpenSavingBook/
+│   │   │   │   └── OpenSavingBook.test.jsx (19.9 KB)
+│   │   │   ├── UC06_Deposit/
+│   │   │   │   └── Deposit.test.jsx (13.0 KB)
+│   │   │   ├── UC07_Withdraw/
+│   │   │   │   └── Withdraw.test.jsx (22.1 KB)
+│   │   │   ├── UC08_SearchSavingBook/
+│   │   │   │   └── SearchSavingBook.test.jsx (17.1 KB)
+│   │   │   ├── UC09_DailyReport/
+│   │   │   │   └── DailyReport.test.jsx (13.4 KB)
+│   │   │   ├── UC10_MonthlyReport/
+│   │   │   │   └── MonthlyReport.test.jsx (15.4 KB)
+│   │   │   ├── UC11_Regulations/
+│   │   │   │   └── Regulations.test.jsx (14.8 KB)
+│   │   │   └── TEST_CASE_SUMMARY_COMPONENT.md (12.4 KB)
+│   │   ├── docs/
+│   │   │   ├── COMPONENT_TESTS.md (23.0 KB)
+│   │   │   ├── DOCUMENTS_INDEX_VI.md (6.2 KB)
+│   │   │   ├── INTEGRATION_TESTS.md (20.3 KB)
+│   │   │   ├── START_HERE_VI.md (8.6 KB)
+│   │   │   ├── UNIT_TESTS.md (13.7 KB)
+│   │   │   ├── VIVA_CHEATSHEET_VI.md (7.6 KB)
+│   │   │   └── VIVA_SUMMARY_VI.md (7.4 KB)
+│   │   ├── integration/
+│   │   │   ├── IT01_LoginDashboardFlow/
+│   │   │   │   └── LoginDashboardFlow.test.jsx (7.7 KB)
+│   │   │   ├── IT02_CreateStaffListRefresh/
+│   │   │   │   └── CreateStaffListRefresh.test.jsx (11.9 KB)
+│   │   │   ├── IT03_PasswordResetFlow/
+│   │   │   │   └── PasswordResetFlow.test.jsx (8.4 KB)
+│   │   │   ├── IT04_ProfileUpdate/
+│   │   │   │   └── ProfileUpdate.test.jsx (9.7 KB)
+│   │   │   ├── IT05_SearchSavingBookFlow/
+│   │   │   │   └── SearchSavingBookFlow.test.jsx (10.4 KB)
+│   │   │   ├── IT06_DepositFlow/
+│   │   │   │   └── DepositFlow.test.jsx (11.9 KB)
+│   │   │   ├── IT07_WithdrawFlow/
+│   │   │   │   └── WithdrawFlow.test.jsx (12.2 KB)
+│   │   │   ├── IT08_DailyReportRetry/
+│   │   │   │   └── DailyReportRetry.test.jsx (11.4 KB)
+│   │   │   ├── IT09_MonthlyReportFiltering/
+│   │   │   │   └── MonthlyReportFiltering.test.jsx (11.6 KB)
+│   │   │   ├── IT10_RegulationsFlow/
+│   │   │   │   └── RegulationsFlow.test.jsx (14.2 KB)
+│   │   │   ├── IT11_OpenSavingBookFlow/
+│   │   │   │   └── OpenSavingBookFlow.test.jsx (17.3 KB)
+│   │   │   └── TEST_CASE_SUMMARY_INTEGRATION.md (9.9 KB)
+│   │   ├── test-utils/
+│   │   │   └── render.jsx (0.6 KB)
+│   │   ├── unit/
+│   │   │   ├── authErrorMapper.test.js (3.9 KB)
+│   │   │   ├── business.test.js (10.0 KB)
+│   │   │   ├── numberFormatter.test.js (2.3 KB)
+│   │   │   ├── serverStatusUtils.test.js (3.5 KB)
+│   │   │   ├── TEST_CASE_SUMMARY_UNIT.md (6.2 KB)
+│   │   │   ├── typeColorUtils.test.js (7.6 KB)
+│   │   │   ├── useApi.test.js (8.8 KB)
+│   │   │   └── useDebounce.test.js (7.9 KB)
+│   │   └── setup.js (0.1 KB)
+│   ├── babel.config.cjs (0.2 KB)
+│   ├── eslint.config.js (0.7 KB)
+│   ├── index.html (0.4 KB)
+│   ├── jest.config.cjs (0.4 KB)
+│   ├── jsconfig.json (0.5 KB)
+│   ├── package-lock.json (432.2 KB)
+│   ├── package.json (2.7 KB)
+│   ├── README.md (1.1 KB)
+│   ├── vercel.json (0.2 KB)
+│   └── vite.config.js (0.9 KB)
+├── LICENSE (1.0 KB)
+├── package-lock.json (53.2 KB)
+├── package.json (0.3 KB)
+└── README.md (2.1 KB)
