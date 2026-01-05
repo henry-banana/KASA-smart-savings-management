@@ -24,6 +24,7 @@ import { getMonthlyOpenCloseReport } from "../../services/reportService";
 import { getAllTypeSavings } from "../../services/typeSavingService";
 import { Skeleton } from "../../components/ui/skeleton";
 import { formatVnNumber } from "../../utils/numberFormatter";
+import { sortSavingsTypes } from "../../utils/savingsTypeSort";
 import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { MonthlyReportPrint } from "./MonthlyReportPrint";
@@ -82,11 +83,12 @@ export default function MonthlyReport() {
     const selectedYear = selectedDate.getFullYear();
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
-    
+
     // If year is in future, it's invalid
     if (selectedYear > currentYear) return true;
     // If same year but month is in future, it's invalid
-    if (selectedYear === currentYear && selectedMonth > currentMonth) return true;
+    if (selectedYear === currentYear && selectedMonth > currentMonth)
+      return true;
     return false;
   };
 
@@ -154,7 +156,7 @@ export default function MonthlyReport() {
               label: ts.typeName,
             })),
           ];
-          setSavingsTypes(types);
+          setSavingsTypes(sortSavingsTypes(types));
         }
       } catch (err) {
         console.error("Failed to fetch savings types:", err);
@@ -221,7 +223,7 @@ export default function MonthlyReport() {
                     onChange={(e) =>
                       handleMonthYearChange(e.target.value, selectedYear)
                     }
-                    className="flex-1 px-3 py-2 rounded-sm border border-gray-300 focus:border-[#1A4D8F] focus:ring-[#1A4D8F] text-sm"
+                    className="flex-1 h-11 sm:h-12 px-4 rounded-sm border border-gray-200 bg-input-background text-gray-700 cursor-pointer focus:border-[#1A4D8F] focus:ring-2 focus:ring-[#1A4D8F]/20 text-sm sm:text-base hover:bg-gray-100 hover:border-gray-300 transition-colors"
                   >
                     {Array.from({ length: 12 }, (_, i) => (
                       <option key={i + 1} value={String(i + 1)}>
@@ -236,7 +238,7 @@ export default function MonthlyReport() {
                     onChange={(e) =>
                       handleMonthYearChange(selectedMonth, e.target.value)
                     }
-                    className="flex-1 px-3 py-2 rounded-sm border border-gray-300 focus:border-[#1A4D8F] focus:ring-[#1A4D8F] text-sm"
+                    className="flex-1 h-11 sm:h-12 px-4 rounded-sm border border-gray-200 bg-input-background text-gray-700 cursor-pointer focus:border-[#1A4D8F] focus:ring-2 focus:ring-[#1A4D8F]/20 text-sm sm:text-base hover:bg-gray-100 hover:border-gray-300 transition-colors"
                   >
                     {generateYears().map((year) => (
                       <option key={year} value={year}>

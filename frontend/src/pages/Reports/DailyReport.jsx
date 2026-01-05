@@ -54,6 +54,7 @@ import {
 import { RoleGuard } from "../../components/RoleGuard";
 import { Skeleton } from "../../components/ui/skeleton";
 import { formatVnNumber } from "../../utils/numberFormatter";
+import { sortSavingsTypeItems } from "../../utils/savingsTypeSort";
 import { ServiceUnavailablePageState } from "../../components/ServiceUnavailableState";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { DailyReportPrint } from "./DailyReportPrint";
@@ -123,6 +124,10 @@ export default function DailyReport() {
           getWithdrawalTransactionStats(dateString),
         ]);
 
+      console.log("Report Response:", reportResponse);
+      console.log("Deposit Response:", depositResponse);
+      console.log("Withdrawal Response:", withdrawalResponse);
+
       if (!reportResponse.success || !reportResponse.data) {
         setError("NO_DATA");
         setReportData(null);
@@ -131,12 +136,40 @@ export default function DailyReport() {
         return;
       }
 
-      setReportData(reportResponse.data);
+      // Sort report data by type name
+      const sortedReportData = {
+        ...reportResponse.data,
+        byTypeSaving: reportResponse.data.byTypeSaving
+          ? sortSavingsTypeItems(reportResponse.data.byTypeSaving)
+          : [],
+      };
+
+      // Sort deposit and withdrawal stats
+      const sortedDepositStats = depositResponse.success
+        ? {
+            ...depositResponse.data,
+            items: depositResponse.data.items
+              ? sortSavingsTypeItems(depositResponse.data.items)
+              : [],
+          }
+        : null;
+
+      const sortedWithdrawalStats = withdrawalResponse.success
+        ? {
+            ...withdrawalResponse.data,
+            items: withdrawalResponse.data.items
+              ? sortSavingsTypeItems(withdrawalResponse.data.items)
+              : [],
+          }
+        : null;
+
+      console.log("Sorted Deposit Stats:", sortedDepositStats);
+      console.log("Sorted Withdrawal Stats:", sortedWithdrawalStats);
+
+      setReportData(sortedReportData);
       setReportDate(selectedDate);
-      setDepositStats(depositResponse.success ? depositResponse.data : null);
-      setWithdrawalStats(
-        withdrawalResponse.success ? withdrawalResponse.data : null
-      );
+      setDepositStats(sortedDepositStats);
+      setWithdrawalStats(sortedWithdrawalStats);
     } catch (err) {
       console.error("Report error:", err);
       if (isServerUnavailable(err)) {
@@ -146,6 +179,7 @@ export default function DailyReport() {
           "Failed to generate report. Please try again or select a different date."
         );
       }
+      setReportData(null);
     } finally {
       setLoading(false);
     }
@@ -249,7 +283,7 @@ export default function DailyReport() {
                     onChange={(e) =>
                       handleMonthYearChange(e.target.value, selectedYear)
                     }
-                    className="flex-1 px-3 py-2 rounded-sm border border-gray-300 focus:border-[#667eea] focus:ring-[#667eea] text-sm"
+                    className="flex-1 h-11 sm:h-12 px-4 rounded-sm border border-gray-200 bg-input-background text-gray-700 cursor-pointer focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/20 text-sm sm:text-base hover:bg-gray-100 hover:border-gray-300 transition-colors"
                   >
                     {Array.from({ length: 12 }, (_, i) => (
                       <option key={i + 1} value={String(i + 1)}>
@@ -264,7 +298,7 @@ export default function DailyReport() {
                     onChange={(e) =>
                       handleMonthYearChange(selectedMonth, e.target.value)
                     }
-                    className="flex-1 px-3 py-2 rounded-sm border border-gray-300 focus:border-[#667eea] focus:ring-[#667eea] text-sm"
+                    className="flex-1 h-11 sm:h-12 px-4 rounded-sm border border-gray-200 bg-input-background text-gray-700 cursor-pointer focus:border-[#667eea] focus:ring-2 focus:ring-[#667eea]/20 text-sm sm:text-base hover:bg-gray-100 hover:border-gray-300 transition-colors"
                   >
                     {generateYears().map((year) => (
                       <option key={year} value={year}>
@@ -772,7 +806,7 @@ export default function DailyReport() {
                       Deposit Transactions
                     </h4>
                     <div className="space-y-3">
-                      {depositStats?.items.map((item, index) => (
+                      {depositStats?.items?.map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-between p-2 bg-white rounded-sm border border-gray-100"
@@ -791,10 +825,10 @@ export default function DailyReport() {
                           Total
                         </span>
                         <span className="text-sm font-bold text-green-700">
-                          {formatVnNumber(depositStats?.total.count || 0)}{" "}
+                          {formatVnNumber(depositStats?.total?.count || 0)}{" "}
                           transaction
-                          {depositStats?.total.count !== 1 &&
-                          depositStats?.total.count !== 0
+                          {depositStats?.total?.count !== 1 &&
+                          depositStats?.total?.count !== 0
                             ? "s"
                             : ""}
                         </span>
@@ -809,7 +843,7 @@ export default function DailyReport() {
                       Withdrawal Transactions
                     </h4>
                     <div className="space-y-3">
-                      {withdrawalStats?.items.map((item, index) => (
+                      {withdrawalStats?.items?.map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-between p-2 bg-white rounded-sm border border-gray-100"
@@ -828,10 +862,10 @@ export default function DailyReport() {
                           Total
                         </span>
                         <span className="text-sm font-bold text-red-700">
-                          {formatVnNumber(withdrawalStats?.total.count || 0)}{" "}
+                          {formatVnNumber(withdrawalStats?.total?.count || 0)}{" "}
                           transaction
-                          {withdrawalStats?.total.count !== 1 &&
-                          withdrawalStats?.total.count !== 0
+                          {withdrawalStats?.total?.count !== 1 &&
+                          withdrawalStats?.total?.count !== 0
                             ? "s"
                             : ""}
                         </span>
