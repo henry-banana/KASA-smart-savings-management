@@ -14,4 +14,12 @@ module.exports = {
     "!src/**/*.test.{js,jsx}",
     "!src/main.jsx",
   ],
+  transformIgnorePatterns: ["node_modules/(?!(@babel)/)"],
+  globals: {
+    "import.meta.env": {
+      VITE_API_URL: "http://localhost:3000",
+      VITE_DEV_MODE: "true",
+      VITE_ENABLE_LOGGER: "true",
+    },
+  },
 };

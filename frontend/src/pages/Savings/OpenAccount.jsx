@@ -270,7 +270,7 @@ export default function OpenAccount() {
       newErrors.customerName = "Please enter customer name";
     if (!formData.idCard) newErrors.idCard = "Please enter ID card number";
     if (!formData.address) newErrors.address = "Please enter address";
-    // Saving Book Code is optional - if provided, validate format
+    // Saving Book ID is optional - if provided, validate format
     if (formData.savingBookCode) {
       if (!/^\d+$/.test(formData.savingBookCode)) {
         newErrors.savingBookCode = "Saving Book ID must contain only numbers";

@@ -81,7 +81,7 @@ describe("UC06 - Make Deposit", () => {
         expect(screen.getByText(/make deposit/i)).toBeInTheDocument();
       });
       expect(
-        screen.getByPlaceholderText(/enter saving book code/i)
+        screen.getByPlaceholderText(/enter saving book id/i)
       ).toBeInTheDocument();
     });
 
@@ -107,7 +107,7 @@ describe("UC06 - Make Deposit", () => {
       render(<Deposit />);
       await waitFor(() => {
         expect(
-          screen.getByPlaceholderText(/enter saving book code/i)
+          screen.getByPlaceholderText(/enter saving book id/i)
         ).toBeInTheDocument();
       });
     });
@@ -134,7 +134,7 @@ describe("UC06 - Make Deposit", () => {
         ).toBeInTheDocument();
       });
 
-      const input = screen.getByPlaceholderText(/enter saving book code/i);
+      const input = screen.getByPlaceholderText(/enter saving book id/i);
       await user.type(input, "12345");
 
       const button = screen.getByRole("button", { name: /lookup/i });
@@ -170,7 +170,7 @@ describe("UC06 - Make Deposit", () => {
         ).toBeInTheDocument();
       });
 
-      const input = screen.getByPlaceholderText(/enter saving book code/i);
+      const input = screen.getByPlaceholderText(/enter saving book id/i);
       await user.type(input, "67890");
 
       const button = screen.getByRole("button", { name: /lookup/i });
@@ -210,7 +210,7 @@ describe("UC06 - Make Deposit", () => {
         ).toBeInTheDocument();
       });
 
-      const input = screen.getByPlaceholderText(/enter saving book code/i);
+      const input = screen.getByPlaceholderText(/enter saving book id/i);
       await user.type(input, "12345");
 
       const button = screen.getByRole("button", { name: /lookup/i });
@@ -252,7 +252,7 @@ describe("UC06 - Make Deposit", () => {
         ).toBeInTheDocument();
       });
 
-      const input = screen.getByPlaceholderText(/enter saving book code/i);
+      const input = screen.getByPlaceholderText(/enter saving book id/i);
       await user.type(input, "99999");
 
       const lookupBtn = screen.getByRole("button", { name: /lookup/i });
@@ -309,7 +309,7 @@ describe("UC06 - Make Deposit", () => {
         ).toBeInTheDocument();
       });
 
-      const input = screen.getByPlaceholderText(/enter saving book code/i);
+      const input = screen.getByPlaceholderText(/enter saving book id/i);
       await user.type(input, "55555");
 
       const lookupBtn = screen.getByRole("button", { name: /lookup/i });
@@ -365,7 +365,7 @@ describe("UC06 - Make Deposit", () => {
         ).toBeInTheDocument();
       });
 
-      const input = screen.getByPlaceholderText(/enter saving book code/i);
+      const input = screen.getByPlaceholderText(/enter saving book id/i);
       await user.type(input, "44444");
 
       const lookupBtn = screen.getByRole("button", { name: /lookup/i });
@@ -426,7 +426,7 @@ describe("UC06 - Make Deposit", () => {
         ).toBeInTheDocument();
       });
 
-      const input = screen.getByPlaceholderText(/enter saving book code/i);
+      const input = screen.getByPlaceholderText(/enter saving book id/i);
       await user.type(input, "66666");
 
       const lookupBtn = screen.getByRole("button", { name: /lookup/i });

@@ -127,7 +127,7 @@ describe("UC10 - Monthly Open/Close Report", () => {
 
     it("should display month picker with Month label", () => {
       render(<MonthlyReport />);
-      expect(screen.getByText("Month")).toBeInTheDocument();
+      expect(screen.getByText("Select Month & Year")).toBeInTheDocument();
     });
 
     it("should display Savings Type select with All Types default", () => {
@@ -539,7 +539,7 @@ describe("UC10 - Monthly Open/Close Report", () => {
     it("should accept month picker changes", async () => {
       render(<MonthlyReport />);
       // Month picker component is rendered - test verifies it's present
-      expect(screen.getByText("Month")).toBeInTheDocument();
+      expect(screen.getByText("Select Month & Year")).toBeInTheDocument();
     });
   });
 });

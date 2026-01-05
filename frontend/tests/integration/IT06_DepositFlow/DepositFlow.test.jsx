@@ -56,6 +56,13 @@ jest.mock("../../../src/utils/numberFormatter", () => ({
       maximumFractionDigits: 0,
     });
   },
+  formatBalance: (num) => {
+    if (typeof num !== "number") return "0";
+    return num.toLocaleString("vi-VN", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  },
 }));
 
 import Deposit from "../../../src/pages/Savings/Deposit";
@@ -124,7 +131,7 @@ describe("Integration: IT06 - Deposit Flow", () => {
       expect(button).not.toHaveTextContent("Loading...");
     });
 
-    const accountInput = screen.getByPlaceholderText(/saving book code/i);
+    const accountInput = screen.getByPlaceholderText(/saving book ID/i);
     const lookupButton = screen.getByRole("button", { name: /lookup/i });
 
     await user.type(accountInput, "SA001");
@@ -162,7 +169,7 @@ describe("Integration: IT06 - Deposit Flow", () => {
       expect(button).not.toHaveTextContent("Loading...");
     });
 
-    const accountInput = screen.getByPlaceholderText(/saving book code/i);
+    const accountInput = screen.getByPlaceholderText(/saving book ID/i);
     const lookupButton = screen.getByRole("button", { name: /lookup/i });
 
     await user.type(accountInput, "SA002");
@@ -203,7 +210,7 @@ describe("Integration: IT06 - Deposit Flow", () => {
       expect(button).not.toHaveTextContent("Loading...");
     });
 
-    const accountInput = screen.getByPlaceholderText(/saving book code/i);
+    const accountInput = screen.getByPlaceholderText(/saving book ID/i);
     const lookupButton = screen.getByRole("button", { name: /lookup/i });
 
     await user.type(accountInput, "SA001");
@@ -263,7 +270,7 @@ describe("Integration: IT06 - Deposit Flow", () => {
       expect(button).not.toHaveTextContent("Loading...");
     });
 
-    const accountInput = screen.getByPlaceholderText(/saving book code/i);
+    const accountInput = screen.getByPlaceholderText(/saving book ID/i);
     const lookupButton = screen.getByRole("button", { name: /lookup/i });
 
     await user.type(accountInput, "SA001");
@@ -314,7 +321,7 @@ describe("Integration: IT06 - Deposit Flow", () => {
       expect(button).not.toHaveTextContent("Loading...");
     });
 
-    const accountInput = screen.getByPlaceholderText(/saving book code/i);
+    const accountInput = screen.getByPlaceholderText(/saving book ID/i);
     const lookupButton = screen.getByRole("button", { name: /lookup/i });
 
     await user.type(accountInput, "SA001");
@@ -363,7 +370,7 @@ describe("Integration: IT06 - Deposit Flow", () => {
       expect(button).not.toHaveTextContent("Loading...");
     });
 
-    const accountInput = screen.getByPlaceholderText(/saving book code/i);
+    const accountInput = screen.getByPlaceholderText(/saving book ID/i);
     const lookupButton = screen.getByRole("button", { name: /lookup/i });
 
     await user.type(accountInput, "SA001");
