@@ -2,6 +2,7 @@ module.exports = {
   testEnvironment: "jsdom",
   testMatch: ["**/tests/**/*.test.{js,jsx}"],
   setupFilesAfterEnv: ["<rootDir>/tests/setup.js"],
+  testTimeout: 15000, // Increase timeout for slow tests when running in parallel
   transform: {
     "^.+\\.jsx?$": "babel-jest",
   },

@@ -101,7 +101,7 @@ describe("UC08 - Search Saving Books", () => {
         expect(screen.getByText(/search saving books/i)).toBeInTheDocument();
       });
       expect(
-        screen.getByText(/search and manage savings accounts/i)
+        screen.getByText(/search and manage savings books/i)
       ).toBeInTheDocument();
     });
 
@@ -280,12 +280,10 @@ describe("UC08 - Search Saving Books", () => {
       await user.click(detailsButtons[0]);
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/savings account details/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/Savings Book Details/i)).toBeInTheDocument();
       });
       expect(
-        screen.getByText(/detailed account information/i)
+        screen.getByText(/detailed book information/i)
       ).toBeInTheDocument();
     });
 
@@ -307,9 +305,7 @@ describe("UC08 - Search Saving Books", () => {
 
       await waitFor(
         () => {
-          expect(
-            screen.getByText(/savings account details/i)
-          ).toBeInTheDocument();
+          expect(screen.getByText(/Savings Book Details/i)).toBeInTheDocument();
         },
         { timeout: 2000 }
       );
@@ -333,9 +329,7 @@ describe("UC08 - Search Saving Books", () => {
 
       await waitFor(
         () => {
-          expect(
-            screen.getByText(/savings account details/i)
-          ).toBeInTheDocument();
+          expect(screen.getByText(/Savings Book Details/i)).toBeInTheDocument();
         },
         { timeout: 2000 }
       );
@@ -361,7 +355,9 @@ describe("UC08 - Search Saving Books", () => {
       await waitFor(
         () => {
           expect(
-            screen.getByPlaceholderText(/saving book id, citizen number or name/i)
+            screen.getByPlaceholderText(
+              /saving book id, citizen number or name/i
+            )
           ).toBeInTheDocument();
         },
         { timeout: 2000 }
@@ -604,7 +600,9 @@ describe("UC08 - Search Saving Books", () => {
 
         await waitFor(() => {
           expect(
-            screen.getByPlaceholderText(/saving book id, citizen number or name/i)
+            screen.getByPlaceholderText(
+              /saving book id, citizen number or name/i
+            )
           ).toBeInTheDocument();
         });
 

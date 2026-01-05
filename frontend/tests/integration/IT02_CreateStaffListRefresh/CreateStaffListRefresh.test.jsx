@@ -168,7 +168,7 @@ describe("Integration: IT02 - Create Staff and List Refresh", () => {
   });
 
   it("should fill form with valid data and submit successfully", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     mockGetAllUsers.mockResolvedValueOnce([
       {
         id: "user-1",
@@ -213,7 +213,7 @@ describe("Integration: IT02 - Create Staff and List Refresh", () => {
   }, 10000); // Increase timeout to 10 seconds for when tests run together with other suites
 
   it("should submit form and close dialog on success", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     mockGetAllUsers.mockResolvedValueOnce([
       {
         id: "user-1",
@@ -253,7 +253,7 @@ describe("Integration: IT02 - Create Staff and List Refresh", () => {
   });
 
   it("should refresh user list after successful creation", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
 
     mockGetAllUsers
       .mockResolvedValueOnce([
@@ -317,7 +317,7 @@ describe("Integration: IT02 - Create Staff and List Refresh", () => {
   });
 
   it("should show error message on failed creation", async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
 
     // Setup initial user list load
     mockGetAllUsers.mockResolvedValueOnce([
