@@ -50,6 +50,7 @@ import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
 import { formatVnNumber, formatBalance } from "../../utils/numberFormatter";
+import { sortSavingsTypes } from "../../utils/savingsTypeSort";
 import { formatDateToDDMMYYYY } from "../../utils/dateFormatter";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
@@ -89,7 +90,7 @@ export default function SearchAccounts() {
               };
             }),
           ];
-          setAccountTypeOptions(options);
+          setAccountTypeOptions(sortSavingsTypes(options));
         }
       } catch (err) {
         console.error("Failed to fetch Saving Book types:", err);

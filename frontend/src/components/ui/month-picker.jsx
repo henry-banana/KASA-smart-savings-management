@@ -19,6 +19,13 @@ export function MonthPicker({
     date?.getFullYear() || new Date().getFullYear()
   );
 
+  // Update currentYear when date prop changes
+  React.useEffect(() => {
+    if (date) {
+      setCurrentYear(date.getFullYear());
+    }
+  }, [date]);
+
   const months = [
     "January",
     "February",
