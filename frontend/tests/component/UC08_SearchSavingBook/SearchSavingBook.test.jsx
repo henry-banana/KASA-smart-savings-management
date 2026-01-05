@@ -109,7 +109,7 @@ describe("UC08 - Search Saving Books", () => {
       render(<SearchAccounts />);
       await waitFor(() => {
         expect(
-          screen.getByPlaceholderText(/saving book code or customer name/i)
+          screen.getByPlaceholderText(/saving book id, citizen number or name/i)
         ).toBeInTheDocument();
       });
     });
@@ -163,7 +163,7 @@ describe("UC08 - Search Saving Books", () => {
       render(<SearchAccounts />);
       await waitFor(() => {
         expect(
-          screen.getByPlaceholderText(/saving book code or customer name/i)
+          screen.getByPlaceholderText(/saving book id, citizen number or name/i)
         ).toBeInTheDocument();
       });
       // Should not show error message initially
@@ -199,12 +199,12 @@ describe("UC08 - Search Saving Books", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByPlaceholderText(/saving book code or customer name/i)
+          screen.getByPlaceholderText(/saving book id, citizen number or name/i)
         ).toBeInTheDocument();
       });
 
       const searchInput = screen.getByPlaceholderText(
-        /saving book code or customer name/i
+        /saving book id, citizen number or name/i
       );
       await user.type(searchInput, "12345");
 
@@ -361,7 +361,7 @@ describe("UC08 - Search Saving Books", () => {
       await waitFor(
         () => {
           expect(
-            screen.getByPlaceholderText(/saving book code or customer name/i)
+            screen.getByPlaceholderText(/saving book id, citizen number or name/i)
           ).toBeInTheDocument();
         },
         { timeout: 2000 }
@@ -604,7 +604,7 @@ describe("UC08 - Search Saving Books", () => {
 
         await waitFor(() => {
           expect(
-            screen.getByPlaceholderText(/saving book code or customer name/i)
+            screen.getByPlaceholderText(/saving book id, citizen number or name/i)
           ).toBeInTheDocument();
         });
 
@@ -615,7 +615,7 @@ describe("UC08 - Search Saving Books", () => {
         });
 
         const searchInput = screen.getByPlaceholderText(
-          /saving book code or customer name/i
+          /saving book id, citizen number or name/i
         );
         await user.type(searchInput, "test");
 
