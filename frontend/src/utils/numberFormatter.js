@@ -36,7 +36,7 @@ export const formatVnNumber = (value, options = {}) => {
  * formatBalance(1234.5)        // "1.235"
  */
 export const formatBalance = (value) => {
-  return formatVnNumber(Math.round(Number(value) || 0), {
+  return formatVnNumber(Math.floor(Number(value) || 0), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });

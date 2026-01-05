@@ -139,7 +139,7 @@ export default function Withdraw() {
       // Auto-fill withdrawal amount for fixed-term accounts (not "No term")
       const typeName = account.typeSaving?.typeName || account.accountTypeName;
       if (typeName && typeName !== "No term") {
-        setWithdrawAmount(Math.round(account.balance).toString());
+        setWithdrawAmount(Math.floor(account.balance).toString());
       } else {
         setWithdrawAmount("");
       }
@@ -169,7 +169,7 @@ export default function Withdraw() {
     }
 
     // Round balance for comparison (amount is always integer from input)
-    const roundedBalance = Math.round(accountInfo.balance);
+    const roundedBalance = Math.floor(accountInfo.balance);
     if (amount > roundedBalance) {
       setError("Insufficient balance");
       return;
@@ -237,11 +237,15 @@ export default function Withdraw() {
       setReceiptData({
         accountId: apiResponse?.bookId || accountId,
         customerName: accountInfo.customerName,
-        totalPayout: apiResponse?.finalBalance || amount,
+        totalPayout: Math.floor(apiResponse?.finalBalance || amount),
         initialBalance:
           apiResponse?.initialBalance || accountInfo.initialBalance || 0,
-        interestAmount:
-          apiResponse?.interest || accountInfo.interestAmount || 0,
+        interestAmount: Math.floor(
+          apiResponse?.interest ||
+            accountInfo.interestAmountWithdraw ||
+            accountInfo.interestAmount ||
+            0
+        ),
       });
       setShowSuccess(true);
       console.log("✅ Success! Showing modal");
@@ -529,12 +533,12 @@ export default function Withdraw() {
                         }
 
                         // Round to nearest integer (no decimal places)
-                        const roundedValue = Math.round(numValue);
+                        const roundedValue = Math.floor(numValue);
 
                         // Prevent entering amount greater than balance
                         if (accountInfo && roundedValue > accountInfo.balance) {
                           setWithdrawAmount(
-                            Math.round(accountInfo.balance).toString()
+                            Math.floor(accountInfo.balance).toString()
                           );
                         } else {
                           setWithdrawAmount(roundedValue.toString());
@@ -573,20 +577,32 @@ export default function Withdraw() {
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-base text-gray-500 font-normal">
-                              Interest Amount:
+                              Interest Amount when Withdraw:
                             </span>
                             <span className="text-base font-medium text-green-600">
-                              +{formatBalance(accountInfo.interestAmount ?? 0)}₫
+                              +
+                              {formatBalance(
+                                accountInfo.interestAmountWithdraw ??
+                                  accountInfo.interestAmount ??
+                                  0
+                              )}
+                              ₫
                             </span>
                           </div>
                         </div>
                       )}
                       <div className="flex items-center justify-between">
                         <span className="text-base font-semibold text-gray-700">
-                          Total Payout:
+                          Total Payout when Withdraw:
                         </span>
                         <span className="text-lg font-bold text-green-600">
-                          {formatBalance(Number(withdrawAmount))}₫
+                          {formatBalance(
+                            (accountInfo.initialBalance ?? 0) +
+                              (accountInfo.interestAmountWithdraw ??
+                                accountInfo.interestAmount ??
+                                0)
+                          )}
+                          ₫
                         </span>
                       </div>
                     </div>
@@ -734,7 +750,7 @@ export default function Withdraw() {
                     Total Payout:
                   </span>
                   <span className="text-xl font-bold text-green-600">
-                    {formatVnNumber(receiptData?.totalPayout || 0)}₫
+                    {formatBalance(receiptData?.totalPayout || 0)}₫
                   </span>
                 </div>
               </div>

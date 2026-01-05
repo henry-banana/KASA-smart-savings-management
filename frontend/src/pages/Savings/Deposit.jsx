@@ -391,7 +391,7 @@ export default function Deposit() {
                           }
 
                           // Round to nearest integer (no decimal places)
-                          const roundedValue = Math.round(numValue);
+                          const roundedValue = Math.floor(numValue);
                           setDepositAmount(roundedValue.toString());
                           setError("");
                         }}

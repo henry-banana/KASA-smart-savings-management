@@ -35,6 +35,7 @@ export const getAccountInfo = async (accountCode) => {
         typeSaving: savingBook.typeSaving,
         initialBalance: savingBook.initialBalance || 0,
         interestAmount: savingBook.interestAmount || 0,
+        interestAmountWithdraw: savingBook.interestAmountWithdraw || 0,
       },
     };
   }
