@@ -49,7 +49,7 @@ import { CuteStatCard, StarDecor } from "../../components/CuteComponents";
 import { RoleGuard } from "../../components/RoleGuard";
 import { StatCardSkeleton } from "../../components/ui/loading-skeleton";
 import { Skeleton } from "../../components/ui/skeleton";
-import { formatVnNumber, formatPercentText } from "../../utils/numberFormatter";
+import { formatVnNumber, formatVnNumberWithDecimals, formatPercentText } from "../../utils/numberFormatter";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -476,10 +476,7 @@ export default function Dashboard() {
                         />
                         <Tooltip
                           formatter={(value) =>
-                            `${formatVnNumber(Number(value), {
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 2,
-                            })}M₫`
+                            `${formatVnNumberWithDecimals(Number(value), 2)}Md`
                           }
                           contentStyle={{
                             borderRadius: "12px",
