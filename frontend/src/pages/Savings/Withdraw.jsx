@@ -55,7 +55,6 @@ export default function Withdraw() {
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [minWithdrawalDays, setMinWithdrawalDays] = useState(15);
-  const [isClosingAccount, setIsClosingAccount] = useState(false);
   // Snapshot data for success modal to prevent clearing after reset
   const [receiptData, setReceiptData] = useState(null);
 
@@ -137,14 +136,15 @@ export default function Withdraw() {
 
       setAccountInfo(newAccountInfo);
 
-      // Auto-fill withdrawal amount for fixed-term accounts
-      if (account.accountTypeName !== "No term") {
-        setWithdrawAmount(Math.round(account.balance).toString());
+      // Auto-fill withdrawal amount for fixed-term accounts (not "No term")
+      const typeName = account.typeSaving?.typeName || account.accountTypeName;
+      if (typeName && typeName !== "No term") {
+        setWithdrawAmount(Math.floor(account.balance).toString());
       } else {
         setWithdrawAmount("");
       }
     } catch (err) {
-      console.error("Account lookup error:", err);
+      console.error("Saving Book lookup error:", err);
       setError(err.message);
     } finally {
       setIsLookingUp(false);
@@ -153,6 +153,7 @@ export default function Withdraw() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("🔵 handleSubmit called");
 
     if (!accountInfo) {
       setError("Please lookup a valid account first");
@@ -160,58 +161,98 @@ export default function Withdraw() {
     }
 
     const amount = Number(withdrawAmount);
+    console.log("📝 Amount:", amount, "Balance:", accountInfo.balance);
 
     if (!withdrawAmount || amount <= 0) {
       setError("Please enter a valid withdrawal amount");
       return;
     }
 
-    if (amount > accountInfo.balance) {
+    // Round balance for comparison (amount is always integer from input)
+    const roundedBalance = Math.floor(accountInfo.balance);
+    if (amount > roundedBalance) {
       setError("Insufficient balance");
       return;
     }
 
-    // Check fixed-term withdrawal rules
-    if (accountInfo.accountTypeName !== "No term" && accountInfo.maturityDate) {
-      const today = new Date();
-      const maturityDate = new Date(accountInfo.maturityDate);
+    // Determine if this is a close account operation (for fixed-term at maturity)
+    let isClosing = false;
 
-      if (today < maturityDate) {
-        setError("Fixed-term accounts can only be withdrawn at maturity");
+    // Check fixed-term withdrawal rules
+    console.log(
+      "🔍 Type name:",
+      accountInfo.accountTypeName,
+      "Maturity date:",
+      accountInfo.maturityDate
+    );
+
+    if (accountInfo.accountTypeName !== "No term") {
+      // Use calculated maturity check (which accounts for API response vs calculated discrepancies)
+      if (!isFixedTermMatured()) {
+        setError("Fixed-term saving books can only be withdrawn at maturity");
         return;
       }
 
       // For fixed-term at maturity, must withdraw full amount
-      if (amount !== accountInfo.balance) {
+      console.log(
+        "🔢 Check amount match:",
+        amount,
+        "===",
+        roundedBalance,
+        "?",
+        amount === roundedBalance
+      );
+
+      if (roundedBalance !== amount) {
         setError(
-          "Fixed-term accounts must withdraw the full balance at maturity"
+          "Fixed-term saving books must withdraw the full balance at maturity"
         );
         return;
       }
-      setIsClosingAccount(true);
-    } else {
-      setIsClosingAccount(false);
+      isClosing = true;
+      console.log("✅ isClosing = true");
     }
 
     setIsSubmitting(true);
     setError("");
 
     try {
-      if (isClosingAccount) {
+      console.log("🚀 Submitting, isClosing:", isClosing);
+      let apiResponse = null;
+
+      if (isClosing) {
         // Use close account API for fixed-term matured accounts
-        await closeSavingAccount(accountId);
+        console.log("📤 Calling closeSavingAccount with accountId:", accountId);
+        const closeResponse = await closeSavingAccount(accountId);
+        apiResponse = closeResponse.data || closeResponse;
       } else {
         // Use regular withdraw API for no-term accounts
-        await withdrawMoney(accountId, amount, false);
+        console.log("📤 Calling withdrawMoney");
+        const withdrawResponse = await withdrawMoney(accountId, amount, false);
+        apiResponse = withdrawResponse.data || withdrawResponse;
       }
 
       // Store snapshot for modal display
+      // Map from API response for close account: finalBalance, interest, initialBalance
+      // Get the decimal part of initialBalance
+      const initialBalanceDecimal =
+        (apiResponse?.initialBalance ?? 0) -
+        Math.floor(apiResponse?.initialBalance ?? 0);
+      // Interest with decimal part of initialBalance added
+      const calculatedInterestAmount = Math.floor(
+        (apiResponse?.interest ?? 0) + initialBalanceDecimal
+      );
+
       setReceiptData({
-        accountId,
+        accountId: apiResponse?.bookId || accountId,
         customerName: accountInfo.customerName,
-        totalPayout: amount,
+        totalPayout: Math.floor(apiResponse?.finalBalance || amount),
+        initialBalance:
+          apiResponse?.initialBalance || accountInfo.initialBalance || 0,
+        interestAmount: calculatedInterestAmount,
       });
       setShowSuccess(true);
+      console.log("✅ Success! Showing modal");
 
       // Reset form (keep receipt data & calculated values)
       setTimeout(() => {
@@ -221,7 +262,7 @@ export default function Withdraw() {
         setError("");
       }, 500);
     } catch (err) {
-      console.error("Withdraw error:", err);
+      console.error("❌ Withdraw error:", err);
       if (isServerUnavailable(err)) {
         setServerUnavailable(true);
       } else {
@@ -229,6 +270,7 @@ export default function Withdraw() {
       }
     } finally {
       setIsSubmitting(false);
+      console.log("🏁 handleSubmit finished");
     }
   };
 
@@ -318,19 +360,19 @@ export default function Withdraw() {
                   <span className="shrink-0 text-xl sm:text-2xl">💵</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Withdraw money from a savings account
+                  Withdraw money from a savings book
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
 
           <CardContent className="p-4 space-y-4 sm:p-6 lg:p-8 sm:space-y-6">
-            {/* Account Lookup Section */}
+            {/* Saving Book Lookup Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-3 sm:mb-4">
                 <Search size={18} className="sm:w-5 sm:h-5 text-[#F59E0B]" />
                 <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                  Account Lookup
+                  Saving Book Lookup
                 </h3>
               </div>
 
@@ -495,12 +537,12 @@ export default function Withdraw() {
                         }
 
                         // Round to nearest integer (no decimal places)
-                        const roundedValue = Math.round(numValue);
+                        const roundedValue = Math.floor(numValue);
 
                         // Prevent entering amount greater than balance
                         if (accountInfo && roundedValue > accountInfo.balance) {
                           setWithdrawAmount(
-                            Math.round(accountInfo.balance).toString()
+                            Math.floor(accountInfo.balance).toString()
                           );
                         } else {
                           setWithdrawAmount(roundedValue.toString());
@@ -519,19 +561,62 @@ export default function Withdraw() {
                   </div>
                   {accountInfo && withdrawAmount && (
                     <div
-                      className="p-5 border-2 rounded-sm"
+                      className="p-6 border-2 rounded-sm"
                       style={{
                         background:
                           "linear-gradient(135deg, #FFF7D6 0%, #ffffff 100%)",
                         borderColor: "#F59E0B20",
                       }}
                     >
-                      <div className="flex items-center justify-between pt-2">
-                        <span className="font-medium text-gray-700">
-                          Total Payout:
+                      {/* Show breakdown for fixed-term accounts only */}
+                      {accountInfo.accountTypeName !== "No term" && (
+                        <div className="space-y-4 pb-4 mb-4 border-b border-gray-200">
+                          <div className="flex items-center justify-between">
+                            <span className="text-base text-gray-500 font-normal">
+                              Initial Balance:
+                            </span>
+                            <span className="text-base font-medium text-gray-800">
+                              {formatBalance(accountInfo.initialBalance ?? 0)}₫
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-base text-gray-500 font-normal">
+                              Interest Amount when Withdraw:
+                            </span>
+                            <span className="text-base font-medium text-green-600">
+                              +
+                              {formatBalance(
+                                Math.floor(
+                                  (accountInfo.interestAmountWithdraw ??
+                                    accountInfo.interestAmount ??
+                                    0) +
+                                    ((accountInfo.initialBalance ?? 0) -
+                                      Math.floor(
+                                        accountInfo.initialBalance ?? 0
+                                      ))
+                                )
+                              )}
+                              ₫
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-base font-semibold text-gray-700">
+                          Total Payout when Withdraw:
                         </span>
-                        <span className="text-xl font-bold text-green-600">
-                          {formatBalance(Number(withdrawAmount))}₫
+                        <span className="text-lg font-bold text-green-600">
+                          {formatBalance(
+                            Math.floor(accountInfo.initialBalance ?? 0) +
+                              Math.floor(
+                                (accountInfo.interestAmountWithdraw ??
+                                  accountInfo.interestAmount ??
+                                  0) +
+                                  ((accountInfo.initialBalance ?? 0) -
+                                    Math.floor(accountInfo.initialBalance ?? 0))
+                              )
+                          )}
+                          ₫
                         </span>
                       </div>
                     </div>
@@ -560,7 +645,7 @@ export default function Withdraw() {
                 >
                   <CheckCircle2 size={18} className="mr-2" />
                   {isFixedTermAccount()
-                    ? "Close Savings Account"
+                    ? "Close Savings Book"
                     : "Confirm Withdrawal"}
                 </Button>
                 <Button
@@ -584,16 +669,16 @@ export default function Withdraw() {
               <h5 className="mb-2 text-sm text-blue-900">Withdrawal Rules:</h5>
               <ul className="space-y-1 text-sm text-blue-800 list-disc list-inside">
                 <li>
-                  Account must be open for at least{" "}
+                  Saving Book must be open for at least{" "}
                   {formatVnNumber(minWithdrawalDays)} days
                 </li>
-                <li>No-Term accounts: Partial withdrawals allowed</li>
+                <li>No-Term saving books: Partial withdrawals allowed</li>
                 <li>
-                  Fixed-Term accounts: Can only withdraw after the first
+                  Fixed-Term saving books: Can only withdraw after the first
                   maturity date
                 </li>
                 <li>
-                  Fixed-Term accounts: Must withdraw full balance after maturity
+                  Fixed-Term saving books: Must withdraw full balance after maturity
                 </li>
               </ul>
             </div>
@@ -654,12 +739,32 @@ export default function Withdraw() {
                     {receiptData?.customerName}
                   </span>
                 </div>
+                {receiptData?.initialBalance > 0 && (
+                  <>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">
+                        Initial Balance:
+                      </span>
+                      <span className="font-medium text-gray-800">
+                        {formatBalance(receiptData.initialBalance)}₫
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">
+                        Interest Amount:
+                      </span>
+                      <span className="font-medium text-green-600">
+                        +{formatBalance(receiptData.interestAmount)}₫
+                      </span>
+                    </div>
+                  </>
+                )}
                 <div className="flex justify-between pt-3 border-t border-gray-200">
                   <span className="font-medium text-gray-700">
                     Total Payout:
                   </span>
                   <span className="text-xl font-bold text-green-600">
-                    {formatVnNumber(receiptData?.totalPayout || 0)}₫
+                    {formatBalance(receiptData?.totalPayout || 0)}₫
                   </span>
                 </div>
               </div>
