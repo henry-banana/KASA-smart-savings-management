@@ -9,7 +9,7 @@ class TypeSavingService {
       typeName: dbRecord.typename,
       term: dbRecord.termperiod,
       interestRate: dbRecord.interest,
-      isACtive: dbRecord.isactive,
+      isActive: dbRecord.isactive,
     };
   }
 
