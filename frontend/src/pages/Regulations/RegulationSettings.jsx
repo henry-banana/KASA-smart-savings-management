@@ -245,7 +245,8 @@ export default function RegulationSettings() {
             Array.isArray(refreshedRates.data)
           ) {
             console.log("✅ Setting interest rates:", refreshedRates.data);
-            setInterestRates(refreshedRates.data);
+            const sortedRates = sortSavingsTypeItems(refreshedRates.data);
+            setInterestRates(sortedRates);
           } else {
             console.warn(
               "⚠️ Refreshed rates format invalid, keeping current state:",
@@ -691,7 +692,10 @@ export default function RegulationSettings() {
                         await resetTypeSavingDefaults();
                         const ratesResp = await getInterestRates();
                         if (ratesResp.success) {
-                          setInterestRates(ratesResp.data);
+                          const sortedRates = sortSavingsTypeItems(
+                            ratesResp.data
+                          );
+                          setInterestRates(sortedRates);
                         }
                         setSelectedTypeSavings([]);
                         setSuccessMessage("Reset to default successfully");
@@ -1036,7 +1040,10 @@ export default function RegulationSettings() {
                     try {
                       const ratesResponse = await getInterestRates();
                       if (ratesResponse.success && ratesResponse.data) {
-                        setInterestRates(ratesResponse.data);
+                        const sortedRates = sortSavingsTypeItems(
+                          ratesResponse.data
+                        );
+                        setInterestRates(sortedRates);
                       }
                     } catch (err) {
                       console.error("Failed to refresh interest rates:", err);
@@ -1267,7 +1274,10 @@ export default function RegulationSettings() {
                       try {
                         const ratesResponse = await getInterestRates();
                         if (ratesResponse.success && ratesResponse.data) {
-                          setInterestRates(ratesResponse.data);
+                          const sortedRates = sortSavingsTypeItems(
+                            ratesResponse.data
+                          );
+                          setInterestRates(sortedRates);
                         }
                       } catch (err) {
                         console.error("Failed to refresh interest rates:", err);
