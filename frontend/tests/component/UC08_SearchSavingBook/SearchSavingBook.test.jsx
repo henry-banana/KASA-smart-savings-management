@@ -126,7 +126,7 @@ describe("UC08 - Search Saving Books", () => {
       render(<SearchAccounts />);
       await waitFor(
         () => {
-          expect(screen.getByText(/saving book code/i)).toBeInTheDocument();
+          expect(screen.getByText(/saving book ID/i)).toBeInTheDocument();
         },
         { timeout: 2000 }
       );

@@ -322,7 +322,7 @@ export default function SearchAccounts() {
                   <TableHeader>
                     <TableRow className="bg-linear-to-r from-[#F8F9FC] to-white hover:bg-linear-to-r">
                       <TableHead className="font-semibold">
-                        Saving Book code
+                        Saving Book ID
                       </TableHead>
                       <TableHead className="font-semibold">
                         Citizen ID
@@ -490,7 +490,7 @@ export default function SearchAccounts() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">
-                      Saving Book code:
+                      Saving Book ID:
                     </span>
                     <span className="font-semibold text-lg text-[#8B5CF6]">
                       {selectedAccount.accountCode || selectedAccount.bookId}

@@ -54,6 +54,13 @@ jest.mock("../../../src/utils/numberFormatter", () => ({
     });
   },
   formatPercentText: (text) => text,
+  formatBalance: (num) => {
+    if (typeof num !== "number") return "0";
+    return num.toLocaleString("vi-VN", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  },
 }));
 
 jest.mock("../../../src/components/ui/card", () => ({

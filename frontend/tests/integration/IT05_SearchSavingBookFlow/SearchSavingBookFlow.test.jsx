@@ -60,6 +60,10 @@ jest.mock("../../../src/utils/numberFormatter", () => ({
     if (typeof num !== "number") return "0";
     return num.toLocaleString("vi-VN");
   },
+  formatBalance: (num) => {
+    if (typeof num !== "number") return "0";
+    return num.toLocaleString("vi-VN");
+  },
 }));
 
 import SearchAccounts from "../../../src/pages/Search/SearchAccounts";
@@ -111,7 +115,7 @@ describe("Integration: IT05 - Search Saving Book Flow", () => {
 
     expect(screen.getByText(/search saving books/i)).toBeInTheDocument();
     expect(
-      screen.getByPlaceholderText(/saving book code or customer name/i)
+      screen.getByPlaceholderText(/saving book id, citizen number or name/i)
     ).toBeInTheDocument();
   });
 
@@ -127,7 +131,7 @@ describe("Integration: IT05 - Search Saving Book Flow", () => {
     });
 
     const searchInput = screen.getByPlaceholderText(
-      /saving book code or customer name/i
+      /saving book id, citizen number or name/i
     );
 
     await user.type(searchInput, searchKeyword);
@@ -193,7 +197,7 @@ describe("Integration: IT05 - Search Saving Book Flow", () => {
     await new Promise((resolve) => setTimeout(resolve, 400));
 
     const searchInput = screen.getByPlaceholderText(
-      /saving book code or customer name/i
+      /saving book id, citizen number or name/i
     );
 
     // Type search term
@@ -232,7 +236,7 @@ describe("Integration: IT05 - Search Saving Book Flow", () => {
     });
 
     const searchInput = screen.getByPlaceholderText(
-      /saving book code or customer name/i
+      /saving book id, citizen number or name/i
     );
 
     await user.type(searchInput, "NONEXISTENT");
@@ -280,7 +284,7 @@ describe("Integration: IT05 - Search Saving Book Flow", () => {
     });
 
     const searchInput = screen.getByPlaceholderText(
-      /saving book code or customer name/i
+      /saving book id, citizen number or name/i
     );
 
     await user.type(searchInput, "test");
@@ -307,7 +311,7 @@ describe("Integration: IT05 - Search Saving Book Flow", () => {
     });
 
     const searchInput = screen.getByPlaceholderText(
-      /saving book code or customer name/i
+      /saving book id, citizen number or name/i
     );
 
     await user.type(searchInput, "test");

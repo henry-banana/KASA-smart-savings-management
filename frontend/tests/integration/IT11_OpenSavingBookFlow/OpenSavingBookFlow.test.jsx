@@ -148,35 +148,53 @@ jest.mock("../../../src/utils/numberFormatter", () => ({
       maximumFractionDigits: 0,
     });
   },
+  formatBalance: (num) => {
+    if (typeof num !== "number") return "0";
+    return num.toLocaleString("vi-VN", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  },
 }));
 
 jest.mock("../../../src/utils/logger", () => ({
   logger: { error: jest.fn(), info: jest.fn(), warn: jest.fn() },
 }));
 
-// Import component and services AFTER mocking
-import OpenAccount from "../../../src/pages/Savings/OpenAccount";
-import * as regulationService from "../../../src/services/regulationService";
-import * as savingBookService from "../../../src/services/savingBookService";
-import * as customerService from "../../../src/services/customerService";
-import { useAuthContext } from "../../../src/contexts/AuthContext";
-import { isServerUnavailable } from "../../../src/utils/serverStatusUtils";
-
-// Create controlled mock functions
+// Create controlled mock functions BEFORE jest.mock
 const mockGetRegulations = jest.fn();
 const mockGetInterestRates = jest.fn();
 const mockSearchCustomerByCitizenId = jest.fn();
 const mockCreateSavingBook = jest.fn();
 const mockCreateCustomer = jest.fn();
 
-// Setup mocks
-regulationService.getRegulations = mockGetRegulations;
-regulationService.getInterestRates = mockGetInterestRates;
-savingBookService.createSavingBook = mockCreateSavingBook;
-customerService.customerService = {
-  searchCustomerByCitizenId: mockSearchCustomerByCitizenId,
-  createCustomer: mockCreateCustomer,
-};
+// Setup jest.mock handlers that use our mock functions
+jest.mock("../../../src/services/regulationService", () => ({
+  getRegulations: (...args) => mockGetRegulations(...args),
+  getInterestRates: (...args) => mockGetInterestRates(...args),
+}));
+
+jest.mock("../../../src/services/savingBookService", () => ({
+  createSavingBook: (...args) => mockCreateSavingBook(...args),
+}));
+
+jest.mock("../../../src/services/customerService", () => ({
+  customerService: {
+    searchCustomerByCitizenId: (...args) =>
+      mockSearchCustomerByCitizenId(...args),
+    createCustomer: (...args) => mockCreateCustomer(...args),
+  },
+}));
+
+jest.mock("../../../src/services/typeSavingService", () => ({
+  getAllTypeSavings: jest.fn(),
+}));
+
+// Import component and services AFTER mocking
+import OpenAccount from "../../../src/pages/Savings/OpenAccount";
+import { useAuthContext } from "../../../src/contexts/AuthContext";
+import { isServerUnavailable } from "../../../src/utils/serverStatusUtils";
+import { getAllTypeSavings } from "../../../src/services/typeSavingService";
 
 const renderWithRouter = (initialRoute = "/open-account") => {
   return rtlRender(
@@ -205,6 +223,14 @@ describe("Integration: IT11 - Open Saving Book Flow", () => {
       data: [
         { typeSavingId: 1, typeName: "Regular", term: 0, rate: 5 },
         { typeSavingId: 2, typeName: "Fixed", term: 12, rate: 8 },
+      ],
+    });
+
+    getAllTypeSavings.mockResolvedValue({
+      success: true,
+      data: [
+        { typeSavingId: 1, typeName: "Regular", term: 0, isActive: true },
+        { typeSavingId: 2, typeName: "Fixed", term: 12, isActive: true },
       ],
     });
 
@@ -255,7 +281,7 @@ describe("Integration: IT11 - Open Saving Book Flow", () => {
     // Wait for initial data load
     await waitFor(() => {
       expect(mockGetRegulations).toHaveBeenCalledTimes(1);
-      expect(mockGetInterestRates).toHaveBeenCalledTimes(1);
+      expect(getAllTypeSavings).toHaveBeenCalledTimes(1);
     });
 
     // Verify key form elements are rendered
@@ -270,7 +296,7 @@ describe("Integration: IT11 - Open Saving Book Flow", () => {
 
     await waitFor(() => {
       expect(mockGetRegulations).toHaveBeenCalledTimes(1);
-      expect(mockGetInterestRates).toHaveBeenCalledTimes(1);
+      expect(getAllTypeSavings).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -394,7 +420,7 @@ describe("Integration: IT11 - Open Saving Book Flow", () => {
 
     await waitFor(() => {
       expect(mockGetRegulations).toHaveBeenCalled();
-      expect(mockGetInterestRates).toHaveBeenCalled();
+      expect(getAllTypeSavings).toHaveBeenCalled();
     });
 
     // Try to find and fill form inputs
