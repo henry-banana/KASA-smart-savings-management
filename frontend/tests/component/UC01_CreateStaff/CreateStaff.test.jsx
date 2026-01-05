@@ -147,7 +147,7 @@ describe("UC01 - Create Staff Account", () => {
     });
 
     it("should accept email input", async () => {
-      const user = userEvent.setup();
+      const user = userEvent.setup({ delay: null });
       render(<UserManagement />);
 
       await waitFor(() => {
@@ -182,7 +182,7 @@ describe("UC01 - Create Staff Account", () => {
   // ========== HAPPY PATH TESTS (3 tests) ==========
   describe("User Creation Flow", () => {
     it("should allow filling and clearing form fields", async () => {
-      const user = userEvent.setup();
+      const user = userEvent.setup({ delay: null });
       render(<UserManagement />);
 
       await waitFor(() => {

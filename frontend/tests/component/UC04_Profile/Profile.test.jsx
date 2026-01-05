@@ -510,7 +510,7 @@ describe("UC04 - View User Profile", () => {
       const changePasswordButtons = screen.getAllByRole("button", {
         name: /change password/i,
       });
-      const user = userEvent.setup();
+      const user = userEvent.setup({ delay: null });
       await user.click(changePasswordButtons[0]);
 
       // Wait for current password field to be visible
