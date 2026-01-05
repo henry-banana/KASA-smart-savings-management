@@ -7,12 +7,23 @@ import { DayPicker } from "react-day-picker";
 import { cn } from "./utils";
 import { buttonVariants } from "./button";
 
-function Calendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  ...props
-}) {
+function Calendar({ className, classNames, showOutsideDays = true, ...props }) {
+  // Don't show today highlight if a different date is selected
+  const selected = props.selected;
+  const isToday = (date) => {
+    const today = new Date();
+    return (
+      date instanceof Date &&
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
+  // Determine if we should show today styling
+  const showTodayStyle =
+    !selected || (selected instanceof Date && isToday(selected));
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -43,7 +54,7 @@ function Calendar({
         day_button: "h-9 w-9 p-0 font-normal",
         selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        today: "bg-accent text-accent-foreground",
+        today: showTodayStyle ? "bg-accent text-accent-foreground" : "",
         outside:
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         disabled: "text-muted-foreground opacity-50",

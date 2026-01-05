@@ -14,8 +14,15 @@ export async function addSavingBook(req, res) {
   } catch (err) {
     console.error("❌ Error adding saving book:", err);
 
-    return res.status(err.status || 500).json({
-      message: "Failed to add saving book",
+    const msg = err?.message || "Failed to add saving book";
+    const isDuplicate =
+      /duplicate key|unique constraint|already exists|23505|duplicate/i.test(
+        msg
+      );
+    const status = isDuplicate ? 409 : err.status || 500;
+
+    return res.status(status).json({
+      message: msg,
       success: false,
     });
   }
@@ -102,8 +109,8 @@ export async function getSavingBookById(req, res) {
         return res.status(404).json({
           message: err.message,
           success: false,
-        });    
-      
+        });
+
       case "Customer not found":
         return res.status(404).json({
           message: err.message,
