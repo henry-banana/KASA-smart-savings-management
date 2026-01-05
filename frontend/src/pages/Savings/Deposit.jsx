@@ -141,7 +141,7 @@ export default function Deposit() {
 
       setAccountInfo(account);
     } catch (err) {
-      console.error("Account lookup error:", err);
+      console.error("Saving Book lookup error:", err);
       setError(err.message);
     } finally {
       setIsLookingUp(false);
@@ -239,19 +239,19 @@ export default function Deposit() {
                   <span className="shrink-0 text-xl sm:text-2xl">💰</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Deposit money to savings account
+                  Deposit money to savings book
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
 
           <CardContent className="p-4 space-y-6 sm:p-6 lg:p-8">
-            {/* Account Lookup Section */}
+            {/* Saving Book Lookup Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-3 sm:mb-4">
                 <Search size={18} className="sm:w-5 sm:h-5 text-[#1A4D8F]" />
                 <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                  Account Lookup
+                  Saving Book Lookup
                 </h3>
               </div>
 
@@ -391,7 +391,7 @@ export default function Deposit() {
                           }
 
                           // Round to nearest integer (no decimal places)
-                          const roundedValue = Math.round(numValue);
+                          const roundedValue = Math.floor(numValue);
                           setDepositAmount(roundedValue.toString());
                           setError("");
                         }}

@@ -36,6 +36,14 @@ describe("HashingMiddleware - Unit Tests", () => {
 
       await expect(hashPassword(password)).rejects.toThrow("Hashing failed");
     });
+
+    it("should throw TypeError when password is not a string", async () => {
+      await expect(hashPassword(null)).rejects.toThrow(TypeError);
+      await expect(hashPassword(123)).rejects.toThrow(TypeError);
+      await expect(hashPassword(undefined)).rejects.toThrow(TypeError);
+      await expect(hashPassword({})).rejects.toThrow(TypeError);
+      await expect(hashPassword([])).rejects.toThrow(TypeError);
+    });
   });
 });
 

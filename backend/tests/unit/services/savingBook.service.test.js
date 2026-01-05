@@ -127,6 +127,7 @@ describe("SavingBookService - Unit Tests", () => {
         typeid: 1,
         customerid: 1,
         currentbalance: 1000000,
+        maturitydate: expect.any(String),
       });
       expect(mockTransactionRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -206,15 +207,10 @@ describe("SavingBookService - Unit Tests", () => {
 
       mockCustomerRepository.findByCitizenID.mockResolvedValue(mockCustomer);
       mockTypeSavingRepository.findById.mockResolvedValue(mockTypeSaving);
-      
-      // ✅ Mock create to prevent execution reaching line 39
-      // The validation should happen before create is called
-      mockSavingBookRepository.create.mockImplementation(() => {
-        throw new Error("Deposit amount must be at least 100000");
-      });
 
+      // Updated regex to match the actual error message format
       await expect(savingBookService.addSavingBook(inputData)).rejects.toThrow(
-        /Deposit amount must be at least|minimumdeposit/i
+        /Minimum deposit amount is \d+ VND/i
       );
     });
 
@@ -346,6 +342,8 @@ describe("SavingBookService - Unit Tests", () => {
   describe("searchSavingBook()", () => {
     it("TC_UC08_05 - Không tìm thấy kết quả tra cứu", async () => {
       const keyword = "123456"; // chỉ chứa số để phù hợp rule hiện tại
+      const typeId = "all";
+      const status = "all";
       const pageSize = 10;
       const pageNumber = 1;
 
@@ -353,6 +351,8 @@ describe("SavingBookService - Unit Tests", () => {
 
       const result = await savingBookService.searchSavingBook(
         keyword,
+        typeId,
+        status,
         pageSize,
         pageNumber
       );
@@ -363,38 +363,39 @@ describe("SavingBookService - Unit Tests", () => {
 
     it("should search by citizen ID when keyword starts with 0", async () => {
       const keyword = "012345678901";
-      const mockResults = [createMockSavingBook({ bookid: 1 })];
+      const mockResults = [createMockSavingBook({ bookid: 1, status: "Open" })];
 
       mockSavingBookRepository.findByCustomerCitizenID.mockResolvedValue(
         mockResults
       );
 
-      const result = await savingBookService.searchSavingBook(keyword, 10, 1);
+      const result = await savingBookService.searchSavingBook(keyword, "all", "all", 10, 1);
 
       expect(mockSavingBookRepository.findByCustomerCitizenID).toHaveBeenCalledWith(
         keyword
       );
-      expect(result.data.length).toBeGreaterThan(0);
+      expect(result.total).toBe(1);
+      expect(result.data.length).toBe(1);
     });
 
     it("should search by book ID when keyword is numeric", async () => {
       const keyword = "123";
-      const mockResults = [createMockSavingBook({ bookid: 123 })];
+      const mockResults = [createMockSavingBook({ bookid: 123, status: "Open" })];
 
       mockSavingBookRepository.findByBookID.mockResolvedValue(mockResults);
 
-      const result = await savingBookService.searchSavingBook(keyword, 10, 1);
+      const result = await savingBookService.searchSavingBook(keyword, "all", "all", 10, 1);
 
       expect(mockSavingBookRepository.findByBookID).toHaveBeenCalledWith(keyword);
     });
 
     it("should search by customer name when keyword is letters", async () => {
       const keyword = "Nguyen Van A";
-      const mockResults = [createMockSavingBook({ bookid: 1 })];
+      const mockResults = [createMockSavingBook({ bookid: 1, status: "Open" })];
 
       mockSavingBookRepository.findByCustomerName.mockResolvedValue(mockResults);
 
-      const result = await savingBookService.searchSavingBook(keyword, 10, 1);
+      const result = await savingBookService.searchSavingBook(keyword, "all", "all", 10, 1);
 
       expect(mockSavingBookRepository.findByCustomerName).toHaveBeenCalledWith(
         keyword
@@ -403,13 +404,13 @@ describe("SavingBookService - Unit Tests", () => {
 
     it("should return all saving books when keyword is empty", async () => {
       const mockResults = [
-        createMockSavingBook({ bookid: 1 }),
-        createMockSavingBook({ bookid: 2 }),
+        createMockSavingBook({ bookid: 1, status: "Open" }),
+        createMockSavingBook({ bookid: 2, status: "Open" }),
       ];
 
       mockSavingBookRepository.findAll.mockResolvedValue(mockResults);
 
-      const result = await savingBookService.searchSavingBook("", 10, 1);
+      const result = await savingBookService.searchSavingBook("", "all", "all", 10, 1);
 
       expect(mockSavingBookRepository.findAll).toHaveBeenCalled();
       expect(result.total).toBe(2);
