@@ -134,6 +134,49 @@ export class SavingBook extends BaseModel {
     return result;
   }
 
+  // Override getById để include joins với customer và typesaving
+  async getById(bookid) {
+    const { data, error } = await supabase
+      .from(this.tableName)
+      .select(
+        `
+        bookid,
+        registertime,
+        maturitydate,
+        status,
+        currentbalance,
+        interestamount,
+        initialbalance,
+        closetime,
+        typeid,
+        customerid,
+        openrate,
+        customer:customerid (
+          citizenid,
+          fullname,
+          customerid
+        ),
+        typesaving:typeid (
+          typeid,
+          typename,
+          termperiod,
+          interest,
+          isactive,
+          minimumdeposit
+        )
+      `
+      )
+      .eq(this.primaryKey, bookid)
+      .single();
+
+    if (error && error.code !== "PGRST116") throw error;
+
+    if (!data) return null;
+
+    // Trả về raw data từ database để service xử lý
+    return data;
+  }
+
   async searchByBookID(bookid) {
     const { data, error } = await supabase
       .from(this.tableName)
