@@ -8,31 +8,51 @@ import {
 import { raw } from "express";
 
 class SavingBookService {
-  // PRIVATE HELPER: XỬ LÝ LAZY LOADING 
+  // PRIVATE HELPER: XỬ LÝ LAZY LOADING
   async _performRollover(savingBook, typeSaving) {
     // 1. CHUẨN HÓA DỮ LIỆU ĐẦU VÀO (Mapping)
-    // Log cho thấy object dùng CamelCase, nhưng DB trả về Lowercase.
-    // Ta lấy giá trị linh hoạt từ cả 2 trường hợp.
-
     const bookId = savingBook.bookId || savingBook.bookid;
     const currentMaturityDateStr =
       savingBook.maturityDate || savingBook.maturitydate;
-    let initialInterestAmount = savingBook.interestamount ?? savingBook.interestAmount;
+
+    // Nếu không có ngày đáo hạn hợp lệ thì bỏ qua rollover để tránh lỗi
+    if (!currentMaturityDateStr) {
+      return savingBook;
+    }
+
+    let maturityDate = new Date(currentMaturityDateStr);
+    if (Number.isNaN(maturityDate.getTime())) {
+      return savingBook;
+    }
+
     const currentBalanceRaw =
-      savingBook.balance !== undefined
+      savingBook.balance !== undefined && savingBook.balance !== null
         ? savingBook.balance
         : savingBook.currentbalance;
 
-    let maturityDate = new Date(currentMaturityDateStr);
-    const currentDate = new Date();
-    let currentBalance = parseFloat(currentBalanceRaw);
-    let isUpdated = false;
+    let currentBalance = Number(currentBalanceRaw);
+    if (!Number.isFinite(currentBalance)) {
+      return savingBook;
+    }
+
+    const initialInterestRaw =
+      savingBook.interestamount ?? savingBook.interestAmount ?? 0;
+    let initialInterestAmount = Number(initialInterestRaw) || 0;
 
     // Lấy thông tin kỳ hạn và lãi suất
-    const isNoTerm =
-      typeSaving.typename === "No term" || typeSaving.termperiod === 0;
-    const termMonths = isNoTerm ? 1 : typeSaving.termperiod;
-    const interestRatePercent = parseFloat(typeSaving.interest);
+    const termPeriod = Number(typeSaving.termperiod);
+    const interestRatePercent = Number(typeSaving.interest);
+
+    const isNoTerm = typeSaving.typename === "No term" || termPeriod === 0;
+    const termMonths = isNoTerm ? 1 : termPeriod;
+
+    // Nếu thiếu thông tin kỳ hạn hoặc lãi suất hợp lệ thì không rollover
+    if (!Number.isFinite(interestRatePercent) || termMonths <= 0) {
+      return savingBook;
+    }
+
+    const currentDate = new Date();
+    let isUpdated = false;
 
     // 2. VÒNG LẶP TÍNH LÃI
     while (maturityDate <= currentDate) {
@@ -45,12 +65,17 @@ class SavingBookService {
       const interestAmount =
         currentBalance * (interestRatePercent / 100) * termMonths;
 
+      // Nếu lãi không hợp lệ thì dừng để tránh NaN
+      if (!Number.isFinite(interestAmount) || interestAmount <= 0) {
+        break;
+      }
+
       // Lãi nhập vốn
       currentBalance += interestAmount;
 
-      //Lợi nhuận cộng dồn
+      // Lợi nhuận cộng dồn
       initialInterestAmount += interestAmount;
-      
+
       // Gia hạn ngày đáo hạn
       maturityDate.setMonth(maturityDate.getMonth() + termMonths);
 
@@ -134,7 +159,7 @@ class SavingBookService {
         maturitydate: new Date().toISOString(),
         interestamount: 0,
         initialbalance: initialDeposit,
-        openrate : typeSaving.interest,
+        openrate: typeSaving.interest,
       };
 
       // Nếu caller truyền `bookID`, thì gửi kèm `bookid` khi tạo
@@ -233,19 +258,18 @@ class SavingBookService {
 
   // Lấy thông tin sổ tiết kiệm theo ID
   async getSavingBookById(bookID) {
-    // 1. Lấy thông tin sổ tiết kiệm
+    // 1. Lấy thông tin sổ tiết kiệm (đã include customer và typesaving joins)
     let savingBook = await savingBookRepository.findById(bookID);
     if (!savingBook) throw new Error("Saving book not found");
 
-    // 2. Lấy khách hàng theo customerid
-    const customer = await customerRepository.findById(savingBook.customerid);
-    if (!customer) throw new Error("Customer not found");
+    // Lấy customer và typeSaving từ joined data
+    const customer = savingBook.customer;
+    const typeSaving = savingBook.typesaving;
 
-    // 3. Lấy loại sổ tiết kiệm
-    const typeSaving = await typeSavingRepository.findById(savingBook.typeid);
+    if (!customer) throw new Error("Customer not found");
     if (!typeSaving) throw new Error("TypeSaving not found");
 
-    // 4. Lấy danh sách giao dịch
+    // 2. Lấy danh sách giao dịch
     const transactions = await transactionRepository.findById(bookID);
 
     // Cũ: 5. Xử lý cập nhật lãi suất và ngày đáo hạn (cho sổ không kỳ hạn hoặc tự động gia hạn)
@@ -290,8 +314,8 @@ class SavingBookService {
     if (savingBook.status === "Open") {
       savingBook = await this._performRollover(savingBook, typeSaving);
     }
-    
-     // D. Tính toán tiền lãi phát sinh (interestEarned) và tổng tiền (finalAmount)
+
+    // D. Tính toán tiền lãi phát sinh (interestEarned) và tổng tiền (finalAmount)
     let finalAmount = parseFloat(savingBook.currentbalance);
     let finalInterest = parseFloat(savingBook.interestamount);
     let interestEarned = 0; // Biến này lưu phần lãi phát sinh thêm (nếu rút trước hạn)
@@ -585,7 +609,7 @@ class SavingBookService {
     // 6. Trả về kết quả theo định dạng yêu cầu
     return {
       bookId: bookID,
-      finalBalance: finalAmount,  
+      finalBalance: finalAmount,
       interest: initialInterestAmount,
       initialBalance: savingBook.initialbalance,
       status: "closed", // Hoặc updatedBook.status.toLowerCase()
