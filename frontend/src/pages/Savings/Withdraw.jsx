@@ -189,7 +189,7 @@ export default function Withdraw() {
     if (accountInfo.accountTypeName !== "No term") {
       // Use calculated maturity check (which accounts for API response vs calculated discrepancies)
       if (!isFixedTermMatured()) {
-        setError("Fixed-term accounts can only be withdrawn at maturity");
+        setError("Fixed-term saving books can only be withdrawn at maturity");
         return;
       }
 
@@ -205,7 +205,7 @@ export default function Withdraw() {
 
       if (roundedBalance !== amount) {
         setError(
-          "Fixed-term accounts must withdraw the full balance at maturity"
+          "Fixed-term saving books must withdraw the full balance at maturity"
         );
         return;
       }
@@ -234,18 +234,22 @@ export default function Withdraw() {
 
       // Store snapshot for modal display
       // Map from API response for close account: finalBalance, interest, initialBalance
+      // Get the decimal part of initialBalance
+      const initialBalanceDecimal =
+        (apiResponse?.initialBalance ?? 0) -
+        Math.floor(apiResponse?.initialBalance ?? 0);
+      // Interest with decimal part of initialBalance added
+      const calculatedInterestAmount = Math.floor(
+        (apiResponse?.interest ?? 0) + initialBalanceDecimal
+      );
+
       setReceiptData({
         accountId: apiResponse?.bookId || accountId,
         customerName: accountInfo.customerName,
         totalPayout: Math.floor(apiResponse?.finalBalance || amount),
         initialBalance:
           apiResponse?.initialBalance || accountInfo.initialBalance || 0,
-        interestAmount: Math.floor(
-          apiResponse?.interest ||
-            accountInfo.interestAmountWithdraw ||
-            accountInfo.interestAmount ||
-            0
-        ),
+        interestAmount: calculatedInterestAmount,
       });
       setShowSuccess(true);
       console.log("✅ Success! Showing modal");
@@ -582,9 +586,15 @@ export default function Withdraw() {
                             <span className="text-base font-medium text-green-600">
                               +
                               {formatBalance(
-                                accountInfo.interestAmountWithdraw ??
-                                  accountInfo.interestAmount ??
-                                  0
+                                Math.floor(
+                                  (accountInfo.interestAmountWithdraw ??
+                                    accountInfo.interestAmount ??
+                                    0) +
+                                    ((accountInfo.initialBalance ?? 0) -
+                                      Math.floor(
+                                        accountInfo.initialBalance ?? 0
+                                      ))
+                                )
                               )}
                               ₫
                             </span>
@@ -597,10 +607,14 @@ export default function Withdraw() {
                         </span>
                         <span className="text-lg font-bold text-green-600">
                           {formatBalance(
-                            (accountInfo.initialBalance ?? 0) +
-                              (accountInfo.interestAmountWithdraw ??
-                                accountInfo.interestAmount ??
-                                0)
+                            Math.floor(accountInfo.initialBalance ?? 0) +
+                              Math.floor(
+                                (accountInfo.interestAmountWithdraw ??
+                                  accountInfo.interestAmount ??
+                                  0) +
+                                  ((accountInfo.initialBalance ?? 0) -
+                                    Math.floor(accountInfo.initialBalance ?? 0))
+                              )
                           )}
                           ₫
                         </span>
@@ -631,7 +645,7 @@ export default function Withdraw() {
                 >
                   <CheckCircle2 size={18} className="mr-2" />
                   {isFixedTermAccount()
-                    ? "Close Savings Account"
+                    ? "Close Savings Book"
                     : "Confirm Withdrawal"}
                 </Button>
                 <Button
@@ -658,13 +672,13 @@ export default function Withdraw() {
                   Account must be open for at least{" "}
                   {formatVnNumber(minWithdrawalDays)} days
                 </li>
-                <li>No-Term accounts: Partial withdrawals allowed</li>
+                <li>No-Term saving books: Partial withdrawals allowed</li>
                 <li>
-                  Fixed-Term accounts: Can only withdraw after the first
+                  Fixed-Term saving books: Can only withdraw after the first
                   maturity date
                 </li>
                 <li>
-                  Fixed-Term accounts: Must withdraw full balance after maturity
+                  Fixed-Term saving books: Must withdraw full balance after maturity
                 </li>
               </ul>
             </div>
