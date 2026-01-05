@@ -66,8 +66,7 @@ export default function Deposit() {
         const resp = await getRegulations();
         if (resp.success && resp.data?.minimumBalance) {
           // Use API value, but ensure it's at least the minimum business rule
-          const apiValue = resp.data.minimumBalance;
-          const minValue = Math.max(apiValue, BUSINESS_RULES.MIN_DEPOSIT);
+          const minValue = BUSINESS_RULES.MIN_DEPOSIT;
           setMinDeposit(minValue);
         } else {
           // Fallback to business rule if API fails
