@@ -580,7 +580,7 @@ export default function MonthlyReport() {
                     {formatVnNumber(totals?.opened ?? 0)}
                   </p>
                   <p className="text-xs text-green-600 mt-1">
-                    accounts this month
+                    saving books this month
                   </p>
                 </div>
 
@@ -592,7 +592,7 @@ export default function MonthlyReport() {
                     {formatVnNumber(totals?.closed ?? 0)}
                   </p>
                   <p className="text-xs text-red-600 mt-1">
-                    accounts this month
+                    saving books this month
                   </p>
                 </div>
 

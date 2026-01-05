@@ -144,7 +144,7 @@ export default function Withdraw() {
         setWithdrawAmount("");
       }
     } catch (err) {
-      console.error("Account lookup error:", err);
+      console.error("Saving Book lookup error:", err);
       setError(err.message);
     } finally {
       setIsLookingUp(false);
@@ -360,19 +360,19 @@ export default function Withdraw() {
                   <span className="shrink-0 text-xl sm:text-2xl">💵</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Withdraw money from a savings account
+                  Withdraw money from a savings book
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
 
           <CardContent className="p-4 space-y-4 sm:p-6 lg:p-8 sm:space-y-6">
-            {/* Account Lookup Section */}
+            {/* Saving Book Lookup Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-3 sm:mb-4">
                 <Search size={18} className="sm:w-5 sm:h-5 text-[#F59E0B]" />
                 <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                  Account Lookup
+                  Saving Book Lookup
                 </h3>
               </div>
 
@@ -669,7 +669,7 @@ export default function Withdraw() {
               <h5 className="mb-2 text-sm text-blue-900">Withdrawal Rules:</h5>
               <ul className="space-y-1 text-sm text-blue-800 list-disc list-inside">
                 <li>
-                  Account must be open for at least{" "}
+                  Saving Book must be open for at least{" "}
                   {formatVnNumber(minWithdrawalDays)} days
                 </li>
                 <li>No-Term saving books: Partial withdrawals allowed</li>

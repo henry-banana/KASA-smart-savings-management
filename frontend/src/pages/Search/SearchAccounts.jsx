@@ -242,7 +242,7 @@ export default function SearchAccounts() {
                   <span className="shrink-0-xl sm:text-2xl">🔍</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Search and manage savings accounts
+                  Search and manage savings books
                 </CardDescription>
               </div>
             </div>
@@ -318,7 +318,7 @@ export default function SearchAccounts() {
                   <span className="font-semibold text-[#8B5CF6]">
                     {formatVnNumber(total)}
                   </span>{" "}
-                  savings accounts • Page {page} of {totalPages}
+                  savings books • Page {page} of {totalPages}
                 </p>
               </div>
             </div>
@@ -487,10 +487,10 @@ export default function SearchAccounts() {
                 </div>
                 <div>
                   <DialogTitle className="text-xl">
-                    Savings Account Details
+                    Savings Book Details
                   </DialogTitle>
                   <DialogDescription>
-                    Detailed account information
+                    Detailed book information
                   </DialogDescription>
                 </div>
               </div>

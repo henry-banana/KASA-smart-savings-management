@@ -576,7 +576,7 @@ export default function Dashboard() {
                               </span>
                             </div>
                             <span className="text-sm font-semibold text-gray-900">
-                              {formatVnNumber(item.value)} accounts
+                              {formatVnNumber(item.value)} saving books
                             </span>
                           </div>
                         ))}
