@@ -58,6 +58,15 @@ import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 export default function OpenAccount() {
   const { user } = useAuthContext();
 
+  // Helper function to get today's date in local timezone (YYYY-MM-DD format)
+  const getTodayDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const [formData, setFormData] = useState({
     customerName: "",
     idCard: "",
@@ -65,7 +74,7 @@ export default function OpenAccount() {
     savingBookCode: "",
     savingsType: "",
     initialDeposit: "",
-    openDate: new Date().toISOString().split("T")[0],
+    openDate: getTodayDateString(),
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
@@ -311,7 +320,7 @@ export default function OpenAccount() {
             savingBookCode: "",
             savingsType: "",
             initialDeposit: "",
-            openDate: new Date().toISOString().split("T")[0],
+            openDate: getTodayDateString(),
           });
         }, 500);
       } catch (err) {
@@ -931,7 +940,7 @@ export default function OpenAccount() {
                       savingBookCode: "",
                       savingsType: "",
                       initialDeposit: "",
-                      openDate: new Date().toISOString().split("T")[0],
+                      openDate: getTodayDateString(),
                     });
                     setErrors({});
                   }}

@@ -480,7 +480,7 @@ export default function Dashboard() {
                         />
                         <Tooltip
                           formatter={(value) =>
-                            `${formatVnNumberWithDecimals(Number(value), 2)}Md`
+                            `${formatVnNumberWithDecimals(Number(value), 2)}M₫`
                           }
                           contentStyle={{
                             borderRadius: "12px",
@@ -557,7 +557,7 @@ export default function Dashboard() {
                               borderRadius: "12px",
                               border: "1px solid #E5E7EB",
                             }}
-                            formatter={(value) => formatVnNumber(value)}
+                            formatter={(value) => `${formatVnNumber(value)}₫`}
                           />
                         </PieChart>
                       </ResponsiveContainer>
