@@ -703,13 +703,17 @@ export default function Withdraw() {
                 {receiptData?.initialBalance > 0 && (
                   <>
                     <div className="flex justify-between">
-                      <span className="text-sm text-gray-600">Initial Balance:</span>
+                      <span className="text-sm text-gray-600">
+                        Initial Balance:
+                      </span>
                       <span className="font-medium text-gray-800">
                         {formatBalance(receiptData.initialBalance)}₫
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-gray-600">Interest Amount:</span>
+                      <span className="text-sm text-gray-600">
+                        Interest Amount:
+                      </span>
                       <span className="font-medium text-green-600">
                         +{formatBalance(receiptData.interestAmount)}₫
                       </span>
