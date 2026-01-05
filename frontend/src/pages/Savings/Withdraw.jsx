@@ -35,7 +35,12 @@ import {
   withdrawMoney,
   closeSavingAccount,
 } from "../../services/transactionService";
-import { formatVnNumber, formatPercentText } from "../../utils/numberFormatter";
+import {
+  formatVnNumber,
+  formatBalance,
+  formatPercentText,
+} from "../../utils/numberFormatter";
+import { formatDateToDDMMYYYY } from "../../utils/dateFormatter";
 import { getRegulations } from "@/services/regulationService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
@@ -122,14 +127,19 @@ export default function Withdraw() {
         return;
       }
 
-      setAccountInfo({
+      const newAccountInfo = {
         ...account,
         daysSinceOpen,
-      });
+        term: account.typeSaving?.term || 0,
+      };
+
+      console.log("Setting account info:", newAccountInfo);
+
+      setAccountInfo(newAccountInfo);
 
       // Auto-fill withdrawal amount for fixed-term accounts
       if (account.accountTypeName !== "No term") {
-        setWithdrawAmount(account.balance.toString());
+        setWithdrawAmount(Math.round(account.balance).toString());
       } else {
         setWithdrawAmount("");
       }
@@ -224,8 +234,22 @@ export default function Withdraw() {
 
   const isFixedTermMatured = () => {
     if (!accountInfo || accountInfo.term === 0) return false;
+
     const today = new Date();
-    const maturityDate = new Date(accountInfo.maturityDate);
+    const openDate = new Date(accountInfo.openDate);
+
+    // Calculate maturity date: openDate + term (in months)
+    const maturityDate = new Date(openDate);
+    maturityDate.setMonth(maturityDate.getMonth() + accountInfo.term);
+
+    console.log("Debug isFixedTermMatured:", {
+      today: today.toDateString(),
+      openDate: openDate.toDateString(),
+      maturityDate: maturityDate.toDateString(),
+      term: accountInfo.term,
+      isMatured: today >= maturityDate,
+    });
+
     return today >= maturityDate;
   };
 
@@ -290,7 +314,7 @@ export default function Withdraw() {
               </div>
               <div className="flex-1 min-w-0">
                 <CardTitle className="flex items-center gap-2 mb-1 text-lg sm:text-xl lg:text-2xl sm:mb-2">
-                  <span className="truncate">Make Withdrawal (BM3)</span>
+                  <span className="truncate">Make Withdrawal</span>
                   <span className="shrink-0 text-xl sm:text-2xl">💵</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
@@ -391,13 +415,13 @@ export default function Withdraw() {
                     <div>
                       <p className="text-xs text-gray-500">Current Balance</p>
                       <p className="text-sm font-semibold text-green-600">
-                        {formatVnNumber(accountInfo.balance ?? 0)}₫
+                        {formatBalance(accountInfo.balance ?? 0)}₫
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Open Date</p>
                       <p className="text-sm font-medium">
-                        {accountInfo.openDate}
+                        {formatDateToDDMMYYYY(accountInfo.openDate)}
                       </p>
                     </div>
                     <div>
@@ -419,7 +443,7 @@ export default function Withdraw() {
                         <div>
                           <p className="text-xs text-gray-500">Maturity Date</p>
                           <p className="text-sm font-medium">
-                            {accountInfo.maturityDate}
+                            {formatDateToDDMMYYYY(accountInfo.maturityDate)}
                           </p>
                         </div>
                         <div>
@@ -470,17 +494,23 @@ export default function Withdraw() {
                           return;
                         }
 
+                        // Round to nearest integer (no decimal places)
+                        const roundedValue = Math.round(numValue);
+
                         // Prevent entering amount greater than balance
-                        if (accountInfo && numValue > accountInfo.balance) {
-                          setWithdrawAmount(accountInfo.balance.toString());
+                        if (accountInfo && roundedValue > accountInfo.balance) {
+                          setWithdrawAmount(
+                            Math.round(accountInfo.balance).toString()
+                          );
                         } else {
-                          setWithdrawAmount(value);
+                          setWithdrawAmount(roundedValue.toString());
                         }
                       }}
                       placeholder="Enter amount"
                       disabled={!accountInfo || isFixedTermAccount()}
                       min="0"
                       max={accountInfo?.balance || undefined}
+                      step="1"
                       className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
                     />
                     <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
@@ -501,7 +531,7 @@ export default function Withdraw() {
                           Total Payout:
                         </span>
                         <span className="text-xl font-bold text-green-600">
-                          {formatVnNumber(Number(withdrawAmount))}₫
+                          {formatBalance(Number(withdrawAmount))}₫
                         </span>
                       </div>
                     </div>
@@ -514,6 +544,8 @@ export default function Withdraw() {
                   type="submit"
                   disabled={
                     !accountInfo ||
+                    !withdrawAmount ||
+                    Number(withdrawAmount) <= 0 ||
                     (isFixedTermAccount() && !isFixedTermMatured()) ||
                     isSubmitting ||
                     serverUnavailable
@@ -556,9 +588,12 @@ export default function Withdraw() {
                   {formatVnNumber(minWithdrawalDays)} days
                 </li>
                 <li>No-Term accounts: Partial withdrawals allowed</li>
-                <li>Fixed-Term accounts: Can only withdraw at maturity date</li>
                 <li>
-                  Fixed-Term accounts: Must withdraw full balance at maturity
+                  Fixed-Term accounts: Can only withdraw after the first
+                  maturity date
+                </li>
+                <li>
+                  Fixed-Term accounts: Must withdraw full balance after maturity
                 </li>
               </ul>
             </div>

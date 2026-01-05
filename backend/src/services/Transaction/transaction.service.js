@@ -2,6 +2,7 @@ import { transactionRepository } from "../../repositories/Transaction/Transactio
 import { savingBookRepository } from "../../repositories/SavingBook/SavingBookRepository.js";
 import { employeeRepository } from "../../repositories/Employee/EmployeeRepository.js";
 import { customerRepository } from "../../repositories/Customer/CustomerRepository.js";
+import { typeSavingRepository } from "../../repositories/TypeSaving/TypeSavingRepository.js";
 import { savingBookService } from "../SavingBook/savingbook.service.js";
 
 class TransactionService {
@@ -238,12 +239,12 @@ class TransactionService {
     //Kiểm tra số tiền rút không được lớn hơn số dư hiện có
     const balanceBefore = Number(savingBook.currentbalance);
 
-    if (balanceBefore < Number(amount) * 1.15) {
+    if (balanceBefore < Number(amount)) {
       throw new Error("Insufficient balance.");
     }
 
     //Tính số dư sau khi rút
-    const balanceAfter = balanceBefore - Number(amount) * 1.15;
+    const balanceAfter = balanceBefore - Number(amount);
 
     // Fix: Check if balance is effectively 0 (within 1 VND)
     const isBalanceZero = Math.abs(balanceAfter) < 1;

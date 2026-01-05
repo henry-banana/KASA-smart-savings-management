@@ -25,6 +25,24 @@ export const formatVnNumber = (value, options = {}) => {
 };
 
 /**
+ * Format balance using Vietnamese locale with no decimal places
+ * Rounds to nearest integer for currency display
+ *
+ * @param {number|string} value - The balance to format
+ * @returns {string} Formatted balance string without decimal places (e.g., "1.234.567")
+ *
+ * @example
+ * formatBalance(1234567.89)    // "1.234.568"
+ * formatBalance(1234.5)        // "1.235"
+ */
+export const formatBalance = (value) => {
+  return formatVnNumber(Math.round(Number(value) || 0), {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+};
+
+/**
  * Replace decimal point with comma in percentage text strings
  * Localizes decimal separator while preserving other text
  *
