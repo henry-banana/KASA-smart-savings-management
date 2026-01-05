@@ -45,7 +45,10 @@ import {
 } from "lucide-react";
 import { StarDecor, CuteEmptyState } from "../../components/CuteComponents";
 import { TableSkeleton } from "../../components/ui/loading-skeleton";
-import { searchSavingBooks } from "../../services/savingBookService";
+import {
+  searchSavingBooks,
+  getSavingBookById,
+} from "../../services/savingBookService";
 import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
@@ -61,6 +64,7 @@ export default function SearchAccounts() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [detailsLoading, setDetailsLoading] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [accountTypeOptions, setAccountTypeOptions] = useState([
@@ -161,9 +165,23 @@ export default function SearchAccounts() {
 
   const filteredAccounts = accounts;
 
-  const handleViewDetails = (account) => {
-    setSelectedAccount(account);
-    setShowDetails(true);
+  const handleViewDetails = async (account) => {
+    setDetailsLoading(true);
+    try {
+      // Get full details from API
+      const response = await getSavingBookById(
+        account.accountCode || account.bookId
+      );
+      setSelectedAccount(response.data);
+      setShowDetails(true);
+    } catch (err) {
+      console.error("Failed to fetch account details:", err);
+      // Fallback to showing search result data if API fails
+      setSelectedAccount(account);
+      setShowDetails(true);
+    } finally {
+      setDetailsLoading(false);
+    }
   };
 
   const handlePreviousPage = () => {
@@ -478,8 +496,12 @@ export default function SearchAccounts() {
               </div>
             </DialogHeader>
 
-            {selectedAccount && (
-              <div className="space-y-3">
+            {detailsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin">Loading details...</div>
+              </div>
+            ) : selectedAccount ? (
+              <div className="space-y-4">
                 <div
                   className="p-6 space-y-3 border-2 rounded-sm"
                   style={{
@@ -514,10 +536,14 @@ export default function SearchAccounts() {
                     </span>
                     <Badge
                       className={`${getTypeBadgeColor(
-                        selectedAccount.accountTypeName
+                        selectedAccount.typeSaving?.typeName ||
+                          selectedAccount.accountTypeName
                       )} border`}
                     >
-                      {getTypeLabel(selectedAccount.accountTypeName)}
+                      {getTypeLabel(
+                        selectedAccount.typeSaving?.typeName ||
+                          selectedAccount.accountTypeName
+                      )}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
@@ -526,6 +552,17 @@ export default function SearchAccounts() {
                       {formatDateToDDMMYYYY(selectedAccount.openDate)}
                     </span>
                   </div>
+                  {selectedAccount.typeSaving?.term > 0 &&
+                    selectedAccount.maturityDate && (
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600">
+                          Maturity Date:
+                        </span>
+                        <span className="font-medium">
+                          {formatDateToDDMMYYYY(selectedAccount.maturityDate)}
+                        </span>
+                      </div>
+                    )}
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Status:</span>
                     {selectedAccount.status?.toLowerCase() === "open" ? (
@@ -538,15 +575,33 @@ export default function SearchAccounts() {
                       </Badge>
                     )}
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">
+                      Initial Balance:
+                    </span>
+                    <span className="font-medium">
+                      {formatBalance(selectedAccount.initialBalance || 0)}₫
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">
+                      Interest Amount:
+                    </span>
+                    <span className="font-medium text-green-600">
+                      +{formatBalance(selectedAccount.interestAmount || 0)}₫
+                    </span>
+                  </div>
                   <div className="flex justify-between pt-3 border-t border-gray-200">
-                    <span className="font-medium text-gray-700">Balance:</span>
-                    <span className="text-xl font-bold text-green-600">
+                    <span className="font-medium text-gray-700">
+                      Current Balance:
+                    </span>
+                    <span className="text-lg font-bold text-green-600">
                       {formatBalance(selectedAccount.balance ?? 0)}₫
                     </span>
                   </div>
                 </div>
               </div>
-            )}
+            ) : null}
 
             <Button
               onClick={() => setShowDetails(false)}

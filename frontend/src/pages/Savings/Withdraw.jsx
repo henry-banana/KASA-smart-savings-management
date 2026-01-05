@@ -168,7 +168,9 @@ export default function Withdraw() {
       return;
     }
 
-    if (amount > accountInfo.balance) {
+    // Round balance for comparison (amount is always integer from input)
+    const roundedBalance = Math.round(accountInfo.balance);
+    if (amount > roundedBalance) {
       setError("Insufficient balance");
       return;
     }
@@ -196,12 +198,12 @@ export default function Withdraw() {
         "🔢 Check amount match:",
         amount,
         "===",
-        Math.round(accountInfo.balance),
+        roundedBalance,
         "?",
-        amount === Math.round(accountInfo.balance)
+        amount === roundedBalance
       );
 
-      if (Math.round(accountInfo.balance) !== amount) {
+      if (roundedBalance !== amount) {
         setError(
           "Fixed-term accounts must withdraw the full balance at maturity"
         );
@@ -216,23 +218,30 @@ export default function Withdraw() {
 
     try {
       console.log("🚀 Submitting, isClosing:", isClosing);
+      let apiResponse = null;
+
       if (isClosing) {
         // Use close account API for fixed-term matured accounts
         console.log("📤 Calling closeSavingAccount with accountId:", accountId);
-        await closeSavingAccount(accountId);
+        const closeResponse = await closeSavingAccount(accountId);
+        apiResponse = closeResponse.data || closeResponse;
       } else {
         // Use regular withdraw API for no-term accounts
         console.log("📤 Calling withdrawMoney");
-        await withdrawMoney(accountId, amount, false);
+        const withdrawResponse = await withdrawMoney(accountId, amount, false);
+        apiResponse = withdrawResponse.data || withdrawResponse;
       }
 
       // Store snapshot for modal display
+      // Map from API response for close account: finalBalance, interest, initialBalance
       setReceiptData({
-        accountId,
+        accountId: apiResponse?.bookId || accountId,
         customerName: accountInfo.customerName,
-        totalPayout: amount,
-        initialBalance: accountInfo.initialBalance || 0,
-        interestAmount: accountInfo.interestAmount || 0,
+        totalPayout: apiResponse?.finalBalance || amount,
+        initialBalance:
+          apiResponse?.initialBalance || accountInfo.initialBalance || 0,
+        interestAmount:
+          apiResponse?.interest || accountInfo.interestAmount || 0,
       });
       setShowSuccess(true);
       console.log("✅ Success! Showing modal");
