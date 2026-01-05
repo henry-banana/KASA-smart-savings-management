@@ -54,9 +54,14 @@ export default function Withdraw() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [minWithdrawalDays, setMinWithdrawalDays] = useState(15);
+  const [minimumBalance, setMinimumBalance] = useState(100000);
+  const [minimumTermDays, setMinimumTermDays] = useState(15);
   // Snapshot data for success modal to prevent clearing after reset
   const [receiptData, setReceiptData] = useState(null);
+
+  // Close Savings Book state for No-term accounts
+  const [showCloseConfirm, setShowCloseConfirm] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   // Regulations loading state
   const [regulationsError, setRegulationsError] = useState("");
@@ -64,19 +69,22 @@ export default function Withdraw() {
   const [serverUnavailable, setServerUnavailable] = useState(false);
   const [retryingServer, setRetryingServer] = useState(false);
 
-  // Load regulations (minimum withdrawal days)
+  // Load regulations (minimum balance and minimum term days)
   useEffect(() => {
     const fetchRegulations = async () => {
       setLoadingRegulations(true);
       setRegulationsError("");
       try {
         const resp = await getRegulations();
-        if (resp?.success && resp.data?.minimumTermDays !== undefined) {
-          setMinWithdrawalDays(Number(resp.data.minimumTermDays));
+        if (resp?.success && resp.data) {
+          if (resp.data.minimumBalance !== undefined) {
+            setMinimumBalance(Number(resp.data.minimumBalance));
+          }
+          if (resp.data.minimumTermDays !== undefined) {
+            setMinimumTermDays(Number(resp.data.minimumTermDays));
+          }
         } else {
-          setRegulationsError(
-            "Failed to load minimum withdrawal days regulation"
-          );
+          setRegulationsError("Failed to load regulations");
         }
       } catch (err) {
         console.error("Fetch regulations error:", err);
@@ -117,10 +125,10 @@ export default function Withdraw() {
 
       const daysSinceOpen = calculateDaysDifference(account.openDate);
 
-      if (daysSinceOpen < minWithdrawalDays) {
+      if (daysSinceOpen < minimumTermDays) {
         setError(
           `Account must be open for at least ${formatVnNumber(
-            minWithdrawalDays
+            minimumTermDays
           )} days. Current: ${formatVnNumber(daysSinceOpen)} days`
         );
         return;
@@ -173,6 +181,20 @@ export default function Withdraw() {
     if (amount > roundedBalance) {
       setError("Insufficient balance");
       return;
+    }
+
+    // For No-term accounts, check minimum balance constraint
+    if (accountInfo.accountTypeName === "No term") {
+      const maxWithdrawable = Math.floor(accountInfo.balance - minimumBalance);
+      if (amount > maxWithdrawable) {
+        setError(
+          `Cannot withdraw more than ${formatBalance(maxWithdrawable)}₫. ` +
+            `You must maintain a minimum balance of ${formatBalance(
+              minimumBalance
+            )}₫.`
+        );
+        return;
+      }
     }
 
     // Determine if this is a close account operation (for fixed-term at maturity)
@@ -271,6 +293,48 @@ export default function Withdraw() {
     } finally {
       setIsSubmitting(false);
       console.log("🏁 handleSubmit finished");
+    }
+  };
+
+  // Handle closing a No-term savings book
+  const handleCloseNoTermAccount = async () => {
+    setIsClosing(true);
+    setError("");
+
+    try {
+      const response = await closeSavingAccount(
+        accountInfo.bookId || accountInfo.accountCode || accountId
+      );
+
+      if (response.success) {
+        // Show success message with closed status
+        setReceiptData({
+          accountId: accountInfo.bookId || accountInfo.accountCode || accountId,
+          customerName: accountInfo.customerName,
+          initialBalance: response.data?.initialBalance || 0,
+          interestAmount: response.data?.interest || 0,
+          totalPayout: response.data?.finalBalance || accountInfo.balance,
+          status: "closed",
+        });
+        setShowSuccess(true);
+        setShowCloseConfirm(false);
+
+        // Clear form
+        setTimeout(() => {
+          setAccountId("");
+          setWithdrawAmount("");
+          setAccountInfo(null);
+        }, 1500);
+      }
+    } catch (err) {
+      console.error("Error closing savings account:", err);
+      if (isServerUnavailable(err)) {
+        setServerUnavailable(true);
+      } else {
+        setError(err.message || "Failed to close savings book");
+      }
+    } finally {
+      setIsClosing(false);
     }
   };
 
@@ -539,11 +603,17 @@ export default function Withdraw() {
                         // Round to nearest integer (no decimal places)
                         const roundedValue = Math.floor(numValue);
 
-                        // Prevent entering amount greater than balance
-                        if (accountInfo && roundedValue > accountInfo.balance) {
-                          setWithdrawAmount(
-                            Math.floor(accountInfo.balance).toString()
-                          );
+                        // For No-term accounts, limit to (balance - minimumBalance)
+                        // For fixed-term accounts, limit to balance
+                        const maxWithdrawable =
+                          accountInfo &&
+                          accountInfo.accountTypeName === "No term"
+                            ? Math.floor(accountInfo.balance - minimumBalance)
+                            : Math.floor(accountInfo.balance);
+
+                        // Prevent entering amount greater than allowed limit
+                        if (accountInfo && roundedValue > maxWithdrawable) {
+                          setWithdrawAmount(maxWithdrawable.toString());
                         } else {
                           setWithdrawAmount(roundedValue.toString());
                         }
@@ -551,7 +621,13 @@ export default function Withdraw() {
                       placeholder="Enter amount"
                       disabled={!accountInfo || isFixedTermAccount()}
                       min="0"
-                      max={accountInfo?.balance || undefined}
+                      max={
+                        accountInfo
+                          ? accountInfo.accountTypeName === "No term"
+                            ? Math.floor(accountInfo.balance - minimumBalance)
+                            : Math.floor(accountInfo.balance)
+                          : undefined
+                      }
                       step="1"
                       className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#F59E0B] focus:ring-[#F59E0B] transition-all"
                     />
@@ -559,6 +635,19 @@ export default function Withdraw() {
                       ₫
                     </span>
                   </div>
+
+                  {/* Helper text for No-term accounts */}
+                  {accountInfo && accountInfo.accountTypeName === "No term" && (
+                    <p className="text-xs text-gray-600">
+                      Maximum withdrawable:{" "}
+                      {formatBalance(
+                        Math.max(0, accountInfo.balance - minimumBalance)
+                      )}
+                      ₫ (Current balance minus minimum balance requirement of{" "}
+                      {formatBalance(minimumBalance)}₫)
+                    </p>
+                  )}
+
                   {accountInfo && withdrawAmount && (
                     <div
                       className="p-6 border-2 rounded-sm"
@@ -606,16 +695,22 @@ export default function Withdraw() {
                           Total Payout when Withdraw:
                         </span>
                         <span className="text-lg font-bold text-green-600">
-                          {formatBalance(
-                            Math.floor(accountInfo.initialBalance ?? 0) +
-                              Math.floor(
-                                (accountInfo.interestAmountWithdraw ??
-                                  accountInfo.interestAmount ??
-                                  0) +
-                                  ((accountInfo.initialBalance ?? 0) -
-                                    Math.floor(accountInfo.initialBalance ?? 0))
-                              )
-                          )}
+                          {accountInfo.accountTypeName === "No term"
+                            ? // For No term accounts, total payout = withdrawal amount only
+                              formatBalance(Number(withdrawAmount) || 0)
+                            : // For fixed-term accounts, include initial balance + interest
+                              formatBalance(
+                                Math.floor(accountInfo.initialBalance ?? 0) +
+                                  Math.floor(
+                                    (accountInfo.interestAmountWithdraw ??
+                                      accountInfo.interestAmount ??
+                                      0) +
+                                      ((accountInfo.initialBalance ?? 0) -
+                                        Math.floor(
+                                          accountInfo.initialBalance ?? 0
+                                        ))
+                                  )
+                              )}
                           ₫
                         </span>
                       </div>
@@ -633,6 +728,7 @@ export default function Withdraw() {
                     Number(withdrawAmount) <= 0 ||
                     (isFixedTermAccount() && !isFixedTermMatured()) ||
                     isSubmitting ||
+                    isClosing ||
                     serverUnavailable
                   }
                   className="flex-1 h-12 text-white rounded-md font-medium border border-gray-200 hover:border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
@@ -648,6 +744,24 @@ export default function Withdraw() {
                     ? "Close Savings Book"
                     : "Confirm Withdrawal"}
                 </Button>
+
+                {/* Close Savings Book button for No-term accounts */}
+                {accountInfo && !isFixedTermAccount() && (
+                  <Button
+                    type="button"
+                    disabled={isClosing || isSubmitting || serverUnavailable}
+                    className="flex-1 h-12 text-white rounded-md font-medium border border-gray-200 hover:border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
+                    }}
+                    onClick={() => setShowCloseConfirm(true)}
+                  >
+                    <CheckCircle2 size={18} className="mr-2" />
+                    Close Savings Book
+                  </Button>
+                )}
+
                 <Button
                   type="button"
                   variant="outline"
@@ -657,6 +771,7 @@ export default function Withdraw() {
                     setWithdrawAmount("");
                     setAccountInfo(null);
                     setError("");
+                    setShowCloseConfirm(false);
                   }}
                 >
                   Reset
@@ -670,7 +785,7 @@ export default function Withdraw() {
               <ul className="space-y-1 text-sm text-blue-800 list-disc list-inside">
                 <li>
                   Saving Book must be open for at least{" "}
-                  {formatVnNumber(minWithdrawalDays)} days
+                  {formatVnNumber(minimumTermDays)} days
                 </li>
                 <li>No-Term saving books: Partial withdrawals allowed</li>
                 <li>
@@ -678,12 +793,52 @@ export default function Withdraw() {
                   maturity date
                 </li>
                 <li>
-                  Fixed-Term saving books: Must withdraw full balance after maturity
+                  Fixed-Term saving books: Must withdraw full balance after
+                  maturity
                 </li>
               </ul>
             </div>
           </CardContent>
         </Card>
+
+        {/* Close Confirmation Dialog for No-term Accounts */}
+        <Dialog open={showCloseConfirm} onOpenChange={setShowCloseConfirm}>
+          <DialogContent className="max-w-md rounded-sm">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">Close Savings Book</DialogTitle>
+              <DialogDescription className="text-base pt-2">
+                This will close the account and withdraw all remaining balance (
+                {formatBalance(accountInfo?.balance || 0)}₫).
+                <strong> This action cannot be undone.</strong> Do you want to
+                continue?
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex gap-4 pt-6">
+              <Button
+                type="button"
+                disabled={isClosing}
+                onClick={() => handleCloseNoTermAccount()}
+                className="flex-1 h-12 text-white rounded-md font-medium border border-gray-200 hover:border-gray-200 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #EF4444 0%, #F87171 100%)",
+                }}
+              >
+                {isClosing ? "Closing..." : "Confirm Close"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isClosing}
+                className="flex-1 h-12 rounded-md border-gray-300 bg-white text-gray-700 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-700 hover:scale-[1.05]"
+                onClick={() => setShowCloseConfirm(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Success Modal */}
         <Dialog open={showSuccess} onOpenChange={setShowSuccess}>

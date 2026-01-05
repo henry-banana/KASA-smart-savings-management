@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen, waitFor } from "../../test-utils/render";
+import { format } from "date-fns";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 
@@ -154,8 +155,10 @@ describe("UC09 - Daily Sales Report", () => {
 
     it("should call getDailyReport with today's date by default", async () => {
       const user = userEvent.setup();
-      const today = new Date();
-      const expectedDateStr = today.toISOString().split("T")[0];
+
+      // Use the same formatting logic as the component (date-fns format)
+      const now = new Date();
+      const expectedDateStr = format(now, "yyyy-MM-dd");
 
       render(<DailyReport />);
 

@@ -428,8 +428,9 @@ describe("UC07 - Make Withdrawal", () => {
       await user.clear(amountInput);
       await user.type(amountInput, "2000000");
 
-      // Input should cap at balance
-      expect(amountInput.value).toBe("1000000");
+      // For "No term" accounts, max withdrawable = balance - minimumBalance
+      // default minimumBalance is 100000, so with balance 1000000, cap is 900000
+      expect(amountInput.value).toBe("900000");
     });
   });
 
