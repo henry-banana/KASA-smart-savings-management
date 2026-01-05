@@ -771,6 +771,7 @@ export default function OpenAccount() {
                             {formatVnNumber(type.interestRate, {
                               minimumFractionDigits: 1,
                               maximumFractionDigits: 2,
+                              noFloor: true,
                             })}
                             %
                           </div>
