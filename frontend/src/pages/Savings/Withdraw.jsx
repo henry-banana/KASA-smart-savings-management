@@ -272,6 +272,7 @@ export default function Withdraw() {
         initialBalance:
           apiResponse?.initialBalance || accountInfo.initialBalance || 0,
         interestAmount: calculatedInterestAmount,
+        isClosing: isClosing,
       });
       setShowSuccess(true);
       console.log("✅ Success! Showing modal");
@@ -315,6 +316,7 @@ export default function Withdraw() {
           interestAmount: response.data?.interest || 0,
           totalPayout: response.data?.finalBalance || accountInfo.balance,
           status: "closed",
+          isClosing: true,
         });
         setShowSuccess(true);
         setShowCloseConfirm(false);
@@ -894,11 +896,11 @@ export default function Withdraw() {
                     {receiptData?.customerName}
                   </span>
                 </div>
-                {receiptData?.initialBalance > 0 && (
+                {receiptData?.isClosing && receiptData?.initialBalance > 0 && (
                   <>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600">
-                        Initial Balance:
+                        Original Principal (Initial Deposit):
                       </span>
                       <span className="font-medium text-gray-800">
                         {formatBalance(receiptData.initialBalance)}₫
@@ -906,7 +908,7 @@ export default function Withdraw() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600">
-                        Interest Amount:
+                        Total Interest Earned (To Date):
                       </span>
                       <span className="font-medium text-green-600">
                         +{formatBalance(receiptData.interestAmount)}₫
