@@ -527,7 +527,7 @@ export default function DailyReport() {
                   <div className="flex-1">
                     <p className="mb-2 text-sm text-gray-600">Total Deposits</p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text">
-                      {formatVnNumber(totals.deposits ?? 0)}₫
+                      {formatVnNumber(Math.floor(totals.deposits ?? 0))}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <ArrowUpRight size={14} className="text-green-600" />
@@ -564,7 +564,7 @@ export default function DailyReport() {
                       Total Withdrawals
                     </p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-red-600 to-rose-600 bg-clip-text">
-                      {formatVnNumber(totals.withdrawals ?? 0)}₫
+                      {formatVnNumber(Math.floor(totals.withdrawals ?? 0))}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <ArrowDownRight size={14} className="text-red-600" />
@@ -599,7 +599,7 @@ export default function DailyReport() {
                   <div className="flex-1">
                     <p className="mb-2 text-sm text-gray-600">Net Difference</p>
                     <h3 className="mb-2 text-2xl font-semibold text-transparent bg-linear-to-r from-blue-600 to-cyan-600 bg-clip-text">
-                      {formatVnNumber(totals.difference ?? 0)}₫
+                      {formatVnNumber(Math.floor(totals.difference ?? 0))}₫
                     </h3>
                     <div className="flex items-center gap-1">
                       <DollarSign size={14} className="text-blue-600" />
@@ -658,17 +658,21 @@ export default function DailyReport() {
                             {row.typeName}
                           </TableCell>
                           <TableCell className="font-semibold text-right text-green-600">
-                            {formatVnNumber(row.totalDeposits ?? 0)}₫
+                            {formatVnNumber(Math.floor(row.totalDeposits ?? 0))}
+                            ₫
                           </TableCell>
                           <TableCell className="font-semibold text-right text-red-600">
-                            {formatVnNumber(row.totalWithdrawals ?? 0)}₫
+                            {formatVnNumber(
+                              Math.floor(row.totalWithdrawals ?? 0)
+                            )}
+                            ₫
                           </TableCell>
                           <TableCell
                             className={`font-semibold text-right ${getDifferenceColorClass(
                               row.difference
                             )}`}
                           >
-                            {formatVnNumber(row.difference ?? 0)}₫
+                            {formatVnNumber(Math.floor(row.difference ?? 0))}₫
                           </TableCell>
                         </TableRow>
                       ))}
@@ -679,17 +683,17 @@ export default function DailyReport() {
                           Total
                         </TableCell>
                         <TableCell className="font-bold text-right text-green-700">
-                          {formatVnNumber(totals.deposits ?? 0)}₫
+                          {formatVnNumber(Math.floor(totals.deposits ?? 0))}₫
                         </TableCell>
                         <TableCell className="font-bold text-right text-red-700">
-                          {formatVnNumber(totals.withdrawals ?? 0)}₫
+                          {formatVnNumber(Math.floor(totals.withdrawals ?? 0))}₫
                         </TableCell>
                         <TableCell
                           className={`font-bold text-right ${getDifferenceColorClass(
                             totals.difference
                           )}`}
                         >
-                          {formatVnNumber(totals.difference ?? 0)}₫
+                          {formatVnNumber(Math.floor(totals.difference ?? 0))}₫
                         </TableCell>
                       </TableRow>
                     </TableFooter>

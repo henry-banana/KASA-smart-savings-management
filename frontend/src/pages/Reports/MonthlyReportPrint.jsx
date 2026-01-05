@@ -135,7 +135,7 @@ export const MonthlyReportPrint = React.forwardRef(
             <p className="summary-value">
               {formatVnNumber(totals?.opened ?? 0)}
             </p>
-            <p className="summary-note">accounts this month</p>
+            <p className="summary-note">saving books this month</p>
           </div>
 
           <div className="summary-stat closed">
@@ -143,7 +143,7 @@ export const MonthlyReportPrint = React.forwardRef(
             <p className="summary-value">
               {formatVnNumber(totals?.closed ?? 0)}
             </p>
-            <p className="summary-note">accounts this month</p>
+            <p className="summary-note">saving books this month</p>
           </div>
 
           <div className="summary-stat difference">

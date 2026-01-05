@@ -524,12 +524,12 @@ export default function MonthlyReport() {
                         </td>
                         <td className="py-3 px-6 text-right text-green-600 font-semibold border-r border-gray-200">
                           {formatVnNumber(
-                            row.newSavingBooks ?? row.opened ?? 0
+                            Math.floor(row.newSavingBooks ?? row.opened ?? 0)
                           )}
                         </td>
                         <td className="py-3 px-6 text-right text-red-600 font-semibold border-r border-gray-200">
                           {formatVnNumber(
-                            row.closedSavingBooks ?? row.closed ?? 0
+                            Math.floor(row.closedSavingBooks ?? row.closed ?? 0)
                           )}
                         </td>
                         <td
@@ -538,7 +538,7 @@ export default function MonthlyReport() {
                           )}`}
                         >
                           {row.difference >= 0 ? "+" : ""}
-                          {formatVnNumber(row.difference ?? 0)}
+                          {formatVnNumber(Math.floor(row.difference ?? 0))}
                         </td>
                       </tr>
                     ))}
@@ -552,10 +552,10 @@ export default function MonthlyReport() {
                         Total
                       </td>
                       <td className="py-4 px-6 text-right font-bold text-green-600 text-lg border-r border-gray-300">
-                        {formatVnNumber(totals?.opened ?? 0)}
+                        {formatVnNumber(Math.floor(totals?.opened ?? 0))}
                       </td>
                       <td className="py-4 px-6 text-right font-bold text-red-600 text-lg border-r border-gray-300">
-                        {formatVnNumber(totals?.closed ?? 0)}
+                        {formatVnNumber(Math.floor(totals?.closed ?? 0))}
                       </td>
                       <td
                         className={`py-4 px-6 text-right font-bold text-lg ${getDifferenceColorClass(
@@ -563,7 +563,7 @@ export default function MonthlyReport() {
                         )}`}
                       >
                         {(totals?.difference || 0) >= 0 ? "+" : ""}
-                        {formatVnNumber(totals?.difference ?? 0)}
+                        {formatVnNumber(Math.floor(totals?.difference ?? 0))}
                       </td>
                     </tr>
                   </tbody>
@@ -577,10 +577,10 @@ export default function MonthlyReport() {
                     Total Opened
                   </p>
                   <p className="text-3xl font-bold text-green-600">
-                    {formatVnNumber(totals?.opened ?? 0)}
+                    {formatVnNumber(Math.floor(totals?.opened ?? 0))}
                   </p>
                   <p className="text-xs text-green-600 mt-1">
-                    accounts this month
+                    saving books this month
                   </p>
                 </div>
 
@@ -589,10 +589,10 @@ export default function MonthlyReport() {
                     Total Closed
                   </p>
                   <p className="text-3xl font-bold text-red-600">
-                    {formatVnNumber(totals?.closed ?? 0)}
+                    {formatVnNumber(Math.floor(totals?.closed ?? 0))}
                   </p>
                   <p className="text-xs text-red-600 mt-1">
-                    accounts this month
+                    saving books this month
                   </p>
                 </div>
 
@@ -602,7 +602,7 @@ export default function MonthlyReport() {
                   </p>
                   <p className="text-3xl font-bold text-blue-600">
                     {(totals?.difference || 0) >= 0 ? "+" : ""}
-                    {formatVnNumber(totals?.difference ?? 0)}
+                    {formatVnNumber(Math.floor(totals?.difference ?? 0))}
                   </p>
                   <p className="text-xs text-blue-600 mt-1">
                     net growth this month
