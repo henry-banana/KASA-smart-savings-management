@@ -55,7 +55,6 @@ export default function Withdraw() {
   const [isLookingUp, setIsLookingUp] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [minWithdrawalDays, setMinWithdrawalDays] = useState(15);
-  const [isClosingAccount, setIsClosingAccount] = useState(false);
   // Snapshot data for success modal to prevent clearing after reset
   const [receiptData, setReceiptData] = useState(null);
 
@@ -137,8 +136,9 @@ export default function Withdraw() {
 
       setAccountInfo(newAccountInfo);
 
-      // Auto-fill withdrawal amount for fixed-term accounts
-      if (account.accountTypeName !== "No term") {
+      // Auto-fill withdrawal amount for fixed-term accounts (not "No term")
+      const typeName = account.typeSaving?.typeName || account.accountTypeName;
+      if (typeName && typeName !== "No term") {
         setWithdrawAmount(Math.round(account.balance).toString());
       } else {
         setWithdrawAmount("");
@@ -153,6 +153,7 @@ export default function Withdraw() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("🔵 handleSubmit called");
 
     if (!accountInfo) {
       setError("Please lookup a valid account first");
@@ -160,6 +161,7 @@ export default function Withdraw() {
     }
 
     const amount = Number(withdrawAmount);
+    console.log("📝 Amount:", amount, "Balance:", accountInfo.balance);
 
     if (!withdrawAmount || amount <= 0) {
       setError("Please enter a valid withdrawal amount");
@@ -171,37 +173,56 @@ export default function Withdraw() {
       return;
     }
 
-    // Check fixed-term withdrawal rules
-    if (accountInfo.accountTypeName !== "No term" && accountInfo.maturityDate) {
-      const today = new Date();
-      const maturityDate = new Date(accountInfo.maturityDate);
+    // Determine if this is a close account operation (for fixed-term at maturity)
+    let isClosing = false;
 
-      if (today < maturityDate) {
+    // Check fixed-term withdrawal rules
+    console.log(
+      "🔍 Type name:",
+      accountInfo.accountTypeName,
+      "Maturity date:",
+      accountInfo.maturityDate
+    );
+
+    if (accountInfo.accountTypeName !== "No term") {
+      // Use calculated maturity check (which accounts for API response vs calculated discrepancies)
+      if (!isFixedTermMatured()) {
         setError("Fixed-term accounts can only be withdrawn at maturity");
         return;
       }
 
       // For fixed-term at maturity, must withdraw full amount
-      if (amount !== accountInfo.balance) {
+      console.log(
+        "🔢 Check amount match:",
+        amount,
+        "===",
+        Math.round(accountInfo.balance),
+        "?",
+        amount === Math.round(accountInfo.balance)
+      );
+
+      if (Math.round(accountInfo.balance) !== amount) {
         setError(
           "Fixed-term accounts must withdraw the full balance at maturity"
         );
         return;
       }
-      setIsClosingAccount(true);
-    } else {
-      setIsClosingAccount(false);
+      isClosing = true;
+      console.log("✅ isClosing = true");
     }
 
     setIsSubmitting(true);
     setError("");
 
     try {
-      if (isClosingAccount) {
+      console.log("🚀 Submitting, isClosing:", isClosing);
+      if (isClosing) {
         // Use close account API for fixed-term matured accounts
+        console.log("📤 Calling closeSavingAccount with accountId:", accountId);
         await closeSavingAccount(accountId);
       } else {
         // Use regular withdraw API for no-term accounts
+        console.log("📤 Calling withdrawMoney");
         await withdrawMoney(accountId, amount, false);
       }
 
@@ -210,8 +231,11 @@ export default function Withdraw() {
         accountId,
         customerName: accountInfo.customerName,
         totalPayout: amount,
+        initialBalance: accountInfo.initialBalance || 0,
+        interestAmount: accountInfo.interestAmount || 0,
       });
       setShowSuccess(true);
+      console.log("✅ Success! Showing modal");
 
       // Reset form (keep receipt data & calculated values)
       setTimeout(() => {
@@ -221,7 +245,7 @@ export default function Withdraw() {
         setError("");
       }, 500);
     } catch (err) {
-      console.error("Withdraw error:", err);
+      console.error("❌ Withdraw error:", err);
       if (isServerUnavailable(err)) {
         setServerUnavailable(true);
       } else {
@@ -229,6 +253,7 @@ export default function Withdraw() {
       }
     } finally {
       setIsSubmitting(false);
+      console.log("🏁 handleSubmit finished");
     }
   };
 
@@ -519,18 +544,39 @@ export default function Withdraw() {
                   </div>
                   {accountInfo && withdrawAmount && (
                     <div
-                      className="p-5 border-2 rounded-sm"
+                      className="p-6 border-2 rounded-sm"
                       style={{
                         background:
                           "linear-gradient(135deg, #FFF7D6 0%, #ffffff 100%)",
                         borderColor: "#F59E0B20",
                       }}
                     >
-                      <div className="flex items-center justify-between pt-2">
-                        <span className="font-medium text-gray-700">
+                      {/* Show breakdown for fixed-term accounts only */}
+                      {accountInfo.accountTypeName !== "No term" && (
+                        <div className="space-y-4 pb-4 mb-4 border-b border-gray-200">
+                          <div className="flex items-center justify-between">
+                            <span className="text-base text-gray-500 font-normal">
+                              Initial Balance:
+                            </span>
+                            <span className="text-base font-medium text-gray-800">
+                              {formatBalance(accountInfo.initialBalance ?? 0)}₫
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-base text-gray-500 font-normal">
+                              Interest Amount:
+                            </span>
+                            <span className="text-base font-medium text-green-600">
+                              +{formatBalance(accountInfo.interestAmount ?? 0)}₫
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-base font-semibold text-gray-700">
                           Total Payout:
                         </span>
-                        <span className="text-xl font-bold text-green-600">
+                        <span className="text-lg font-bold text-green-600">
                           {formatBalance(Number(withdrawAmount))}₫
                         </span>
                       </div>
@@ -654,6 +700,22 @@ export default function Withdraw() {
                     {receiptData?.customerName}
                   </span>
                 </div>
+                {receiptData?.initialBalance > 0 && (
+                  <>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Initial Balance:</span>
+                      <span className="font-medium text-gray-800">
+                        {formatBalance(receiptData.initialBalance)}₫
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Interest Amount:</span>
+                      <span className="font-medium text-green-600">
+                        +{formatBalance(receiptData.interestAmount)}₫
+                      </span>
+                    </div>
+                  </>
+                )}
                 <div className="flex justify-between pt-3 border-t border-gray-200">
                   <span className="font-medium text-gray-700">
                     Total Payout:
