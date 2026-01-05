@@ -547,6 +547,12 @@ export default function SearchAccounts() {
                     </Badge>
                   </div>
                   <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Open Rate:</span>
+                    <span className="font-medium">
+                      {selectedAccount.openRate?.toFixed(2) || "-"}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Opening Date:</span>
                     <span className="font-medium">
                       {formatDateToDDMMYYYY(selectedAccount.openDate)}
