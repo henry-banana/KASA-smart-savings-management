@@ -97,7 +97,7 @@ describe("SavingBookController - Unit Tests", () => {
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        message: "Failed to add saving book",
+        message: "Customer not found",
         success: false,
       });
 
@@ -200,8 +200,11 @@ describe("SavingBookController - Unit Tests", () => {
 
       await searchSavingBook(req, res);
 
+      // Updated to match the new service signature: (keyword, typeId, status, pageSize, pageNumber)
       expect(mockSavingBookService.searchSavingBook).toHaveBeenCalledWith(
         "NONEXISTENT123",
+        undefined,
+        undefined,
         10,
         1
       );

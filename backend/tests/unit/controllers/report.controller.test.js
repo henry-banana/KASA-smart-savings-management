@@ -8,6 +8,7 @@ import {
 const mockReportService = {
   getDailyReport: jest.fn(),
   getMonthlyReport: jest.fn(),
+  getDailyTransactionStatistics: jest.fn(),
 };
 
 const reportServicePath = new URL(
@@ -19,7 +20,7 @@ jest.unstable_mockModule(reportServicePath, () => ({
   reportService: mockReportService,
 }));
 
-const { getDailyReport, getMonthlyReport } = await import(
+const { getDailyReport, getMonthlyReport, getDailyTransactionStatistics } = await import(
   "../../../src/controllers/Report/report.controller.js"
 );
 
@@ -263,6 +264,110 @@ describe("ReportController - Unit Tests", () => {
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
       await getMonthlyReport(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: "Internal server error",
+      });
+
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe("getDailyTransactionStatistics()", () => {
+    it("should return daily transaction statistics successfully", async () => {
+      const req = createMockRequest({
+        query: {
+          date: "2025-10-15",
+        },
+      });
+      const res = createMockResponse();
+
+      const mockStats = {
+        date: "2025-10-15",
+        totalDeposits: 5,
+        totalWithdrawals: 3,
+        depositAmount: 10000000,
+        withdrawalAmount: 5000000,
+      };
+
+      mockReportService.getDailyTransactionStatistics.mockResolvedValue(mockStats);
+
+      await getDailyTransactionStatistics(req, res);
+
+      expect(mockReportService.getDailyTransactionStatistics).toHaveBeenCalledWith("2025-10-15");
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Get daily transaction statistics successfully",
+        success: true,
+        data: mockStats,
+      });
+    });
+
+    it("should return 400 when date is missing", async () => {
+      const req = createMockRequest({
+        query: {},
+      });
+      const res = createMockResponse();
+
+      await getDailyTransactionStatistics(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: "Missing query parameter: date (YYYY-MM-DD)",
+      });
+    });
+
+    it("should return 400 when date format is invalid", async () => {
+      const req = createMockRequest({
+        query: {
+          date: "15-10-2025",
+        },
+      });
+      const res = createMockResponse();
+
+      await getDailyTransactionStatistics(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: "Invalid date format. Expected YYYY-MM-DD",
+      });
+    });
+
+    it("should return 400 when date value is invalid", async () => {
+      const req = createMockRequest({
+        query: {
+          date: "2025-13-35",
+        },
+      });
+      const res = createMockResponse();
+
+      await getDailyTransactionStatistics(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({
+        success: false,
+        message: "Invalid date value",
+      });
+    });
+
+    it("should return 500 on server error", async () => {
+      const req = createMockRequest({
+        query: {
+          date: "2025-10-15",
+        },
+      });
+      const res = createMockResponse();
+
+      mockReportService.getDailyTransactionStatistics.mockRejectedValue(
+        new Error("Database error")
+      );
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      await getDailyTransactionStatistics(req, res);
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({

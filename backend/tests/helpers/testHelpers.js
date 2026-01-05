@@ -201,3 +201,46 @@ export function createMockResponse() {
 export function createMockNext() {
   return jest.fn();
 }
+
+/**
+ * Create mock Supabase client with chainable methods
+ */
+export function createMockSupabaseClient() {
+  const mockSupabase = {
+    from: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    single: jest.fn().mockResolvedValue({ data: null, error: null }),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    order: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockResolvedValue({ data: null, error: null }),
+    ilike: jest.fn().mockReturnThis(),
+    gte: jest.fn().mockReturnThis(),
+    lte: jest.fn().mockReturnThis(),
+    lt: jest.fn().mockReturnThis(),
+    maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
+  };
+  return mockSupabase;
+}
+
+/**
+ * Reset Supabase mock to default state
+ */
+export function resetSupabaseMock(mockSupabase) {
+  mockSupabase.from.mockReturnThis();
+  mockSupabase.select.mockReturnThis();
+  mockSupabase.eq.mockReturnThis();
+  mockSupabase.single.mockResolvedValue({ data: null, error: null });
+  mockSupabase.insert.mockReturnThis();
+  mockSupabase.update.mockReturnThis();
+  mockSupabase.delete.mockReturnThis();
+  mockSupabase.order.mockReturnThis();
+  mockSupabase.limit.mockResolvedValue({ data: null, error: null });
+  mockSupabase.ilike.mockReturnThis();
+  mockSupabase.gte.mockReturnThis();
+  mockSupabase.lte.mockReturnThis();
+  mockSupabase.lt.mockReturnThis();
+  mockSupabase.maybeSingle.mockResolvedValue({ data: null, error: null });
+}
