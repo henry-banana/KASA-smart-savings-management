@@ -87,7 +87,13 @@ class SavingBookService {
   }
 
   // Thêm sổ tiết kiệm mới
-  async addSavingBook({bookID, typeSavingID, initialDeposit, employeeID, citizenID }) {
+  async addSavingBook({
+    bookID,
+    typeSavingID,
+    initialDeposit,
+    employeeID,
+    citizenID,
+  }) {
     if (!typeSavingID || !initialDeposit || !employeeID || !citizenID) {
       throw new Error("Missing required information.");
     }
@@ -103,35 +109,46 @@ class SavingBookService {
       throw new Error("TypeSaving not found: " + typeSavingID);
     }
 
-    const minimumDeposit = typeSaving.minimumdeposit ?? 100000;
+    const minimumBalance = typeSaving.minimumbalance;
 
     // Validate tiền gửi tối thiểu
-    if (initialDeposit < minimumDeposit) {
-      throw new Error(`Minimum deposit amount is ${minimumDeposit} VND`);
+    if (initialDeposit < minimumBalance) {
+      throw new Error(`Minimum deposit amount is ${minimumBalance} VND`);
     }
 
     // 3. Tính ngày mở và ngày đáo hạn
     const maturityDate = new Date();
     maturityDate.setMonth(maturityDate.getMonth() + typeSaving.term);
 
+    // Tạo sổ tiết kiệm mới (bắt lỗi chi tiết nếu có violation, ví dụ duplicate key)
+    let newSavingBook;
+    try {
+      const createPayload = {
+        typeid: typeSavingID,
+        customerid: customer.customerid,
+        currentbalance: initialDeposit,
+        maturitydate: new Date().toISOString(),
+      };
 
-      // Tạo sổ tiết kiệm mới (bắt lỗi chi tiết nếu có violation, ví dụ duplicate key)
-      let newSavingBook;
-      try {
-        newSavingBook = await savingBookRepository.create({
-          typeid: typeSavingID,
-          customerid: customer.customerid,
-          currentbalance: initialDeposit,
-          maturitydate: new Date().toISOString(),
-        });
-      } catch (err) {
-        const msg = err?.message || String(err);
-        const isDuplicate = /duplicate key|unique constraint|already exists|23505|duplicate/i.test(msg);
-        if (isDuplicate) {
-          throw new Error(`Saving book creation failed: duplicate book id or unique constraint violation. ${msg}`);
-        }
-        throw new Error(`Saving book creation failed: ${msg}`);
+      // Nếu caller truyền `bookID`, thì gửi kèm `bookid` khi tạo
+      if (bookID) {
+        createPayload.bookid = bookID;
       }
+
+      newSavingBook = await savingBookRepository.create(createPayload);
+    } catch (err) {
+      const msg = err?.message || String(err);
+      const isDuplicate =
+        /duplicate key|unique constraint|already exists|23505|duplicate/i.test(
+          msg
+        );
+      if (isDuplicate) {
+        throw new Error(
+          `Saving book creation failed: duplicate book id or unique constraint violation. ${msg}`
+        );
+      }
+      throw new Error(`Saving book creation failed: ${msg}`);
+    }
 
     newSavingBook.citizenid = citizenID;
 
