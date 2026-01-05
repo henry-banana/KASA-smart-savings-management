@@ -7,7 +7,26 @@ const options = {
     info: {
       title: "KASA API",
       version: "1.0.0",
+      description: "API documentation for KASA Smart Savings Management",
+      contact: {
+        name: "Your Name",
+        email: "your.email@example.com",
+      },
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
   apis: ["./src/routers/*.js"], // nơi bạn viết comment cho Swagger
 };

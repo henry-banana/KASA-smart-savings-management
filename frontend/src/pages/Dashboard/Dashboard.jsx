@@ -7,6 +7,7 @@ import {
 } from "@/services/dashboardService";
 import { getAllTypeSavings } from "@/services/typeSavingService";
 import { getTypeChartColor } from "@/utils/typeColorUtils";
+import { sortSavingsTypeItems } from "@/utils/savingsTypeSort";
 import { mockSavingBooks } from "@/mocks/data/savingBooks";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
@@ -160,9 +161,8 @@ export default function Dashboard() {
             {
               title: "Current Deposits",
               value: `${formatVnNumber(
-                (statsData.depositsComparePreWeek || 0) / 1_000_000,
-                { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-              )}M₫`,
+                statsData.depositsComparePreWeek || 0
+              )}₫`,
               change: formatPercentText(
                 statsData.changes?.currentDeposits || "0%"
               ),
@@ -176,9 +176,8 @@ export default function Dashboard() {
             {
               title: "Current Withdrawals",
               value: `${formatVnNumber(
-                (statsData.withdrawalsComparePreWeek || 0) / 1_000_000,
-                { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-              )}M₫`,
+                statsData.withdrawalsComparePreWeek || 0
+              )}₫`,
               change: formatPercentText(
                 statsData.changes?.currentWithdrawals || "0%"
               ),
@@ -219,12 +218,16 @@ export default function Dashboard() {
               return {
                 ...item,
                 name: label,
+                typeName: label, // Add typeName for sorting compatibility
                 color: getTypeChartColor(label),
               };
             }
           );
 
-          _setAccountTypeData(hashedAccountTypes);
+          // Sort by savings type order
+          const sortedAccountTypes = sortSavingsTypeItems(hashedAccountTypes);
+
+          _setAccountTypeData(sortedAccountTypes);
         }
 
         // Fetch recent transactions

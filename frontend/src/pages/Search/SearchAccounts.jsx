@@ -49,7 +49,9 @@ import { searchSavingBooks } from "../../services/savingBookService";
 import { getAllTypeSavings } from "../../services/typeSavingService";
 import { RoleGuard } from "../../components/RoleGuard";
 import { getTypeBadgeColor, getTypeLabel } from "../../utils/typeColorUtils";
-import { formatVnNumber } from "../../utils/numberFormatter";
+import { formatVnNumber, formatBalance } from "../../utils/numberFormatter";
+import { sortSavingsTypes } from "../../utils/savingsTypeSort";
+import { formatDateToDDMMYYYY } from "../../utils/dateFormatter";
 import { isServerUnavailable } from "@/utils/serverStatusUtils";
 import { ServiceUnavailableState } from "@/components/ServiceUnavailableState";
 
@@ -88,7 +90,7 @@ export default function SearchAccounts() {
               };
             }),
           ];
-          setAccountTypeOptions(options);
+          setAccountTypeOptions(sortSavingsTypes(options));
         }
       } catch (err) {
         console.error("Failed to fetch Saving Book types:", err);
@@ -222,7 +224,7 @@ export default function SearchAccounts() {
                   <span className="shrink-0-xl sm:text-2xl">🔍</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Search and manage savings accounts (Form BM4)
+                  Search and manage savings accounts
                 </CardDescription>
               </div>
             </div>
@@ -251,7 +253,7 @@ export default function SearchAccounts() {
                     <Input
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      placeholder="Saving Book code or customer name..."
+                      placeholder="Saving Book ID, Citizen number or Name..."
                       className="pl-10 h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#8B5CF6] focus:ring-[#8B5CF6] transition-all text-sm sm:text-base"
                     />
                   </div>
@@ -322,6 +324,9 @@ export default function SearchAccounts() {
                       <TableHead className="font-semibold">
                         Saving Book code
                       </TableHead>
+                      <TableHead className="font-semibold">
+                        Citizen ID
+                      </TableHead>
                       <TableHead className="font-semibold">Customer</TableHead>
                       <TableHead className="font-semibold">Type</TableHead>
                       <TableHead className="font-semibold">Open Date</TableHead>
@@ -343,6 +348,7 @@ export default function SearchAccounts() {
                         <TableCell className="font-medium text-[#8B5CF6]">
                           {account.accountCode || account.bookId}
                         </TableCell>
+                        <TableCell>{account.citizenId || "-"}</TableCell>
                         <TableCell>{account.customerName}</TableCell>
                         <TableCell>
                           <Badge
@@ -353,9 +359,11 @@ export default function SearchAccounts() {
                             {getTypeLabel(account.accountTypeName)}
                           </Badge>
                         </TableCell>
-                        <TableCell>{account.openDate}</TableCell>
+                        <TableCell>
+                          {formatDateToDDMMYYYY(account.openDate)}
+                        </TableCell>
                         <TableCell className="font-semibold text-right">
-                          {formatVnNumber(account.balance ?? 0)}₫
+                          {formatBalance(account.balance ?? 0)}₫
                         </TableCell>
                         <TableCell>
                           {account.status?.toLowerCase() === "open" ? (
@@ -481,9 +489,17 @@ export default function SearchAccounts() {
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Saving Book code:</span>
+                    <span className="text-sm text-gray-600">
+                      Saving Book code:
+                    </span>
                     <span className="font-semibold text-lg text-[#8B5CF6]">
                       {selectedAccount.accountCode || selectedAccount.bookId}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Citizen ID:</span>
+                    <span className="font-medium">
+                      {selectedAccount.citizenId || "-"}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -493,7 +509,9 @@ export default function SearchAccounts() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Saving Book type:</span>
+                    <span className="text-sm text-gray-600">
+                      Saving Book type:
+                    </span>
                     <Badge
                       className={`${getTypeBadgeColor(
                         selectedAccount.accountTypeName
@@ -505,7 +523,7 @@ export default function SearchAccounts() {
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Opening Date:</span>
                     <span className="font-medium">
-                      {selectedAccount.openDate}
+                      {formatDateToDDMMYYYY(selectedAccount.openDate)}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -523,7 +541,7 @@ export default function SearchAccounts() {
                   <div className="flex justify-between pt-3 border-t border-gray-200">
                     <span className="font-medium text-gray-700">Balance:</span>
                     <span className="text-xl font-bold text-green-600">
-                      {formatVnNumber(selectedAccount.balance ?? 0)}₫
+                      {formatBalance(selectedAccount.balance ?? 0)}₫
                     </span>
                   </div>
                 </div>

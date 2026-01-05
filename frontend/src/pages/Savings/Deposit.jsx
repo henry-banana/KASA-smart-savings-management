@@ -32,7 +32,7 @@ import {
   getAccountInfo,
   depositMoney,
 } from "../../services/transactionService";
-import { formatVnNumber } from "../../utils/numberFormatter";
+import { formatVnNumber, formatBalance } from "../../utils/numberFormatter";
 import { getRegulations } from "../../services/regulationService";
 import { BUSINESS_RULES } from "@/constants/business";
 import { RoleGuard } from "../../components/RoleGuard";
@@ -239,7 +239,7 @@ export default function Deposit() {
                   <span className="shrink-0 text-xl sm:text-2xl">💰</span>
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base">
-                  Deposit money to savings account (Form BM2)
+                  Deposit money to savings account
                 </CardDescription>
               </div>
             </div>
@@ -264,7 +264,7 @@ export default function Deposit() {
                       setAccountInfo(null);
                       setError("");
                     }}
-                    placeholder="Enter saving book ID (e.g., 12345)"
+                    placeholder="Enter Saving Book ID (e.g., 12345)"
                     className="h-11 sm:h-12 rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all text-sm sm:text-base"
                     onKeyPress={(e) =>
                       e.key === "Enter" && handleAccountLookup()
@@ -349,7 +349,7 @@ export default function Deposit() {
                       Current Balance:
                     </span>
                     <span className="text-lg font-bold text-green-600">
-                      {formatVnNumber(accountInfo.balance ?? 0)}₫
+                      {formatBalance(accountInfo.balance ?? 0)}₫
                     </span>
                   </div>
                 </div>
@@ -380,10 +380,24 @@ export default function Deposit() {
                         type="number"
                         value={depositAmount}
                         onChange={(e) => {
-                          setDepositAmount(e.target.value);
+                          const value = e.target.value;
+                          const numValue = Number(value);
+
+                          // Prevent entering negative amounts
+                          if (numValue < 0) {
+                            setDepositAmount("");
+                            setError("");
+                            return;
+                          }
+
+                          // Round to nearest integer (no decimal places)
+                          const roundedValue = Math.round(numValue);
+                          setDepositAmount(roundedValue.toString());
                           setError("");
                         }}
                         placeholder="Enter deposit amount"
+                        min="0"
+                        step="1"
                         className="pl-8 h-14 text-lg rounded-sm border-gray-200 focus:border-[#00AEEF] focus:ring-[#00AEEF] transition-all"
                       />
                       <span className="absolute text-lg font-medium text-gray-500 -translate-y-1/2 left-3 top-1/2">
@@ -393,8 +407,8 @@ export default function Deposit() {
                     <p className="flex items-center gap-1 text-xs text-gray-500">
                       <span>💡</span>{" "}
                       {loadingRegulations
-                        ? "Loading minimum amount..."
-                        : `Minimum amount: ${
+                        ? "Loading minimum deposit amount..."
+                        : `Minimum deposit amount: ${
                             formatVnNumber(minDeposit ?? 0) ?? "..."
                           }₫`}
                     </p>
@@ -534,7 +548,7 @@ export default function Deposit() {
                 <div className="flex justify-between pt-3 border-t border-gray-200">
                   <span className="text-sm text-gray-600">New Balance:</span>
                   <span className="text-lg font-bold text-green-600">
-                    {formatVnNumber(receiptData?.newBalance || 0)}₫
+                    {formatBalance(receiptData?.newBalance || 0)}₫
                   </span>
                 </div>
               </div>

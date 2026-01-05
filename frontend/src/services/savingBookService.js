@@ -16,11 +16,11 @@ export const createSavingBook = async (data) => {
   if (USE_MOCK) {
     // Use canonical mock adapter directly and alias accountCode for UI compatibility
     const resp = await mockSavingBookAdapter.createSavingBook({
-      citizenId: data.idCard,
-      customerName: data.customerName,
-      typeSavingId: data.savingsType,
+      bookID: data.savingBookCode,
+      citizenID: data.idCard,
+      typeSavingID: data.savingsType,
       initialDeposit: parseFloat(data.initialDeposit),
-      employeeId: data.employeeId || "NV001", // TODO: Get from auth context
+      employeeID: data.employeeId || "NV001", // TODO: Get from auth context
     });
     return {
       ...resp,
@@ -30,8 +30,8 @@ export const createSavingBook = async (data) => {
 
   // Backend API - OPENAPI contract: POST /api/savingbook
   const resp = await accountApi.createAccount({
+    bookID: data.savingBookCode,
     citizenID: data.idCard,
-    customerName: data.customerName,
     typeSavingID: data.savingsType,
     initialDeposit: parseFloat(data.initialDeposit),
     employeeID: data.employeeId || "NV001", // TODO: Get from auth context
