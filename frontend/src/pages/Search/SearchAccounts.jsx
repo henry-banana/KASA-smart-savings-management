@@ -575,6 +575,14 @@ export default function SearchAccounts() {
                       </Badge>
                     )}
                   </div>
+                  {selectedAccount.status?.toLowerCase() === "close" && (
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-600">Close Date:</span>
+                      <span className="font-medium">
+                        {formatDateToDDMMYYYY(selectedAccount.closeDate)}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">
                       Initial Balance:
