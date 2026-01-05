@@ -16,7 +16,7 @@ class TypeSavingService {
   // Lấy tất cả loại sổ tiết kiệm
   async getAllTypeSavings() {
     const results = await typeSavingRepository.findAll();
-    return results.map(record => this._mapToApiFormat(record));
+    return results.map((record) => this._mapToApiFormat(record));
   }
 
   // Lấy 1 loại sổ tiết kiệm theo ID
@@ -73,10 +73,12 @@ class TypeSavingService {
     return this._mapToApiFormat(updated);
   }
 
-  // Xóa loại sổ tiết kiệm
+  // Xóa loại sổ tiết kiệm (soft delete - set isActive to false)
   async deleteTypeSaving(id) {
     if (!id) throw new Error("ID is required");
-    const deleted = await typeSavingRepository.delete(id);
+    // Use soft delete: mark as inactive instead of physically deleting
+    // This prevents foreign key constraint violations while disabling the type
+    const deleted = await typeSavingRepository.update(id, { isactive: false });
     return this._mapToApiFormat(deleted);
   }
 }

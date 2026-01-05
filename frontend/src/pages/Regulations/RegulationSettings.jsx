@@ -344,8 +344,8 @@ export default function RegulationSettings() {
           </CardHeader>
 
           <CardContent className="p-8">
-            {/* Error Message */}
-            {error && (
+            {/* Error Message - Only show when dialog is not open */}
+            {error && !showCreateTypeSaving && (
               <div className="p-4 mb-6 border-2 border-red-200 rounded-sm bg-red-50">
                 <p className="flex items-center gap-2 text-sm text-red-900">
                   <AlertTriangle size={16} />
@@ -635,7 +635,10 @@ export default function RegulationSettings() {
                 <div className="flex gap-4 pt-4">
                   <Button
                     type="button"
-                    onClick={() => setShowCreateTypeSaving(true)}
+                    onClick={() => {
+                      setError(null);
+                      setShowCreateTypeSaving(true);
+                    }}
                     className="h-12 px-8 font-medium text-white border border-gray-200 rounded-sm"
                     style={{
                       background:
@@ -1091,6 +1094,15 @@ export default function RegulationSettings() {
                 </div>
               </div>
             </DialogHeader>
+            {/* Error Message inside Dialog */}
+            {error && (
+              <div className="p-3 mb-4 border-2 border-red-200 rounded-sm bg-red-50">
+                <p className="flex items-center gap-2 text-sm text-red-900">
+                  <AlertTriangle size={16} />
+                  {error}
+                </p>
+              </div>
+            )}
             <div className="py-4 space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="typename" className="text-gray-700">
@@ -1173,9 +1185,14 @@ export default function RegulationSettings() {
                     });
                   }}
                   min="0"
-                  placeholder="e.g., 0.5 for 0.5%"
+                  max="0.99"
+                  placeholder="e.g., 0.5 for 0.5%, 0.15 for 0.15%"
                   className="border-gray-200 h-11 rounded-sm"
                 />
+                <p className="text-xs text-gray-500">
+                  Enter as decimal between 0 and 1. E.g., 0.5 for 0.5%, 0.15 for
+                  0.15%, 0.01 for 0.01%
+                </p>
               </div>
             </div>
             <div className="flex gap-4">
@@ -1185,11 +1202,51 @@ export default function RegulationSettings() {
                     setLoading(true);
                     setError(null);
 
+                    // Validate form before submission
+                    if (!typeSavingForm.typename?.trim()) {
+                      setError("Type name is required");
+                      setLoading(false);
+                      return;
+                    }
+
+                    if (
+                      typeSavingForm.term === "" ||
+                      typeSavingForm.term === null
+                    ) {
+                      setError("Term is required");
+                      setLoading(false);
+                      return;
+                    }
+
+                    if (
+                      typeSavingForm.interestRate === "" ||
+                      typeSavingForm.interestRate === null
+                    ) {
+                      setError("Interest rate is required");
+                      setLoading(false);
+                      return;
+                    }
+
+                    const interestRate = Number(typeSavingForm.interestRate);
+                    if (interestRate <= 0) {
+                      setError("Interest rate must be greater than 0");
+                      setLoading(false);
+                      return;
+                    }
+
+                    if (interestRate >= 1) {
+                      setError(
+                        "Interest rate must be less than 1 (e.g., 0.5 for 0.5%, 0.15 for 0.15%)"
+                      );
+                      setLoading(false);
+                      return;
+                    }
+
                     // Call API POST /api/typesaving
                     const response = await createTypeSaving({
                       typename: typeSavingForm.typename,
                       term: Number(typeSavingForm.term),
-                      interestRate: Number(typeSavingForm.interestRate),
+                      interestRate: interestRate,
                     });
 
                     if (response.success) {
@@ -1235,6 +1292,7 @@ export default function RegulationSettings() {
               <Button
                 onClick={() => {
                   setShowCreateTypeSaving(false);
+                  setError(null);
                   setTypeSavingForm({
                     typename: "",
                     term: "",
