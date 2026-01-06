@@ -16,6 +16,17 @@ import "./DailyReportPrint.css";
  *  - withdrawalStats: Object with items array and total { count }
  *  - user: Current user object with fullName and role
  */
+
+// Helper function to get color class for difference value
+const getDifferenceColorClass = (deposits, withdrawals) => {
+  if (deposits > withdrawals) {
+    return "difference-positive"; // More deposits
+  } else if (deposits < withdrawals) {
+    return "difference-negative"; // More withdrawals
+  }
+  return "difference-zero"; // Equal
+};
+
 export const DailyReportPrint = React.forwardRef(
   (
     { reportData, selectedDate, totals, depositStats, withdrawalStats, user },
@@ -169,7 +180,14 @@ export const DailyReportPrint = React.forwardRef(
                     {formatVnNumber(row.totalWithdrawals || 0)}
                   </td>
                   <td className="col-difference text-right">
-                    {formatVnNumber(row.difference || 0)}
+                    <span
+                      className={getDifferenceColorClass(
+                        row.totalDeposits,
+                        row.totalWithdrawals
+                      )}
+                    >
+                      {formatVnNumber(row.difference || 0)}
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -184,7 +202,14 @@ export const DailyReportPrint = React.forwardRef(
                   {formatVnNumber(totals.withdrawals)}
                 </td>
                 <td className="col-difference text-right font-semibold">
-                  {formatVnNumber(totals.difference)}
+                  <span
+                    className={getDifferenceColorClass(
+                      totals.deposits,
+                      totals.withdrawals
+                    )}
+                  >
+                    {formatVnNumber(totals.difference)}
+                  </span>
                 </td>
               </tr>
             </tbody>
