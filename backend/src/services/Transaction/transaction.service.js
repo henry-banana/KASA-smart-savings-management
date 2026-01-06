@@ -220,8 +220,18 @@ class TransactionService {
       throw new Error("Cannot withdraw within 15 days of opening the account.");
     }
 
-    //Tiền lãi chỉ tính khi gởi ít nhất 1 tháng với lãi suất 0.15%
-    if (diffDays >= 15 && diffDays < 30) {
+    // Fetch type saving info to check if it's fixed-term or no-term
+    const typeSaving = await typeSavingRepository.findById(savingBook.typeid);
+
+    // Tiền lãi chỉ tính khi gởi ít nhất 1 tháng với lãi suất 0.15%
+    // Rule 1 month only applies to fixed-term accounts (NOT "No term")
+    // No-term accounts can withdraw after 15 days
+    const isNoTerm =
+      typeSaving &&
+      typeSaving.typename &&
+      typeSaving.typename.toLowerCase().includes("no term");
+
+    if (!isNoTerm && diffDays >= 15 && diffDays < 30) {
       throw new Error("Cannot withdraw before 1 month to earn interest.");
     }
 

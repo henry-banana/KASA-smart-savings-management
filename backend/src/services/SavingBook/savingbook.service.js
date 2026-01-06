@@ -8,7 +8,7 @@ import {
 import { raw } from "express";
 
 class SavingBookService {
-  // PRIVATE HELPER: XỬ LÝ LAZY LOADING 
+  // PRIVATE HELPER: XỬ LÝ LAZY LOADING
   async _performRollover(savingBook, typeSaving) {
     // 1. CHUẨN HÓA DỮ LIỆU ĐẦU VÀO (Mapping)
     // Log cho thấy object dùng CamelCase, nhưng DB trả về Lowercase.
@@ -17,7 +17,8 @@ class SavingBookService {
     const bookId = savingBook.bookId || savingBook.bookid;
     const currentMaturityDateStr =
       savingBook.maturityDate || savingBook.maturitydate;
-    let initialInterestAmount = savingBook.interestamount ?? savingBook.interestAmount;
+    let initialInterestAmount =
+      savingBook.interestamount ?? savingBook.interestAmount;
     const currentBalanceRaw =
       savingBook.balance !== undefined
         ? savingBook.balance
@@ -50,7 +51,7 @@ class SavingBookService {
 
       //Lợi nhuận cộng dồn
       initialInterestAmount += interestAmount;
-      
+
       // Gia hạn ngày đáo hạn
       maturityDate.setMonth(maturityDate.getMonth() + termMonths);
 
@@ -134,7 +135,7 @@ class SavingBookService {
         maturitydate: new Date().toISOString(),
         interestamount: 0,
         initialbalance: initialDeposit,
-        openrate : typeSaving.interest,
+        openrate: typeSaving.interest,
       };
 
       // Nếu caller truyền `bookID`, thì gửi kèm `bookid` khi tạo
@@ -290,8 +291,8 @@ class SavingBookService {
     if (savingBook.status === "Open") {
       savingBook = await this._performRollover(savingBook, typeSaving);
     }
-    
-     // D. Tính toán tiền lãi phát sinh (interestEarned) và tổng tiền (finalAmount)
+
+    // D. Tính toán tiền lãi phát sinh (interestEarned) và tổng tiền (finalAmount)
     let finalAmount = parseFloat(savingBook.currentbalance);
     let finalInterest = parseFloat(savingBook.interestamount);
     let interestEarned = 0; // Biến này lưu phần lãi phát sinh thêm (nếu rút trước hạn)
@@ -341,6 +342,7 @@ class SavingBookService {
       interestAmount: savingBook.interestamount,
       interestAmountWithdraw: finalInterest, // trả về số lãi bao gồm rút trước hạn -- chỉ dành cho mục đích hiển thị ở chức năng tất toán
       initialBalance: savingBook.initialbalance,
+      openRate: savingBook.openrate, // Lãi suất tại thời điểm mở sổ
 
       typeSaving: {
         typeSavingId: typeSaving.typeid,
@@ -585,7 +587,7 @@ class SavingBookService {
     // 6. Trả về kết quả theo định dạng yêu cầu
     return {
       bookId: bookID,
-      finalBalance: finalAmount,  
+      finalBalance: finalAmount,
       interest: initialInterestAmount,
       initialBalance: savingBook.initialbalance,
       status: "closed", // Hoặc updatedBook.status.toLowerCase()

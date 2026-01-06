@@ -895,7 +895,7 @@ export default function DailyReport() {
               <DailyReportPrint
                 ref={printComponentRef}
                 reportData={reportData}
-                selectedDate={selectedDate}
+                selectedDate={reportDate}
                 totals={totals}
                 depositStats={depositStats}
                 withdrawalStats={withdrawalStats}

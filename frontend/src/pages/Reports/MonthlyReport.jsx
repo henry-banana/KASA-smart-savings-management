@@ -679,8 +679,8 @@ export default function MonthlyReport() {
                 ref={printComponentRef}
                 reportData={reportData}
                 totals={totals}
-                selectedDate={selectedDate}
-                savingsType={savingsType}
+                selectedDate={reportDate}
+                savingsType={reportSavingsType}
                 savingsTypes={savingsTypes}
                 user={user}
               />
