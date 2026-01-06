@@ -157,6 +157,22 @@
   color: #dc2626 !important;
 }
 
+/* Difference column colors in tables */
+.difference-positive {
+  color: #059669 !important;
+  font-weight: 500;
+}
+
+.difference-negative {
+  color: #dc2626 !important;
+  font-weight: 500;
+}
+
+.difference-zero {
+  color: #2563eb !important;
+  font-weight: 500;
+}
+
 /* Table Section */
 .print-table-container {
   width: 100%;
